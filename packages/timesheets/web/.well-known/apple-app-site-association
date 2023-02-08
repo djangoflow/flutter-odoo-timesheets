@@ -1,0 +1,16 @@
+{
+    "webcredentials": {
+        "apps": ["{team_id}.com.djangoflow.odoo.timesheets"]
+    },
+    "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "{team_id}.com.djangoflow.odoo.timesheets",
+            "paths": ["*"],
+            "appIDs": ["{team_id}.com.djangoflow.odoo.timesheets"],
+            "components": [{
+                "/": "/*"
+            }]
+        }]
+    }
+}
