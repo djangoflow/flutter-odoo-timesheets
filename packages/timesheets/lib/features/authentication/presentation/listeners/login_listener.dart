@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timesheets/features/authentication/data/models/user_model.dart';
 import '../../authentication.dart';
 
 class LoginListener extends BlocListener<AuthCubit, AuthState> {

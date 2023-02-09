@@ -1,7 +1,7 @@
-import 'package:timesheets/features/app/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:timesheets/features/authentication/data/models/user_model.dart';
 
 part 'auth_cubit.freezed.dart';
 
@@ -74,6 +74,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
   Future<void> requestOTP({required String email}) async =>
       await Future.delayed(_kDuration);
+
   // (await _authApi.authOtpCreate(
   //   oTPObtainRequest: OTPObtainRequest(email: email),
   // ))
@@ -102,6 +103,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     await Future.delayed(_kDuration);
     return _kUser;
   }
+
   // (await AccountsUsersRepository.retrieve(
   //   const AccountsUsersRetrieveFilter(
   //     id: '0', // 0 indicates the current user from token
