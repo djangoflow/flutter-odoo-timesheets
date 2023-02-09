@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:openapi/openapi.dart';
-
 import '../../authentication.dart';
 
 class LoginListener extends BlocListener<AuthCubit, AuthState> {

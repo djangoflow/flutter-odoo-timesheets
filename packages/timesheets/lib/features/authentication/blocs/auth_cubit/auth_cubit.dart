@@ -2,7 +2,6 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:openapi/openapi.dart';
 
 part 'auth_cubit.freezed.dart';
 
@@ -19,7 +18,7 @@ class AuthState with _$AuthState {
       _$AuthStateFromJson(json);
 }
 
-class AuthCubit extends HydratedCubit<AuthState> with AccountsUsersRepository {
+class AuthCubit extends HydratedCubit<AuthState> {
   // TODO uncomment this line after generating openapi
   // AuthApi get _authApi => ApiRepository.instance.auth;
 
@@ -132,22 +131,6 @@ class AuthCubit extends HydratedCubit<AuthState> with AccountsUsersRepository {
     } catch (e) {
       rethrow;
     }
-  }
-
-  Future<User?> partialUpdateUser(
-      {required String userId,
-      required PatchedUserRequest patchedUserRequest}) async {
-    final result = await partialUpdate(
-      id: userId,
-      patchedUserRequest: patchedUserRequest,
-    );
-
-    if (result != null) {
-      emit(
-        state.copyWith(user: result),
-      );
-    }
-    return result;
   }
 
   Future<void> reload() async {

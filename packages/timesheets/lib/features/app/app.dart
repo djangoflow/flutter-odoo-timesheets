@@ -1,5 +1,3 @@
-export 'data/api_repository/api_repository.dart';
-export 'data/dio_interceptor.dart';
 export 'presentation/pages/home_page.dart';
 export 'presentation/pages/splash_page.dart';
 export 'presentation/pages/unknown_page.dart';
