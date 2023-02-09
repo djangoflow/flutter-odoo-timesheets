@@ -31,7 +31,7 @@ dependencies:
   hydrated_bloc: ^9.0.0
   json_annotation: ^4.7.0
   list_bloc: ^3.1.0
-  modal_bottom_sheet: ^2.1.0
+  modal_bottom_sheet: ^3.0.0-pre
   openapi_repository_annotations: ^1.1.0
   package_info_plus: ^3.0.2
   path_provider: ^2.0.11

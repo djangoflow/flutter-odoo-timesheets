@@ -54,7 +54,7 @@ class $AppRouter {}
 
 Route<T> modalSheetBuilder<T>(
         BuildContext context, Widget child, CustomPage<T> page) =>
-    ModalBottomSheetRoute(
+    ModalSheetRoute(
       settings: page,
       containerBuilder: (context, animation, child) => SizedBox(
           height: (MediaQuery.of(context).size.height / 10) * 7, child: child),
