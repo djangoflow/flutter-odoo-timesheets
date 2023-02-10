@@ -36,6 +36,7 @@ dependencies:
   reactive_forms: ^14.1.0
   responsive_framework: ^0.2.0
   
+  xml_rpc: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,8 @@ dependency_overrides:
   path: 1.8.2
   # Conflict with flutter_test and test packages
   test_api: 0.4.18
+  # Conflict between auto_router and xml_rpc
+  xml: ^6.0.1
   # Until null check error fixed pushed https://github.com/Milad-Akarie/auto_route_library/pull/1301
   auto_route:
     git:
