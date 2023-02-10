@@ -32,7 +32,7 @@ class LoginOptionsPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         context.router.push(
-                          const EmailLoginWrapper(),
+                          EmailPasswordLoginRoute(),
                         );
                       },
                       child: const Text('Sign in'),

@@ -74,11 +74,7 @@ class TimesheetsAppBuilder extends AppBuilder {
               listenWhen: (previous, current) =>
                   previous.environment != current.environment,
               listener: (context, state) async {
-                final authCubit = context.read<AuthCubit>();
                 // logout when env changes
-                if (authCubit.state.token != null) {
-                  await authCubit.logout();
-                }
 
                 // TODO setup base url for env
                 // ApiRepository.instance.updateBaseUrl(isSandbox? sandBoxBaseurl: liveBaseUrl)

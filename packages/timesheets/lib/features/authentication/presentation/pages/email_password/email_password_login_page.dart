@@ -6,13 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class EmailOTPRequestPage extends StatelessWidget {
+class EmailPasswordLoginPage extends StatelessWidget {
   final String? email;
-  final Function(String email) onSubmit;
-  const EmailOTPRequestPage({
+  final String? pass;
+
+  const EmailPasswordLoginPage({
     Key? key,
     this.email,
-    required this.onSubmit,
+    this.pass,
   }) : super(key: key);
 
   FormGroup _formBuilder() => fb.group({
@@ -23,6 +24,12 @@ class EmailOTPRequestPage extends StatelessWidget {
           ],
           value: email,
         ),
+        'pass': FormControl<String>(
+          validators: [
+            Validators.required,
+          ],
+          value: pass,
+        ),
       });
 
   @override
@@ -31,10 +38,10 @@ class EmailOTPRequestPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Sign in'),
             leading: const AutoLeadingButton(
-                showIfParentCanPop: true,
-                showIfChildCanPop: true,
-                ignorePagelessRoutes: true,
-              ),
+              showIfParentCanPop: true,
+              showIfChildCanPop: true,
+              ignorePagelessRoutes: true,
+            ),
           ),
           body: Center(
             child: ReactiveFormBuilder(
@@ -45,11 +52,8 @@ class EmailOTPRequestPage extends StatelessWidget {
                     horizontal: kPadding * 2,
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: kPadding * 3,
-                      ),
                       ReactiveTextField(
                         autofocus: true,
                         formControlName: 'email',
@@ -73,22 +77,37 @@ class EmailOTPRequestPage extends StatelessWidget {
                       const SizedBox(
                         height: kPadding * 3,
                       ),
+                      ReactiveTextField(
+                        autofocus: true,
+                        formControlName: 'pass',
+                        textInputAction: TextInputAction.done,
+                        textCapitalization: TextCapitalization.none,
+                        keyboardType: TextInputType.visiblePassword,
+                        decoration: const InputDecoration(
+                          hintText: 'Password',
+                        ),
+                        autofillHints: const [AutofillHints.email],
+                        validationMessages: {
+                          ValidationMessage.required: (_) =>
+                              'Password is required',
+                        },
+                        obscureText: true,
+                        onSubmitted: (_) => form.valid
+                            ? DefaultActionController.of(context)
+                                ?.add(ActionType.start)
+                            : form.markAsTouched(),
+                      ),
+                      const SizedBox(
+                        height: kPadding * 5,
+                      ),
                       LinearProgressBuilder(
                         builder: (context, action, error) => ElevatedButton(
                           onPressed: (ReactiveForm.of(context)?.valid ?? false)
                               ? action
                               : null,
-                          child:
-                              const Center(child: Text('Request login code')),
+                          child: const Center(child: Text('Login')),
                         ),
-                        action: (_) async {
-                          final email = form.control('email').value as String;
-                          // await request the code
-                          await context.read<AuthCubit>().requestOTP(
-                                email: email,
-                              );
-                          onSubmit(email);
-                        },
+                        action: (_) => _signIn(context, form),
                       ),
                     ],
                   ),
@@ -98,4 +117,12 @@ class EmailOTPRequestPage extends StatelessWidget {
           ),
         ),
       );
+
+  Future<void> _signIn(BuildContext context, FormGroup form) async {
+    final email = form.control('email').value as String;
+    final pass = form.control('pass').value as String;
+    await context
+        .read<AuthCubit>()
+        .loginWithEmailPassword(email: email, password: pass);
+  }
 }
