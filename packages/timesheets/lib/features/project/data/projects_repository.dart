@@ -2,7 +2,7 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
-///Repository to communicate with odoo external_api using xml_rpc
+///Repository to fetch projects data using [OdooRepository]
 class ProjectRepository {
   static final ProjectRepository _instance = ProjectRepository._internal();
 
@@ -12,8 +12,6 @@ class ProjectRepository {
 
   final OdooRepository _baseRepo = OdooRepository();
 
-  /// Performs various operations like read, search, update, add, edit data
-  /// based on [model], [methods] and parameters
   Future getProjects(
     int id,
     String password,

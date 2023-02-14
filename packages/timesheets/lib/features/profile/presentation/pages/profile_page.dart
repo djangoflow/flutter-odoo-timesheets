@@ -44,9 +44,6 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(
             height: kPadding * 2,
           ),
-          const SizedBox(
-            height: kPadding * 2,
-          ),
           TextButton(
             onPressed: () {
               context.read<AuthCubit>().logout();

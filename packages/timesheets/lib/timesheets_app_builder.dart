@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/tasks/tasks.dart';
 
 import 'features/app/app.dart';
 import 'features/authentication/authentication.dart';
@@ -48,6 +49,9 @@ class TimesheetsAppBuilder extends AppBuilder {
             ),
             BlocProvider<ProjectCubit>(
               create: (context) => ProjectCubit(ProjectRepository()),
+            ),
+            BlocProvider<TaskCubit>(
+              create: (context) => TaskCubit(TaskRepository()),
             ),
             // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],
@@ -107,7 +111,8 @@ class TimesheetsAppBuilder extends AppBuilder {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 routerDelegate: appRouter.delegate(
-                  initialDeepLink: initialDeepLink, // only for Android and iOS
+                  initialDeepLink: initialDeepLink,
+                  // only for Android and iOS
                   // if initialDeepLink found then don't provide initialRoutes
                   initialRoutes: kIsWeb || initialDeepLink != null
                       ? null
