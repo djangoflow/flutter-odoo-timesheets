@@ -1,4 +1,3 @@
-import 'package:timesheets/configurations/router/router.dart';
 import 'package:timesheets/configurations/theme/size_constants.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
@@ -44,12 +43,6 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(
             height: kPadding * 2,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.navigateTo(const ProfileEditRoute());
-            },
-            child: const Text('Edit profile'),
           ),
           const SizedBox(
             height: kPadding * 2,

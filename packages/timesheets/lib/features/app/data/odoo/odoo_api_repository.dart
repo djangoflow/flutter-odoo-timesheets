@@ -46,8 +46,8 @@ class OdooRepository {
         buildFilterableFields(['name', 'email']);
 
     ///Fetch user data
-    List response = await getObject(
-        id, password, 'res.users', 'read', [id], filterableFields);
+    List response = await getObject(id, password, 'res.users', 'read', [id],
+        optionalParams: filterableFields);
 
     ///Response is returned as String, using 0th index to get userData
     Map<String, dynamic> userData = response[0];
@@ -65,10 +65,10 @@ class OdooRepository {
     String password,
     String model,
     String method,
-    List parameters,
-    Map<String, dynamic> optionalParams,
-  ) async {
-    List response = await xml_rpc.call(
+    List parameters, {
+    Map<String, dynamic>? optionalParams,
+  }) async {
+    var response = await xml_rpc.call(
       getObjectUri(),
       rpcFunction,
       [
@@ -78,7 +78,7 @@ class OdooRepository {
         model,
         method,
         parameters,
-        optionalParams,
+        optionalParams ?? {},
       ],
     ).catchError(handleError);
 

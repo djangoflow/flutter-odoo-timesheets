@@ -1,7 +1,7 @@
 import 'package:timesheets/configurations/router/auth_guard.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/books/books.dart';
+import 'package:timesheets/features/timesheets/timesheets.dart';
 import 'package:timesheets/features/profile/profile.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,9 @@ export 'router.gr.dart';
       guards: [AuthGuard],
       children: [
         AutoRoute(
-          path: 'books',
-          page: BooksRouterPage,
-          children: bookRoutes,
+          path: 'timesheet',
+          page: TimesheetsRouterPage,
+          children: timesheetRoutes,
         ),
         AutoRoute(
           path: 'profile',
