@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:timesheets/features/project/project.dart';
 
 import 'features/app/app.dart';
 import 'features/authentication/authentication.dart';
@@ -44,6 +45,9 @@ class TimesheetsAppBuilder extends AppBuilder {
                 context.read<AppLinksRepository>(),
               ),
               lazy: false,
+            ),
+            BlocProvider<ProjectCubit>(
+              create: (context) => ProjectCubit(ProjectRepository()),
             ),
             // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],
