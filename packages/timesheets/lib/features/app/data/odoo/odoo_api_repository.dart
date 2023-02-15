@@ -4,12 +4,13 @@ import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
 class OdooRepository {
+  // TODO: remove singleton pattern if we don't need it absolutely, rather user RepositoryProvider
   static final OdooRepository _instance = OdooRepository._internal();
 
   factory OdooRepository() => _instance;
-
+  // If need to use singleton please follow AuthCubit as an example to enable instance getter
   OdooRepository._internal();
-
+  // TODO: Move project specific constants to project specific constants file in configurations folder
   final String baseUrl = 'https://portal.apexive.com/';
 
   ///This endpoint provides meta-calls which don’t require authentication.
@@ -35,7 +36,7 @@ class OdooRepository {
       email,
       password,
       [],
-    ]).catchError(handleError);
+    ]).catchError(handleError); // TODO: Handle error using try/catch
 
     /// Handling response on invalid email/password input
     if (id == false) {
@@ -46,6 +47,8 @@ class OdooRepository {
         buildFilterableFields(['name', 'email']);
 
     ///Fetch user data
+    // TODO: Use `as` keyword instead of `cast` to avoid runtime errors
+    // Or declare type of list as List<Map<String, dynamic>>
     List response = await getObject(id, password, 'res.users', 'read', [id],
         optionalParams: filterableFields);
 
@@ -87,6 +90,7 @@ class OdooRepository {
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   handleError(error) {
+    // TODO: Better to use `is` keyword than .runtimeType for comparison
     if (error.runtimeType == xml_rpc.Fault) {
       throw OdooRepositoryException(error.text);
     } else {
