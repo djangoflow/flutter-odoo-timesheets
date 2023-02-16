@@ -86,7 +86,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         decoration: const InputDecoration(
                           hintText: 'Password',
                         ),
-                        autofillHints: const [AutofillHints.email],
+                        autofillHints: const [AutofillHints.password],
                         validationMessages: {
                           ValidationMessage.required: (_) =>
                               'Password is required',

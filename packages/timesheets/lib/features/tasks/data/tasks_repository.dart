@@ -5,11 +5,11 @@ import 'package:timesheets/features/tasks/tasks.dart';
 
 ///Repository to fetch task data
 class TaskRepository extends OdooRepositoryBase {
-  Future getTasks(
-    int id,
-    int projectId,
-    String password,
-  ) async {
+  Future getTasks({
+    required int id,
+    required int projectId,
+    required String password,
+  }) async {
     var response = await getObject(
       id,
       password,

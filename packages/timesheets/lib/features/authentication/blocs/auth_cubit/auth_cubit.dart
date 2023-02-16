@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/authentication/data/authentication_repository.dart';
 import 'package:timesheets/features/authentication/data/models/user_model.dart';
 
 part 'auth_cubit.freezed.dart';
@@ -43,13 +44,13 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String password,
   }) async {
     try {
-      User? user = await OdooRepository().connect(email, password);
+      User? user = await AuthenticationRepository().connect(email : email, password : password);
       if (user != null) {
         login(user);
       }
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showInfo(e.message);
-    } on Exception catch (e){
+    } on Exception catch (e) {
       DjangoflowAppSnackbar.showInfo(e.toString());
     }
   }

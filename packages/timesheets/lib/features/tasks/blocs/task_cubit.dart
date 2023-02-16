@@ -18,8 +18,11 @@ class TaskCubit extends Cubit<TaskState> {
     emit(const TaskState.loading());
 
     try {
-      final List<Task> tasks =
-          await _taskRepository.getTasks(id, projectId, password);
+      final List<Task> tasks = await _taskRepository.getTasks(
+        id: id,
+        projectId: projectId,
+        password: password,
+      );
 
       emit(TaskState.success(tasks));
     } on OdooRepositoryException catch (e) {

@@ -6,7 +6,10 @@ import 'package:timesheets/features/authentication/authentication.dart';
 ///Repository to communicate with odoo external_api using xml_rpc
 class AuthenticationRepository extends OdooRepositoryBase {
   /// Sends auth request to odoo xml_rpc and fetch user data and returns [User] on success
-  Future<User?> connect(String email, String password) async {
+  Future<User?> connect({
+    required String email,
+    required String password,
+  }) async {
     /// Sends auth request to odoo xml_rpc and returns id on success
     /// false value is returned on invalid email/pass
     var id = await getCommon(email, password, 'authenticate');

@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
+import 'package:timesheets/features/timer/timer.dart';
 
 import 'features/app/app.dart';
 import 'features/authentication/authentication.dart';
@@ -31,7 +33,16 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
-            // provide more reporsitories like DjangoflowFCMRepository etc
+            RepositoryProvider<AuthenticationRepository>(
+              create: (context) => AuthenticationRepository(),
+            ),
+            RepositoryProvider<ProjectRepository>(
+              create: (context) => ProjectRepository(),
+            ),
+            RepositoryProvider<TaskRepository>(
+              create: (context) => TaskRepository(),
+            ),
+            // provide more repositories like DjangoflowFCMRepository etc
           ],
           providers: [
             BlocProvider<AppCubit>(
@@ -48,10 +59,20 @@ class TimesheetsAppBuilder extends AppBuilder {
               lazy: false,
             ),
             BlocProvider<ProjectCubit>(
-              create: (context) => ProjectCubit(ProjectRepository()),
+              create: (context) => ProjectCubit(
+                context.read<ProjectRepository>(),
+              ),
             ),
             BlocProvider<TaskCubit>(
-              create: (context) => TaskCubit(TaskRepository()),
+              create: (context) => TaskCubit(
+                context.read<TaskRepository>(),
+              ),
+            ),
+            BlocProvider<ActivityCubit>(
+              create: (context) => ActivityCubit(),
+            ),
+            BlocProvider<TimerBloc>(
+              create: (context) => TimerBloc(ticker: const Ticker()),
             ),
             // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],

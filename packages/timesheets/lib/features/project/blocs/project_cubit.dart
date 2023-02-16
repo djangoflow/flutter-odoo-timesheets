@@ -18,7 +18,7 @@ class ProjectCubit extends Cubit<ProjectState> {
     emit(const ProjectState.loading());
 
     try {
-      final List<Project> projects = await _projectRepository.getProjects(id, password);
+      final List<Project> projects = await _projectRepository.getProjects(id: id,password:  password);
 
       emit(ProjectState.success(projects));
     } on OdooRepositoryException catch (e) {
