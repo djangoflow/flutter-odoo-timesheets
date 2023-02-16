@@ -42,6 +42,9 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<TaskRepository>(
               create: (context) => TaskRepository(),
             ),
+            RepositoryProvider<ActivityRepository>(
+              create: (context) => ActivityRepository(),
+            ),
             // provide more repositories like DjangoflowFCMRepository etc
           ],
           providers: [
@@ -69,7 +72,9 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
             ),
             BlocProvider<ActivityCubit>(
-              create: (context) => ActivityCubit(),
+              create: (context) => ActivityCubit(
+                context.read<ActivityRepository>(),
+              ),
             ),
             BlocProvider<TimerBloc>(
               create: (context) => TimerBloc(ticker: const Ticker()),
@@ -89,7 +94,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             },
             onLogout: (context) {
               // TODO remove Analytics user properties
-              // TODO remove ErrorReporoters user properties
+              // TODO remove ErrorReporters user properties
 
               // Upon logout all the routes will be pushed and
               // HomeRoute will be pushed so and then the AuthGuard will

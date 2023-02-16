@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/activity/blocs/activity_cubit.dart';
-import 'package:timesheets/features/timer/data/timer_status.dart';
+import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 class TimerWidget extends StatefulWidget {
@@ -19,10 +20,16 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
+    final user = context.watch<AuthCubit>().state.user;
 
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) => getTimerDisplay(
-          state.duration, state.status, timerBloc, activityCubit),
+        state.duration,
+        state.status,
+        timerBloc,
+        activityCubit,
+        user,
+      ),
     );
   }
 
@@ -31,6 +38,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     TimerStatus status,
     TimerBloc timerBloc,
     ActivityCubit activityCubit,
+    User? user,
   ) {
     Duration duration = Duration(seconds: durationInSeconds);
 
@@ -76,10 +84,24 @@ class _TimerWidgetState extends State<TimerWidget> {
                 IconButton(
                   onPressed: () {
                     timerBloc.add(const TimerEvent.reset());
+                    DateTime startTime = activityCubit.state.startTime!;
+                    DateTime endTime = startTime.add(duration);
 
-                    //Todo change to sync work
-                    activityCubit.resetActivity();
-                    // activityCubit.syncWork();
+                    final DateFormat formatter =
+                        DateFormat('yyyy-MM-dd HH:mm:ss');
+
+                    Activity activity = Activity(
+                      name: activityCubit.state.description!,
+                      projectId: activityCubit.state.project!.id,
+                      taskId: activityCubit.state.task!.id,
+                      startTime: formatter.format(startTime),
+                      endTime: formatter.format(endTime),
+                    );
+                    activityCubit.syncActivity(
+                      activity: activity,
+                      id: user!.id,
+                      password: user.pass,
+                    );
                   },
                   icon: Icon(
                     Icons.square_rounded,

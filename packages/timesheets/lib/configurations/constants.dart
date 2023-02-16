@@ -15,3 +15,4 @@ const rpcFunction = 'execute_kw';
 const projectMethod = 'project.project';
 const taskMethod = 'project.task';
 const usersMethod = 'res.users';
+const timesheetEntryMethod = 'account.analytic.line';
