@@ -7,3 +7,4 @@ export 'presentation/pages/login_options_page.dart';
 export 'presentation/pages/login_routes.dart';
 export 'presentation/pages/login_sheet.dart';
 export 'data/models/user_model.dart';
+export 'data/authentication_repository.dart';
