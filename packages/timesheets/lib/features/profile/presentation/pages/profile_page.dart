@@ -19,7 +19,7 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(kPadding * 2),
         children: [
-          Text('Hi ${user?.name ?? 'Anynomus user'}'),
+          Text('Hi ${user?.name ?? 'Anonymous user'}'),
           const SizedBox(
             height: kPadding * 2,
           ),
