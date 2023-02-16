@@ -12,6 +12,7 @@ export 'typography.dart';
 // TODO  fix theme later with black,blue and green from fimga
 class AppTheme {
   static const double _buttonRadius = 10;
+
   // Shared sub theme data for light, darktheme.
   static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
         buttonPadding: const EdgeInsets.symmetric(
@@ -29,10 +30,11 @@ class AppTheme {
         outlinedButtonOutlineSchemeColor: SchemeColor.primary,
         checkboxSchemeColor: SchemeColor.primary,
         inputDecoratorSchemeColor: SchemeColor.tertiary,
-        inputDecoratorIsFilled: false,
+        inputDecoratorIsFilled: true,
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
       );
+
   static ThemeData get light {
     final theme = FlexThemeData.light(
       colors: AppColors.flexSchemeColor,
@@ -53,7 +55,13 @@ class AppTheme {
       subThemesData: _commonSubThemeData,
     );
 
-    return theme;
+    ThemeData updatedTheme = theme.copyWith(
+      cardTheme: buildCardTheme(
+        AppColors.cardColor,
+      ),
+    );
+
+    return updatedTheme;
   }
 
   static ThemeData get dark {
@@ -71,12 +79,26 @@ class AppTheme {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         subThemesData: _commonSubThemeData);
-    return theme;
+
+    ThemeData updatedTheme = theme.copyWith(
+      cardTheme: buildCardTheme(AppColors.cardColorDark),
+    );
+
+    return updatedTheme;
   }
-  // TODO implement setting up google font https://pub.dev/packages/google_fonts#getting-started
-  // static ThemeData applyGoogleFontTextTheme(ThemeData baseTheme){
-  //   return baseTheme.copyWith(
-  //     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
-  //   );
-  // }
+
+// TODO implement setting up google font https://pub.dev/packages/google_fonts#getting-started
+// static ThemeData applyGoogleFontTextTheme(ThemeData baseTheme){
+//   return baseTheme.copyWith(
+//     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
+//   );
+// }
+
+  static CardTheme buildCardTheme(Color color) => CardTheme(
+        color: color,
+        elevation: kPadding * 0.4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding * 1.5),
+        ),
+      );
 }
