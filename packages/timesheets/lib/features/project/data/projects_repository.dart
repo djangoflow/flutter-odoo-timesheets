@@ -1,28 +1,21 @@
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 import 'package:timesheets/features/project/project.dart';
-import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to fetch projects data using [OdooRepository]
-class ProjectRepository {
-  static final ProjectRepository _instance = ProjectRepository._internal();
-
-  factory ProjectRepository() => _instance;
-
-  ProjectRepository._internal();
-
-  final OdooRepository _baseRepo = OdooRepository();
-  // TODO: try to use named parameters
-  Future getProjects(
-    int id,
-    String password,
-  ) async {
-    var response = await _baseRepo.getObject(
+class ProjectRepository extends OdooRepositoryBase {
+  Future getProjects({
+    required int id,
+    required String password,
+  }) async {
+    var response = await getObject(
       id,
       password,
-      'project.project',
-      'search_read',
+      projectMethod,
+      OdooApiMethod.searchRead.name,
       [],
-      optionalParams: _baseRepo.buildFilterableFields(['name']),
+      optionalParams: buildFilterableFields(['name']),
     );
 
     List<Project> projects = [];
@@ -30,14 +23,5 @@ class ProjectRepository {
       projects.add(Project.fromJson(project));
     }
     return projects;
-  }
-
-  ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
-  handleError(error) {
-    if (error.runtimeType == xml_rpc.Fault) {
-      throw OdooRepositoryException(error.text);
-    } else {
-      throw const OdooRepositoryException();
-    }
   }
 }
