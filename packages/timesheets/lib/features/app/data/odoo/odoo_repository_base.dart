@@ -11,15 +11,17 @@ class OdooRepositoryBase {
   Future getCommon(String email, String password, String method) async {
     List rpcParams = [db, email, password, []];
 
-    var response = await xml_rpc
-        .call(
-          getCommonUri(),
-          method,
-          rpcParams,
-        )
-        .catchError(handleError);
+    try {
+      var response = await xml_rpc.call(
+        getCommonUri(),
+        method,
+        rpcParams,
+      );
 
-    return response;
+      return response;
+    } catch (e) {
+      handleError(e);
+    }
   }
 
   /// Performs various operations like read, search, update, add, edit data
@@ -45,17 +47,18 @@ class OdooRepositoryBase {
       rpcParams.add(optionalParams);
     }
 
-    var response = await xml_rpc
-        .call(getObjectUri(), rpcFunction, rpcParams)
-        .catchError(handleError);
+    try {
+      var response = await xml_rpc.call(getObjectUri(), rpcFunction, rpcParams);
 
-    return response;
+      return response;
+    } catch (e) {
+      handleError(e);
+    }
   }
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   handleError(error) {
     if (error is xml_rpc.Fault) {
-      print(error.text);
       throw OdooRepositoryException(error.text);
     } else {
       throw const OdooRepositoryException();
