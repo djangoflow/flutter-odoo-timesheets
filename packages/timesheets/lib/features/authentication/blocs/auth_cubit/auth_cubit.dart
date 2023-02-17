@@ -49,9 +49,9 @@ class AuthCubit extends HydratedCubit<AuthState> {
         login(user);
       }
     } on OdooRepositoryException catch (e) {
-      DjangoflowAppSnackbar.showInfo(e.message);
+      DjangoflowAppSnackbar.showError(e.message);
     } on Exception catch (e) {
-      DjangoflowAppSnackbar.showInfo(e.toString());
+      DjangoflowAppSnackbar.showError(e.toString());
     }
   }
 
