@@ -35,7 +35,6 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
 
     emit(state.copyWith(activityStatus: ActivityStatus.syncing));
 
-    print(activity.toJson());
     await _activityRepository.addTimesheetEntry(
       id: id,
       password: password,

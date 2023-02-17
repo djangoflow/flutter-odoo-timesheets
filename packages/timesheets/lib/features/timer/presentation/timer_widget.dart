@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
@@ -17,31 +18,52 @@ class _TimerWidgetState extends State<TimerWidget> {
   final double iconSize = 40;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final timerBloc = context.read<TimerBloc>();
+
+      ///Checking for active timer when app opened from killed state
+      if (timerBloc.state.status == TimerStatus.pausedByForce) {
+        _resumeTimerOnAppForeground(timerBloc);
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
     final user = context.watch<AuthCubit>().state.user;
 
-    return BlocBuilder<TimerBloc, TimerState>(
-      builder: (context, state) => getTimerDisplay(
-        state.duration,
-        state.status,
-        timerBloc,
-        activityCubit,
-        user,
+    return AppLifeCycleListener(
+      onLifeCycleStateChanged: (AppLifecycleState? state) {
+        if (timerBloc.state.status == TimerStatus.pausedByForce) {
+          ///Checking for active timer when app opened from background state
+          _resumeTimerOnAppForeground(timerBloc);
+        } else if (timerBloc.state.status == TimerStatus.running) {
+          if (state == AppLifecycleState.paused ||
+              state == AppLifecycleState.detached) {
+            timerBloc.add(TimerEvent.paused(lastTicked: DateTime.now()));
+          }
+        }
+      },
+      child: BlocBuilder<TimerBloc, TimerState>(
+        builder: (context, state) =>
+            getTimerDisplay(state, timerBloc, activityCubit, user, context),
       ),
     );
   }
 
   Widget getTimerDisplay(
-    int durationInSeconds,
-    TimerStatus status,
+    TimerState state,
     TimerBloc timerBloc,
     ActivityCubit activityCubit,
     User? user,
+    BuildContext context,
   ) {
-    Duration duration = Duration(seconds: durationInSeconds);
-
+    Duration duration = Duration(seconds: state.duration);
+    TimerStatus status = state.status;
     return Padding(
       padding: const EdgeInsets.all(kPadding * 3),
       child: Column(
@@ -61,7 +83,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                   onPressed: () {
                     if (status == TimerStatus.paused) {
                       timerBloc.add(const TimerEvent.resumed());
-                    } else {
+                    } else if (status == TimerStatus.initial) {
                       timerBloc.add(const TimerEvent.started());
                     }
                   },
@@ -116,4 +138,16 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
+
+  _resumeTimerOnAppForeground(TimerBloc timerBloc) {
+    DateTime? lastTicked = timerBloc.state.lastTicked;
+    if (lastTicked != null) {
+      DateTime now = DateTime.now();
+      int elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
+      int timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
+      timerBloc.add(TimerEvent.resumed(duration: timerDuration));
+    } else {
+      timerBloc.add(const TimerEvent.resumed());
+    }
+  }
 }
