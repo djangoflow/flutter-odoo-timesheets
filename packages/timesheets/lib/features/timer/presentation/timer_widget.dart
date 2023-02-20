@@ -33,7 +33,8 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
-    final user = context.watch<AuthCubit>().state.user;
+    final AuthState authState = context.watch<AuthCubit>().state;
+    final user = authState.user;
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
@@ -109,7 +110,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                           activityCubit.syncActivity(
                             activity: activity,
                             id: user!.id,
-                            password: user.pass,
+                            password: authState.password!,
                           );
                         },
                         icon: Icon(

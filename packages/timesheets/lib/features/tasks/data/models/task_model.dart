@@ -1,23 +1,19 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'task_model.g.dart';
 
-@JsonSerializable()
-class Task {
-  int id;
+part 'task_model.freezed.dart';
 
-  String name;
+// ignore_for_file: invalid_annotation_target
 
-  @JsonKey(name: 'project_id')
-  int projectId;
-
-  Task({
-    required this.id,
-    required this.projectId,
-    required this.name,
-  });
+@freezed
+class Task with _$Task {
+  const factory Task({
+    required int id,
+    @JsonKey(name: 'project_id') required int projectId,
+    required String name,
+  }) = _Task;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TaskToJson(this);
 }

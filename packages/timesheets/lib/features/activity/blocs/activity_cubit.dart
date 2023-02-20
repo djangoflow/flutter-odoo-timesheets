@@ -28,10 +28,11 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
     ));
   }
 
-  void syncActivity(
-      {required int id,
-      required String password,
-      required Activity activity}) async {
+  void syncActivity({
+    required int id,
+    required String password,
+    required Activity activity,
+  }) async {
     emit(state.copyWith(activityStatus: ActivityStatus.syncing));
 
     await _activityRepository.addTimesheetEntry(

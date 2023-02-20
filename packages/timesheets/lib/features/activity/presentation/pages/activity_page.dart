@@ -18,7 +18,10 @@ class _ActivityPageState extends State<ActivityPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final user = context.read<AuthCubit>().state.user;
       if (user != null) {
-        context.read<ProjectCubit>().loadProjects(user.id, user.pass);
+        context.read<ProjectCubit>().loadProjects(
+              id: user.id,
+              password: context.read<AuthCubit>().state.password!,
+            );
       }
     });
     super.initState();

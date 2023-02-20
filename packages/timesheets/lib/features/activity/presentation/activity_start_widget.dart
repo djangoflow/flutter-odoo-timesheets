@@ -47,7 +47,8 @@ class _ActivityStartState extends State<ActivityStart> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<AuthCubit>().state.user;
+    AuthState authState = context.watch<AuthCubit>().state;
+    final user = authState.user;
     final taskCubit = context.read<TaskCubit>();
 
     return ReactiveFormBuilder(
@@ -88,7 +89,7 @@ class _ActivityStartState extends State<ActivityStart> {
                               taskCubit.loadTasks(
                                 id: user.id,
                                 projectId: selectedProject.id,
-                                password: user.pass,
+                                password: authState.password!,
                               );
                             }
                           },
