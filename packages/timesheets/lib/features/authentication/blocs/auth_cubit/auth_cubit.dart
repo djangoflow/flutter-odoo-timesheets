@@ -24,6 +24,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
   static AuthCubit get instance => _instance;
   static final AuthCubit _instance = AuthCubit._internal();
 
+  final _authenticationRepository = AuthenticationRepository();
+
   AuthCubit._internal() : super(const AuthState());
 
   @override
@@ -44,7 +46,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String password,
   }) async {
     try {
-      User? user = await AuthenticationRepository().connect(email : email, password : password);
+      User? user = await _authenticationRepository.connect(
+        email: email,
+        password: password,
+      );
       if (user != null) {
         login(user);
       }
