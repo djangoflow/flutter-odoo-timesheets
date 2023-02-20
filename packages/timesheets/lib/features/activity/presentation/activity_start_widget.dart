@@ -20,20 +20,24 @@ class _ActivityStartState extends State<ActivityStart> {
   Task? selectedTask;
   String? description;
 
+  final projectControlName = 'selectedProject';
+  final taskControlName = 'selectedTask';
+  final descriptionControlName = 'description';
+
   FormGroup _formBuilder() => fb.group({
-        'selectedProject': FormControl<Project>(
+        projectControlName: FormControl<Project>(
           validators: [
             Validators.required,
           ],
           value: selectedProject,
         ),
-        'selectedTask': FormControl<Task>(
+        taskControlName: FormControl<Task>(
           validators: [
             Validators.required,
           ],
           value: selectedTask,
         ),
-        'description': FormControl<String>(
+        descriptionControlName: FormControl<String>(
           validators: [
             Validators.required,
           ],
@@ -73,18 +77,18 @@ class _ActivityStartState extends State<ActivityStart> {
                                 ),
                               )
                               .toList(),
-                          formControlName: 'selectedProject',
+                          formControlName: projectControlName,
                           decoration: const InputDecoration(
                             hintText: 'Select project',
                           ),
                           onChanged: (FormControl<Project?> project) {
                             Project? selectedProject =
-                                (form.value['selectedProject'] as Project?);
+                                (form.value[projectControlName] as Project?);
                             if (user != null && selectedProject != null) {
                               taskCubit.loadTasks(
-                                user.id,
-                                (form.value['selectedProject'] as Project).id,
-                                user.pass,
+                                id: user.id,
+                                projectId: selectedProject.id,
+                                password: user.pass,
                               );
                             }
                           },
@@ -99,7 +103,7 @@ class _ActivityStartState extends State<ActivityStart> {
                     ),
                     const SizedBox(height: kPadding * 2),
                     StreamBuilder(
-                      stream: form.control('selectedProject').valueChanges,
+                      stream: form.control(projectControlName).valueChanges,
                       builder: (context, projectSnap) {
                         if (projectSnap.data != null) {
                           return BlocBuilder<TaskCubit, TaskState>(
@@ -119,7 +123,7 @@ class _ActivityStartState extends State<ActivityStart> {
                                       ),
                                     )
                                     .toList(),
-                                formControlName: 'selectedTask',
+                                formControlName: taskControlName,
                                 decoration: const InputDecoration(
                                   hintText: 'Select task',
                                 ),
@@ -144,7 +148,7 @@ class _ActivityStartState extends State<ActivityStart> {
                     ),
                     const SizedBox(height: kPadding * 2),
                     ReactiveTextField(
-                      formControlName: 'description',
+                      formControlName: descriptionControlName,
                       textInputAction: TextInputAction.done,
                       textCapitalization: TextCapitalization.none,
                       keyboardType: TextInputType.visiblePassword,
@@ -168,7 +172,7 @@ class _ActivityStartState extends State<ActivityStart> {
                       builder: (context, form, child) => ElevatedButton(
                         onPressed: form.valid
                             ? () {
-                                _startWork(context, form);
+                                _startWork(context: context, form: form);
                               }
                             : null,
                         child: const Center(
@@ -182,10 +186,10 @@ class _ActivityStartState extends State<ActivityStart> {
             ));
   }
 
-  _startWork(BuildContext context, FormGroup form) async {
-    Project project = form.control('selectedProject').value as Project;
-    Task task = form.control('selectedTask').value as Task;
-    String description = form.control('description').value as String;
+  _startWork({required BuildContext context, required FormGroup form}) async {
+    Project project = form.control(projectControlName).value as Project;
+    Task task = form.control(taskControlName).value as Task;
+    String description = form.control(descriptionControlName).value as String;
 
     context.read<ActivityCubit>().logActivity(
           startDate: DateTime.now().toUtc(),

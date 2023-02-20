@@ -77,7 +77,7 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
             ),
             BlocProvider<TimerBloc>(
-              create: (context) => TimerBloc(ticker: const Ticker()),
+              create: (context) => TimerBloc(ticker: const TimeSheetTicker()),
             ),
             // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],
