@@ -3,7 +3,7 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 
 ///Repository to fetch projects data
-class ActivityRepository extends OdooRepositoryBase {
+class ActivityRepository extends OdooRpcRepositoryBase {
   Future addTimesheetEntry({
     required int id,
     required String password,
