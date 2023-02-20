@@ -1,3 +1,4 @@
+// TODO name this to maybe TimeSheetTicker or something to avoid confusion with flutter's ticker
 class Ticker {
   const Ticker();
 
