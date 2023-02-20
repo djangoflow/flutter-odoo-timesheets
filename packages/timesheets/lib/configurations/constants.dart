@@ -1,3 +1,5 @@
+// https://dart.dev/guides/language/effective-dart/style#prefer-using-lowercamelcase-for-constant-names
+// TODO remove 'k' and use only camelCase without k
 // Global APP - specific constants
 const kAppLogoSvgPath = 'assets/app_logo/logo.svg';
 const kAppTitle = 'Odoo Timesheets';

@@ -1,4 +1,4 @@
-enum ActivityStatus{
+enum ActivityStatus {
   initial,
   ongoing,
   syncing,

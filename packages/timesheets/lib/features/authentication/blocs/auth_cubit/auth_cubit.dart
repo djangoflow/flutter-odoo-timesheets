@@ -44,7 +44,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String password,
   }) async {
     try {
-      User? user = await AuthenticationRepository().connect(email : email, password : password);
+      User? user = await AuthenticationRepository()
+          .connect(email: email, password: password);
       if (user != null) {
         login(user);
       }

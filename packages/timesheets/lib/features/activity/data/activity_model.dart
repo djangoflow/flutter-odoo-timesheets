@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'activity_model.g.dart';
 
+// TODO separate models and repositories in different folders
+// Use freezed annotation instead of JsonSerializable
 @JsonSerializable()
 class Activity {
   String name;

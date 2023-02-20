@@ -9,7 +9,8 @@ class OdooRepositoryException implements Exception {
 
   ///TODO implement once we have a clear data on exceptions
   ///Unable to find documentation on error codes of odoo, keeping it like this for future implementation
-  factory OdooRepositoryException.fromCode(String code) => const OdooRepositoryException();
+  factory OdooRepositoryException.fromCode(String code) =>
+      const OdooRepositoryException();
 
   /// The associated error message.
   final String message;

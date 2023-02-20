@@ -9,7 +9,7 @@ class User {
   String name;
 
   String email;
-
+  // TODO separate password from user model
   String pass;
 
   User({

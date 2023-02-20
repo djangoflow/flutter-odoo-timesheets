@@ -6,7 +6,8 @@ class ProjectState with _$ProjectState {
 
   const factory ProjectState.loading() = _Loading;
 
-  const factory ProjectState.error([@Default('Unable to load projects') String message]) = _Error;
+  const factory ProjectState.error(
+      [@Default('Unable to load projects') String message]) = _Error;
 
   const factory ProjectState.success(
     List<Project> projects,

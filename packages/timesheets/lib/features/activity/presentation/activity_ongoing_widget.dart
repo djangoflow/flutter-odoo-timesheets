@@ -31,7 +31,7 @@ class ActivityOngoing extends StatelessWidget {
           ),
         ),
       );
-
+  // TODO move this to a separate widget
   Widget getSingleDetail(
           String title, IconData iconData, BuildContext context) =>
       Padding(

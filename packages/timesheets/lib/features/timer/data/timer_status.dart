@@ -1,6 +1,5 @@
-enum TimerStatus{
+enum TimerStatus {
   initial,
   running,
   paused,
-
 }

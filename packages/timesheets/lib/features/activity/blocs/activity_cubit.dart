@@ -32,7 +32,6 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
       {required int id,
       required String password,
       required Activity activity}) async {
-
     emit(state.copyWith(activityStatus: ActivityStatus.syncing));
 
     print(activity.toJson());
@@ -44,12 +43,11 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
 
     emit(
       state.copyWith(
-        startTime: null,
-        project: null,
-        activityStatus: ActivityStatus.initial,
-        description: null,
-        task: null
-      ),
+          startTime: null,
+          project: null,
+          activityStatus: ActivityStatus.initial,
+          description: null,
+          task: null),
     );
   }
 

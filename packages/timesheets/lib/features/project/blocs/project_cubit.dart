@@ -13,12 +13,13 @@ class ProjectCubit extends Cubit<ProjectState> {
   ProjectCubit(this._projectRepository) : super(const ProjectState.initial());
 
   final ProjectRepository _projectRepository;
-
+  // TODO named arguments
   Future<void> loadProjects(int id, String password) async {
     emit(const ProjectState.loading());
 
     try {
-      final List<Project> projects = await _projectRepository.getProjects(id: id,password:  password);
+      final List<Project> projects =
+          await _projectRepository.getProjects(id: id, password: password);
 
       emit(ProjectState.success(projects));
     } on OdooRepositoryException catch (e) {
