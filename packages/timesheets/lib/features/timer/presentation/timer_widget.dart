@@ -23,7 +23,7 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     ///Checking for active timer when app opened from killed state
     if (timerBloc.state.status == TimerStatus.pausedByForce) {
-      _resumeTimerOnAppForeground(timerBloc);
+      _resumeTimerOnAppForeground(context: context);
     }
 
     super.initState();
@@ -40,7 +40,7 @@ class _TimerWidgetState extends State<TimerWidget> {
       onLifeCycleStateChanged: (AppLifecycleState? state) {
         if (timerBloc.state.status == TimerStatus.pausedByForce) {
           ///Checking for active timer when app opened from background state
-          _resumeTimerOnAppForeground(timerBloc);
+          _resumeTimerOnAppForeground(context: context);
         } else if (timerBloc.state.status == TimerStatus.running) {
           if (state == AppLifecycleState.paused ||
               state == AppLifecycleState.detached) {
@@ -130,12 +130,13 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   _format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
 
-  _resumeTimerOnAppForeground(TimerBloc timerBloc) {
-    DateTime? lastTicked = timerBloc.state.lastTicked;
+  _resumeTimerOnAppForeground({required BuildContext context}) {
+    final timerBloc = context.read<TimerBloc>();
+    final lastTicked = timerBloc.state.lastTicked;
     if (lastTicked != null) {
-      DateTime now = DateTime.now();
-      int elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
-      int timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
+      final now = DateTime.now();
+      final elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
+      final timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
       timerBloc.add(TimerEvent.resumed(duration: timerDuration));
     } else {
       timerBloc.add(const TimerEvent.resumed());
