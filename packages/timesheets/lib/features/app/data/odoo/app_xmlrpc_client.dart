@@ -1,5 +1,6 @@
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/data/odoo/odoo_api_endpoint.dart';
+import 'package:timesheets/features/authentication/blocs/auth_cubit/auth_cubit.dart';
 import 'package:xml_rpc/client_c.dart' as xml_rpc;
 
 class AppXmlRpcClient {
@@ -41,3 +42,67 @@ class AppXmlRpcClient {
     return xml_rpc.call(uri, rpcFunction, clientRpcParams);
   }
 }
+// TODO try to follow this approach
+// class RpcClient {
+//   String? _id, _password;
+
+//   void updateCredentials({
+//     String? id,
+//     String? password,
+//   }) {
+//     _id = id;
+//     _password = password;
+//   }
+
+//   Future rpcAuthenticate(
+//       {required String email, required String password}) async {
+//     Uri uri = Uri.parse('$baseUrl$commonEndpoint');
+
+//     final response = await xml_rpc.call(uri, rpcFunction, [db]);
+//     return response;
+//   }
+
+//   Future rpcCallMethod({
+//     required OdooApiEndpoint endpoint,
+//     required String rpcFunction,
+//     required List params,
+//   }) async {
+//     Uri uri = Uri.parse('$baseUrl${endpoint.name}');
+//     if (_id == null || _password == null) {
+//       throw Exception('Credentials not set');
+//     } else {
+//       final defaultParams = [db, _id, _password];
+
+//       return xml_rpc.call(uri, rpcFunction, [...defaultParams, ...params]);
+//     }
+//   }
+// }
+
+// class OdooRepository {
+//   final RpcClient rpcClient;
+
+//   OdooRepository(this.rpcClient);
+
+//   Future rpcCallMethod({
+//     required OdooApiEndpoint endpoint,
+//     required String rpcFunction,
+//     required List params,
+//   }) =>
+//       rpcClient.rpcCallMethod(
+//           endpoint: endpoint, rpcFunction: rpcFunction, params: params);
+// }
+
+// class TestAuthRepository extends OdooRepository {
+//   TestAuthRepository(super.rpcClient);
+
+//   Future rpcAuthenticate(
+//       {required String email, required String password}) async {
+//     final response = await rpcClient.rpcCallMethod(
+//       endpoint: OdooApiEndpoint.common,
+//       rpcFunction: rpcAuthenticationFunction,
+//       params: [email, password],
+//     );
+
+//     return response;
+//   }
+// }
