@@ -27,7 +27,7 @@ class TaskRepository extends OdooRpcRepositoryBase {
       optionalParams: buildFilterableFields(['name']),
     );
 
-    List<Task> tasks = [];
+    final tasks = <Task>[];
     for (final task in response) {
       task['project_id'] = projectId;
       tasks.add(Task.fromJson(task));

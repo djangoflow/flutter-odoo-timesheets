@@ -15,7 +15,7 @@ class TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<TimerWidget> {
-  final double iconSize = 40;
+  final _iconSize = 40.0;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             child: Column(
               children: [
                 Text(
-                  format(duration),
+                  _format(duration),
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
                 const SizedBox(
@@ -77,7 +77,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                         },
                         icon: Icon(
                           Icons.play_arrow_rounded,
-                          size: iconSize,
+                          size: _iconSize,
                         ),
                       ),
                     if (status == TimerStatus.running)
@@ -87,7 +87,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                         },
                         icon: Icon(
                           Icons.pause_circle,
-                          size: iconSize,
+                          size: _iconSize,
                         ),
                       ),
                     if (status != TimerStatus.initial)
@@ -115,7 +115,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                         },
                         icon: Icon(
                           Icons.square_rounded,
-                          size: iconSize,
+                          size: _iconSize,
                         ),
                       ),
                   ],
@@ -128,7 +128,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     );
   }
 
-  format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
+  _format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
 
   _resumeTimerOnAppForeground(TimerBloc timerBloc) {
     DateTime? lastTicked = timerBloc.state.lastTicked;
