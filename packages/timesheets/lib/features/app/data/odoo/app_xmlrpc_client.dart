@@ -73,7 +73,8 @@ class AppXmlRpcClient {
 //     } else {
 //       final defaultParams = [db, _id, _password];
 
-//       return xml_rpc.call(uri, rpcFunction, [...defaultParams, ...params]);
+//       final response = await xml_rpc.call(uri, rpcFunction, [...defaultParams, ...params]);
+//       return response;
 //     }
 //   }
 // }
