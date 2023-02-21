@@ -23,7 +23,7 @@ class TaskRepository extends OdooRpcRepositoryBase {
       ],
     );
 
-    List<Task> tasks = [];
+    final tasks = <Task>[];
     for (final task in response) {
       task['project_id'] = projectId;
       tasks.add(Task.fromJson(task));

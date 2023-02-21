@@ -7,13 +7,9 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class EmailPasswordLoginPage extends StatelessWidget {
-  final String? email;
-  final String? pass;
 
   const EmailPasswordLoginPage({
     Key? key,
-    this.email,
-    this.pass,
   }) : super(key: key);
 
   FormGroup _formBuilder() => fb.group({
@@ -22,13 +18,11 @@ class EmailPasswordLoginPage extends StatelessWidget {
             Validators.required,
             Validators.email,
           ],
-          value: email,
         ),
         'pass': FormControl<String>(
           validators: [
             Validators.required,
           ],
-          value: pass,
         ),
       });
 

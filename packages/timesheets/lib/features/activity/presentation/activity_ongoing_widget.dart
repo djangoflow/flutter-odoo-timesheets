@@ -8,8 +8,6 @@ import 'package:timesheets/features/timer/presentation/timer_widget.dart';
 class ActivityOngoing extends StatelessWidget {
   const ActivityOngoing({Key? key}) : super(key: key);
 
-  final double iconSize = 35;
-
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () {
@@ -35,5 +33,4 @@ class ActivityOngoing extends StatelessWidget {
           ),
         ),
       );
-
 }

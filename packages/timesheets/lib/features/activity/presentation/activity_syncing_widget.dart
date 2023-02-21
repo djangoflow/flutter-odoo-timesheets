@@ -6,8 +6,6 @@ import 'package:timesheets/features/activity/blocs/activity_cubit.dart';
 class ActivitySyncing extends StatelessWidget {
   const ActivitySyncing({Key? key}) : super(key: key);
 
-  final double iconSize = 35;
-
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<ActivityCubit, ActivityState>(

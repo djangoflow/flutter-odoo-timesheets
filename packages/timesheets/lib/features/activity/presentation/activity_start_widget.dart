@@ -8,46 +8,34 @@ import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
-class ActivityStart extends StatefulWidget {
+class ActivityStart extends StatelessWidget {
   const ActivityStart({Key? key}) : super(key: key);
 
-  @override
-  State<ActivityStart> createState() => _ActivityStartState();
-}
-
-class _ActivityStartState extends State<ActivityStart> {
-  Project? selectedProject;
-  Task? selectedTask;
-  String? description;
-
-  final projectControlName = 'selectedProject';
-  final taskControlName = 'selectedTask';
-  final descriptionControlName = 'description';
+  final _projectControlName = 'selectedProject';
+  final _taskControlName = 'selectedTask';
+  final _descriptionControlName = 'description';
 
   FormGroup _formBuilder() => fb.group({
-        projectControlName: FormControl<Project>(
+        _projectControlName: FormControl<Project>(
           validators: [
             Validators.required,
           ],
-          value: selectedProject,
         ),
-        taskControlName: FormControl<Task>(
+        _taskControlName: FormControl<Task>(
           validators: [
             Validators.required,
           ],
-          value: selectedTask,
         ),
-        descriptionControlName: FormControl<String>(
+        _descriptionControlName: FormControl<String>(
           validators: [
             Validators.required,
           ],
-          value: description,
         ),
       });
 
   @override
   Widget build(BuildContext context) {
-    AuthState authState = context.watch<AuthCubit>().state;
+    final authState = context.watch<AuthCubit>().state;
     final user = authState.user;
     final taskCubit = context.read<TaskCubit>();
 
@@ -78,13 +66,13 @@ class _ActivityStartState extends State<ActivityStart> {
                                 ),
                               )
                               .toList(),
-                          formControlName: projectControlName,
+                          formControlName: _projectControlName,
                           decoration: const InputDecoration(
                             hintText: 'Select project',
                           ),
                           onChanged: (FormControl<Project?> project) {
                             Project? selectedProject =
-                                (form.value[projectControlName] as Project?);
+                                (form.value[_projectControlName] as Project?);
                             if (user != null && selectedProject != null) {
                               taskCubit.loadTasks(
                                 projectId: selectedProject.id,
@@ -102,7 +90,7 @@ class _ActivityStartState extends State<ActivityStart> {
                     ),
                     const SizedBox(height: kPadding * 2),
                     StreamBuilder(
-                      stream: form.control(projectControlName).valueChanges,
+                      stream: form.control(_projectControlName).valueChanges,
                       builder: (context, projectSnap) {
                         if (projectSnap.data != null) {
                           return BlocBuilder<TaskCubit, TaskState>(
@@ -122,7 +110,7 @@ class _ActivityStartState extends State<ActivityStart> {
                                       ),
                                     )
                                     .toList(),
-                                formControlName: taskControlName,
+                                formControlName: _taskControlName,
                                 decoration: const InputDecoration(
                                   hintText: 'Select task',
                                 ),
@@ -147,7 +135,7 @@ class _ActivityStartState extends State<ActivityStart> {
                     ),
                     const SizedBox(height: kPadding * 2),
                     ReactiveTextField(
-                      formControlName: descriptionControlName,
+                      formControlName: _descriptionControlName,
                       textInputAction: TextInputAction.done,
                       textCapitalization: TextCapitalization.none,
                       keyboardType: TextInputType.visiblePassword,
@@ -186,9 +174,9 @@ class _ActivityStartState extends State<ActivityStart> {
   }
 
   _startWork({required BuildContext context, required FormGroup form}) async {
-    Project project = form.control(projectControlName).value as Project;
-    Task task = form.control(taskControlName).value as Task;
-    String description = form.control(descriptionControlName).value as String;
+    final project = form.control(_projectControlName).value as Project;
+    final task = form.control(_taskControlName).value as Task;
+    final description = form.control(_descriptionControlName).value as String;
 
     context.read<ActivityCubit>().logActivity(
           startDate: DateTime.now().toUtc(),
