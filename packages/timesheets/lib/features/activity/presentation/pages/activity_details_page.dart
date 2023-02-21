@@ -13,9 +13,9 @@ class ActivityDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    ActivityState activityState = context.watch<ActivityCubit>().state;
-    TextTheme textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+    final activityState = context.watch<ActivityCubit>().state;
+    final textTheme = Theme.of(context).textTheme;
 
     return BlocListener<ActivityCubit, ActivityState>(
       listener: (context, state) {
