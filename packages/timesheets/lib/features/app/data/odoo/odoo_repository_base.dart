@@ -1,55 +1,30 @@
-import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
-import 'package:timesheets/features/app/data/odoo/odoo_api_endpoint.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
 class OdooRpcRepositoryBase {
-  Uri getCommonUri() => Uri.parse(baseUrl + commonEndpoint);
+  final AppXmlRpcClient rpcClient;
 
-  final AppXmlRpcClient _appXmlRpcClient = AppXmlRpcClient.instance;
-
-  // TODO: rename this to something meaningful, like `rpcAuthGetMethod(method)`
-  // TODO: pass the email, password in a DRY way
-  Future rpcAuthGetMethod(String email, String password) async {
-    List rpcParams = [db, email, password, []];
-
-    try {
-      // TODO create AppXmlRpcClient wrapper, that will handle baseUrl, common rpc params for auth,db etc.
-      var response = await xml_rpc.call(
-        getCommonUri(),
-        rpcAuthenticationFunction,
-        rpcParams,
-      );
-
-      return response;
-    } catch (e) {
-      handleError(e);
-    }
-  }
+  OdooRpcRepositoryBase(this.rpcClient);
 
   /// Performs various operations like read, search, update, add, edit data
   /// based on [model], [methods] and parameters
-  Future rpcGetObject({
+  Future odooCallMethod({
     required String odooModel,
     required String method,
     required List parameters,
   }) async {
-    List rpcParams = [
-      odooModel,
-      method,
-      ...parameters,
-    ];
-
     try {
-      var response = await _appXmlRpcClient.callRpc(
-        endpoint: OdooApiEndpoint.object,
-        rpcFunction: rpcFunction,
+      final rpcParams = [
+        odooModel,
+        method,
+        ...parameters,
+      ];
+
+      return await rpcClient.rpcCallMethod(
         params: rpcParams,
       );
-
-      return response;
     } catch (e) {
       handleError(e);
     }

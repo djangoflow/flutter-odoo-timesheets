@@ -14,6 +14,7 @@ class ActivityStart extends StatelessWidget {
   final _projectControlName = 'selectedProject';
   final _taskControlName = 'selectedTask';
   final _descriptionControlName = 'description';
+  final _menuMaxHeight = 300.0;
 
   FormGroup _formBuilder() => fb.group({
         _projectControlName: FormControl<Project>(
@@ -56,7 +57,7 @@ class ActivityStart extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         ),
                         success: (projects) => ReactiveDropdownField(
-                          menuMaxHeight: 300,
+                          menuMaxHeight: _menuMaxHeight,
                           isExpanded: true,
                           items: projects
                               .map(
@@ -100,7 +101,7 @@ class ActivityStart extends StatelessWidget {
                                 child: CircularProgressIndicator(),
                               ),
                               success: (tasks) => ReactiveDropdownField(
-                                menuMaxHeight: 300,
+                                menuMaxHeight: _menuMaxHeight,
                                 isExpanded: true,
                                 items: tasks
                                     .map(

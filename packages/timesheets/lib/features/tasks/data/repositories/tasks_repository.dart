@@ -5,8 +5,10 @@ import 'package:timesheets/features/tasks/tasks.dart';
 
 ///Repository to fetch task data
 class TaskRepository extends OdooRpcRepositoryBase {
+  TaskRepository(super.rpcClient);
+
   Future getTasks({required int projectId}) async {
-    var response = await rpcGetObject(
+    var response = await odooCallMethod(
       odooModel: taskModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [

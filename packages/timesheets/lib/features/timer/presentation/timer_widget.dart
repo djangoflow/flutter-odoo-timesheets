@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 class TimerWidget extends StatefulWidget {
@@ -33,8 +32,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
-    final AuthState authState = context.watch<AuthCubit>().state;
-    final user = authState.user;
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
@@ -109,7 +106,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                           );
                           activityCubit.syncActivity(
                             activity: activity,
-                           );
+                          );
                         },
                         icon: Icon(
                           Icons.square_rounded,
@@ -126,7 +123,8 @@ class _TimerWidgetState extends State<TimerWidget> {
     );
   }
 
-  _format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
+  _format({required Duration duration}) =>
+      duration.toString().split('.').first.padLeft(8, '0');
 
   _resumeTimerOnAppForeground({required BuildContext context}) {
     final timerBloc = context.read<TimerBloc>();

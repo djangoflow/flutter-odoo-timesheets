@@ -34,17 +34,28 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
+            RepositoryProvider<AppXmlRpcClient>(
+              create: (context) => AppXmlRpcClient(),
+            ),
             RepositoryProvider<AuthenticationRepository>(
-              create: (context) => AuthenticationRepository(),
+              create: (context) => AuthenticationRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<ProjectRepository>(
-              create: (context) => ProjectRepository(),
+              create: (context) => ProjectRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<TaskRepository>(
-              create: (context) => TaskRepository(),
+              create: (context) => TaskRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<ActivityRepository>(
-              create: (context) => ActivityRepository(),
+              create: (context) => ActivityRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             // provide more repositories like DjangoflowFCMRepository etc
           ],
@@ -53,7 +64,10 @@ class TimesheetsAppBuilder extends AppBuilder {
               create: (context) => AppCubit.instance,
             ),
             BlocProvider<AuthCubit>(
-              create: (context) => AuthCubit.instance,
+              create: (context) => AuthCubit.instance
+                ..initialize(
+                  context.read<AuthenticationRepository>(),
+                ),
             ),
             BlocProvider<AppLinksCubit>(
               create: (context) => AppLinksCubit(
@@ -92,11 +106,11 @@ class TimesheetsAppBuilder extends AppBuilder {
               // use DjangoflowFCMBloc to get token
               // TODO update analytics user related properties
               // TODO update ErrorReporters user properties
-              AppXmlRpcClient.instance.init(
-                password: context.read<AuthCubit>().state.password!,
-                id: user.id,
-                email: user.email,
-              );
+
+              context.read<AppXmlRpcClient>().updateCredentials(
+                    password: context.read<AuthCubit>().state.password!,
+                    id: user.id,
+                  );
             },
             onLogout: (context) {
               // TODO remove Analytics user properties

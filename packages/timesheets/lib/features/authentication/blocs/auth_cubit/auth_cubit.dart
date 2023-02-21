@@ -21,18 +21,17 @@ class AuthState with _$AuthState {
 class AuthCubit extends HydratedCubit<AuthState> {
   static AuthCubit get instance => _instance;
   static final AuthCubit _instance = AuthCubit._internal();
-  final _authenticationRepository = AuthenticationRepository();
-  // AuthenticationRepository? _authenticationRepository;
+  AuthenticationRepository? _authenticationRepository;
 
   AuthCubit._internal() : super(const AuthState());
 
-  // void initialize(AuthenticationRepository authenticationRepository) {
-  //   if (_authenticationRepository != null) {
-  //     throw Exception('Already initialized');
-  //   }
+  void initialize(AuthenticationRepository authenticationRepository) {
+    if (_authenticationRepository != null) {
+      throw Exception('Already initialized');
+    }
 
-  //   _authenticationRepository = authenticationRepository;
-  // }
+    _authenticationRepository = authenticationRepository;
+  }
 
   @override
   AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
@@ -57,10 +56,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String password,
   }) async {
     try {
-      // if (_authenticationRepository == null) {
-      //   throw Exception('AuthCubit not initialized');
-      // }
-      User? user = await _authenticationRepository.connect(
+      if (_authenticationRepository == null) {
+        throw Exception('AuthCubit not initialized');
+      }
+      User? user = await _authenticationRepository?.connect(
         email: email,
         password: password,
       );
