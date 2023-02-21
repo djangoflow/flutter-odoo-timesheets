@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 class TimerWidget extends StatefulWidget {
@@ -23,7 +22,7 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     ///Checking for active timer when app opened from killed state
     if (timerBloc.state.status == TimerStatus.pausedByForce) {
-      _resumeTimerOnAppForeground(timerBloc);
+      _resumeTimerOnAppForeground(context: context);
     }
 
     super.initState();
@@ -33,14 +32,12 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
-    final AuthState authState = context.watch<AuthCubit>().state;
-    final user = authState.user;
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
         if (timerBloc.state.status == TimerStatus.pausedByForce) {
           ///Checking for active timer when app opened from background state
-          _resumeTimerOnAppForeground(timerBloc);
+          _resumeTimerOnAppForeground(context: context);
         } else if (timerBloc.state.status == TimerStatus.running) {
           if (state == AppLifecycleState.paused ||
               state == AppLifecycleState.detached) {
@@ -57,7 +54,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             child: Column(
               children: [
                 Text(
-                  format(duration),
+                  format(duration: duration),
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
                 const SizedBox(
@@ -109,8 +106,6 @@ class _TimerWidgetState extends State<TimerWidget> {
                           );
                           activityCubit.syncActivity(
                             activity: activity,
-                            id: user!.id,
-                            password: authState.password!,
                           );
                         },
                         icon: Icon(
@@ -128,9 +123,11 @@ class _TimerWidgetState extends State<TimerWidget> {
     );
   }
 
-  format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
+  format({required Duration duration}) =>
+      duration.toString().split('.').first.padLeft(8, '0');
 
-  _resumeTimerOnAppForeground(TimerBloc timerBloc) {
+  _resumeTimerOnAppForeground({required BuildContext context}) {
+    final timerBloc = context.read<TimerBloc>();
     DateTime? lastTicked = timerBloc.state.lastTicked;
     if (lastTicked != null) {
       DateTime now = DateTime.now();

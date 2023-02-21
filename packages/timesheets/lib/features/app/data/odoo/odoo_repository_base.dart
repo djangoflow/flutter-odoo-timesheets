@@ -1,23 +1,25 @@
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
+import 'package:timesheets/features/app/data/odoo/odoo_api_endpoint.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
 class OdooRpcRepositoryBase {
   Uri getCommonUri() => Uri.parse(baseUrl + commonEndpoint);
 
-  Uri getObjectUri() => Uri.parse(baseUrl + objectEndpoint);
-  
+  final AppXmlRpcClient _appXmlRpcClient = AppXmlRpcClient.instance;
+
   // TODO: rename this to something meaningful, like `rpcAuthGetMethod(method)`
   // TODO: pass the email, password in a DRY way
-  Future getCommon(String email, String password, String method) async {
+  Future rpcAuthGetMethod(String email, String password) async {
     List rpcParams = [db, email, password, []];
 
     try {
       // TODO create AppXmlRpcClient wrapper, that will handle baseUrl, common rpc params for auth,db etc.
       var response = await xml_rpc.call(
         getCommonUri(),
-        method,
+        rpcAuthenticationFunction,
         rpcParams,
       );
 
@@ -29,30 +31,23 @@ class OdooRpcRepositoryBase {
 
   /// Performs various operations like read, search, update, add, edit data
   /// based on [model], [methods] and parameters
-  // TODO rename this to something meaningful, like `rpcGetObject(model, method, params)`
-  Future getObject(
-    int id,
-    String password,
-    String model,
-    String method,
-    List parameters, {
-    Map<String, dynamic>? optionalParams,
+  Future rpcGetObject({
+    required String odooModel,
+    required String method,
+    required List parameters,
   }) async {
     List rpcParams = [
-      db,
-      id,
-      password,
-      model,
+      odooModel,
       method,
-      parameters,
+      ...parameters,
     ];
 
-    if (optionalParams != null) {
-      rpcParams.add(optionalParams);
-    }
-
     try {
-      var response = await xml_rpc.call(getObjectUri(), rpcFunction, rpcParams);
+      var response = await _appXmlRpcClient.callRpc(
+        endpoint: OdooApiEndpoint.object,
+        rpcFunction: rpcFunction,
+        params: rpcParams,
+      );
 
       return response;
     } catch (e) {

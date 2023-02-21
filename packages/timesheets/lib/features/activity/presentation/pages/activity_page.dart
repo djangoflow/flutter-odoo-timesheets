@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/project/project.dart';
 
 class ActivityPage extends StatefulWidget {
@@ -16,13 +15,7 @@ class _ActivityPageState extends State<ActivityPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final user = context.read<AuthCubit>().state.user;
-      if (user != null) {
-        context.read<ProjectCubit>().loadProjects(
-              id: user.id,
-              password: context.read<AuthCubit>().state.password!,
-            );
-      }
+      context.read<ProjectCubit>().loadProjects();
     });
     super.initState();
   }

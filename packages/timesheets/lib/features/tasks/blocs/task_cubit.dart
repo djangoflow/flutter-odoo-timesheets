@@ -14,14 +14,14 @@ class TaskCubit extends Cubit<TaskState> {
 
   final TaskRepository _taskRepository;
 
-  Future<void> loadTasks({required int id,required int projectId,required String password}) async {
+  Future<void> loadTasks({
+    required int projectId,
+  }) async {
     emit(const TaskState.loading());
 
     try {
       final List<Task> tasks = await _taskRepository.getTasks(
-        id: id,
         projectId: projectId,
-        password: password,
       );
 
       emit(TaskState.success(tasks));

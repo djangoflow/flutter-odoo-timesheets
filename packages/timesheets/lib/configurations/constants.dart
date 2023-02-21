@@ -12,8 +12,9 @@ const objectEndpoint = 'xmlrpc/2/object';
 
 const db = 'wwnet-odoo';
 const rpcFunction = 'execute_kw';
+const rpcAuthenticationFunction = 'authenticate';
 
-const projectMethod = 'project.project';
-const taskMethod = 'project.task';
-const usersMethod = 'res.users';
-const timesheetEntryMethod = 'account.analytic.line';
+const projectModel = 'project.project';
+const taskModel = 'project.task';
+const usersModel = 'res.users';
+const timesheetEntryModel = 'account.analytic.line';

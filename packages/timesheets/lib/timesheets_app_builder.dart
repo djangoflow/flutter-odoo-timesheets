@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
@@ -91,6 +92,11 @@ class TimesheetsAppBuilder extends AppBuilder {
               // use DjangoflowFCMBloc to get token
               // TODO update analytics user related properties
               // TODO update ErrorReporters user properties
+              AppXmlRpcClient.instance.init(
+                password: context.read<AuthCubit>().state.password!,
+                id: user.id,
+                email: user.email,
+              );
             },
             onLogout: (context) {
               // TODO remove Analytics user properties

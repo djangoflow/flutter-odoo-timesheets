@@ -87,9 +87,7 @@ class _ActivityStartState extends State<ActivityStart> {
                                 (form.value[projectControlName] as Project?);
                             if (user != null && selectedProject != null) {
                               taskCubit.loadTasks(
-                                id: user.id,
                                 projectId: selectedProject.id,
-                                password: authState.password!,
                               );
                             }
                           },
