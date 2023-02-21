@@ -29,7 +29,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
   @override
   AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
 
-  void login(User user, String password) => emit(
+  void _login(User user, String password) => emit(
         state.copyWith(
           user: user,
           password: password,
@@ -54,7 +54,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         password: password,
       );
       if (user != null) {
-        login(user, password);
+        _login(user, password);
       }
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showError(e.message);
