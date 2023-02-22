@@ -71,7 +71,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       if (_authenticationRepository == null) {
         throw Exception('AuthCubit not initialized');
       }
-      User? user = await _authenticationRepository?.connect(
+      final user = await _authenticationRepository?.connect(
         email: email,
         password: password,
         serverUrl: serverUrl,

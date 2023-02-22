@@ -130,9 +130,9 @@ class _TimerWidgetState extends State<TimerWidget> {
     final timerBloc = context.read<TimerBloc>();
     final lastTicked = timerBloc.state.lastTicked;
     if (lastTicked != null) {
-      DateTime now = DateTime.now();
-      int elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
-      int timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
+      final now = DateTime.now();
+      final elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
+      final timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
       timerBloc.add(TimerEvent.resumed(duration: timerDuration));
     } else {
       timerBloc.add(const TimerEvent.resumed());
