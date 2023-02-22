@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/activity/presentation/activity_title_widget.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 import '../../../../configurations/configurations.dart';
@@ -10,13 +11,11 @@ class ActivityDetailsPage extends StatelessWidget {
     super.key,
   });
 
-  final double iconSize = 35;
-
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    ActivityState activityState = context.watch<ActivityCubit>().state;
-    TextTheme textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+    final activityState = context.watch<ActivityCubit>().state;
+    final textTheme = Theme.of(context).textTheme;
 
     return BlocListener<ActivityCubit, ActivityState>(
       listener: (context, state) {
@@ -43,13 +42,17 @@ class ActivityDetailsPage extends StatelessWidget {
               const SizedBox(
                 height: kPadding * 4,
               ),
-              getSingleDetail(activityState.project?.name ?? '',
-                  Icons.work_history_outlined, textTheme),
+              ActivityTitle(
+                iconData: Icons.work_history_outlined,
+                title: activityState.project?.name ?? '',
+              ),
               const SizedBox(
                 height: kPadding * 4,
               ),
-              getSingleDetail(activityState.task?.name ?? '',
-                  Icons.extension_outlined, textTheme),
+              ActivityTitle(
+                iconData: Icons.extension_outlined,
+                title: activityState.task?.name ?? '',
+              ),
               const SizedBox(
                 height: kPadding * 8,
               ),
@@ -64,30 +67,4 @@ class ActivityDetailsPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget getSingleDetail(
-    String title,
-    IconData iconData,
-    TextTheme textTheme,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kPadding * 2.5),
-        child: Row(
-          children: [
-            Icon(
-              iconData,
-              size: iconSize,
-            ),
-            const SizedBox(
-              width: kPadding * 2,
-            ),
-            Flexible(
-              child: Text(
-                title,
-                style: textTheme.headlineSmall,
-              ),
-            ),
-          ],
-        ),
-      );
 }

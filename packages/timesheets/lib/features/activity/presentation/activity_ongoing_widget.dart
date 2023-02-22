@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/blocs/activity_cubit.dart';
+import 'package:timesheets/features/activity/presentation/activity_title_widget.dart';
 import 'package:timesheets/features/timer/presentation/timer_widget.dart';
 
 class ActivityOngoing extends StatelessWidget {
   const ActivityOngoing({Key? key}) : super(key: key);
-
-  final double iconSize = 35;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -22,37 +21,16 @@ class ActivityOngoing extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: kPadding * 2),
-                  getSingleDetail('${state.description}',
-                      Icons.wb_incandescent_outlined, context),
+                  ActivityTitle(
+                    rowAlignment: MainAxisAlignment.center,
+                    iconData: Icons.wb_incandescent_outlined,
+                    title: state.description ?? '',
+                  ),
                   const TimerWidget(),
                 ],
               ),
             ),
           ),
-        ),
-      );
-  // TODO move this to a separate widget
-  Widget getSingleDetail(
-          String title, IconData iconData, BuildContext context) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kPadding * 2.5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              iconData,
-              size: iconSize,
-            ),
-            const SizedBox(
-              width: kPadding * 2,
-            ),
-            Flexible(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            ),
-          ],
         ),
       );
 }

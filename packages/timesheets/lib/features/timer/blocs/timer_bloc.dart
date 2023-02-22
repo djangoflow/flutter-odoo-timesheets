@@ -8,25 +8,25 @@ part 'timer_bloc.freezed.dart';
 part 'timer_bloc.g.dart';
 
 class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
-  final Ticker _ticker;
+  final TimeSheetTicker _ticker;
 
   /// to listen to the ticker stream
   StreamSubscription<int>? _tickerSubscription;
 
-  TimerBloc({required Ticker ticker})
+  TimerBloc({required TimeSheetTicker ticker})
       : _ticker = ticker,
         super(const TimerState()) {
     on<TimerEvent>((event, emit) {
       event.when(
         started: () => _onStarted(emit),
-        paused: () {
-          _onPaused(state.duration, emit);
+        paused: (lastTicked) {
+          _onPaused(state.duration, emit, lastTicked);
         },
         reset: () {
           _onReset(state.duration, emit);
         },
-        resumed: () {
-          _onResumed(state.duration, emit);
+        resumed: (int? duration) {
+          _onResumed(duration ?? state.duration, emit, state.status);
         },
         ticked: (duration) {
           _onTicked(duration, emit);
@@ -48,28 +48,39 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     /// makes the subscription listen to TimerTicked state
     _tickerSubscription = _ticker
         .tick(duration ?? 0)
-        .listen((duration) => add(_TimerTicked(duration)));
+        .listen((duration) => add(_TimerTicked(duration: duration)));
   }
 
   void _onTicked(int duration, Emitter<TimerState> emit) {
-    emit(state.copyWith(duration: duration, status: TimerStatus.running));
+    emit(state.copyWith(
+      duration: duration,
+      status: TimerStatus.running,
+      lastTicked: null,
+    ));
   }
 
-  void _onPaused(int duration, Emitter<TimerState> emit) {
+  void _onPaused(int duration, Emitter<TimerState> emit, DateTime? lastTicked) {
     /// As the timer pause, we should pause the subscription also
     _tickerSubscription?.pause();
-    emit(state.copyWith(status: TimerStatus.paused));
+    if (lastTicked == null) {
+      emit(state.copyWith(status: TimerStatus.paused));
+    } else {
+      emit(state.copyWith(
+        status: TimerStatus.pausedByForce,
+        lastTicked: lastTicked,
+      ));
+    }
   }
 
-  void _onResumed(int duration, Emitter<TimerState> emit) {
-    ///Timer paused due to app close
-    if (_tickerSubscription == null) {
+  void _onResumed(int duration, Emitter<TimerState> emit, TimerStatus status) {
+    ///Timer paused due to app closed/going to background
+    if (status == TimerStatus.pausedByForce || _tickerSubscription == null) {
       _onStarted(emit, duration: duration);
+    } else {
+      /// As the timer resume, we must let the subscription resume also
+      _tickerSubscription?.resume();
+      emit(state.copyWith(status: TimerStatus.running));
     }
-
-    /// As the timer resume, we must let the subscription resume also
-    _tickerSubscription?.resume();
-    emit(state.copyWith(status: TimerStatus.running));
   }
 
   void _onReset(int duration, Emitter<TimerState> emit) {
@@ -82,27 +93,19 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
   TimerState? fromJson(Map<String, dynamic> json) => TimerState.fromJson(json);
 
   @override
-  Map<String, dynamic>? toJson(TimerState state) {
-    ///App closed during running state of timer will pause it
-    if (state.status == TimerStatus.running) {
-      Map<String, dynamic> json = state.toJson();
-      json['status'] = 'paused';
-      return json;
-    } else {
-      return state.toJson();
-    }
-  }
+  Map<String, dynamic>? toJson(TimerState state) => state.toJson();
 }
 
 @freezed
 class TimerEvent with _$TimerEvent {
   const factory TimerEvent.started() = _TimerStarted;
 
-  const factory TimerEvent.paused() = _TimerPaused;
+  const factory TimerEvent.paused({DateTime? lastTicked}) = _TimerPaused;
 
-  const factory TimerEvent.resumed() = _TimerResumed;
+  ///duration is non null when app resumes from force paused state to make up for uncounted time
+  const factory TimerEvent.resumed({int? duration}) = _TimerResumed;
 
-  const factory TimerEvent.ticked(int duration) = _TimerTicked;
+  const factory TimerEvent.ticked({required int duration}) = _TimerTicked;
 
   const factory TimerEvent.reset() = _TimerReset;
 }
@@ -112,6 +115,7 @@ class TimerState with _$TimerState {
   const factory TimerState({
     @Default(0) int duration,
     @Default(TimerStatus.initial) TimerStatus status,
+    DateTime? lastTicked,
   }) = _TimerState;
 
   factory TimerState.fromJson(Map<String, dynamic> json) =>

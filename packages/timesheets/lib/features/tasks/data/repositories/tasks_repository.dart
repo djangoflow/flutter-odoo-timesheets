@@ -4,7 +4,7 @@ import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 
 ///Repository to fetch task data
-class TaskRepository extends OdooRepositoryBase {
+class TaskRepository extends OdooRpcRepositoryBase {
   Future getTasks({
     required int id,
     required int projectId,
@@ -27,7 +27,7 @@ class TaskRepository extends OdooRepositoryBase {
       optionalParams: buildFilterableFields(['name']),
     );
 
-    List<Task> tasks = [];
+    final tasks = <Task>[];
     for (final task in response) {
       task['project_id'] = projectId;
       tasks.add(Task.fromJson(task));

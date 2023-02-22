@@ -3,11 +3,11 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
-// TODO: rename OdooRpcRepositoryBase
-class OdooRepositoryBase {
-  Uri getCommonUri() => Uri.parse(kBaseUrl + kCommonEndpoint);
+class OdooRpcRepositoryBase {
+  Uri getCommonUri() => Uri.parse(baseUrl + commonEndpoint);
 
-  Uri getObjectUri() => Uri.parse(kBaseUrl + kObjectEndpoint);
+  Uri getObjectUri() => Uri.parse(baseUrl + objectEndpoint);
+  
   // TODO: rename this to something meaningful, like `rpcAuthGetMethod(method)`
   // TODO: pass the email, password in a DRY way
   Future getCommon(String email, String password, String method) async {

@@ -13,8 +13,8 @@ class ProjectCubit extends Cubit<ProjectState> {
   ProjectCubit(this._projectRepository) : super(const ProjectState.initial());
 
   final ProjectRepository _projectRepository;
-  // TODO named arguments
-  Future<void> loadProjects(int id, String password) async {
+
+  Future<void> loadProjects({required int id,required String password}) async {
     emit(const ProjectState.loading());
 
     try {

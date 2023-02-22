@@ -4,7 +4,7 @@ import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 
 ///Repository to communicate with odoo external_api using xml_rpc
-class AuthenticationRepository extends OdooRepositoryBase {
+class AuthenticationRepository extends OdooRpcRepositoryBase {
   /// Sends auth request to odoo xml_rpc and fetch user data and returns [User] on success
   Future<User?> connect({
     required String email,

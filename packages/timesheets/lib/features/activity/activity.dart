@@ -6,6 +6,6 @@ export 'presentation/activity_ongoing_widget.dart';
 export 'presentation/activity_start_widget.dart';
 export 'presentation/activity_syncing_widget.dart';
 export 'blocs/activity_cubit.dart';
-export 'data/activity_repository.dart';
+export 'data/repositories/activity_repository.dart';
 export 'data/activity_status.dart';
-export 'data/activity_model.dart';
+export 'data/models/activity_model.dart';
