@@ -148,7 +148,11 @@ class EmailPasswordLoginPage extends StatelessWidget {
   Future<void> _signIn(BuildContext context, FormGroup form) async {
     final email = form.control(_emailControlName).value as String;
     final pass = form.control(_passControlName).value as String;
-    final serverUrl = form.control(_serverUrlControlName).value as String;
+    String serverUrl = form.control(_serverUrlControlName).value as String;
+    if(!serverUrl.endsWith('/')){
+      serverUrl += '/';
+    }
+
     await context.read<AuthCubit>().loginWithEmailPassword(
           email: email,
           password: pass,

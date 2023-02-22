@@ -15,37 +15,43 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
   }) async {
     /// Sends auth request to odoo xml_rpc and returns id on success
     /// false value is returned on invalid email/pass
-    var id = await rpcClient.rpcAuthenticate(
-      email: email,
-      password: password,
-      baseUrl: serverUrl,
-    );
+    try {
+      var id = await rpcClient.rpcAuthenticate(
+        email: email,
+        password: password,
+        baseUrl: serverUrl,
+      );
 
-    /// Handling response on invalid email/password input
-    if (id is bool && id == false) {
-      throw const OdooRepositoryException('Invalid Email/Password');
-    }
+      /// Handling response on invalid email/password input
+      if (id is bool && id == false) {
+        throw OdooRepositoryException.fromCode('invalid_cred');
+      }
 
-    rpcClient.updateCredentials(password: password, id: id, baseUrl: serverUrl);
+      rpcClient.updateCredentials(
+          password: password, id: id, baseUrl: serverUrl);
 
-    Map<String, dynamic> filterableFields =
-        buildFilterableFields(['name', 'email']);
+      Map<String, dynamic> filterableFields =
+          buildFilterableFields(['name', 'email']);
 
-    ///Fetch user data
-    List response = await odooCallMethod(
-      odooModel: usersModel,
-      method: OdooApiMethod.read.name,
-      parameters: [
-        [
-          id,
+      ///Fetch user data
+      List response = await odooCallMethod(
+        odooModel: usersModel,
+        method: OdooApiMethod.read.name,
+        parameters: [
+          [
+            id,
+          ],
+          filterableFields,
         ],
-        filterableFields,
-      ],
-    );
+      );
 
-    ///Response is returned as List<Map<String,dynamic>>, using 0th index to get userData
-    Map<String, dynamic> userData = response[0];
+      ///Response is returned as List<Map<String,dynamic>>, using 0th index to get userData
+      Map<String, dynamic> userData = response[0];
 
-    return User.fromJson(userData);
+      return User.fromJson(userData);
+    } catch (e) {
+      handleError(e);
+      return null;
+    }
   }
 }

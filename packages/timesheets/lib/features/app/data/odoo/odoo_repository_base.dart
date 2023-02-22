@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
@@ -33,7 +35,11 @@ class OdooRpcRepositoryBase {
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   handleError(error) {
     if (error is xml_rpc.Fault) {
-      throw OdooRepositoryException(error.text);
+      throw OdooRepositoryException.fromCode(error.text);
+    } else if (error is SocketException ||
+        error is ArgumentError ||
+        error is FormatException) {
+      throw OdooRepositoryException.fromCode(error.message);
     } else {
       throw const OdooRepositoryException();
     }
