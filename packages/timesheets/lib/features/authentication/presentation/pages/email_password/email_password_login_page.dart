@@ -7,24 +7,35 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class EmailPasswordLoginPage extends StatelessWidget {
+  const EmailPasswordLoginPage({super.key, @pathParam this.serverUrl});
 
-  const EmailPasswordLoginPage({
-    Key? key,
-  }) : super(key: key);
+  final String? serverUrl;
 
-  FormGroup _formBuilder() => fb.group({
-        'email': FormControl<String>(
-          validators: [
-            Validators.required,
-            Validators.email,
-          ],
-        ),
-        'pass': FormControl<String>(
-          validators: [
-            Validators.required,
-          ],
-        ),
-      });
+  final _emailControlName = 'email';
+  final _passControlName = 'pass';
+  final _serverUrlControlName = 'serverUrl';
+
+  FormGroup _formBuilder() => fb.group(
+        {
+          _emailControlName: FormControl<String>(
+            validators: [
+              Validators.required,
+              Validators.email,
+            ],
+          ),
+          _passControlName: FormControl<String>(
+            validators: [
+              Validators.required,
+            ],
+          ),
+          _serverUrlControlName: FormControl<String>(
+            validators: [
+              Validators.required,
+            ],
+            value: serverUrl,
+          ),
+        },
+      );
 
   @override
   Widget build(BuildContext context) => DefaultActionController(
@@ -50,8 +61,8 @@ class EmailPasswordLoginPage extends StatelessWidget {
                     children: [
                       ReactiveTextField(
                         autofocus: true,
-                        formControlName: 'email',
-                        textInputAction: TextInputAction.done,
+                        formControlName: _emailControlName,
+                        textInputAction: TextInputAction.next,
                         textCapitalization: TextCapitalization.none,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -72,9 +83,8 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         height: kPadding * 3,
                       ),
                       ReactiveTextField(
-                        autofocus: true,
-                        formControlName: 'pass',
-                        textInputAction: TextInputAction.done,
+                        formControlName: _passControlName,
+                        textInputAction: TextInputAction.next,
                         textCapitalization: TextCapitalization.none,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: const InputDecoration(
@@ -90,6 +100,29 @@ class EmailPasswordLoginPage extends StatelessWidget {
                             ? DefaultActionController.of(context)
                                 ?.add(ActionType.start)
                             : form.markAsTouched(),
+                      ),
+                      const SizedBox(
+                        height: kPadding * 3,
+                      ),
+                      AutofillGroup(
+                        child: ReactiveTextField(
+                          formControlName: _serverUrlControlName,
+                          textInputAction: TextInputAction.done,
+                          textCapitalization: TextCapitalization.none,
+                          keyboardType: TextInputType.url,
+                          decoration: const InputDecoration(
+                            hintText: 'Server Url',
+                          ),
+                          autofillHints: const [AutofillHints.url],
+                          validationMessages: {
+                            ValidationMessage.required: (_) =>
+                                'Server Url is required',
+                          },
+                          onSubmitted: (_) => form.valid
+                              ? DefaultActionController.of(context)
+                                  ?.add(ActionType.start)
+                              : form.markAsTouched(),
+                        ),
                       ),
                       const SizedBox(
                         height: kPadding * 5,
@@ -113,10 +146,13 @@ class EmailPasswordLoginPage extends StatelessWidget {
       );
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
-    final email = form.control('email').value as String;
-    final pass = form.control('pass').value as String;
-    await context
-        .read<AuthCubit>()
-        .loginWithEmailPassword(email: email, password: pass);
+    final email = form.control(_emailControlName).value as String;
+    final pass = form.control(_passControlName).value as String;
+    final serverUrl = form.control(_serverUrlControlName).value as String;
+    await context.read<AuthCubit>().loginWithEmailPassword(
+          email: email,
+          password: pass,
+          serverUrl: serverUrl,
+        );
   }
 }

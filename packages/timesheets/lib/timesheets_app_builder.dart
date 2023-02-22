@@ -106,10 +106,11 @@ class TimesheetsAppBuilder extends AppBuilder {
               // use DjangoflowFCMBloc to get token
               // TODO update analytics user related properties
               // TODO update ErrorReporters user properties
-
+              final authState = context.read<AuthCubit>().state;
               context.read<AppXmlRpcClient>().updateCredentials(
-                    password: context.read<AuthCubit>().state.password!,
+                    password: authState.password!,
                     id: user.id,
+                    baseUrl: authState.serverUrl,
                   );
             },
             onLogout: (context) {

@@ -8,43 +8,46 @@ class LoginOptionsPage extends StatelessWidget {
   const LoginOptionsPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: kPadding * 2,
-            ),
-            child: BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) => Column(
-                children: [
-                  const SizedBox(
-                    height: kPadding * 3,
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onLongPress: () =>
-                        context.read<AppCubit>().toggleEnvironment(),
-                    child: const FlutterLogo(size: kPadding * 20),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.router.push(
-                          const EmailPasswordLoginRoute(),
-                        );
-                      },
-                      child: const Text('Sign in'),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: kPadding * 6,
-                  ),
-                ],
+  Widget build(BuildContext context) {
+    final serverUrl = context.read<AuthCubit>().state.serverUrl;
+
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kPadding * 2,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: kPadding * 3,
               ),
-            ),
+              const Spacer(),
+              GestureDetector(
+                onLongPress: () => context.read<AppCubit>().toggleEnvironment(),
+                child: const FlutterLogo(size: kPadding * 20),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.router.push(
+                      EmailPasswordLoginRoute(
+                        serverUrl: serverUrl,
+                      ),
+                    );
+                  },
+                  child: const Text('Sign in'),
+                ),
+              ),
+              const SizedBox(
+                height: kPadding * 6,
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }

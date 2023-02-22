@@ -2,7 +2,6 @@
 // Global APP - specific constants
 const appLogoSvgPath = 'assets/app_logo/logo.svg';
 const appTitle = 'Odoo Timesheets';
-const baseUrl = 'https://portal.apexive.com/';
 
 ///This endpoint provides meta-calls which don’t require authentication.
 const commonEndpoint = 'xmlrpc/2/common';

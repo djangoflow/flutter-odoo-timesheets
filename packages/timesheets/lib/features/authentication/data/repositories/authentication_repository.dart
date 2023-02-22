@@ -11,17 +11,22 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
   Future<User?> connect({
     required String email,
     required String password,
+    required String serverUrl,
   }) async {
     /// Sends auth request to odoo xml_rpc and returns id on success
     /// false value is returned on invalid email/pass
-    var id = await rpcClient.rpcAuthenticate(email: email, password: password);
+    var id = await rpcClient.rpcAuthenticate(
+      email: email,
+      password: password,
+      baseUrl: serverUrl,
+    );
 
     /// Handling response on invalid email/password input
     if (id is bool && id == false) {
       throw const OdooRepositoryException('Invalid Email/Password');
     }
 
-    rpcClient.updateCredentials(password: password, id: id);
+    rpcClient.updateCredentials(password: password, id: id, baseUrl: serverUrl);
 
     Map<String, dynamic> filterableFields =
         buildFilterableFields(['name', 'email']);

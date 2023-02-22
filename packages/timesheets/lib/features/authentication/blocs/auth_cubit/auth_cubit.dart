@@ -12,7 +12,11 @@ part 'auth_cubit.g.dart';
 
 @freezed
 class AuthState with _$AuthState {
-  const factory AuthState({User? user, String? password}) = _AuthState;
+  const factory AuthState({
+    User? user,
+    String? password,
+    String? serverUrl,
+  }) = _AuthState;
 
   factory AuthState.fromJson(Map<String, dynamic> json) =>
       _$AuthStateFromJson(json);
@@ -36,10 +40,16 @@ class AuthCubit extends HydratedCubit<AuthState> {
   @override
   AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
 
-  void _login(User user, String password) => emit(
+  void _login(
+    User user,
+    String password,
+    String serverUrl,
+  ) =>
+      emit(
         state.copyWith(
           user: user,
           password: password,
+          serverUrl: serverUrl,
         ),
       );
 
@@ -47,6 +57,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     emit(
       state.copyWith(
         user: null,
+        password: null,
       ),
     );
   }
@@ -54,6 +65,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
   Future<void> loginWithEmailPassword({
     required String email,
     required String password,
+    required String serverUrl,
   }) async {
     try {
       if (_authenticationRepository == null) {
@@ -62,9 +74,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
       User? user = await _authenticationRepository?.connect(
         email: email,
         password: password,
+        serverUrl: serverUrl,
       );
       if (user != null) {
-        _login(user, password);
+        _login(user, password, serverUrl);
       }
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showError(e.message);
