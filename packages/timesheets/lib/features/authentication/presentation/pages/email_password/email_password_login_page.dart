@@ -7,13 +7,19 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class EmailPasswordLoginPage extends StatelessWidget {
-  const EmailPasswordLoginPage({super.key, @pathParam this.serverUrl});
+  const EmailPasswordLoginPage({
+    super.key,
+    @pathParam this.serverUrl,
+    @pathParam this.db,
+  });
 
   final String? serverUrl;
+  final String? db;
 
   final _emailControlName = 'email';
   final _passControlName = 'pass';
   final _serverUrlControlName = 'serverUrl';
+  final _dbControlName = 'db';
 
   FormGroup _formBuilder() => fb.group(
         {
@@ -34,6 +40,12 @@ class EmailPasswordLoginPage extends StatelessWidget {
             ],
             value: serverUrl,
           ),
+          _dbControlName: FormControl<String>(
+            validators: [
+              Validators.required,
+            ],
+            value: db,
+          ),
         },
       );
 
@@ -49,94 +61,116 @@ class EmailPasswordLoginPage extends StatelessWidget {
             ),
           ),
           body: Center(
-            child: ReactiveFormBuilder(
-              form: _formBuilder,
-              builder: (context, form, child) => AutofillGroup(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kPadding * 2,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ReactiveTextField(
-                        autofocus: true,
-                        formControlName: _emailControlName,
-                        textInputAction: TextInputAction.next,
-                        textCapitalization: TextCapitalization.none,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                        ),
-                        autofillHints: const [AutofillHints.email],
-                        validationMessages: {
-                          ValidationMessage.required: (_) =>
-                              'Email is required',
-                          ValidationMessage.email: (_) => 'Invalid format',
-                        },
-                        onSubmitted: (_) => form.valid
-                            ? DefaultActionController.of(context)
-                                ?.add(ActionType.start)
-                            : form.markAsTouched(),
-                      ),
-                      const SizedBox(
-                        height: kPadding * 3,
-                      ),
-                      ReactiveTextField(
-                        formControlName: _passControlName,
-                        textInputAction: TextInputAction.next,
-                        textCapitalization: TextCapitalization.none,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          hintText: 'Password',
-                        ),
-                        autofillHints: const [AutofillHints.password],
-                        validationMessages: {
-                          ValidationMessage.required: (_) =>
-                              'Password is required',
-                        },
-                        obscureText: true,
-                        onSubmitted: (_) => form.valid
-                            ? DefaultActionController.of(context)
-                                ?.add(ActionType.start)
-                            : form.markAsTouched(),
-                      ),
-                      const SizedBox(
-                        height: kPadding * 3,
-                      ),
-                      AutofillGroup(
-                        child: ReactiveTextField(
-                          formControlName: _serverUrlControlName,
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.none,
-                          keyboardType: TextInputType.url,
+            child: SingleChildScrollView(
+              child: ReactiveFormBuilder(
+                form: _formBuilder,
+                builder: (context, form, child) => AutofillGroup(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kPadding * 2,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ReactiveTextField(
+                          autofocus: true,
+                          formControlName: _emailControlName,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
-                            hintText: 'Server Url',
+                            hintText: 'Email',
                           ),
-                          autofillHints: const [AutofillHints.url],
+                          autofillHints: const [AutofillHints.email],
                           validationMessages: {
                             ValidationMessage.required: (_) =>
-                                'Server Url is required',
+                                'Email is required',
+                            ValidationMessage.email: (_) => 'Invalid format',
+                          },
+                          onSubmitted: (_) {
+                            if (!form.valid) {
+                              form.markAsTouched();
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        ReactiveTextField(
+                          formControlName: _passControlName,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.visiblePassword,
+                          decoration: const InputDecoration(
+                            hintText: 'Password',
+                          ),
+                          autofillHints: const [AutofillHints.password],
+                          validationMessages: {
+                            ValidationMessage.required: (_) =>
+                                'Password is required',
+                          },
+                          obscureText: true,
+                          onSubmitted: (_) {
+                            if (!form.valid) {
+                              form.markAsTouched();
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        AutofillGroup(
+                          child: ReactiveTextField(
+                            formControlName: _serverUrlControlName,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.url,
+                            decoration: const InputDecoration(
+                              hintText: 'Server Url',
+                            ),
+                            autofillHints: const [AutofillHints.url],
+                            validationMessages: {
+                              ValidationMessage.required: (_) =>
+                                  'Server Url is required',
+                            },
+                            onSubmitted: (_) {
+                              if (!form.valid) {
+                                form.markAsTouched();
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        ReactiveTextField(
+                          formControlName: _dbControlName,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
+                          decoration: const InputDecoration(
+                            hintText: 'Database',
+                          ),
+                          validationMessages: {
+                            ValidationMessage.required: (_) =>
+                                'Database is required',
                           },
                           onSubmitted: (_) => form.valid
                               ? DefaultActionController.of(context)
                                   ?.add(ActionType.start)
                               : form.markAsTouched(),
                         ),
-                      ),
-                      const SizedBox(
-                        height: kPadding * 5,
-                      ),
-                      LinearProgressBuilder(
-                        builder: (context, action, error) => ElevatedButton(
-                          onPressed: (ReactiveForm.of(context)?.valid ?? false)
-                              ? action
-                              : null,
-                          child: const Center(child: Text('Login')),
+                        const SizedBox(
+                          height: kPadding * 5,
                         ),
-                        action: (_) => _signIn(context, form),
-                      ),
-                    ],
+                        LinearProgressBuilder(
+                          builder: (context, action, error) => ElevatedButton(
+                            onPressed:
+                                (ReactiveForm.of(context)?.valid ?? false)
+                                    ? action
+                                    : null,
+                            child: const Center(child: Text('Login')),
+                          ),
+                          action: (_) => _signIn(context, form),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -149,7 +183,8 @@ class EmailPasswordLoginPage extends StatelessWidget {
     final email = form.control(_emailControlName).value as String;
     final pass = form.control(_passControlName).value as String;
     String serverUrl = form.control(_serverUrlControlName).value as String;
-    if(!serverUrl.endsWith('/')){
+    final db = form.control(_dbControlName).value as String;
+    if (!serverUrl.endsWith('/')) {
       serverUrl += '/';
     }
 
@@ -157,6 +192,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
           email: email,
           password: pass,
           serverUrl: serverUrl,
+          db: db,
         );
   }
 }

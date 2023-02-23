@@ -12,6 +12,7 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
     required String email,
     required String password,
     required String serverUrl,
+    required String db,
   }) async {
     /// Sends auth request to odoo xml_rpc and returns id on success
     /// false value is returned on invalid email/pass
@@ -20,6 +21,7 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
         email: email,
         password: password,
         baseUrl: serverUrl,
+        db: db,
       );
 
       /// Handling response on invalid email/password input
@@ -28,7 +30,11 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
       }
 
       rpcClient.updateCredentials(
-          password: password, id: id, baseUrl: serverUrl);
+        password: password,
+        id: id,
+        baseUrl: serverUrl,
+        db: db,
+      );
 
       Map<String, dynamic> filterableFields =
           buildFilterableFields(['name', 'email']);

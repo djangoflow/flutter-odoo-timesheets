@@ -9,7 +9,9 @@ class LoginOptionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final serverUrl = context.read<AuthCubit>().state.serverUrl;
+    final authState = context.read<AuthCubit>().state;
+    final serverUrl = authState.serverUrl;
+    final db = authState.db;
 
     return Scaffold(
       body: Center(
@@ -35,6 +37,7 @@ class LoginOptionsPage extends StatelessWidget {
                     context.router.push(
                       EmailPasswordLoginRoute(
                         serverUrl: serverUrl,
+                        db: db,
                       ),
                     );
                   },

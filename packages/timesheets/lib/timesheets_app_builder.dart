@@ -111,6 +111,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                     password: authState.password!,
                     id: user.id,
                     baseUrl: authState.serverUrl,
+                    db: authState.db,
                   );
             },
             onLogout: (context) {

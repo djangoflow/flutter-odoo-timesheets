@@ -154,7 +154,7 @@ class ActivityStart extends StatelessWidget {
                       },
                     ),
                     const SizedBox(
-                      height: kPadding * 2,
+                      height: kPadding * 4,
                     ),
                     ReactiveFormConsumer(
                       builder: (context, form, child) => ElevatedButton(

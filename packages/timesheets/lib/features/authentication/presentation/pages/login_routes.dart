@@ -11,7 +11,7 @@ const loginRoutes = [
     initial: true,
   ),
   AutoRoute(
-    path: ':serverUrl',
+    path: ':serverUrl/:db',
     page: EmailPasswordLoginPage,
   ),
 ];

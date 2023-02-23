@@ -9,7 +9,6 @@ const commonEndpoint = 'xmlrpc/2/common';
 ///It is used to call methods of odoo models. Require authentication.
 const objectEndpoint = 'xmlrpc/2/object';
 
-const db = 'wwnet-odoo';
 const rpcFunction = 'execute_kw';
 const rpcAuthenticationFunction = 'authenticate';
 

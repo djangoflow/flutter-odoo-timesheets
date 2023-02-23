@@ -16,6 +16,7 @@ class AuthState with _$AuthState {
     User? user,
     String? password,
     String? serverUrl,
+    String? db,
   }) = _AuthState;
 
   factory AuthState.fromJson(Map<String, dynamic> json) =>
@@ -44,12 +45,14 @@ class AuthCubit extends HydratedCubit<AuthState> {
     User user,
     String password,
     String serverUrl,
+    String db,
   ) =>
       emit(
         state.copyWith(
           user: user,
           password: password,
           serverUrl: serverUrl,
+          db: db,
         ),
       );
 
@@ -66,6 +69,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String email,
     required String password,
     required String serverUrl,
+    required String db,
   }) async {
     try {
       if (_authenticationRepository == null) {
@@ -75,9 +79,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
         email: email,
         password: password,
         serverUrl: serverUrl,
+        db: db,
       );
       if (user != null) {
-        _login(user, password, serverUrl);
+        _login(user, password, serverUrl, db);
       }
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showError(e.message);
