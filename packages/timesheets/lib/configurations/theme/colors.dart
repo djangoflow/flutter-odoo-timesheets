@@ -12,12 +12,15 @@ class AppColors {
         appBarColor: appBarColor,
         error: error,
       );
+
   // Light theme colors
-  static const Color primary = Color(0xff0055d5);
+  static const Color primary = Color(0xff1d5ec0);
   static const Color primaryContainer = Color(0xffdae2ff);
+  static const Color cardColor = Color(0xffe8ffea);
+  static const Color cardColorDark = Color(0xff3d4877);
   static const Color secondary = Color(0xffbac5ec);
   static const Color secondaryContainer = Color(0xff3b4666);
-  static const Color tertiary = Color(0xff34b46e);
+  static const Color tertiary = Color(0xffffffff);
   static const Color tertiaryContainer = Color(0xffbeeaf7);
   static const Color appBarColor = Color(0x0DB3C5FF);
   static const Color error = Color(0xffb00020);

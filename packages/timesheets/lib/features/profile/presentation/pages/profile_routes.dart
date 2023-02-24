@@ -10,8 +10,4 @@ const profileRoutes = [
       'showBottomNav': true,
     },
   ),
-  AutoRoute(
-    page: ProfileEditPage,
-    path: 'edit',
-  ),
 ];

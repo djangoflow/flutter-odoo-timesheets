@@ -4,7 +4,7 @@ import 'package:timesheets/features/authentication/authentication.dart';
 
 import 'router.dart';
 
-bool get isAuthenticated => AuthCubit.instance.state.token != null;
+bool get isAuthenticated => AuthCubit.instance.state.user != null;
 
 class AuthGuard extends AutoRedirectGuard {
   late StreamSubscription<AuthState> _subscription;
@@ -14,9 +14,9 @@ class AuthGuard extends AutoRedirectGuard {
       (state) {
         // Don't reevaluate if only token updated but not user object
         // Without this reevaulate gets called twice and pushes routes twice
-        if (state.token != null && state.user != null) {
+        if (state.user != null) {
           reevaluate();
-        } else if (state.token == null && state.user == null) {
+        } else {
           reevaluate(
               strategy:
                   const ReevaluationStrategy.removeAllAndPush(HomeRoute()));

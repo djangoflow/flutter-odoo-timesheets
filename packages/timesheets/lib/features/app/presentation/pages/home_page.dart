@@ -7,7 +7,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AutoTabsRouter(
         routes: const [
-          BooksRouterRoute(),
+          ActivityRouterRoute(),
           ProfileRouterRoute(),
         ],
         builder: (context, child, animation) {
@@ -32,8 +32,8 @@ class HomePage extends StatelessWidget {
 
   List<BottomNavigationBarItem> get items => const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.book),
-          label: 'Books',
+          icon: Icon(Icons.more_time),
+          label: 'Activity',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

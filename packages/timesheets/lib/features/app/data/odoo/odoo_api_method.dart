@@ -1,0 +1,13 @@
+enum OdooApiMethod {
+  read('read'),
+  search('search'),
+  searchRead('search_read'),
+  fieldsGet('fields_get'),
+  create('create'),
+  write('write'),
+  unlink('unlink');
+
+  const OdooApiMethod(this.name);
+
+  final String name;
+}

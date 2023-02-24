@@ -1,7 +1,7 @@
 import 'package:timesheets/configurations/router/auth_guard.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/books/books.dart';
+import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/profile/profile.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,9 @@ export 'router.gr.dart';
       guards: [AuthGuard],
       children: [
         AutoRoute(
-          path: 'books',
-          page: BooksRouterPage,
-          children: bookRoutes,
+          path: 'activity',
+          page: ActivityRouterPage,
+          children: activityRoutes,
         ),
         AutoRoute(
           path: 'profile',
@@ -54,7 +54,7 @@ class $AppRouter {}
 
 Route<T> modalSheetBuilder<T>(
         BuildContext context, Widget child, CustomPage<T> page) =>
-    ModalBottomSheetRoute(
+    ModalSheetRoute(
       settings: page,
       containerBuilder: (context, animation, child) => SizedBox(
           height: (MediaQuery.of(context).size.height / 10) * 7, child: child),

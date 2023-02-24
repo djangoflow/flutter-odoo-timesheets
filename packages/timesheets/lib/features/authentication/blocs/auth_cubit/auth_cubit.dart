@@ -1,8 +1,10 @@
-import 'package:timesheets/features/app/app.dart';
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:openapi/openapi.dart';
+import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/authentication/data/repositories/authentication_repository.dart';
+import 'package:timesheets/features/authentication/data/models/user_model.dart';
 
 part 'auth_cubit.freezed.dart';
 
@@ -12,151 +14,81 @@ part 'auth_cubit.g.dart';
 class AuthState with _$AuthState {
   const factory AuthState({
     User? user,
-    String? token,
+    String? password,
+    String? serverUrl,
+    String? db,
   }) = _AuthState;
 
   factory AuthState.fromJson(Map<String, dynamic> json) =>
       _$AuthStateFromJson(json);
 }
 
-class AuthCubit extends HydratedCubit<AuthState> with AccountsUsersRepository {
-  // TODO uncomment this line after generating openapi
-  // AuthApi get _authApi => ApiRepository.instance.auth;
-
-  // TODO remove dummy variables _kDuration, _kToken, _kUser
-  final _kDuration = const Duration(
-    seconds: 2,
-  );
-  final _kToken = '__dummy_token__';
-  final _kUser = User(
-    id: '__dummy_user__',
-    email: 'dummy@user.com',
-    firstName: 'dummy first name',
-    lastName: 'dummy last name',
-    displayName: 'dummy dislay name',
-  );
-
+class AuthCubit extends HydratedCubit<AuthState> {
   static AuthCubit get instance => _instance;
   static final AuthCubit _instance = AuthCubit._internal();
+  AuthenticationRepository? _authenticationRepository;
 
   AuthCubit._internal() : super(const AuthState());
+
+  void initialize(AuthenticationRepository authenticationRepository) {
+    if (_authenticationRepository != null) {
+      throw Exception('Already initialized');
+    }
+
+    _authenticationRepository = authenticationRepository;
+  }
 
   @override
   AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
 
-  void login(User user, String token) =>
-      emit(state.copyWith(user: user, token: token));
+  void _login(
+    User user,
+    String password,
+    String serverUrl,
+    String db,
+  ) =>
+      emit(
+        state.copyWith(
+          user: user,
+          password: password,
+          serverUrl: serverUrl,
+          db: db,
+        ),
+      );
 
-  Future<void> logout() async {
+  void logout() {
     emit(
       state.copyWith(
         user: null,
-        token: null,
+        password: null,
       ),
     );
   }
 
-  Future<void> registrationWithEmail({
+  Future<void> loginWithEmailPassword({
     required String email,
-    required String firstName,
-    required String lastName,
+    required String password,
+    required String serverUrl,
+    required String db,
   }) async {
-    await Future.delayed(_kDuration);
-    // await _authApi.authTokenSignupCreate(
-    //   signupRequest: SignupRequest(
-    //     email: email,
-    //     firstName: firstName,
-    //     lastName: lastName,
-    //   ),
-    // );
-
-    // await requestOTP(email: email);
-  }
-
-  Future<void> requestOTP({required String email}) async =>
-      await Future.delayed(_kDuration);
-  // (await _authApi.authOtpCreate(
-  //   oTPObtainRequest: OTPObtainRequest(email: email),
-  // ))
-  //     .data;
-
-  Future<void> loginWithEmailOTP({
-    required String email,
-    required String otp,
-  }) async {
-    await Future.delayed(_kDuration);
-    // final tokenResult = (await _authApi.authTokenCreate(
-    //   tokenObtainRequest: TokenObtainRequest(
-    //     email: email,
-    //     otp: otp,
-    //   ),
-    // ))
-    //     .data;
-    // final token = tokenResult?.token;
-
-    await _loginUsingToken(_kToken);
-
-    // return tokenResult;
-  }
-
-  Future<User> _fetchCurrentUser() async {
-    await Future.delayed(_kDuration);
-    return _kUser;
-  }
-  // (await AccountsUsersRepository.retrieve(
-  //   const AccountsUsersRetrieveFilter(
-  //     id: '0', // 0 indicates the current user from token
-  //   ),
-  // ));
-
-  Future<void> _loginUsingToken(String? token) async {
-    if (token != null) {
-      emit(state.copyWith(
-        token: token,
-      ));
-      final user = await _fetchCurrentUser();
-      login(user, token);
-    } else {
-      throw Exception('Could not retrieve token');
-    }
-  }
-
-  Future<void> loginWithMagicLink({required String magiclink}) async {
     try {
-      await Future.delayed(_kDuration);
-      await loginWithEmailOTP(email: 'dummy@email.com', otp: '123567');
-      // final credentials = utf8
-      //     .decode(base64.decode(const Base64Codec().normalize(magiclink)))
-      //     .split('/');
-      // await loginWithEmailOTP(email: credentials[0], otp: credentials[1]);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<User?> partialUpdateUser(
-      {required String userId,
-      required PatchedUserRequest patchedUserRequest}) async {
-    final result = await partialUpdate(
-      id: userId,
-      patchedUserRequest: patchedUserRequest,
-    );
-
-    if (result != null) {
-      emit(
-        state.copyWith(user: result),
+      if (_authenticationRepository == null) {
+        throw Exception('AuthCubit not initialized');
+      }
+      final user = await _authenticationRepository?.connect(
+        email: email,
+        password: password,
+        serverUrl: serverUrl,
+        db: db,
       );
+      if (user != null) {
+        _login(user, password, serverUrl, db);
+      }
+    } on OdooRepositoryException catch (e) {
+      DjangoflowAppSnackbar.showError(e.message);
+    } on Exception catch (e) {
+      DjangoflowAppSnackbar.showError(e.toString());
     }
-    return result;
-  }
-
-  Future<void> reload() async {
-    final user = await _fetchCurrentUser();
-    emit(
-      state.copyWith(
-        user: user,
-      ),
-    );
   }
 
   @override

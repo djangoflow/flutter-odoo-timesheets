@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openapi/openapi.dart';
-
+import 'package:timesheets/features/authentication/data/models/user_model.dart';
 import 'login_listener.dart';
 
 /// Checks for intialUser, if available then triggers onLogin callback,

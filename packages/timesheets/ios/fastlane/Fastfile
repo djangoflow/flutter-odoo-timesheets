@@ -6,9 +6,8 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     sh "cd .. && flutter pub get"
-    sh "cd ../../../openapi && flutter pub run build_runner build --delete-conflicting-outputs"
     sh "cd .. && flutter pub run build_runner build --delete-conflicting-outputs"
-    sh "cd .. && flutter build ios --release --no-codesign --dart-define=SENTRY_DSN=\"#{ENV["SENTRY_DSN"]}\""
+    sh "cd .. && flutter build ios --release --no-codesign"
     # Add .env.default or .env file and add SENTRY_DSN="sentry dsn link"
     build_app(
     workspace: "Runner.xcworkspace", scheme: "Runner", xcargs: "-allowProvisioningUpdates",

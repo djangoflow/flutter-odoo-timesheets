@@ -1,4 +1,3 @@
-import 'package:timesheets/configurations/router/router.dart';
 import 'package:timesheets/configurations/theme/size_constants.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
@@ -20,7 +19,7 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(kPadding * 2),
         children: [
-          Text('Hi ${user?.displayName ?? 'Anynomus user'}'),
+          Text('Hi ${user?.name ?? 'Anonymous user'}'),
           const SizedBox(
             height: kPadding * 2,
           ),
@@ -41,15 +40,6 @@ class ProfilePage extends StatelessWidget {
           ElevatedButton(
             onPressed: () => appCubit.updateThemeMode(ThemeMode.system),
             child: const Text('Use System theme'),
-          ),
-          const SizedBox(
-            height: kPadding * 2,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.navigateTo(const ProfileEditRoute());
-            },
-            child: const Text('Edit profile'),
           ),
           const SizedBox(
             height: kPadding * 2,

@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import 'timesheets_app_builder.dart';
 import 'configurations/configurations.dart';
-import 'features/app/app.dart';
+
 // TODO uncomment after firebase integration
 // import 'firebase_options.dart';
 
