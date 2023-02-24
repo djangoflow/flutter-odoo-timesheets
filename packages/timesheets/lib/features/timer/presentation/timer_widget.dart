@@ -1,3 +1,4 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -89,7 +90,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                       ),
                     if (status != TimerStatus.initial)
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           timerBloc.add(const TimerEvent.reset());
                           DateTime startTime = activityCubit.state.startTime!;
                           DateTime endTime = startTime.add(duration);
@@ -104,9 +105,11 @@ class _TimerWidgetState extends State<TimerWidget> {
                             startTime: formatter.format(startTime),
                             endTime: formatter.format(endTime),
                           );
-                          activityCubit.syncActivity(
+                          await activityCubit.syncActivity(
                             activity: activity,
                           );
+
+                          DjangoflowAppSnackbar.showInfo('Activity Synced!');
                         },
                         icon: Icon(
                           Icons.square_rounded,

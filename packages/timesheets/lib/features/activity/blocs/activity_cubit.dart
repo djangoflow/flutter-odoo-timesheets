@@ -1,4 +1,3 @@
-import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:timesheets/features/activity/activity.dart';
@@ -29,7 +28,7 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
     ));
   }
 
-  void syncActivity({
+  Future syncActivity({
     required Activity activity,
   }) async {
     emit(state.copyWith(activityStatus: ActivityStatus.syncing));
@@ -37,8 +36,6 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
     await _activityRepository.addTimesheetEntry(
       data: activity.toJson(),
     );
-
-    DjangoflowAppSnackbar.showInfo('Activity Synced!');
 
     emit(
       state.copyWith(
