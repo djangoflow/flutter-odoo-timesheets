@@ -7,12 +7,20 @@ class OdooRepositoryException implements Exception {
     this.message = 'An unknown exception occurred.',
   ]);
 
-  factory OdooRepositoryException.fromCode(String code) {
+  factory OdooRepositoryException.fromMessage(String code) {
     if (code.contains('Failed host lookup')) {
       return const OdooRepositoryException('Invalid server url');
-    }if (code.contains('No host specified in URI') || code.contains('Invalid empty scheme')) {
-      return const OdooRepositoryException('Please Mention host properly (Eg: http://,https://)');
-    } else if (code == 'invalid_cred') {
+    } else if (code.contains('No host specified in URI') ||
+        code.contains('Invalid empty scheme')) {
+      return const OdooRepositoryException(
+          'Please Mention host properly (Eg: http://,https://)');
+    }
+
+    return const OdooRepositoryException();
+  }
+
+  factory OdooRepositoryException.fromCode(String code) {
+    if (code == 'invalid_cred') {
       return const OdooRepositoryException('Invalid Email/Password');
     }
 

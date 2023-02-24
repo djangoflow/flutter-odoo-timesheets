@@ -1,6 +1,5 @@
-import 'package:timesheets/configurations/theme/size_constants.dart';
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_builder/progress_builder.dart';
@@ -9,42 +8,37 @@ import 'package:reactive_forms/reactive_forms.dart';
 class EmailPasswordLoginPage extends StatelessWidget {
   const EmailPasswordLoginPage({
     super.key,
-    @pathParam this.serverUrl,
-    @pathParam this.db,
+    @queryParam this.serverUrl,
+    @queryParam this.db,
   });
 
   final String? serverUrl;
   final String? db;
 
-  final _emailControlName = 'email';
-  final _passControlName = 'pass';
-  final _serverUrlControlName = 'serverUrl';
-  final _dbControlName = 'db';
-
   FormGroup _formBuilder() => fb.group(
         {
-          _emailControlName: FormControl<String>(
+          emailControlName: FormControl<String>(
             validators: [
               Validators.required,
               Validators.email,
             ],
           ),
-          _passControlName: FormControl<String>(
+          passControlName: FormControl<String>(
             validators: [
               Validators.required,
             ],
           ),
-          _serverUrlControlName: FormControl<String>(
+          serverUrlControlName: FormControl<String>(
             validators: [
               Validators.required,
             ],
-            value: serverUrl,
+            value: serverUrl ?? AuthCubit.instance.state.serverUrl,
           ),
-          _dbControlName: FormControl<String>(
+          dbControlName: FormControl<String>(
             validators: [
               Validators.required,
             ],
-            value: db,
+            value: db ?? AuthCubit.instance.state.db,
           ),
         },
       );
@@ -74,7 +68,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                       children: [
                         ReactiveTextField(
                           autofocus: true,
-                          formControlName: _emailControlName,
+                          formControlName: emailControlName,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
@@ -96,7 +90,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           height: kPadding * 3,
                         ),
                         ReactiveTextField(
-                          formControlName: _passControlName,
+                          formControlName: passControlName,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.visiblePassword,
                           decoration: const InputDecoration(
@@ -119,7 +113,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         ),
                         AutofillGroup(
                           child: ReactiveTextField(
-                            formControlName: _serverUrlControlName,
+                            formControlName: serverUrlControlName,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.url,
                             decoration: const InputDecoration(
@@ -141,7 +135,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           height: kPadding * 3,
                         ),
                         ReactiveTextField(
-                          formControlName: _dbControlName,
+                          formControlName: dbControlName,
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
@@ -180,10 +174,10 @@ class EmailPasswordLoginPage extends StatelessWidget {
       );
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
-    final email = form.control(_emailControlName).value as String;
-    final pass = form.control(_passControlName).value as String;
-    String serverUrl = form.control(_serverUrlControlName).value as String;
-    final db = form.control(_dbControlName).value as String;
+    final email = form.control(emailControlName).value as String;
+    final pass = form.control(passControlName).value as String;
+    String serverUrl = form.control(serverUrlControlName).value as String;
+    final db = form.control(dbControlName).value as String;
     if (!serverUrl.endsWith('/')) {
       serverUrl += '/';
     }
