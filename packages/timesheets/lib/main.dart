@@ -8,9 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'timesheets_app_builder.dart';
 import 'configurations/configurations.dart';
 
-// TODO uncomment after firebase integration
-// import 'firebase_options.dart';
-
 Future<void> main() async {
   // Runs the runApp method
   DjangoflowAppRunner.run(
@@ -23,14 +20,6 @@ Future<void> main() async {
       );
     },
     rootWidgetBuilder: (appBuilder) async {
-      // Initialze project specific initializations
-      // await Firebase.initializeApp(
-      //   options: DefaultFirebaseOptions.currentPlatform,
-      // );
-
-      // TODO Error reporting [djangoflow_error_reporter]
-      // TODO Analytics setup [djangoflow_analytics]
-
       String? initialDeepLink;
       final appLinksRepository = AppLinksRepository();
       if (!kIsWeb) {

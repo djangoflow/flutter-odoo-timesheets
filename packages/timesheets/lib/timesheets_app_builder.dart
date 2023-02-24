@@ -23,13 +23,7 @@ class TimesheetsAppBuilder extends AppBuilder {
     required AppLinksRepository appLinksRepository,
     final String? initialDeepLink,
   }) : super(
-          onInitState: (context) {
-            final env = context.read<AppCubit>().state.environment;
-
-            // TODO check if came from initial RemoteMessage
-
-            // TODO update baseUrl based on state
-          },
+          onInitState: (context) {},
           repositoryProviders: [
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
@@ -94,18 +88,10 @@ class TimesheetsAppBuilder extends AppBuilder {
             BlocProvider<TimerBloc>(
               create: (context) => TimerBloc(ticker: const TimeSheetTicker()),
             ),
-            // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],
-          // listeners: [
-          // TODO DjangoflowFCMBlocTokenListener, DjangoflowFCMBlocMessageListener
-          // ],
           builder: (context) => LoginListenerWrapper(
             initialUser: context.read<AuthCubit>().state.user,
             onLogin: (context, user) {
-              // TODO get and save fcm token
-              // use DjangoflowFCMBloc to get token
-              // TODO update analytics user related properties
-              // TODO update ErrorReporters user properties
               final authState = context.read<AuthCubit>().state;
               context.read<AppXmlRpcClient>().updateCredentials(
                     password: authState.password!,
@@ -115,12 +101,6 @@ class TimesheetsAppBuilder extends AppBuilder {
                   );
             },
             onLogout: (context) {
-              // TODO remove Analytics user properties
-              // TODO remove ErrorReporters user properties
-
-              // Upon logout all the routes will be pushed and
-              // HomeRoute will be pushed so and then the AuthGuard will
-              // Redirect to the loginRoute
               appRouter.pushAndPopUntil(
                 const HomeRoute(),
                 predicate: (route) => false,
@@ -129,14 +109,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             child: AppCubitConsumer(
               listenWhen: (previous, current) =>
                   previous.environment != current.environment,
-              listener: (context, state) async {
-                // logout when env changes
-
-                // TODO setup base url for env
-                // ApiRepository.instance.updateBaseUrl(isSandbox? sandBoxBaseurl: liveBaseUrl)
-                // setup environment for error reporters
-                // ErrorReporter.instance.updateEnv(describeEnum(state));
-              },
+              listener: (context, state) async {},
               builder: (context, appState) => MaterialApp.router(
                 debugShowCheckedModeBanner: false,
                 scaffoldMessengerKey:
