@@ -12,10 +12,7 @@ class ActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.read<AuthCubit>().state.user;
     if (user != null) {
-      context.read<ProjectCubit>().loadProjects(
-            id: user.id,
-            password: context.read<AuthCubit>().state.password!,
-      );
+      context.read<ProjectCubit>().loadProjects();
     }
     return Scaffold(
       appBar: AppBar(

@@ -1,10 +1,10 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 class TimerWidget extends StatefulWidget {
@@ -33,8 +33,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
-    final AuthState authState = context.watch<AuthCubit>().state;
-    final user = authState.user;
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
@@ -57,7 +55,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             child: Column(
               children: [
                 Text(
-                  _format(duration),
+                  _format(duration: duration),
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
                 const SizedBox(
@@ -92,7 +90,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                       ),
                     if (status != TimerStatus.initial)
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           timerBloc.add(const TimerEvent.reset());
                           DateTime startTime = activityCubit.state.startTime!;
                           DateTime endTime = startTime.add(duration);
@@ -107,11 +105,11 @@ class _TimerWidgetState extends State<TimerWidget> {
                             startTime: formatter.format(startTime),
                             endTime: formatter.format(endTime),
                           );
-                          activityCubit.syncActivity(
+                          await activityCubit.syncActivity(
                             activity: activity,
-                            id: user!.id,
-                            password: authState.password!,
                           );
+
+                          DjangoflowAppSnackbar.showInfo('Activity Synced!');
                         },
                         icon: Icon(
                           Icons.square_rounded,
@@ -128,7 +126,8 @@ class _TimerWidgetState extends State<TimerWidget> {
     );
   }
 
-  _format(Duration d) => d.toString().split('.').first.padLeft(8, '0');
+  _format({required Duration duration}) =>
+      duration.toString().split('.').first.padLeft(8, '0');
 
   _resumeTimerOnAppForeground({required BuildContext context}) {
     final timerBloc = context.read<TimerBloc>();

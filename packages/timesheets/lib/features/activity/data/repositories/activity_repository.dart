@@ -4,17 +4,15 @@ import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 
 ///Repository to fetch projects data
 class ActivityRepository extends OdooRpcRepositoryBase {
+  ActivityRepository(super.rpcClient);
+
   Future addTimesheetEntry({
-    required int id,
-    required String password,
     required Map<String, dynamic> data,
   }) async {
-    await getObject(
-      id,
-      password,
-      timesheetEntryMethod,
-      OdooApiMethod.create.name,
-      [
+    await odooCallMethod(
+      odooModel: timesheetEntryModel,
+      method: OdooApiMethod.create.name,
+      parameters: [
         [
           data,
         ]

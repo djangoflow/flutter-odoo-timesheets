@@ -5,20 +5,19 @@ import 'package:timesheets/features/project/project.dart';
 
 ///Repository to fetch projects data using [OdooRepository]
 class ProjectRepository extends OdooRpcRepositoryBase {
-  Future getProjects({
-    required int id,
-    required String password,
-  }) async {
-    var response = await getObject(
-      id,
-      password,
-      projectMethod,
-      OdooApiMethod.searchRead.name,
-      [],
-      optionalParams: buildFilterableFields(['name']),
+  ProjectRepository(super.rpcClient);
+
+  Future getProjects() async {
+    var response = await odooCallMethod(
+      odooModel: projectModel,
+      method: OdooApiMethod.searchRead.name,
+      parameters: [
+        [],
+        buildFilterableFields(['name']),
+      ],
     );
 
-    List<Project> projects = [];
+    final projects = <Project>[];
     for (final project in response) {
       projects.add(Project.fromJson(project));
     }

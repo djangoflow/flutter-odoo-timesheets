@@ -1,60 +1,32 @@
-import 'package:timesheets/configurations/configurations.dart';
+import 'dart:io';
+
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
 class OdooRpcRepositoryBase {
-  Uri getCommonUri() => Uri.parse(baseUrl + commonEndpoint);
+  final AppXmlRpcClient rpcClient;
 
-  Uri getObjectUri() => Uri.parse(baseUrl + objectEndpoint);
-  
-  // TODO: rename this to something meaningful, like `rpcAuthGetMethod(method)`
-  // TODO: pass the email, password in a DRY way
-  Future getCommon(String email, String password, String method) async {
-    List rpcParams = [db, email, password, []];
-
-    try {
-      // TODO create AppXmlRpcClient wrapper, that will handle baseUrl, common rpc params for auth,db etc.
-      var response = await xml_rpc.call(
-        getCommonUri(),
-        method,
-        rpcParams,
-      );
-
-      return response;
-    } catch (e) {
-      handleError(e);
-    }
-  }
+  OdooRpcRepositoryBase(this.rpcClient);
 
   /// Performs various operations like read, search, update, add, edit data
   /// based on [model], [methods] and parameters
-  // TODO rename this to something meaningful, like `rpcGetObject(model, method, params)`
-  Future getObject(
-    int id,
-    String password,
-    String model,
-    String method,
-    List parameters, {
-    Map<String, dynamic>? optionalParams,
+  Future odooCallMethod({
+    required String odooModel,
+    required String method,
+    required List parameters,
   }) async {
-    List rpcParams = [
-      db,
-      id,
-      password,
-      model,
-      method,
-      parameters,
-    ];
-
-    if (optionalParams != null) {
-      rpcParams.add(optionalParams);
-    }
-
     try {
-      var response = await xml_rpc.call(getObjectUri(), rpcFunction, rpcParams);
+      final rpcParams = [
+        odooModel,
+        method,
+        ...parameters,
+      ];
 
-      return response;
+      return await rpcClient.rpcCallMethod(
+        params: rpcParams,
+      );
     } catch (e) {
       handleError(e);
     }
@@ -63,7 +35,11 @@ class OdooRpcRepositoryBase {
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   handleError(error) {
     if (error is xml_rpc.Fault) {
-      throw OdooRepositoryException(error.text);
+      throw OdooRepositoryException.fromCode(error.text);
+    } else if (error is SocketException ||
+        error is ArgumentError ||
+        error is FormatException) {
+      throw OdooRepositoryException.fromCode(error.message);
     } else {
       throw const OdooRepositoryException();
     }

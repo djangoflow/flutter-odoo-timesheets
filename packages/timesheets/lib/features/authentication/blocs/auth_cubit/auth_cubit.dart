@@ -12,7 +12,12 @@ part 'auth_cubit.g.dart';
 
 @freezed
 class AuthState with _$AuthState {
-  const factory AuthState({User? user, String? password}) = _AuthState;
+  const factory AuthState({
+    User? user,
+    String? password,
+    String? serverUrl,
+    String? db,
+  }) = _AuthState;
 
   factory AuthState.fromJson(Map<String, dynamic> json) =>
       _$AuthStateFromJson(json);
@@ -21,25 +26,41 @@ class AuthState with _$AuthState {
 class AuthCubit extends HydratedCubit<AuthState> {
   static AuthCubit get instance => _instance;
   static final AuthCubit _instance = AuthCubit._internal();
-
-  final _authenticationRepository = AuthenticationRepository();
+  AuthenticationRepository? _authenticationRepository;
 
   AuthCubit._internal() : super(const AuthState());
+
+  void initialize(AuthenticationRepository authenticationRepository) {
+    if (_authenticationRepository != null) {
+      throw Exception('Already initialized');
+    }
+
+    _authenticationRepository = authenticationRepository;
+  }
 
   @override
   AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
 
-  void login(User user, String password) => emit(
+  void _login(
+    User user,
+    String password,
+    String serverUrl,
+    String db,
+  ) =>
+      emit(
         state.copyWith(
           user: user,
           password: password,
+          serverUrl: serverUrl,
+          db: db,
         ),
       );
 
-  Future<void> logout() async {
+  void logout() {
     emit(
       state.copyWith(
         user: null,
+        password: null,
       ),
     );
   }
@@ -47,14 +68,21 @@ class AuthCubit extends HydratedCubit<AuthState> {
   Future<void> loginWithEmailPassword({
     required String email,
     required String password,
+    required String serverUrl,
+    required String db,
   }) async {
     try {
-      User? user = await _authenticationRepository.connect(
+      if (_authenticationRepository == null) {
+        throw Exception('AuthCubit not initialized');
+      }
+      final user = await _authenticationRepository?.connect(
         email: email,
         password: password,
+        serverUrl: serverUrl,
+        db: db,
       );
       if (user != null) {
-        login(user, password);
+        _login(user, password, serverUrl, db);
       }
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showError(e.message);

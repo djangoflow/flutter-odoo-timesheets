@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
@@ -33,17 +34,28 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
+            RepositoryProvider<AppXmlRpcClient>(
+              create: (context) => AppXmlRpcClient(),
+            ),
             RepositoryProvider<AuthenticationRepository>(
-              create: (context) => AuthenticationRepository(),
+              create: (context) => AuthenticationRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<ProjectRepository>(
-              create: (context) => ProjectRepository(),
+              create: (context) => ProjectRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<TaskRepository>(
-              create: (context) => TaskRepository(),
+              create: (context) => TaskRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             RepositoryProvider<ActivityRepository>(
-              create: (context) => ActivityRepository(),
+              create: (context) => ActivityRepository(
+                context.read<AppXmlRpcClient>(),
+              ),
             ),
             // provide more repositories like DjangoflowFCMRepository etc
           ],
@@ -52,7 +64,10 @@ class TimesheetsAppBuilder extends AppBuilder {
               create: (context) => AppCubit.instance,
             ),
             BlocProvider<AuthCubit>(
-              create: (context) => AuthCubit.instance,
+              create: (context) => AuthCubit.instance
+                ..initialize(
+                  context.read<AuthenticationRepository>(),
+                ),
             ),
             BlocProvider<AppLinksCubit>(
               create: (context) => AppLinksCubit(
@@ -91,6 +106,13 @@ class TimesheetsAppBuilder extends AppBuilder {
               // use DjangoflowFCMBloc to get token
               // TODO update analytics user related properties
               // TODO update ErrorReporters user properties
+              final authState = context.read<AuthCubit>().state;
+              context.read<AppXmlRpcClient>().updateCredentials(
+                    password: authState.password!,
+                    id: user.id,
+                    baseUrl: authState.serverUrl,
+                    db: authState.db,
+                  );
             },
             onLogout: (context) {
               // TODO remove Analytics user properties
