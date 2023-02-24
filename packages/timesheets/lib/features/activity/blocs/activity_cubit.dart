@@ -28,7 +28,7 @@ class ActivityCubit extends HydratedCubit<ActivityState> {
     ));
   }
 
-  Future syncActivity({
+  Future<void> syncActivity({
     required Activity activity,
   }) async {
     emit(state.copyWith(activityStatus: ActivityStatus.syncing));

@@ -56,7 +56,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
         ),
       );
 
-  Future<void> logout() async {
+  void logout() {
     emit(
       state.copyWith(
         user: null,
