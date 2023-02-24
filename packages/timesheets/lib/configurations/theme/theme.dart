@@ -9,7 +9,6 @@ export 'colors.dart';
 export 'size_constants.dart';
 export 'typography.dart';
 
-// TODO  fix theme later with black,blue and green from fimga
 class AppTheme {
   static const double _buttonRadius = 10;
 
@@ -56,9 +55,10 @@ class AppTheme {
     );
 
     ThemeData updatedTheme = theme.copyWith(
-      cardTheme: buildCardTheme(
-        AppColors.cardColor,
+      cardTheme: _buildCardTheme(
+        color: AppColors.cardColor,
       ),
+      popupMenuTheme: _buildPopupTheme(color: Colors.white),
     );
 
     return updatedTheme;
@@ -81,24 +81,25 @@ class AppTheme {
         subThemesData: _commonSubThemeData);
 
     ThemeData updatedTheme = theme.copyWith(
-      cardTheme: buildCardTheme(AppColors.cardColorDark),
+      cardTheme: _buildCardTheme(color: AppColors.cardColorDark),
+      popupMenuTheme: _buildPopupTheme(color: AppColors.popupColorDark),
     );
 
     return updatedTheme;
   }
 
-// TODO implement setting up google font https://pub.dev/packages/google_fonts#getting-started
-// static ThemeData applyGoogleFontTextTheme(ThemeData baseTheme){
-//   return baseTheme.copyWith(
-//     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
-//   );
-// }
-
-  static CardTheme buildCardTheme(Color color) => CardTheme(
+  static CardTheme _buildCardTheme({required Color color}) => CardTheme(
         color: color,
         elevation: kPadding * 0.4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(kPadding * 1.5),
+        ),
+      );
+
+  static PopupMenuThemeData _buildPopupTheme({required Color color}) => PopupMenuThemeData(
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding),
         ),
       );
 }

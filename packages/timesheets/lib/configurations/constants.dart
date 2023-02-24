@@ -17,8 +17,10 @@ const taskModel = 'project.task';
 const usersModel = 'res.users';
 const timesheetEntryModel = 'account.analytic.line';
 
-
 const emailControlName = 'email';
 const passControlName = 'pass';
 const serverUrlControlName = 'serverUrl';
 const dbControlName = 'db';
+const projectControlName = 'selectedProject';
+const taskControlName = 'selectedTask';
+const descriptionControlName = 'description';
