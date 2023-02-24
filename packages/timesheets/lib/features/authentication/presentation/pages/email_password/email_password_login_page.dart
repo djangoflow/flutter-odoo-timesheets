@@ -89,28 +89,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         const SizedBox(
                           height: kPadding * 3,
                         ),
-                        ReactiveTextField(
-                          formControlName: passControlName,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: const InputDecoration(
-                            hintText: 'Password',
-                          ),
-                          autofillHints: const [AutofillHints.password],
-                          validationMessages: {
-                            ValidationMessage.required: (_) =>
-                                'Password is required',
-                          },
-                          obscureText: true,
-                          onSubmitted: (_) {
-                            if (!form.valid) {
-                              form.markAsTouched();
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          height: kPadding * 3,
-                        ),
                         AutofillGroup(
                           child: ReactiveTextField(
                             formControlName: serverUrlControlName,
@@ -149,6 +127,28 @@ class EmailPasswordLoginPage extends StatelessWidget {
                               ? DefaultActionController.of(context)
                                   ?.add(ActionType.start)
                               : form.markAsTouched(),
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        ReactiveTextField(
+                          formControlName: passControlName,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.visiblePassword,
+                          decoration: const InputDecoration(
+                            hintText: 'Password',
+                          ),
+                          autofillHints: const [AutofillHints.password],
+                          validationMessages: {
+                            ValidationMessage.required: (_) =>
+                            'Password is required',
+                          },
+                          obscureText: true,
+                          onSubmitted: (_) {
+                            if (!form.valid) {
+                              form.markAsTouched();
+                            }
+                          },
                         ),
                         const SizedBox(
                           height: kPadding * 5,
