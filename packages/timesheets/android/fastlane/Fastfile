@@ -17,9 +17,10 @@ platform :android do
     upload_to_play_store(
         track: "internal",
         aab: "../build/app/outputs/bundle/release/app-release.aab",
-	confirm_draft_release: false,
+        release_status: "draft",
         skip_upload_images: true,
-        skip_upload_screenshots: true)
+        skip_upload_screenshots: true,
+    )
   end
 
   desc "Submit a new Beta Build to Playstore Beta track"

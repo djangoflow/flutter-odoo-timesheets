@@ -141,7 +141,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           autofillHints: const [AutofillHints.password],
                           validationMessages: {
                             ValidationMessage.required: (_) =>
-                            'Password is required',
+                                'Password is required',
                           },
                           obscureText: true,
                           onSubmitted: (_) {
