@@ -96,7 +96,8 @@ class AppTheme {
         ),
       );
 
-  static PopupMenuThemeData _buildPopupTheme({required Color color}) => PopupMenuThemeData(
+  static PopupMenuThemeData _buildPopupTheme({required Color color}) =>
+      PopupMenuThemeData(
         color: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(kPadding),

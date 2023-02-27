@@ -16,6 +16,10 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
   TimerBloc({required TimeSheetTicker ticker})
       : _ticker = ticker,
         super(const TimerState()) {
+    // Edge case if somehow the timer is running when the app is closed which was not detected by lifecycle listener
+    // if (state.status == TimerStatus.running && _tickerSubscription == null) {
+    //   add(const TimerEvent.started());
+    // }
     on<TimerEvent>((event, emit) {
       event.when(
         started: () => _onStarted(emit),

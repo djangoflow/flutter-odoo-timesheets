@@ -93,6 +93,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             initialUser: context.read<AuthCubit>().state.user,
             onLogin: (context, user) {
               final authState = context.read<AuthCubit>().state;
+              // TODO check for null values, and if found then log the user out.
               context.read<AppXmlRpcClient>().updateCredentials(
                     password: authState.password!,
                     id: user.id,
