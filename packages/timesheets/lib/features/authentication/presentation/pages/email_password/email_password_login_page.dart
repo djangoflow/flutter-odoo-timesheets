@@ -62,30 +62,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // TODO: move email field down. Should be with the password field
-                        ReactiveTextField(
-                          autofocus: true,
-                          formControlName: emailControlName,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
-                          ),
-                          autofillHints: const [AutofillHints.email],
-                          validationMessages: {
-                            ValidationMessage.required: (_) =>
-                                'Email is required',
-                            ValidationMessage.email: (_) => 'Invalid format',
-                          },
-                          onSubmitted: (_) {
-                            if (!form.valid) {
-                              form.markAsTouched();
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          height: kPadding * 3,
-                        ),
                         AutofillGroup(
                           child: ReactiveTextField(
                             formControlName: serverUrlControlName,
@@ -124,6 +100,29 @@ class EmailPasswordLoginPage extends StatelessWidget {
                               ? DefaultActionController.of(context)
                                   ?.add(ActionType.start)
                               : form.markAsTouched(),
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        ReactiveTextField(
+                          autofocus: true,
+                          formControlName: emailControlName,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            hintText: 'Email',
+                          ),
+                          autofillHints: const [AutofillHints.email],
+                          validationMessages: {
+                            ValidationMessage.required: (_) =>
+                            'Email is required',
+                            ValidationMessage.email: (_) => 'Invalid format',
+                          },
+                          onSubmitted: (_) {
+                            if (!form.valid) {
+                              form.markAsTouched();
+                            }
+                          },
                         ),
                         const SizedBox(
                           height: kPadding * 3,

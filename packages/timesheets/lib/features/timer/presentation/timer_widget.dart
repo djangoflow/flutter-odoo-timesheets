@@ -7,27 +7,8 @@ import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
-class TimerWidget extends StatefulWidget {
-  const TimerWidget({Key? key}) : super(key: key);
-
-  @override
-  State<TimerWidget> createState() => _TimerWidgetState();
-}
-
-class _TimerWidgetState extends State<TimerWidget> {
-  final _iconSize = 40.0;
-
-  @override
-  void initState() {
-    final timerBloc = context.read<TimerBloc>();
-
-    ///Checking for active timer when app opened from killed state
-    if (timerBloc.state.status == TimerStatus.pausedByForce) {
-      _resumeTimerOnAppForeground(context: context);
-    }
-
-    super.initState();
-  }
+class TimerWidget extends StatelessWidget {
+  const TimerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +17,9 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
-        if (timerBloc.state.status == TimerStatus.pausedByForce) {
-          ///Checking for active timer when app opened from background state
-          _resumeTimerOnAppForeground(context: context);
-        } else if (timerBloc.state.status == TimerStatus.running) {
-          if (state == AppLifecycleState.paused ||
-              state == AppLifecycleState.detached) {
-            timerBloc.add(TimerEvent.paused(lastTicked: DateTime.now()));
-          }
+        if (state == AppLifecycleState.resumed &&
+            timerBloc.state.status == TimerStatus.running) {
+          timerBloc.resumeTimerOnAppForeground();
         }
       },
       child: BlocBuilder<TimerBloc, TimerState>(
@@ -73,9 +49,9 @@ class _TimerWidgetState extends State<TimerWidget> {
                             timerBloc.add(const TimerEvent.started());
                           }
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.play_arrow_rounded,
-                          size: _iconSize,
+                          size: iconSizeBig,
                         ),
                       ),
                     if (status == TimerStatus.running)
@@ -83,9 +59,9 @@ class _TimerWidgetState extends State<TimerWidget> {
                         onPressed: () {
                           timerBloc.add(const TimerEvent.paused());
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.pause_circle,
-                          size: _iconSize,
+                          size: iconSizeBig,
                         ),
                       ),
                     if (status != TimerStatus.initial)
@@ -111,9 +87,9 @@ class _TimerWidgetState extends State<TimerWidget> {
 
                           DjangoflowAppSnackbar.showInfo('Activity Synced!');
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.square_rounded,
-                          size: _iconSize,
+                          size: iconSizeBig,
                         ),
                       ),
                   ],
@@ -128,17 +104,4 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   _format({required Duration duration}) =>
       duration.toString().split('.').first.padLeft(8, '0');
-
-  _resumeTimerOnAppForeground({required BuildContext context}) {
-    final timerBloc = context.read<TimerBloc>();
-    final lastTicked = timerBloc.state.lastTicked;
-    if (lastTicked != null) {
-      final now = DateTime.now();
-      final elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
-      final timerDuration = elapsedSinceLastTicked + timerBloc.state.duration;
-      timerBloc.add(TimerEvent.resumed(duration: timerDuration));
-    } else {
-      timerBloc.add(const TimerEvent.resumed());
-    }
-  }
 }

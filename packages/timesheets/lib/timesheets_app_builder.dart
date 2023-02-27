@@ -86,20 +86,27 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
             ),
             BlocProvider<TimerBloc>(
-              create: (context) => TimerBloc(ticker: const TimeSheetTicker()),
+              create: (context) => TimerBloc(
+                timeSheetTicker: const TimeSheetTicker(),
+              ),
             ),
           ],
           builder: (context) => LoginListenerWrapper(
             initialUser: context.read<AuthCubit>().state.user,
             onLogin: (context, user) {
-              final authState = context.read<AuthCubit>().state;
-              // TODO check for null values, and if found then log the user out.
-              context.read<AppXmlRpcClient>().updateCredentials(
-                    password: authState.password!,
-                    id: user.id,
-                    baseUrl: authState.serverUrl,
-                    db: authState.db,
-                  );
+
+              final authCubit = context.read<AuthCubit>();
+              final authState = authCubit.state;
+              if (authState.password == null) {
+                authCubit.logout();
+              } else {
+                context.read<AppXmlRpcClient>().updateCredentials(
+                      password: authState.password,
+                      id: user.id,
+                      baseUrl: authState.serverUrl,
+                      db: authState.db,
+                    );
+              }
             },
             onLogout: (context) {
               appRouter.pushAndPopUntil(
@@ -139,7 +146,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                   initialRoutes: kIsWeb || initialDeepLink != null
                       ? null
                       : [
-                          SplashRoute(backgroundColor: Colors.white),
+                          SplashRoute(backgroundColor: AppColors.surface),
                         ],
                   // List of global navigation obsersers here
                   // Firebase Screen event observer
@@ -148,7 +155,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                 ),
                 builder: (context, child) => AppResponsiveLayoutBuilder(
                   background: Container(
-                    color: Colors.black87, // use theme color
+                    color: AppColors.surfaceDark,
                   ),
                   child: SandboxBanner(
                     isSandbox: appState.environment == AppEnvironment.sandbox,
