@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/activity/presentation/activity_title_widget.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 import '../../../../configurations/configurations.dart';
