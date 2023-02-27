@@ -48,11 +48,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Sign in'),
-            leading: const AutoLeadingButton(
-              showIfParentCanPop: true,
-              showIfChildCanPop: true,
-              ignorePagelessRoutes: true,
-            ),
+            leading: const AutoLeadingButton(),
           ),
           body: Center(
             child: SingleChildScrollView(
@@ -66,6 +62,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // TODO: move email field down. Should be with the password field
                         ReactiveTextField(
                           autofocus: true,
                           formControlName: emailControlName,
@@ -141,7 +138,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           autofillHints: const [AutofillHints.password],
                           validationMessages: {
                             ValidationMessage.required: (_) =>
-                            'Password is required',
+                                'Password is required',
                           },
                           obscureText: true,
                           onSubmitted: (_) {

@@ -14,7 +14,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
 
   final List<V> items;
   final String Function(V)? itemAsString;
-  final Future<bool?> Function(V?,V?)? onBeforeChange;
+  final Future<bool?> Function(V?, V?)? onBeforeChange;
   final String? formControlName;
   final Map<String, String Function(Object)>? validationMessages;
   final String? hintText;

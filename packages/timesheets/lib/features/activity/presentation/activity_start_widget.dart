@@ -13,22 +13,22 @@ class ActivityStart extends StatelessWidget {
   const ActivityStart({Key? key}) : super(key: key);
 
   FormGroup _formBuilder() => fb.group({
-    projectControlName: FormControl<Project>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    taskControlName: FormControl<Task>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    descriptionControlName: FormControl<String>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-  });
+        projectControlName: FormControl<Project>(
+          validators: [
+            Validators.required,
+          ],
+        ),
+        taskControlName: FormControl<Task>(
+          validators: [
+            Validators.required,
+          ],
+        ),
+        descriptionControlName: FormControl<String>(
+          validators: [
+            Validators.required,
+          ],
+        ),
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -39,21 +39,21 @@ class ActivityStart extends StatelessWidget {
     return ReactiveFormBuilder(
         form: _formBuilder,
         builder: (context, form, child) => AutofillGroup(
-          child: Padding(
-            padding: const EdgeInsets.all(kPadding * 2),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: kPadding * 2,
-                ),
-                BlocBuilder<ProjectCubit, ProjectState>(
-                  builder: (context, state) => state.when(
-                    initial: () => const Offstage(),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.all(kPadding * 2),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: kPadding * 2,
                     ),
-                    success: (projects) =>
-                        AppReactiveDropdown<Project, Project>(
+                    BlocBuilder<ProjectCubit, ProjectState>(
+                      builder: (context, state) => state.when(
+                        initial: () => const Offstage(),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        success: (projects) =>
+                            AppReactiveDropdown<Project, Project>(
                           items: projects,
                           formControlName: projectControlName,
                           hintText: 'Select Project',
@@ -78,82 +78,82 @@ class ActivityStart extends StatelessWidget {
                           },
                           validationMessages: {
                             ValidationMessage.required: (_) =>
-                            'Please select project',
+                                'Please select project',
                           },
                         ),
-                    error: (String message) =>
-                    const Text('Error Loading Projects'),
-                  ),
-                ),
-                const SizedBox(height: kPadding * 2),
-                StreamBuilder(
-                  stream: form.control(projectControlName).valueChanges,
-                  builder: (context, projectSnap) {
-                    if (projectSnap.data != null) {
-                      return BlocBuilder<TaskCubit, TaskState>(
-                        builder: (context, state) => state.when(
-                          initial: () => const Offstage(),
-                          loading: () => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          success: (tasks) =>
-                              AppReactiveDropdown<Task, Task>(
+                        error: (String message) =>
+                            const Text('Error Loading Projects'),
+                      ),
+                    ),
+                    const SizedBox(height: kPadding * 2),
+                    StreamBuilder(
+                      stream: form.control(projectControlName).valueChanges,
+                      builder: (context, projectSnap) {
+                        if (projectSnap.data != null) {
+                          return BlocBuilder<TaskCubit, TaskState>(
+                            builder: (context, state) => state.when(
+                              initial: () => const Offstage(),
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              success: (tasks) =>
+                                  AppReactiveDropdown<Task, Task>(
                                 itemAsString: (task) => task.name,
                                 items: tasks,
                                 formControlName: taskControlName,
                                 hintText: 'Select task',
                                 validationMessages: {
                                   ValidationMessage.required: (_) =>
-                                  'Please select task',
+                                      'Please select task',
                                 },
                               ),
-                          error: (String message) =>
-                          const Text('Error Loading Tasks'),
-                        ),
-                      );
-                    } else {
-                      return const Offstage();
-                    }
-                  },
-                ),
-                const SizedBox(height: kPadding * 2),
-                ReactiveTextField(
-                  formControlName: descriptionControlName,
-                  textInputAction: TextInputAction.done,
-                  textCapitalization: TextCapitalization.none,
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter Description',
-                  ),
-                  validationMessages: {
-                    ValidationMessage.required: (_) =>
-                    'Description is required',
-                  },
-                  onSubmitted: (_) {
-                    if (!form.valid) {
-                      form.markAsTouched();
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: kPadding * 4,
-                ),
-                ReactiveFormConsumer(
-                  builder: (context, form, child) => ElevatedButton(
-                    onPressed: form.valid
-                        ? () {
-                      _startWork(context: context, form: form);
-                    }
-                        : null,
-                    child: const Center(
-                      child: Text('Start Activity'),
+                              error: (String message) =>
+                                  const Text('Error Loading Tasks'),
+                            ),
+                          );
+                        } else {
+                          return const Offstage();
+                        }
+                      },
                     ),
-                  ),
+                    const SizedBox(height: kPadding * 2),
+                    ReactiveTextField(
+                      formControlName: descriptionControlName,
+                      textInputAction: TextInputAction.done,
+                      textCapitalization: TextCapitalization.none,
+                      keyboardType: TextInputType.visiblePassword,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter Description',
+                      ),
+                      validationMessages: {
+                        ValidationMessage.required: (_) =>
+                            'Description is required',
+                      },
+                      onSubmitted: (_) {
+                        if (!form.valid) {
+                          form.markAsTouched();
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: kPadding * 4,
+                    ),
+                    ReactiveFormConsumer(
+                      builder: (context, form, child) => ElevatedButton(
+                        onPressed: form.valid
+                            ? () {
+                                _startWork(context: context, form: form);
+                              }
+                            : null,
+                        child: const Center(
+                          child: Text('Start Activity'),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ));
+              ),
+            ));
   }
 
   _startWork({required BuildContext context, required FormGroup form}) async {
@@ -162,11 +162,11 @@ class ActivityStart extends StatelessWidget {
     final description = form.control(descriptionControlName).value as String;
 
     context.read<ActivityCubit>().logActivity(
-      startDate: DateTime.now().toUtc(),
-      project: project,
-      task: task,
-      description: description,
-    );
+          startDate: DateTime.now().toUtc(),
+          project: project,
+          task: task,
+          description: description,
+        );
     context.read<TimerBloc>().add(const TimerEvent.started());
   }
 }

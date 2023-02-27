@@ -15,5 +15,4 @@ class Task with _$Task {
   }) = _Task;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
-
 }

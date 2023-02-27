@@ -4,8 +4,7 @@ part 'user_model.g.dart';
 part 'user_model.freezed.dart';
 
 @freezed
-class User with _$User{
-
+class User with _$User {
   const factory User({
     required int id,
     required String name,
@@ -13,5 +12,4 @@ class User with _$User{
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
 }
