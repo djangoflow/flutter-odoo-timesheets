@@ -9,7 +9,6 @@ export 'colors.dart';
 export 'size_constants.dart';
 export 'typography.dart';
 
-// TODO  fix theme later with black,blue and green from fimga
 class AppTheme {
   static const double _buttonRadius = 10;
 
@@ -33,6 +32,9 @@ class AppTheme {
         inputDecoratorIsFilled: true,
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
+        cardElevation: kPadding * 0.4,
+        cardRadius: kPadding * 1.5,
+        popupMenuRadius: kPadding,
       );
 
   static ThemeData get light {
@@ -48,57 +50,36 @@ class AppTheme {
       surfaceMode: FlexSurfaceMode.level,
       blendLevel: 9,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surfaceTint: const Color(0xff000000),
+      surfaceTint: AppColors.surfaceTint,
+      surface: AppColors.surface,
       tones: FlexTones.material(Brightness.light).onMainsUseBW(),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       subThemesData: _commonSubThemeData,
     );
 
-    ThemeData updatedTheme = theme.copyWith(
-      cardTheme: buildCardTheme(
-        AppColors.cardColor,
-      ),
-    );
-
-    return updatedTheme;
+    return theme;
   }
 
   static ThemeData get dark {
     final theme = FlexThemeData.dark(
-        colors: AppColors.flexSchemeColor,
-        textTheme: AppTextStyle.textTheme,
-        primaryTextTheme: AppTextStyle.textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-          decorationColor: Colors.white,
-        ),
-        usedColors: 6,
-        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-        blendLevel: 15,
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        useMaterial3: true,
-        subThemesData: _commonSubThemeData);
-
-    ThemeData updatedTheme = theme.copyWith(
-      cardTheme: buildCardTheme(AppColors.cardColorDark),
+      colors: AppColors.flexSchemeColor,
+      textTheme: AppTextStyle.textTheme,
+      primaryTextTheme: AppTextStyle.textTheme.apply(
+        bodyColor: AppColors.surface,
+        displayColor: AppColors.surface,
+        decorationColor: AppColors.surface,
+      ),
+      usedColors: 6,
+      appBarStyle: FlexAppBarStyle.scaffoldBackground,
+      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+      surface: AppColors.surfaceDark,
+      blendLevel: 15,
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      subThemesData: _commonSubThemeData,
     );
 
-    return updatedTheme;
+    return theme;
   }
-
-// TODO implement setting up google font https://pub.dev/packages/google_fonts#getting-started
-// static ThemeData applyGoogleFontTextTheme(ThemeData baseTheme){
-//   return baseTheme.copyWith(
-//     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
-//   );
-// }
-
-  static CardTheme buildCardTheme(Color color) => CardTheme(
-        color: color,
-        elevation: kPadding * 0.4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kPadding * 1.5),
-        ),
-      );
 }
