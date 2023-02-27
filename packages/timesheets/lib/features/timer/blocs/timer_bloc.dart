@@ -50,7 +50,7 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     // makes the subscription listen to TimerTicked state
     _tickerSubscription = _timeSheetTicker
         .tick(duration ?? 0)
-        .listen((duration) => add(_TimerTicked(duration: duration)));
+        .listen((duration) => add(TimerEvent.ticked(duration: duration)));
   }
 
   void _onTicked(int duration, Emitter<TimerState> emit) {
