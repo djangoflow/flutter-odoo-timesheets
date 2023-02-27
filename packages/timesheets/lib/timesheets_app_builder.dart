@@ -145,7 +145,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                   initialRoutes: kIsWeb || initialDeepLink != null
                       ? null
                       : [
-                          SplashRoute(backgroundColor: Colors.white),
+                          SplashRoute(backgroundColor: AppColors.surface),
                         ],
                   // List of global navigation obsersers here
                   // Firebase Screen event observer
@@ -154,7 +154,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                 ),
                 builder: (context, child) => AppResponsiveLayoutBuilder(
                   background: Container(
-                    color: Colors.black87, // use theme color
+                    color: AppColors.surfaceDark,
                   ),
                   child: SandboxBanner(
                     isSandbox: appState.environment == AppEnvironment.sandbox,
