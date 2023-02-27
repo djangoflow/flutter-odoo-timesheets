@@ -8,31 +8,29 @@ part 'timer_bloc.freezed.dart';
 part 'timer_bloc.g.dart';
 
 class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
-  final TimeSheetTicker _ticker;
+  final TimeSheetTicker _timeSheetTicker;
 
-  /// to listen to the ticker stream
+  /// For listening to the ticker stream
   StreamSubscription<int>? _tickerSubscription;
 
-  TimerBloc({required TimeSheetTicker ticker})
-      : _ticker = ticker,
+  TimerBloc({required TimeSheetTicker timeSheetTicker})
+      : _timeSheetTicker = timeSheetTicker,
         super(const TimerState()) {
     on<TimerEvent>((event, emit) {
       event.when(
         started: () => _onStarted(emit),
-        paused: (lastTicked) {
-          _onPaused(state.duration, emit, lastTicked);
-        },
-        reset: () {
-          _onReset(state.duration, emit);
-        },
-        resumed: (int? duration) {
-          _onResumed(duration ?? state.duration, emit, state.status);
-        },
-        ticked: (duration) {
-          _onTicked(duration, emit);
-        },
+        paused: () => _onPaused(state.duration, emit),
+        reset: () => _onReset(emit),
+        resumed: (int? duration) =>
+            _onResumed(duration ?? state.duration, emit),
+        ticked: (duration) => _onTicked(duration, emit),
       );
     });
+
+    //Resumes timer when app launched from killed state
+    if (state.status == TimerStatus.running && _tickerSubscription == null) {
+      resumeTimerOnAppForeground();
+    }
   }
 
   @override
@@ -41,12 +39,16 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     return super.close();
   }
 
-  void _onStarted(emit, {int? duration}) {
-    /// In case of there is an subscription exists, we have to cancel it
+  void _onStarted(emit) {
+    _subscribeToTicker();
+  }
+
+  void _subscribeToTicker({int? duration}) {
+    // In case there is an existing subscription, we have to cancel it
     _tickerSubscription?.cancel();
 
-    /// makes the subscription listen to TimerTicked state
-    _tickerSubscription = _ticker
+    // makes the subscription listen to TimerTicked state
+    _tickerSubscription = _timeSheetTicker
         .tick(duration ?? 0)
         .listen((duration) => add(_TimerTicked(duration: duration)));
   }
@@ -55,38 +57,50 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     emit(state.copyWith(
       duration: duration,
       status: TimerStatus.running,
-      lastTicked: null,
+      lastTicked: DateTime.now(),
     ));
   }
 
-  void _onPaused(int duration, Emitter<TimerState> emit, DateTime? lastTicked) {
-    /// As the timer pause, we should pause the subscription also
+  void _onPaused(int duration, Emitter<TimerState> emit) {
+    // As the timer pause, we should pause the subscription also
     _tickerSubscription?.pause();
-    if (lastTicked == null) {
-      emit(state.copyWith(status: TimerStatus.paused));
-    } else {
-      emit(state.copyWith(
-        status: TimerStatus.pausedByForce,
-        lastTicked: lastTicked,
-      ));
-    }
+    emit(state.copyWith(status: TimerStatus.paused));
   }
 
-  void _onResumed(int duration, Emitter<TimerState> emit, TimerStatus status) {
-    ///Timer paused due to app closed/going to background
-    if (status == TimerStatus.pausedByForce || _tickerSubscription == null) {
-      _onStarted(emit, duration: duration);
+  void _onResumed(int duration, Emitter<TimerState> emit) {
+
+    //Duration comes from state if normal resume is done
+    //Otherwise comes from calculating against last ticked time
+
+    //Used OR logic as [_tickerSubscription] may be null when timer was paused and app was killed
+    if (state.status == TimerStatus.running || _tickerSubscription == null) {
+      _subscribeToTicker(duration: duration);
     } else {
-      /// As the timer resume, we must let the subscription resume also
+      // As the timer resume, we must let the subscription resume also
       _tickerSubscription?.resume();
-      emit(state.copyWith(status: TimerStatus.running));
     }
   }
 
-  void _onReset(int duration, Emitter<TimerState> emit) {
-    /// Timer counting finished, so we must cancel the subscription
+  void resumeTimerOnAppForeground() {
+    final lastTicked = state.lastTicked;
+    if (lastTicked != null) {
+      final now = DateTime.now();
+      final elapsedSinceLastTicked = now.difference(lastTicked).inSeconds;
+      final timerDuration = elapsedSinceLastTicked + state.duration;
+      add(TimerEvent.resumed(duration: timerDuration));
+    } else {
+      add(const TimerEvent.resumed());
+    }
+  }
+
+  void _onReset(Emitter<TimerState> emit) {
+    // Timer counting finished, so we must cancel the subscription
     _tickerSubscription?.cancel();
-    emit(state.copyWith(duration: 0, status: TimerStatus.initial));
+    emit(state.copyWith(
+      duration: 0,
+      status: TimerStatus.initial,
+      lastTicked: null,
+    ));
   }
 
   @override
@@ -100,9 +114,10 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
 class TimerEvent with _$TimerEvent {
   const factory TimerEvent.started() = _TimerStarted;
 
-  const factory TimerEvent.paused({DateTime? lastTicked}) = _TimerPaused;
+  const factory TimerEvent.paused() = _TimerPaused;
 
-  ///duration is non null when app resumes from force paused state to make up for uncounted time
+  ///[duration] is non null when app resumes from background
+  ///or launched from killed state while an activity was active
   const factory TimerEvent.resumed({int? duration}) = _TimerResumed;
 
   const factory TimerEvent.ticked({required int duration}) = _TimerTicked;
