@@ -72,7 +72,6 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
   }
 
   void _onResumed(int duration, Emitter<TimerState> emit) {
-
     //Duration comes from state if normal resume is done
     //Otherwise comes from calculating against last ticked time
 

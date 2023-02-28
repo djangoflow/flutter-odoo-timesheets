@@ -75,11 +75,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
                               ValidationMessage.required: (_) =>
                                   'Server Url is required',
                             },
-                            onSubmitted: (_) {
-                              if (!form.valid) {
-                                form.markAsTouched();
-                              }
-                            },
                           ),
                         ),
                         const SizedBox(
@@ -96,10 +91,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
                             ValidationMessage.required: (_) =>
                                 'Database is required',
                           },
-                          onSubmitted: (_) => form.valid
-                              ? DefaultActionController.of(context)
-                                  ?.add(ActionType.start)
-                              : form.markAsTouched(),
                         ),
                         const SizedBox(
                           height: kPadding * 3,
@@ -115,13 +106,8 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           autofillHints: const [AutofillHints.email],
                           validationMessages: {
                             ValidationMessage.required: (_) =>
-                            'Email is required',
+                                'Email is required',
                             ValidationMessage.email: (_) => 'Invalid format',
-                          },
-                          onSubmitted: (_) {
-                            if (!form.valid) {
-                              form.markAsTouched();
-                            }
                           },
                         ),
                         const SizedBox(
@@ -143,6 +129,9 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           onSubmitted: (_) {
                             if (!form.valid) {
                               form.markAsTouched();
+                            } else {
+                              DefaultActionController.of(context)
+                                  ?.add(ActionType.start);
                             }
                           },
                         ),
