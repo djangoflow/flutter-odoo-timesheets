@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
-
-import 'features/app/app.dart';
 import 'features/authentication/authentication.dart';
 import 'configurations/configurations.dart';
 
@@ -70,8 +68,8 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
               lazy: false,
             ),
-            BlocProvider<TaskCubit>(
-              create: (context) => TaskCubit(
+            BlocProvider<TaskListCubit>(
+              create: (context) => TaskListCubit(
                 context.read<TaskRepository>(),
               ),
             ),

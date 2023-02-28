@@ -6,21 +6,48 @@ import 'package:timesheets/features/tasks/tasks.dart';
 class TaskRepository extends OdooRpcRepositoryBase {
   TaskRepository(super.rpcClient);
 
-  Future getTasks({required int projectId}) async {
+  Future<List<Task>> getTasks([TaskListFilter? filter]) async {
+    int? projectId = filter?.projectId;
+
+    if (projectId == null) {
+      throw const OdooRepositoryException('Must provide a non-null projectId');
+    }
+
+    Map<String, dynamic> optionalParams = buildFilterableFields([name]);
+    if (filter != null) {
+      optionalParams.addAll({
+        offset: filter.offset,
+        limit: filter.limit,
+      });
+    }
+
+    ///TODO find a way to use this in a better way
+    final requiredParameters = [
+      [
+        [
+          'project_id',
+          '=',
+          projectId,
+        ],
+      ]
+    ];
+
+    if (filter != null && filter.search != null) {
+      requiredParameters[0].add(
+        [
+          name,
+          caseInsensitiveComparison,
+          '${filter.search}%',
+        ],
+      );
+    }
+
     var response = await odooCallMethod(
       odooModel: taskModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [
-        [
-          [
-            [
-              'project_id',
-              '=',
-              projectId,
-            ]
-          ]
-        ],
-        buildFilterableFields(['name']),
+        requiredParameters,
+        optionalParams,
       ],
     );
 

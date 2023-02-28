@@ -32,7 +32,7 @@ class ActivityStart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskCubit = context.read<TaskCubit>();
+    final taskListCubit = context.read<TaskListCubit>();
 
     return ReactiveFormBuilder(
         form: _formBuilder,
@@ -62,8 +62,8 @@ class ActivityStart extends StatelessWidget {
                           if (prevProject == null ||
                               prevProject.id != newProject.id) {
                             form.control(taskControlName).reset();
-                            taskCubit.loadTasks(
-                              projectId: newProject.id,
+                            taskListCubit.load(
+                              TaskListFilter(projectId: newProject.id),
                             );
                             return Future.value(true);
                           }
@@ -78,11 +78,9 @@ class ActivityStart extends StatelessWidget {
                           if (searchTerm.isNotEmpty) {
                             final projectListCubit =
                                 context.read<ProjectListCubit>();
-                            final projects = await projectListCubit.loader(
+                            return await projectListCubit.loader(
                               state.filter?.copyWith(search: searchTerm),
                             );
-
-                            return projects;
                           }
 
                           return state.data ?? [];
@@ -102,25 +100,34 @@ class ActivityStart extends StatelessWidget {
                       stream: form.control(projectControlName).valueChanges,
                       builder: (context, projectSnap) {
                         if (projectSnap.data != null) {
-                          return BlocBuilder<TaskCubit, TaskState>(
-                            builder: (context, state) => state.when(
-                              initial: () => const Offstage(),
-                              loading: () => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              success: (tasks) =>
-                                  AppReactiveDropdown<Task, Task>(
-                                itemAsString: (task) => task.name,
-                                items: tasks,
-                                formControlName: taskControlName,
-                                hintText: 'Select task',
-                                validationMessages: {
-                                  ValidationMessage.required: (_) =>
-                                      'Please select task',
-                                },
-                              ),
-                              error: (String message) =>
-                                  const Text('Error Loading Tasks'),
+                          return ListBlocBuilder<TaskListCubit, Task,
+                              TaskListFilter>(
+                            loadingBuilder: (context, data) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            emptyBuilder: (context, data) => const Center(
+                              child: Text('No Tasks Found'),
+                            ),
+                            builder: (context, state, index, itemBuilder) =>
+                                itemBuilder.call(context, index - 1),
+                            itemBuilder: (context, state, index, project) =>
+                                AppReactiveDropdown<Task, Task>(
+                              itemAsString: (task) => task.name,
+                              asyncItems: (searchTerm) async {
+                                if (searchTerm.isNotEmpty) {
+                                  return await taskListCubit.loader(
+                                    state.filter?.copyWith(search: searchTerm),
+                                  );
+                                }
+
+                                return state.data ?? [];
+                              },
+                              formControlName: taskControlName,
+                              hintText: 'Select task',
+                              validationMessages: {
+                                ValidationMessage.required: (_) =>
+                                    'Please select task',
+                              },
                             ),
                           );
                         } else {
