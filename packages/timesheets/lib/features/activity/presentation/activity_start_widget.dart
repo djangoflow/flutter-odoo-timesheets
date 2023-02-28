@@ -150,6 +150,10 @@ class ActivityStart extends StatelessWidget {
                         ),
                       ),
                     ),
+                    ElevatedButton(
+                        onPressed: () =>
+                            context.pushRoute(const ProjectsRoute()),
+                        child: const Text('Projects'))
                   ],
                 ),
               ),

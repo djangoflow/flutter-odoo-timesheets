@@ -6,6 +6,7 @@ import 'package:timesheets/features/profile/profile.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:timesheets/features/project/presentation/page/projects_page.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'auth_guard.dart';
@@ -44,6 +45,10 @@ export 'router.gr.dart';
       page: LoginPage,
       name: 'LoginRouter',
       children: loginRoutes,
+    ),
+    AutoRoute(
+      path: '/projects',
+      page: ProjectsPage,
     ),
     // Or redirect to home
     AutoRoute(path: '*', page: UnknownRoutePage),
