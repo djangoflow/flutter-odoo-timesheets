@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:timesheets/features/project/blocs/project_list_bloc/project_list_bloc.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
@@ -54,7 +56,7 @@ class ActivityStart extends StatelessWidget {
                         ),
                         success: (projects) =>
                             AppReactiveDropdown<Project, Project>(
-                          items: projects,
+                          // items: projects,
                           formControlName: projectControlName,
                           hintText: 'Select Project',
                           itemAsString: (project) => project.name,
@@ -80,10 +82,36 @@ class ActivityStart extends StatelessWidget {
                             ValidationMessage.required: (_) =>
                                 'Please select project',
                           },
+                          asyncItems: (text) async {
+                            print('HERE');
+                            print(text);
+
+                            return Future.value(<Project>[]);
+                          },
                         ),
                         error: (String message) =>
                             const Text('Error Loading Projects'),
                       ),
+                    ),
+                    DropdownSearch<String>(
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        baseStyle: Theme.of(context).textTheme.bodyLarge,
+                        dropdownSearchDecoration: const InputDecoration(
+                          hintText: 'Search',
+                        ),
+                      ),
+                      popupProps: const PopupProps.menu(
+                        showSearchBox: true,
+                        isFilterOnline: true,
+                      ),
+                      asyncItems: (String filter) async {
+                        print('HERE');
+                        print(filter);
+                        return Future.value(<String>[]);
+                      },
+                      onChanged: (data) {
+                        print(data);
+                      },
                     ),
                     const SizedBox(height: kPadding * 2),
                     StreamBuilder(

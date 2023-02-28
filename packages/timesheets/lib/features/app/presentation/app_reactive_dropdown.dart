@@ -4,20 +4,22 @@ import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 class AppReactiveDropdown<T, V> extends StatelessWidget {
   const AppReactiveDropdown({
     super.key,
-    required this.items,
+    this.items,
     required this.itemAsString,
     this.onBeforeChange,
     this.formControlName,
     this.validationMessages,
     this.hintText,
+    this.asyncItems,
   });
 
-  final List<V> items;
+  final List<V>? items;
   final String Function(V)? itemAsString;
   final Future<bool?> Function(V?, V?)? onBeforeChange;
   final String? formControlName;
   final Map<String, String Function(Object)>? validationMessages;
   final String? hintText;
+  final Future<List<V>> Function(String)? asyncItems;
 
   @override
   Widget build(BuildContext context) => ReactiveDropdownSearch<T, V>(
@@ -29,14 +31,17 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
         ),
         popupProps: const PopupProps.menu(
           showSearchBox: true,
+          isFilterOnline: true,
           menuProps: MenuProps(
               // backgroundColor: Colors.white,
+
               ),
         ),
         itemAsString: itemAsString,
-        items: items,
+        items: items ?? [],
         formControlName: formControlName,
         onBeforeChange: onBeforeChange,
         validationMessages: validationMessages,
+        asyncItems: asyncItems,
       );
 }
