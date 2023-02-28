@@ -70,8 +70,8 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
               lazy: false,
             ),
-            BlocProvider<ProjectCubit>(
-              create: (context) => ProjectCubit(
+            BlocProvider<ProjectListBloc>(
+              create: (context) => ProjectListBloc(
                 context.read<ProjectRepository>(),
               ),
             ),

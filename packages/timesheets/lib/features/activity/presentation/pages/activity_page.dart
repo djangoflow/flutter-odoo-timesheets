@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/project/project.dart';
 
 class ActivityPage extends StatelessWidget {
   const ActivityPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = context.read<AuthCubit>().state.user;
-    if (user != null) {
-      context.read<ProjectCubit>().loadProjects();
-    }
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Activity'),
       ),
@@ -35,5 +28,4 @@ class ActivityPage extends StatelessWidget {
         ),
       ),
     );
-  }
 }

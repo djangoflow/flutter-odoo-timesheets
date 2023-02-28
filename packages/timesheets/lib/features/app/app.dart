@@ -6,3 +6,4 @@ export 'presentation/listeners/app_lifecycle_listener.dart';
 export 'presentation/app_reactive_dropdown.dart';
 export 'data/odoo/odoo_repository_base.dart';
 export 'data/odoo/odoo_repository_exception.dart';
+export 'data/odoo/odoo_api_method.dart';
