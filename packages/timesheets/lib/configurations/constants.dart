@@ -22,6 +22,11 @@ const offset= 'offset';
 const limit= 'limit';
 const fields = 'fields';
 
+//Odoo model fields
+const name = 'name';
+
+const caseInsensitiveComparison = 'ilike';
+
 //Form Control Names
 const emailControlName = 'email';
 const passControlName = 'pass';

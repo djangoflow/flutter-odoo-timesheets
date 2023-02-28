@@ -44,67 +44,59 @@ class ActivityStart extends StatelessWidget {
                     const SizedBox(
                       height: kPadding * 2,
                     ),
-                    //TODO implement dropdown using list bloc
-                    // ContinuousListViewBlocBuilder<ProjectListBloc, Project,
-                    //     ProjectListFilter>(
-                    //   create: (context) => ProjectListBloc(
-                    //     context.read<ProjectRepository>(),
-                    //   )..load(),
-                    //   emptyBuilder: (context, state) => const Center(
-                    //     child: Text('No Projects Found'),
-                    //   ),
-                    //   errorBuilder: (context, state) => const Center(
-                    //     child: Text('Error Loading projects'),
-                    //   ),
-                    //   loadingBuilder: (context, state) => const Center(
-                    //     child: CircularProgressIndicator(),
-                    //   ),
-                    //   itemBuilder: (context, state, index, item) => ListTile(
-                    //     onTap: () {
-                    //       context.read<ProjectListBloc>().load(
-                    //             const ProjectListFilter(search: 'aahi' //
-                    //                 ),
-                    //           );
-                    //     },
-                    //     title: Text(item.name),
-                    //   ),
-                    //   builder: (context, state) => state.when(
-                    //     loading: (projects, filter) => const Center(
-                    //       child: CircularProgressIndicator(),
-                    //     ),
-                    //     empty: (projects, filter) => const Offstage(),
-                    //     (projects, filter) =>
-                    //         AppReactiveDropdown<Project, Project>(
-                    //       items: projects ?? [],
-                    //       formControlName: projectControlName,
-                    //       hintText: 'Select Project',
-                    //       itemAsString: (project) => project.name,
-                    //       onBeforeChange: (prevProject, newProject) {
-                    //         if (newProject == null) {
-                    //           return Future.value(false);
-                    //         }
-                    //
-                    //         if (prevProject == null ||
-                    //             prevProject.id != newProject.id) {
-                    //           form.control(taskControlName).reset();
-                    //           taskCubit.loadTasks(
-                    //             projectId: newProject.id,
-                    //           );
-                    //
-                    //           return Future.value(true);
-                    //         }
-                    //
-                    //         return Future.value(false);
-                    //       },
-                    //       validationMessages: {
-                    //         ValidationMessage.required: (_) =>
-                    //             'Please select project',
-                    //       },
-                    //     ),
-                    //     error: (projects, filter, error) =>
-                    //         const Text('Error Loading Projects'),
-                    //   ),
-                    // ),
+                    ListBlocBuilder<ProjectListBloc, Project,
+                        ProjectListFilter>(
+                      create: (context) => ProjectListBloc(
+                        context.read<ProjectRepository>(),
+                      )..load(const ProjectListFilter()),
+                      itemBuilder: (context, state, index, project) =>
+                          AppReactiveDropdown<Project, Project>(
+                        formControlName: projectControlName,
+                        hintText: 'Select Project',
+                        itemAsString: (project) => project.name,
+                        onBeforeChange: (prevProject, newProject) {
+                          if (newProject == null) {
+                            return Future.value(false);
+                          }
+
+                          if (prevProject == null ||
+                              prevProject.id != newProject.id) {
+                            form.control(taskControlName).reset();
+                            taskCubit.loadTasks(
+                              projectId: newProject.id,
+                            );
+                            return Future.value(true);
+                          }
+
+                          return Future.value(false);
+                        },
+                        validationMessages: {
+                          ValidationMessage.required: (_) =>
+                              'Please select project',
+                        },
+                        asyncItems: (searchTerm) async {
+                          if (searchTerm.isNotEmpty) {
+                            final projectListCubit =
+                                context.read<ProjectListBloc>();
+                            final projects = await projectListCubit.loader(
+                              state.filter?.copyWith(search: searchTerm),
+                            );
+
+                            return projects;
+                          }
+
+                          return state.data ?? [];
+                        },
+                      ),
+                      loadingBuilder: (context, data) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      emptyBuilder: (context, data) => const Center(
+                        child: Text('No Projects Found'),
+                      ),
+                      builder: (context, state, index, itemBuilder) =>
+                          itemBuilder.call(context, index - 1),
+                    ),
                     const SizedBox(height: kPadding * 2),
                     StreamBuilder(
                       stream: form.control(projectControlName).valueChanges,
