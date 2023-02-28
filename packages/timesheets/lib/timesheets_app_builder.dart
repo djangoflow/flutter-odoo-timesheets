@@ -94,6 +94,7 @@ class TimesheetsAppBuilder extends AppBuilder {
           builder: (context) => LoginListenerWrapper(
             initialUser: context.read<AuthCubit>().state.user,
             onLogin: (context, user) {
+
               final authCubit = context.read<AuthCubit>();
               final authState = authCubit.state;
               if (authState.password == null) {

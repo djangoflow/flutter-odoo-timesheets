@@ -4,7 +4,6 @@ part 'activity_model.g.dart';
 
 part 'activity_model.freezed.dart';
 
-// Use freezed annotation instead of JsonSerializable
 // ignore_for_file: invalid_annotation_target
 @freezed
 class Activity with _$Activity {

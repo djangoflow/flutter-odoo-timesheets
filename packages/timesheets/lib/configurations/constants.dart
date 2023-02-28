@@ -21,3 +21,6 @@ const emailControlName = 'email';
 const passControlName = 'pass';
 const serverUrlControlName = 'serverUrl';
 const dbControlName = 'db';
+const projectControlName = 'selectedProject';
+const taskControlName = 'selectedTask';
+const descriptionControlName = 'description';

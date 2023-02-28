@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
@@ -11,23 +12,18 @@ import 'package:timesheets/features/timer/timer.dart';
 class ActivityStart extends StatelessWidget {
   const ActivityStart({Key? key}) : super(key: key);
 
-  final _projectControlName = 'selectedProject';
-  final _taskControlName = 'selectedTask';
-  final _descriptionControlName = 'description';
-  final _menuMaxHeight = 300.0;
-
   FormGroup _formBuilder() => fb.group({
-        _projectControlName: FormControl<Project>(
+        projectControlName: FormControl<Project>(
           validators: [
             Validators.required,
           ],
         ),
-        _taskControlName: FormControl<Task>(
+        taskControlName: FormControl<Task>(
           validators: [
             Validators.required,
           ],
         ),
-        _descriptionControlName: FormControl<String>(
+        descriptionControlName: FormControl<String>(
           validators: [
             Validators.required,
           ],
@@ -56,29 +52,29 @@ class ActivityStart extends StatelessWidget {
                         loading: () => const Center(
                           child: CircularProgressIndicator(),
                         ),
-                        success: (projects) => ReactiveDropdownField(
-                          menuMaxHeight: _menuMaxHeight,
-                          isExpanded: true,
-                          items: projects
-                              .map(
-                                (Project value) => DropdownMenuItem<Project>(
-                                  value: value,
-                                  child: Text(value.name),
-                                ),
-                              )
-                              .toList(),
-                          formControlName: _projectControlName,
-                          decoration: const InputDecoration(
-                            hintText: 'Select project',
-                          ),
-                          onChanged: (FormControl<Project?> project) {
-                            Project? selectedProject =
-                                (form.value[_projectControlName] as Project?);
-                            if (user != null && selectedProject != null) {
-                              taskCubit.loadTasks(
-                                projectId: selectedProject.id,
-                              );
+                        success: (projects) =>
+                            AppReactiveDropdown<Project, Project>(
+                          items: projects,
+                          formControlName: projectControlName,
+                          hintText: 'Select Project',
+                          itemAsString: (project) => project.name,
+                          onBeforeChange: (prevProject, newProject) {
+                            if (newProject == null) {
+                              return Future.value(false);
                             }
+
+                            if (prevProject == null ||
+                                prevProject.id != newProject.id) {
+                              form.control(taskControlName).reset();
+                              if (user != null) {
+                                taskCubit.loadTasks(
+                                  projectId: newProject.id,
+                                );
+                              }
+                              return Future.value(true);
+                            }
+
+                            return Future.value(false);
                           },
                           validationMessages: {
                             ValidationMessage.required: (_) =>
@@ -91,7 +87,7 @@ class ActivityStart extends StatelessWidget {
                     ),
                     const SizedBox(height: kPadding * 2),
                     StreamBuilder(
-                      stream: form.control(_projectControlName).valueChanges,
+                      stream: form.control(projectControlName).valueChanges,
                       builder: (context, projectSnap) {
                         if (projectSnap.data != null) {
                           return BlocBuilder<TaskCubit, TaskState>(
@@ -100,26 +96,12 @@ class ActivityStart extends StatelessWidget {
                               loading: () => const Center(
                                 child: CircularProgressIndicator(),
                               ),
-                              success: (tasks) => ReactiveDropdownField(
-                                menuMaxHeight: _menuMaxHeight,
-                                isExpanded: true,
-                                items: tasks
-                                    .map(
-                                      (Task value) => DropdownMenuItem<Task>(
-                                        value: value,
-                                        child: Text(value.name),
-                                      ),
-                                    )
-                                    .toList(),
-                                formControlName: _taskControlName,
-                                decoration: const InputDecoration(
-                                  hintText: 'Select task',
-                                ),
-                                onChanged: (_) {
-                                  if (!form.valid) {
-                                    form.markAsTouched();
-                                  }
-                                },
+                              success: (tasks) =>
+                                  AppReactiveDropdown<Task, Task>(
+                                itemAsString: (task) => task.name,
+                                items: tasks,
+                                formControlName: taskControlName,
+                                hintText: 'Select task',
                                 validationMessages: {
                                   ValidationMessage.required: (_) =>
                                       'Please select task',
@@ -136,7 +118,7 @@ class ActivityStart extends StatelessWidget {
                     ),
                     const SizedBox(height: kPadding * 2),
                     ReactiveTextField(
-                      formControlName: _descriptionControlName,
+                      formControlName: descriptionControlName,
                       textInputAction: TextInputAction.done,
                       textCapitalization: TextCapitalization.none,
                       keyboardType: TextInputType.visiblePassword,
@@ -175,9 +157,9 @@ class ActivityStart extends StatelessWidget {
   }
 
   _startWork({required BuildContext context, required FormGroup form}) async {
-    final project = form.control(_projectControlName).value as Project;
-    final task = form.control(_taskControlName).value as Task;
-    final description = form.control(_descriptionControlName).value as String;
+    final project = form.control(projectControlName).value as Project;
+    final task = form.control(taskControlName).value as Task;
+    final description = form.control(descriptionControlName).value as String;
 
     context.read<ActivityCubit>().logActivity(
           startDate: DateTime.now().toUtc(),

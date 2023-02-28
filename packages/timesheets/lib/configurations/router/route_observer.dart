@@ -40,7 +40,5 @@ class AppRouteObserver extends AutoRouterObserver {
     }
   }
 
-  void _logScreenView(String screenName) {
-    // TODO log screenviews using Analytics
-  }
+  void _logScreenView(String screenName) {}
 }
