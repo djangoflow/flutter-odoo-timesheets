@@ -44,9 +44,9 @@ class ActivityStart extends StatelessWidget {
                     const SizedBox(
                       height: kPadding * 2,
                     ),
-                    ListBlocBuilder<ProjectListBloc, Project,
+                    ListBlocBuilder<ProjectListCubit, Project,
                         ProjectListFilter>(
-                      create: (context) => ProjectListBloc(
+                      create: (context) => ProjectListCubit(
                         context.read<ProjectRepository>(),
                       )..load(const ProjectListFilter()),
                       itemBuilder: (context, state, index, project) =>
@@ -77,7 +77,7 @@ class ActivityStart extends StatelessWidget {
                         asyncItems: (searchTerm) async {
                           if (searchTerm.isNotEmpty) {
                             final projectListCubit =
-                                context.read<ProjectListBloc>();
+                                context.read<ProjectListCubit>();
                             final projects = await projectListCubit.loader(
                               state.filter?.copyWith(search: searchTerm),
                             );
