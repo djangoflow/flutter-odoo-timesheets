@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
