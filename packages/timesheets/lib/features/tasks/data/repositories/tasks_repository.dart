@@ -21,19 +21,15 @@ class TaskRepository extends OdooRpcRepositoryBase {
       });
     }
 
-    ///TODO find a way to use this in a better way
-    final requiredParameters = [
+    final searchParameters = [
       [
-        [
-          'project_id',
-          '=',
-          projectId,
-        ],
-      ]
+        'project_id',
+        '=',
+        projectId,
+      ],
     ];
-
     if (filter != null && filter.search != null) {
-      requiredParameters[0].add(
+      searchParameters.add(
         [
           name,
           caseInsensitiveComparison,
@@ -46,7 +42,7 @@ class TaskRepository extends OdooRpcRepositoryBase {
       odooModel: taskModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [
-        requiredParameters,
+        [searchParameters],
         optionalParams,
       ],
     );

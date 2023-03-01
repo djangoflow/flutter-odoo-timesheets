@@ -14,22 +14,22 @@ class ProjectRepository extends OdooRpcRepositoryBase {
         limit: filter.limit,
       });
     }
-    final requiredParameters = [];
+    final searchParameters = [];
     if (filter != null && filter.search != null) {
-      requiredParameters.add([
+      searchParameters.add(
         [
           name,
           caseInsensitiveComparison,
           '${filter.search}%',
         ],
-      ]);
+      );
     }
 
     var response = await odooCallMethod(
       odooModel: projectModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [
-        requiredParameters,
+        [searchParameters],
         optionalParams,
       ],
     );
