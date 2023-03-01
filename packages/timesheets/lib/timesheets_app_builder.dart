@@ -70,6 +70,9 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
               lazy: false,
             ),
+
+            // TODO remove BlocProviders that we don't need globally. They should be used at their own level
+            // In the widget tree
             BlocProvider<ProjectCubit>(
               create: (context) => ProjectCubit(
                 context.read<ProjectRepository>(),
