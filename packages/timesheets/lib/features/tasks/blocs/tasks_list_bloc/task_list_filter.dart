@@ -9,7 +9,7 @@ part 'task_list_filter.g.dart';
 class TaskListFilter with _$TaskListFilter implements OffsetLimitFilter {
   const TaskListFilter._();
 
-  static const kPageSize = 25;
+  static const kPageSize = 50;
 
   @Implements<OffsetLimitFilter>()
   const factory TaskListFilter({

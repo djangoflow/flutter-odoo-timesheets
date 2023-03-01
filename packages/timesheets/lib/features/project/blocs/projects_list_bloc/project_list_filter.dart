@@ -7,7 +7,7 @@ part 'project_list_filter.g.dart';
 @freezed
 class ProjectListFilter with _$ProjectListFilter implements OffsetLimitFilter {
   const ProjectListFilter._();
-  static const kPageSize = 25;
+  static const kPageSize = 50;
   @Implements<OffsetLimitFilter>()
   const factory ProjectListFilter({
     @Default(25) int limit,
