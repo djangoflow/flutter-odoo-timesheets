@@ -37,3 +37,6 @@ const taskControlName = 'selectedTask';
 const descriptionControlName = 'description';
 
 const paginationLimitPerRequest = 5;
+
+//Search delay value in milliseconds
+const searchDelayMs=800;

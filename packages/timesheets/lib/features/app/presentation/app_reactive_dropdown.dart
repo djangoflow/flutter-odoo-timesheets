@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
+import 'package:timesheets/configurations/configurations.dart';
 
 class AppReactiveDropdown<T, V> extends StatelessWidget {
   const AppReactiveDropdown({
@@ -34,6 +35,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           isFilterOnline: true,
           loadingBuilder: (context, searchKey) =>
               const LinearProgressIndicator(),
+          searchDelay: const Duration(milliseconds: searchDelayMs),
         ),
         itemAsString: itemAsString,
         asyncItems: asyncItems,
