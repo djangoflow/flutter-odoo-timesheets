@@ -32,7 +32,8 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
         popupProps: PopupProps.menu(
           showSearchBox: true,
           isFilterOnline: true,
-          loadingBuilder: (context, searchKey) => const Offstage(),
+          loadingBuilder: (context, searchKey) =>
+              const LinearProgressIndicator(),
         ),
         itemAsString: itemAsString,
         asyncItems: asyncItems,
