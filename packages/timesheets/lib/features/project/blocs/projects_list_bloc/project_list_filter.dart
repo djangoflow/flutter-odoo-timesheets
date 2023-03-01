@@ -16,8 +16,8 @@ class ProjectListFilter with _$ProjectListFilter implements OffsetLimitFilter {
   }) = _ProjectListFilter;
 
   factory ProjectListFilter.fromJson(
-      Map<String, dynamic> map,
-      ) =>
+    Map<String, dynamic> map,
+  ) =>
       _$ProjectListFilterFromJson(map);
 
   @override

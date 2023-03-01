@@ -18,8 +18,8 @@ const usersModel = 'res.users';
 const timesheetEntryModel = 'account.analytic.line';
 
 //Odoo fields
-const offset= 'offset';
-const limit= 'limit';
+const offset = 'offset';
+const limit = 'limit';
 const fields = 'fields';
 
 //Odoo model fields
@@ -39,4 +39,4 @@ const descriptionControlName = 'description';
 const paginationLimitPerRequest = 5;
 
 //Search delay value in milliseconds
-const searchDelayMs=800;
+const searchDelayMs = 800;
