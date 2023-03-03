@@ -17,8 +17,16 @@ class TimerWidget extends StatelessWidget {
 
     return AppLifeCycleListener(
       onLifeCycleStateChanged: (AppLifecycleState? state) {
+        if (timerBloc.state.status == TimerStatus.running &&
+            state == AppLifecycleState.paused) {
+          timerBloc.add(
+            const TimerEvent.paused(
+              status: TimerStatus.pausedUntilAppResumed,
+            ),
+          );
+        }
         if (state == AppLifecycleState.resumed &&
-            timerBloc.state.status == TimerStatus.running) {
+            timerBloc.state.status == TimerStatus.pausedUntilAppResumed) {
           timerBloc.resumeTimerOnAppForeground();
         }
       },
@@ -43,7 +51,8 @@ class TimerWidget extends StatelessWidget {
                     if (status != TimerStatus.running)
                       IconButton(
                         onPressed: () {
-                          if (status == TimerStatus.paused) {
+                          if (status == TimerStatus.paused ||
+                              status == TimerStatus.pausedUntilAppResumed) {
                             timerBloc.add(const TimerEvent.resumed());
                           } else if (status == TimerStatus.initial) {
                             timerBloc.add(const TimerEvent.started());
@@ -53,8 +62,8 @@ class TimerWidget extends StatelessWidget {
                           Icons.play_arrow_rounded,
                           size: iconSizeBig,
                         ),
-                      ),
-                    if (status == TimerStatus.running)
+                      )
+                    else
                       IconButton(
                         onPressed: () {
                           timerBloc.add(const TimerEvent.paused());
