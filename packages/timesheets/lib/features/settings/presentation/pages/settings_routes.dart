@@ -1,10 +1,10 @@
 import 'package:timesheets/configurations/router/router.dart';
-import 'package:timesheets/features/profile/profile.dart';
+import 'package:timesheets/features/settings/settings.dart';
 
-const profileRoutes = [
+const settingsRoutes = [
   AutoRoute(
     path: '',
-    page: ProfilePage,
+    page: settingsPage,
     initial: true,
     meta: {
       'showBottomNav': true,

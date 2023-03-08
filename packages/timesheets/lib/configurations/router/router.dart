@@ -2,7 +2,7 @@ import 'package:timesheets/configurations/router/auth_guard.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/profile/profile.dart';
+import 'package:timesheets/features/settings/settings.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -29,9 +29,9 @@ export 'router.gr.dart';
           children: activityRoutes,
         ),
         AutoRoute(
-          path: 'profile',
-          page: ProfileRouterPage,
-          children: profileRoutes,
+          path: 'settings',
+          page: settingsRouterPage,
+          children: settingsRoutes,
         ),
       ],
     ),

@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) => AutoTabsRouter(
         routes: const [
           ActivityRouterRoute(),
-          ProfileRouterRoute(),
+          SettingsRouterRoute(),
         ],
         builder: (context, child, animation) {
           final tabsRouter = AutoTabsRouter.of(context);
@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: 'Profile',
+          label: 'settings',
         ),
       ];
 }

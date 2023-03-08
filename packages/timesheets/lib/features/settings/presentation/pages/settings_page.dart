@@ -4,8 +4,8 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class settingsPage extends StatelessWidget {
+  const settingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('settings'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(kPadding * 2),
