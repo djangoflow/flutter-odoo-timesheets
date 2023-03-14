@@ -2,27 +2,28 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:timesheets/features/tasks/data/models/active_task_model.dart';
 
-part 'tasks_cubit.freezed.dart';
+part 'active_tasks_cubit.freezed.dart';
+part 'active_tasks_cubit.g.dart';
 
 @freezed
-class TaskState with _$TaskState {
-  const factory TaskState({
+class ActiveTaskState with _$ActiveTaskState {
+  const factory ActiveTaskState({
     required List<ActiveTask> activeTasks,
-  }) = _TaskState;
+  }) = _ActiveTaskState;
 
-  factory TaskState.fromJson(Map<String, dynamic> json) =>
-      _$TaskStateFromJson(json);
+  factory ActiveTaskState.fromJson(Map<String, dynamic> json) =>
+      _$ActiveTaskStateFromJson(json);
 }
 
-class TaskCubit extends HydratedCubit<TaskState> {
-  TaskCubit()
+class ActiveTaskCubit extends HydratedCubit<ActiveTaskState> {
+  ActiveTaskCubit()
       : super(
-          const TaskState(activeTasks: []),
+          const ActiveTaskState(activeTasks: []),
         );
 
   @override
-  TaskState? fromJson(Map<String, dynamic> json) => TaskState.fromJson(json);
+  ActiveTaskState? fromJson(Map<String, dynamic> json) => ActiveTaskState.fromJson(json);
 
   @override
-  Map<String, dynamic>? toJson(TaskState state) => state.toJson();
+  Map<String, dynamic>? toJson(ActiveTaskState state) => state.toJson();
 }

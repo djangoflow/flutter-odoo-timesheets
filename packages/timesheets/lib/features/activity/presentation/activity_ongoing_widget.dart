@@ -11,7 +11,7 @@ class ActivityOngoing extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () {
-          context.navigateTo(const ActivityDetailsRoute());
+          // context.navigateTo(const ActivityDetailsRoute());
         },
         child: BlocBuilder<ActivityCubit, ActivityState>(
           builder: (context, state) => Card(

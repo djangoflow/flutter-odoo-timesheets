@@ -19,7 +19,7 @@ class AuthGuard extends AutoRedirectGuard {
         } else {
           reevaluate(
               strategy:
-                  const ReevaluationStrategy.removeAllAndPush(ActivityRouterRoute()));
+                  const ReevaluationStrategy.removeAllAndPush(TasksRouterRoute()));
         }
       },
     );

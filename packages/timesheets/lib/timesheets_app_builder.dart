@@ -123,7 +123,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                                     appRouter.navigateNamed(
                                       path,
                                       onFailure: (failure) {
-                                        appRouter.navigate(const ActivityRoute());
+                                        appRouter.navigate(const TaskRoute());
                                       },
                                     );
                                   }

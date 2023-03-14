@@ -35,6 +35,7 @@ dependencies:
   reactive_forms: ^14.2.0
   reactive_dropdown_search: ^0.13.0
   responsive_framework: ^0.2.0
+  shimmer: ^2.0.0
   xml_rpc: ^0.4.0
 
 dev_dependencies:
