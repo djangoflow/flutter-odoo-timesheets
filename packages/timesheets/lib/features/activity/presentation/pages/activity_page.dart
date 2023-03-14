@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
 
+import '../../../tasks/presentation/pages/create_task_page.dart';
+
 class ActivityPage extends StatelessWidget {
   const ActivityPage({super.key});
 
@@ -55,7 +57,7 @@ class ActivityPage extends StatelessWidget {
 
   Widget getChild(ActivityStatus status) {
     if (status == ActivityStatus.initial) {
-      return const ActivityStart();
+      return const CreateTaskPage();
     } else if (status == ActivityStatus.ongoing) {
       return const ActivityOngoing();
     } else {

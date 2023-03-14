@@ -33,7 +33,9 @@ class TaskPage extends StatelessWidget {
             icon: const Icon(
               Icons.settings_outlined,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(const SettingsRoute());
+            },
           ),
           IconButton(
             style: IconButton.styleFrom(
@@ -42,7 +44,9 @@ class TaskPage extends StatelessWidget {
               ),
             ),
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(const CreateTaskRoute());
+            },
           ),
         ],
       ),
