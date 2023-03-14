@@ -65,12 +65,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                     );
               }
             },
-            onLogout: (context) {
-              appRouter.pushAndPopUntil(
-                const HomeRoute(),
-                predicate: (route) => false,
-              );
-            },
+            onLogout: (context) {},
             child: AppCubitConsumer(
               listenWhen: (previous, current) =>
                   previous.environment != current.environment,
@@ -128,7 +123,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                                     appRouter.navigateNamed(
                                       path,
                                       onFailure: (failure) {
-                                        appRouter.navigate(const HomeRoute());
+                                        appRouter.navigate(const ActivityRoute());
                                       },
                                     );
                                   }

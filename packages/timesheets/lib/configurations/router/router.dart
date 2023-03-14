@@ -1,8 +1,6 @@
-import 'package:timesheets/configurations/router/auth_guard.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/settings/settings.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -17,23 +15,11 @@ export 'router.gr.dart';
   replaceInRouteName: 'Page,Route',
   deferredLoading: true,
   routes: <AutoRoute>[
-    RedirectRoute(path: '/', redirectTo: '/home'),
+    RedirectRoute(path: '/', redirectTo: '/activity'),
     AutoRoute(
-      page: HomePage,
-      path: '/home',
-      guards: [AuthGuard],
-      children: [
-        AutoRoute(
-          path: 'activity',
-          page: ActivityRouterPage,
-          children: activityRoutes,
-        ),
-        AutoRoute(
-          path: 'settings',
-          page: settingsRouterPage,
-          children: settingsRoutes,
-        ),
-      ],
+      path: '/activity',
+      page: ActivityRouterPage,
+      children: activityRoutes,
     ),
     AutoRoute(
       path: '/splash',

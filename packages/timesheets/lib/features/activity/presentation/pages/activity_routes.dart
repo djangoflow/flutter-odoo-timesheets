@@ -8,9 +8,6 @@ const activityRoutes = [
     path: '',
     page: ActivityPage,
     initial: true,
-    meta: {
-      'showBottomNav': true,
-    },
   ),
   AutoRoute(
     page: ActivityDetailsPage,

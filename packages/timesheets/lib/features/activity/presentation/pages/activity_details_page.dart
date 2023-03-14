@@ -24,6 +24,7 @@ class ActivityDetailsPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          elevation: 4,
           title: const Text('Activity Detail'),
         ),
         body: SizedBox(
@@ -31,9 +32,6 @@ class ActivityDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: kPadding * 4,
-              ),
               Text(
                 activityState.description ?? '',
                 style: textTheme.headlineMedium,
