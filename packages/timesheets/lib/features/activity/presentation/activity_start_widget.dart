@@ -31,170 +31,172 @@ class ActivityStart extends StatelessWidget {
       });
 
   @override
-  Widget build(BuildContext context) => ReactiveFormBuilder(
-        form: _formBuilder,
-        builder: (context, form, child) => AutofillGroup(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(
-                    kPadding * 2,
-                  ),
-                  child: Text(
-                    'You can add an independent task or synchronize with your task with Odoo or Github',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ReactiveFormBuilder(
+      form: _formBuilder,
+      builder: (context, form, child) => AutofillGroup(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(
+                  kPadding * 2,
                 ),
-                const SizedBox(height: kPadding * 2),
-                RepositoryProvider<ProjectRepository>(
-                  create: (context) => ProjectRepository(
-                    context.read<AppXmlRpcClient>(),
-                  ),
-                  child: BlocProvider<ProjectListCubit>(
-                    create: (context) => ProjectListCubit(
-                      context.read<ProjectRepository>(),
-                    )..load(
-                        const ProjectListFilter(),
-                      ),
-                    child: BlocBuilder<ProjectListCubit,
-                        Data<List<Project>, ProjectListFilter>>(
-                      builder: (context, state) {
-                        if (state is Loading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is Empty) {
-                          return const Center(
-                            child: Text('No Projects Found'),
-                          );
-                        }
-                        return AppReactiveDropdown<Project, Project>(
-                          formControlName: projectControlName,
-                          hintText: 'Select Project',
-                          itemAsString: (project) => project.name,
-                          validationMessages: {
-                            ValidationMessage.required: (_) =>
-                                'Please select project',
-                          },
-                          asyncItems: (searchTerm) async {
-                            if (searchTerm.isNotEmpty) {
-                              final projectListCubit =
-                                  context.read<ProjectListCubit>();
-                              return await projectListCubit.loader(
-                                state.filter?.copyWith(search: searchTerm),
-                              );
-                            }
-
-                            return state.data ?? [];
-                          },
-                        );
-                      },
+                child: Text(
+                  'You can add an independent task or synchronize with your task with Odoo or Github',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(height: kPadding * 2),
+              RepositoryProvider<ProjectRepository>(
+                create: (context) => ProjectRepository(
+                  context.read<AppXmlRpcClient>(),
+                ),
+                child: BlocProvider<ProjectListCubit>(
+                  create: (context) => ProjectListCubit(
+                    context.read<ProjectRepository>(),
+                  )..load(
+                      const ProjectListFilter(),
                     ),
+                  child: BlocBuilder<ProjectListCubit,
+                      Data<List<Project>, ProjectListFilter>>(
+                    builder: (context, state) {
+                      if (state is Loading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is Empty) {
+                        return const Center(
+                          child: Text('No Projects Found'),
+                        );
+                      }
+                      return AppReactiveDropdown<Project, Project>(
+                        formControlName: projectControlName,
+                        hintText: 'Select Project',
+                        itemAsString: (project) => project.name,
+                        validationMessages: {
+                          ValidationMessage.required: (_) =>
+                              'Please select project',
+                        },
+                        asyncItems: (searchTerm) async {
+                          if (searchTerm.isNotEmpty) {
+                            final projectListCubit =
+                                context.read<ProjectListCubit>();
+                            return await projectListCubit.loader(
+                              state.filter?.copyWith(search: searchTerm),
+                            );
+                          }
+
+                          return state.data ?? [];
+                        },
+                      );
+                    },
                   ),
                 ),
-                ReactiveValueListenableBuilder<Project>(
-                  formControlName: projectControlName,
-                  builder: (context, control, child) {
-                    final project = control.value;
+              ),
+              ReactiveValueListenableBuilder<Project>(
+                formControlName: projectControlName,
+                builder: (context, control, child) {
+                  final project = control.value;
 
-                    if (project != null) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: kPadding * 2),
-                        child: RepositoryProvider(
-                          key: ObjectKey(project),
-                          create: (context) => TaskRepository(
-                            context.read<AppXmlRpcClient>(),
-                          ),
-                          child: BlocProvider(
-                            create: (context) => TaskListCubit(
-                              context.read<TaskRepository>(),
-                            )..load(
-                                TaskListFilter(projectId: project.id),
-                              ),
-                            child: BlocBuilder<TaskListCubit,
-                                Data<List<Task>, TaskListFilter>>(
-                              builder: (context, state) {
-                                if (state is Loading) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (state is Empty) {
-                                  return const Center(
-                                    child: Text('No Tasks Found'),
-                                  );
-                                }
-
-                                return AppReactiveDropdown<Task, Task>(
-                                  itemAsString: (task) => task.name,
-                                  asyncItems: (searchTerm) async {
-                                    if (searchTerm.isNotEmpty) {
-                                      final taskListCubit =
-                                          context.read<TaskListCubit>();
-                                      return await taskListCubit.loader(
-                                        state.filter
-                                            ?.copyWith(search: searchTerm),
-                                      );
-                                    }
-
-                                    return state.data ?? [];
-                                  },
-                                  formControlName: taskControlName,
-                                  hintText: 'Select task',
-                                  validationMessages: {
-                                    ValidationMessage.required: (_) =>
-                                        'Please select task',
-                                  },
-                                );
-                              },
+                  if (project != null) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: kPadding * 2),
+                      child: RepositoryProvider(
+                        key: ObjectKey(project),
+                        create: (context) => TaskRepository(
+                          context.read<AppXmlRpcClient>(),
+                        ),
+                        child: BlocProvider(
+                          create: (context) => TaskListCubit(
+                            context.read<TaskRepository>(),
+                          )..load(
+                              TaskListFilter(projectId: project.id),
                             ),
+                          child: BlocBuilder<TaskListCubit,
+                              Data<List<Task>, TaskListFilter>>(
+                            builder: (context, state) {
+                              if (state is Loading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (state is Empty) {
+                                return const Center(
+                                  child: Text('No Tasks Found'),
+                                );
+                              }
+
+                              return AppReactiveDropdown<Task, Task>(
+                                itemAsString: (task) => task.name,
+                                asyncItems: (searchTerm) async {
+                                  if (searchTerm.isNotEmpty) {
+                                    final taskListCubit =
+                                        context.read<TaskListCubit>();
+                                    return await taskListCubit.loader(
+                                      state.filter
+                                          ?.copyWith(search: searchTerm),
+                                    );
+                                  }
+
+                                  return state.data ?? [];
+                                },
+                                formControlName: taskControlName,
+                                hintText: 'Select task',
+                                validationMessages: {
+                                  ValidationMessage.required: (_) =>
+                                      'Please select task',
+                                },
+                              );
+                            },
                           ),
                         ),
-                      );
-                    }
-                    return const Offstage();
-                  },
+                      ),
+                    );
+                  }
+                  return const Offstage();
+                },
+              ),
+              const SizedBox(height: kPadding * 2),
+              ReactiveTextField(
+                formControlName: descriptionControlName,
+                textInputAction: TextInputAction.done,
+                textCapitalization: TextCapitalization.none,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: const InputDecoration(
+                  hintText: 'Description',
                 ),
-                const SizedBox(height: kPadding * 2),
-                ReactiveTextField(
-                  formControlName: descriptionControlName,
-                  textInputAction: TextInputAction.done,
-                  textCapitalization: TextCapitalization.none,
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: const InputDecoration(
-                    hintText: 'Description',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Description is required',
+                },
+                onSubmitted: (_) {
+                  if (!form.valid) {
+                    form.markAsTouched();
+                  }
+                },
+              ),
+              const SizedBox(
+                height: kPadding * 4,
+              ),
+              ReactiveFormConsumer(
+                builder: (context, form, child) => ElevatedButton(
+                  onPressed: form.valid
+                      ? () {
+                          _startWork(context: context, form: form);
+                        }
+                      : null,
+                  child: const Center(
+                    child: Text('Start Activity'),
                   ),
-                  validationMessages: {
-                    ValidationMessage.required: (_) =>
-                        'Description is required',
-                  },
-                  onSubmitted: (_) {
-                    if (!form.valid) {
-                      form.markAsTouched();
-                    }
-                  },
                 ),
-                const SizedBox(
-                  height: kPadding * 4,
-                ),
-                ReactiveFormConsumer(
-                  builder: (context, form, child) => ElevatedButton(
-                    onPressed: form.valid
-                        ? () {
-                            _startWork(context: context, form: form);
-                          }
-                        : null,
-                    child: const Center(
-                      child: Text('Start Activity'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   _startWork({required BuildContext context, required FormGroup form}) async {
     final project = form.control(projectControlName).value as Project;

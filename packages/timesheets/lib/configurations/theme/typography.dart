@@ -29,7 +29,7 @@ class AppTextStyle {
         height: 1.29,
       );
   static TextStyle get headlineSmall => const TextStyle(
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         fontSize: 24,
         height: 1.33,
       );
