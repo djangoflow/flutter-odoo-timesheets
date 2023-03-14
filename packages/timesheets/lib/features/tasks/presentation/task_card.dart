@@ -55,6 +55,7 @@ class TaskCard extends _TaskCardAbstract {
           }),
         );
 
+  ///TODO: replace hardcoded strings with shimmer from design once colors are defined
   TaskCard.placeholder({
     super.key,
   }) : super(
