@@ -10,7 +10,7 @@ export 'size_constants.dart';
 export 'typography.dart';
 
 class AppTheme {
-  static const double _buttonRadius = 10;
+  static const double _buttonRadius = kPadding;
 
   // Shared sub theme data for light, darktheme.
   static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
@@ -33,7 +33,7 @@ class AppTheme {
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
         cardElevation: kPadding * 0.4,
-        cardRadius: kPadding * 1.5,
+        cardRadius: kPadding * 2,
         popupMenuRadius: kPadding,
       );
 
