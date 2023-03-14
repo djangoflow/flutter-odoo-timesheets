@@ -64,6 +64,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                       children: [
                         AutofillGroup(
                           child: ReactiveTextField(
+                            autofocus: true,
                             formControlName: serverUrlControlName,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.url,
@@ -82,7 +83,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         ),
                         ReactiveTextField(
                           formControlName: dbControlName,
-                          textInputAction: TextInputAction.done,
+                          textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
                             hintText: 'Database',
@@ -96,7 +97,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           height: kPadding * 3,
                         ),
                         ReactiveTextField(
-                          autofocus: true,
                           formControlName: emailControlName,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
@@ -115,7 +115,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         ),
                         ReactiveTextField(
                           formControlName: passControlName,
-                          textInputAction: TextInputAction.next,
+                          textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.visiblePassword,
                           decoration: const InputDecoration(
                             hintText: 'Password',
