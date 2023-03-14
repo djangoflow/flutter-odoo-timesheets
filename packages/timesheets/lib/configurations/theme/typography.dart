@@ -76,8 +76,8 @@ class AppTextStyle {
       );
   static TextStyle get bodyMedium => const TextStyle(
         fontWeight: FontWeight.w400,
-        fontSize: 12,
-        height: 1.33,
+        fontSize: 14,
+        height: 1.43,
         letterSpacing: 0.4,
       );
   static TextStyle get bodySmall => const TextStyle(

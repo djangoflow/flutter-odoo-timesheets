@@ -24,7 +24,6 @@ class ActivityDetailsPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          elevation: 4,
           title: const Text('Activity Detail'),
         ),
         body: SizedBox(

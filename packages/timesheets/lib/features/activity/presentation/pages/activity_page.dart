@@ -9,22 +9,22 @@ class ActivityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Activity'),
+          title: const Padding(
+            padding: EdgeInsets.all(kPadding*2),
+            child: Text('Activity'),
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(kPadding * 2),
-          child: SingleChildScrollView(
-            child: BlocBuilder<ActivityCubit, ActivityState>(
-              builder: (context, state) {
-                if (state.activityStatus == ActivityStatus.initial) {
-                  return const ActivityStart();
-                } else if (state.activityStatus == ActivityStatus.ongoing) {
-                  return const ActivityOngoing();
-                } else {
-                  return const ActivitySyncing();
-                }
-              },
-            ),
+        body: SingleChildScrollView(
+          child: BlocBuilder<ActivityCubit, ActivityState>(
+            builder: (context, state) {
+              if (state.activityStatus == ActivityStatus.initial) {
+                return const ActivityStart();
+              } else if (state.activityStatus == ActivityStatus.ongoing) {
+                return const ActivityOngoing();
+              } else {
+                return const ActivitySyncing();
+              }
+            },
           ),
         ),
       );

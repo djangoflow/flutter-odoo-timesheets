@@ -35,12 +35,19 @@ class ActivityStart extends StatelessWidget {
         form: _formBuilder,
         builder: (context, form, child) => AutofillGroup(
           child: Padding(
-            padding: const EdgeInsets.all(kPadding * 2),
+            padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
             child: Column(
               children: [
-                const SizedBox(
-                  height: kPadding * 2,
+                Padding(
+                  padding: const EdgeInsets.all(
+                    kPadding * 2,
+                  ),
+                  child: Text(
+                    'You can add an independent task or synchronize with your task with Odoo or Github',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
+                const SizedBox(height: kPadding * 2),
                 RepositoryProvider<ProjectRepository>(
                   create: (context) => ProjectRepository(
                     context.read<AppXmlRpcClient>(),
@@ -87,7 +94,6 @@ class ActivityStart extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: kPadding * 2),
                 ReactiveValueListenableBuilder<Project>(
                   formControlName: projectControlName,
                   builder: (context, control, child) {
@@ -118,26 +124,30 @@ class ActivityStart extends StatelessWidget {
                                 );
                               }
 
-                              return AppReactiveDropdown<Task, Task>(
-                                itemAsString: (task) => task.name,
-                                asyncItems: (searchTerm) async {
-                                  if (searchTerm.isNotEmpty) {
-                                    final taskListCubit =
-                                        context.read<TaskListCubit>();
-                                    return await taskListCubit.loader(
-                                      state.filter
-                                          ?.copyWith(search: searchTerm),
-                                    );
-                                  }
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.only(top: kPadding * 2),
+                                child: AppReactiveDropdown<Task, Task>(
+                                  itemAsString: (task) => task.name,
+                                  asyncItems: (searchTerm) async {
+                                    if (searchTerm.isNotEmpty) {
+                                      final taskListCubit =
+                                          context.read<TaskListCubit>();
+                                      return await taskListCubit.loader(
+                                        state.filter
+                                            ?.copyWith(search: searchTerm),
+                                      );
+                                    }
 
-                                  return state.data ?? [];
-                                },
-                                formControlName: taskControlName,
-                                hintText: 'Select task',
-                                validationMessages: {
-                                  ValidationMessage.required: (_) =>
-                                      'Please select task',
-                                },
+                                    return state.data ?? [];
+                                  },
+                                  formControlName: taskControlName,
+                                  hintText: 'Select task',
+                                  validationMessages: {
+                                    ValidationMessage.required: (_) =>
+                                        'Please select task',
+                                  },
+                                ),
                               );
                             },
                           ),
@@ -154,7 +164,7 @@ class ActivityStart extends StatelessWidget {
                   textCapitalization: TextCapitalization.none,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: const InputDecoration(
-                    hintText: 'Enter Description',
+                    hintText: 'Description',
                   ),
                   validationMessages: {
                     ValidationMessage.required: (_) =>
