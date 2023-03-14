@@ -4,10 +4,7 @@ import 'package:timesheets/features/settings/settings.dart';
 const settingsRoutes = [
   AutoRoute(
     path: '',
-    page: settingsPage,
+    page: SettingsPage,
     initial: true,
-    meta: {
-      'showBottomNav': true,
-    },
   ),
 ];

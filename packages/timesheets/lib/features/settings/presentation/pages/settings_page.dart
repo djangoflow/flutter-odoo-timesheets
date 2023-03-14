@@ -4,8 +4,8 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class settingsPage extends StatelessWidget {
-  const settingsPage({super.key});
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class settingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('settings'),
+        title: const Text('Settings'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(kPadding * 2),

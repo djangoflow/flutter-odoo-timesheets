@@ -27,7 +27,9 @@ Future<void> main() async {
       }
 
       // initialize router
-      final router = AppRouter();
+      final router = AppRouter(
+        authGuard: AuthGuard(),
+      );
 
       return appBuilder(
         TimesheetsAppBuilder(
