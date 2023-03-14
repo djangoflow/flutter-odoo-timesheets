@@ -1,19 +1,36 @@
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 import 'package:timesheets/features/project/project.dart';
 
 ///Repository to fetch projects data using [OdooRepository]
 class ProjectRepository extends OdooRpcRepositoryBase {
   ProjectRepository(super.rpcClient);
 
-  Future getProjects() async {
+  Future<List<Project>> getProjects([ProjectListFilter? filter]) async {
+    Map<String, dynamic> optionalParams = buildFilterableFields([name]);
+    if (filter != null) {
+      optionalParams.addAll({
+        offset: filter.offset,
+        limit: filter.limit,
+      });
+    }
+    final searchParameters = [];
+    if (filter != null && filter.search != null) {
+      searchParameters.add(
+        [
+          name,
+          caseInsensitiveComparison,
+          '${filter.search}%',
+        ],
+      );
+    }
+
     var response = await odooCallMethod(
       odooModel: projectModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [
-        [],
-        buildFilterableFields(['name']),
+        [searchParameters],
+        optionalParams,
       ],
     );
 

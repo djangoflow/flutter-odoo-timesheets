@@ -4,13 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
-import 'package:timesheets/features/project/project.dart';
-import 'package:timesheets/features/tasks/tasks.dart';
-import 'package:timesheets/features/timer/timer.dart';
-
-import 'features/app/app.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'features/authentication/authentication.dart';
 import 'configurations/configurations.dart';
 
@@ -36,22 +30,6 @@ class TimesheetsAppBuilder extends AppBuilder {
                 context.read<AppXmlRpcClient>(),
               ),
             ),
-            RepositoryProvider<ProjectRepository>(
-              create: (context) => ProjectRepository(
-                context.read<AppXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<TaskRepository>(
-              create: (context) => TaskRepository(
-                context.read<AppXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<ActivityRepository>(
-              create: (context) => ActivityRepository(
-                context.read<AppXmlRpcClient>(),
-              ),
-            ),
-            // provide more repositories like DjangoflowFCMRepository etc
           ],
           providers: [
             BlocProvider<AppCubit>(
@@ -69,29 +47,6 @@ class TimesheetsAppBuilder extends AppBuilder {
                 context.read<AppLinksRepository>(),
               ),
               lazy: false,
-            ),
-
-            // TODO remove BlocProviders that we don't need globally. They should be used at their own level
-            // In the widget tree
-            BlocProvider<ProjectCubit>(
-              create: (context) => ProjectCubit(
-                context.read<ProjectRepository>(),
-              ),
-            ),
-            BlocProvider<TaskCubit>(
-              create: (context) => TaskCubit(
-                context.read<TaskRepository>(),
-              ),
-            ),
-            BlocProvider<ActivityCubit>(
-              create: (context) => ActivityCubit(
-                context.read<ActivityRepository>(),
-              ),
-            ),
-            BlocProvider<TimerBloc>(
-              create: (context) => TimerBloc(
-                timeSheetTicker: const TimeSheetTicker(),
-              ),
             ),
           ],
           builder: (context) => LoginListenerWrapper(
