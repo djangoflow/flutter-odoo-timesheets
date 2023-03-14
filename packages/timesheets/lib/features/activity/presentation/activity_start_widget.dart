@@ -100,34 +100,33 @@ class ActivityStart extends StatelessWidget {
                     final project = control.value;
 
                     if (project != null) {
-                      return RepositoryProvider(
-                        key: ObjectKey(project),
-                        create: (context) => TaskRepository(
-                          context.read<AppXmlRpcClient>(),
-                        ),
-                        child: BlocProvider(
-                          create: (context) => TaskListCubit(
-                            context.read<TaskRepository>(),
-                          )..load(
-                              TaskListFilter(projectId: project.id),
-                            ),
-                          child: BlocBuilder<TaskListCubit,
-                              Data<List<Task>, TaskListFilter>>(
-                            builder: (context, state) {
-                              if (state is Loading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (state is Empty) {
-                                return const Center(
-                                  child: Text('No Tasks Found'),
-                                );
-                              }
+                      return Padding(
+                        padding: const EdgeInsets.only(top: kPadding * 2),
+                        child: RepositoryProvider(
+                          key: ObjectKey(project),
+                          create: (context) => TaskRepository(
+                            context.read<AppXmlRpcClient>(),
+                          ),
+                          child: BlocProvider(
+                            create: (context) => TaskListCubit(
+                              context.read<TaskRepository>(),
+                            )..load(
+                                TaskListFilter(projectId: project.id),
+                              ),
+                            child: BlocBuilder<TaskListCubit,
+                                Data<List<Task>, TaskListFilter>>(
+                              builder: (context, state) {
+                                if (state is Loading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state is Empty) {
+                                  return const Center(
+                                    child: Text('No Tasks Found'),
+                                  );
+                                }
 
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.only(top: kPadding * 2),
-                                child: AppReactiveDropdown<Task, Task>(
+                                return AppReactiveDropdown<Task, Task>(
                                   itemAsString: (task) => task.name,
                                   asyncItems: (searchTerm) async {
                                     if (searchTerm.isNotEmpty) {
@@ -147,9 +146,9 @@ class ActivityStart extends StatelessWidget {
                                     ValidationMessage.required: (_) =>
                                         'Please select task',
                                   },
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       );
