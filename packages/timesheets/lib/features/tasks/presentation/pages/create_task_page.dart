@@ -194,13 +194,16 @@ class CreateTaskPage extends StatelessWidget {
                 ),
                 ReactiveFormConsumer(
                   builder: (context, form, child) => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.surface,
+                    ),
                     onPressed: form.valid
                         ? () {
                             _startWork(context: context, form: form);
                           }
                         : null,
                     child: const Center(
-                      child: Text('Start Activity'),
+                      child: Text('Add task'),
                     ),
                   ),
                 ),

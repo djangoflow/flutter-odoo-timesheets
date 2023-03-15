@@ -18,6 +18,7 @@ class AppTheme {
           horizontal: kPadding * 2,
           vertical: kPadding * 2.5,
         ),
+        elevatedButtonElevation: kPadding / 2,
         elevatedButtonRadius: _buttonRadius,
         textButtonRadius: _buttonRadius,
         outlinedButtonRadius: _buttonRadius,
@@ -39,7 +40,7 @@ class AppTheme {
 
   static ThemeData get light {
     final theme = FlexThemeData.light(
-      colors: AppColors.flexSchemeColor,
+      colorScheme: AppColors.getLightColorScheme,
       textTheme: AppTextStyle.textTheme,
       primaryTextTheme: AppTextStyle.textTheme.apply(
         bodyColor: AppColors.primary,
@@ -50,7 +51,6 @@ class AppTheme {
       surfaceMode: FlexSurfaceMode.level,
       blendLevel: 9,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surfaceTint: AppColors.surfaceTint,
       surface: AppColors.surface,
       tones: FlexTones.material(Brightness.light).onMainsUseBW(),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
@@ -63,7 +63,7 @@ class AppTheme {
 
   static ThemeData get dark {
     final theme = FlexThemeData.dark(
-      colors: AppColors.flexSchemeColor,
+      colorScheme: AppColors.getDarkColorScheme,
       textTheme: AppTextStyle.textTheme,
       primaryTextTheme: AppTextStyle.textTheme.apply(
         bodyColor: AppColors.surface,

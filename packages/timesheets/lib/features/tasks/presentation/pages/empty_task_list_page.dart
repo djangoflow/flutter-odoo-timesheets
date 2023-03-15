@@ -11,68 +11,73 @@ class EmptyTaskListPage extends StatelessWidget {
   final int emptyTasksCount;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Card(
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(kPadding * 2),
-                child: Column(
-                  children: [
-                    Text(
-                      'You don\'t have any tasks yet',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(
-                      height: kPadding * 2,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black.withAlpha(8),
+  Widget build(BuildContext context) {
+    final schemeColors = Theme.of(context).colorScheme;
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Card(
+            color: schemeColors.primaryContainer,
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(kPadding * 2),
+              child: Column(
+                children: [
+                  Text(
+                    'You don\'t have any tasks yet',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: schemeColors.onPrimaryContainer,
                         ),
-                        onPressed: () {
-                        },
-                        child: Text(
-                          'Add new task',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
+                  ),
+                  const SizedBox(
+                    height: kPadding * 2,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: schemeColors.surface,
                       ),
-                    )
-                  ],
-                ),
+                      onPressed: () {},
+                      child: Text(
+                        'Add new task',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-          const SizedBox(
-            height: kPadding,
-          ),
-          Stack(
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) => TaskCard.placeholder(),
-                itemCount: emptyTasksCount,
-              ),
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black,
-                      ],
-                    ),
+        ),
+        const SizedBox(
+          height: kPadding,
+        ),
+        Stack(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) => TaskCard.placeholder(),
+              itemCount: emptyTasksCount,
+            ),
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black,
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
-      );
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
