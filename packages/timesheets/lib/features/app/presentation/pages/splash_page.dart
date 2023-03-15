@@ -2,9 +2,11 @@ import 'dart:math';
 import 'package:timesheets/configurations/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:timesheets/features/app/presentation/app_logo.dart';
 
 class SplashPage extends StatefulWidget {
   final Color backgroundColor;
+
   const SplashPage({Key? key, required this.backgroundColor}) : super(key: key);
 
   @override
@@ -27,11 +29,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final side = min(size.width, size.height) * 0.4;
+    final side = min(size.width, size.height) * 0.3;
 
     return Scaffold(
       body: Center(
-        child: FlutterLogo(
+        child: AppLogoWidget(
           size: side,
         ),
       ),

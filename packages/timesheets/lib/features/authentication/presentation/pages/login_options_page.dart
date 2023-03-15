@@ -3,6 +3,8 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../app/presentation/app_logo.dart';
+
 class LoginOptionsPage extends StatelessWidget {
   const LoginOptionsPage({Key? key}) : super(key: key);
 
@@ -22,7 +24,9 @@ class LoginOptionsPage extends StatelessWidget {
                 GestureDetector(
                   onLongPress: () =>
                       context.read<AppCubit>().toggleEnvironment(),
-                  child: const FlutterLogo(size: kPadding * 20),
+                  child: const AppLogoWidget(
+                    size: kPadding * 20,
+                  ),
                 ),
                 const Spacer(),
                 SizedBox(
