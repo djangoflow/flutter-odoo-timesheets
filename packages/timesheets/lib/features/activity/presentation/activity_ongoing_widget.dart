@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/blocs/activity_cubit.dart';
 import 'package:timesheets/features/activity/presentation/activity_title_widget.dart';
-import 'package:timesheets/features/timer/presentation/timer_widget.dart';
+import 'package:timesheets/features/timer/presentation/timer_large.dart';
 
 class ActivityOngoing extends StatelessWidget {
   const ActivityOngoing({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class ActivityOngoing extends StatelessWidget {
                     iconData: Icons.wb_incandescent_outlined,
                     title: state.description ?? '',
                   ),
-                  const TimerWidget(),
+                  const LargeTimerWidget(),
                 ],
               ),
             ),

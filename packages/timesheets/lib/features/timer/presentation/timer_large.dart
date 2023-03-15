@@ -4,34 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/timer/presentation/timer_lifecycle_wrapper.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
-class TimerWidget extends StatelessWidget {
-  const TimerWidget({super.key});
+class LargeTimerWidget extends StatelessWidget {
+  const LargeTimerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final timerBloc = context.read<TimerBloc>();
     final activityCubit = context.read<ActivityCubit>();
 
-    return AppLifeCycleListener(
-      onLifeCycleStateChanged: (AppLifecycleState? state) {
-        if (timerBloc.state.status == TimerStatus.running &&
-            state == AppLifecycleState.paused) {
-          timerBloc.add(
-            const TimerEvent.paused(
-              status: TimerStatus.pausedUntilAppResumed,
-            ),
-          );
-        }
-        if (state == AppLifecycleState.resumed &&
-            timerBloc.state.status == TimerStatus.pausedUntilAppResumed) {
-          timerBloc.resumeTimerOnAppForeground();
-        }
-      },
+    return TimerLifecycleWrapper(
       child: BlocBuilder<TimerBloc, TimerState>(
         builder: (context, state) {
+          final timerBloc = context.read<TimerBloc>();
           Duration duration = Duration(seconds: state.duration);
           TimerStatus status = state.status;
           return Padding(

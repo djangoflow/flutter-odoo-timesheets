@@ -56,7 +56,7 @@ class ActivityDetailsPage extends StatelessWidget {
                 'Total worked today',
                 style: textTheme.labelLarge,
               ),
-              const TimerWidget(),
+              const LargeTimerWidget(),
             ],
           ),
         ),
