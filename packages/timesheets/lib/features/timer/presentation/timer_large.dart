@@ -34,11 +34,11 @@ class LargeTimerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (status != TimerStatus.running)
+                    if (status == TimerStatus.paused ||
+                        status == TimerStatus.initial)
                       IconButton(
                         onPressed: () {
-                          if (status == TimerStatus.paused ||
-                              status == TimerStatus.pausedUntilAppResumed) {
+                          if (status == TimerStatus.paused) {
                             timerBloc.add(const TimerEvent.resumed());
                           } else if (status == TimerStatus.initial) {
                             timerBloc.add(const TimerEvent.started());
