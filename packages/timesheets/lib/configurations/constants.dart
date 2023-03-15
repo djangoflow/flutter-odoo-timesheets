@@ -17,6 +17,17 @@ const taskModel = 'project.task';
 const usersModel = 'res.users';
 const timesheetEntryModel = 'account.analytic.line';
 
+//Odoo fields
+const offset = 'offset';
+const limit = 'limit';
+const fields = 'fields';
+
+//Odoo model fields
+const name = 'name';
+
+const caseInsensitiveComparison = 'ilike';
+
+//Form Control Names
 const emailControlName = 'email';
 const passControlName = 'pass';
 const serverUrlControlName = 'serverUrl';
@@ -24,3 +35,8 @@ const dbControlName = 'db';
 const projectControlName = 'selectedProject';
 const taskControlName = 'selectedTask';
 const descriptionControlName = 'description';
+
+const paginationLimitPerRequest = 5;
+
+//Search delay value in milliseconds
+const searchDelayMs = 800;

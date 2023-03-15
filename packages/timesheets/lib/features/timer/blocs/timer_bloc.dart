@@ -23,16 +23,16 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     on<TimerEvent>((event, emit) {
       event.when(
         started: () => _onStarted(emit),
-        paused: () => _onPaused(state.duration, emit),
+        paused: (status) => _onPaused(state.duration, emit, status),
         reset: () => _onReset(emit),
-        resumed: (int? duration) =>
-            _onResumed(duration ?? state.duration, emit),
+        resumed: (duration) => _onResumed(duration ?? state.duration, emit),
         ticked: (duration) => _onTicked(duration, emit),
       );
     });
 
     //Resumes timer when app launched from killed state
-    if (state.status == TimerStatus.running && _tickerSubscription == null) {
+    if (state.status == TimerStatus.pausedUntilAppResumed ||
+        (state.status == TimerStatus.running && _tickerSubscription == null)) {
       resumeTimerOnAppForeground();
     }
   }
@@ -65,10 +65,10 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     ));
   }
 
-  void _onPaused(int duration, Emitter<TimerState> emit) {
+  void _onPaused(int duration, Emitter<TimerState> emit, TimerStatus status) {
     // As the timer pause, we should pause the subscription also
     _tickerSubscription?.pause();
-    emit(state.copyWith(status: TimerStatus.paused));
+    emit(state.copyWith(status: status));
   }
 
   void _onResumed(int duration, Emitter<TimerState> emit) {
@@ -76,7 +76,8 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
     //Otherwise comes from calculating against last ticked time
 
     //Used OR logic as [_tickerSubscription] may be null when timer was paused and app was killed
-    if (state.status == TimerStatus.running || _tickerSubscription == null) {
+    if (state.status == TimerStatus.pausedUntilAppResumed ||
+        _tickerSubscription == null) {
       _subscribeToTicker(duration: duration);
     } else {
       // As the timer resume, we must let the subscription resume also
@@ -117,7 +118,8 @@ class TimerBloc extends HydratedBloc<TimerEvent, TimerState> {
 class TimerEvent with _$TimerEvent {
   const factory TimerEvent.started() = _TimerStarted;
 
-  const factory TimerEvent.paused() = _TimerPaused;
+  const factory TimerEvent.paused(
+      {@Default(TimerStatus.paused) TimerStatus status}) = _TimerPaused;
 
   ///[duration] is non null when app resumes from background
   ///or launched from killed state while an activity was active

@@ -1,6 +1,5 @@
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/app/data/odoo/odoo_api_method.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 
 ///Repository to communicate with odoo external_api using xml_rpc

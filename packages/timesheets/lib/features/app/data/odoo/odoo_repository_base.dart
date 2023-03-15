@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/app/data/odoo/app_xmlrpc_client.dart';
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
 ///Repository to communicate with odoo external_api using xml_rpc
@@ -46,7 +46,7 @@ class OdooRpcRepositoryBase {
   }
 
   ///Builds filters so that only relevant data is fetched
-  Map<String, dynamic> buildFilterableFields(List fields) => {
-        'fields': fields,
+  Map<String, dynamic> buildFilterableFields(List filterableFields) => {
+        fields: filterableFields,
       };
 }
