@@ -55,7 +55,6 @@ class TaskCard extends _TaskCardAbstract {
           }),
         );
 
-  ///TODO: replace hardcoded strings with shimmer from design once colors are defined
   TaskCard.placeholder({
     super.key,
   }) : super(
@@ -67,19 +66,25 @@ class TaskCard extends _TaskCardAbstract {
                 padding: const EdgeInsets.all(kPadding * 2),
                 child: Row(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        AppShimmer(
-                          child: Text(
-                            'msakkkkkkk',
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:  [
+                          AppShimmer(
+                            child: Container(
+                              color: Colors.black.withAlpha(8),
+                              height: kPadding * 3,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: kPadding / 2),
-                        Text(
-                            'msakkkkkkk',
-                        ),
-                      ],
+                          const SizedBox(height: kPadding / 2),
+                          AppShimmer(
+                            child: Container(
+                              color: Colors.black.withAlpha(8),
+                              height: kPadding * 2,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     //Todo: add timer widget
                   ],
