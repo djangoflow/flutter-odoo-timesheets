@@ -1,3 +1,4 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/tasks/presentation/task_card.dart';
@@ -63,13 +64,16 @@ class EmptyTaskListPage extends StatelessWidget {
             ),
             Positioned.fill(
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black,
+                      if (AppCubit.instance.state.themeMode == ThemeMode.light)
+                        Colors.white
+                      else
+                        Colors.black,
                     ],
                   ),
                 ),
