@@ -32,7 +32,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
             validators: [
               Validators.required,
             ],
-            value: serverUrl ?? AuthCubit.instance.state.serverUrl,
+            value: serverUrl ?? AuthCubit.instance.state.serverUrl ?? 'https://',
           ),
           dbControlName: FormControl<String>(
             validators: [
