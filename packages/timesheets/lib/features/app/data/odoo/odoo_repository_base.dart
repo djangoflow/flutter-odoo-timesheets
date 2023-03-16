@@ -34,6 +34,7 @@ class OdooRpcRepositoryBase {
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   handleError(error) {
+    print(error);
     if (error is xml_rpc.Fault) {
       throw OdooRepositoryException.fromCode(error.text);
     } else if (error is SocketException ||

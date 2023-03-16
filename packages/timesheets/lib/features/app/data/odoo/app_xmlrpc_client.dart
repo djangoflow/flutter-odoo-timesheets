@@ -53,4 +53,14 @@ class AppXmlRpcClient {
       }
     }
   }
+
+  Future<List> getDbList() async {
+    Uri uri = Uri.parse('$_baseUrl$dbEndpoint');
+    try {
+      final response = await xml_rpc.call(uri, 'list', []);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
