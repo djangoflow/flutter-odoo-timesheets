@@ -53,8 +53,6 @@ class AppColors {
         outlineVariant: outlineVariantDark,
       );
 
-  //TODO update colors when ready in figma
-
   // Light theme colors
   static const Color primary = Color(0xff000000);
   static const Color onPrimary = Color(0xffFFFFFF);
@@ -69,12 +67,11 @@ class AppColors {
   static const Color surface = Color(0xffFFFFFF);
   static const Color surfaceVariant = Color(0xffEBEBEB);
   static const Color onSurface = Color(0xff000000);
-  static const Color onSurfaceVariant = Color(0xff000000);
+  static const Color onSurfaceVariant = Color(0xff858585);
   static const Color tertiary = Color(0xff00E6E6);
   static const Color onTertiary = Color(0xffFFFFFF);
   static const Color tertiaryContainer = Color(0xff85F3F3);
   static const Color onTertiaryContainer = Color(0xffFFFFFF);
-  static const Color appBarColor = Color(0x0DB3C5FF);
   static const Color error = Color(0xffFF0000);
   static const Color onError = Color(0xffFFFFFF);
   static const Color errorContainer = Color(0xffFF8585);
@@ -83,30 +80,28 @@ class AppColors {
   static const Color outlineVariant = Color(0xffD6D6D6);
 
   // Dark theme colors
-
   static const Color primaryDark = Color(0xffFFFFFF);
-  static const Color onPrimaryDark = Color(0xffFFFFFF);
+  static const Color onPrimaryDark = Color(0xff000000);
   static const Color primaryContainerDark = Color(0xff141414);
   static const Color onPrimaryContainerDark = Color(0xffFFFFFF);
   static const Color backgroundDark = Color(0xff000000);
   static const Color onBackgroundDark = Color(0xffFFFFFF);
-  static const Color secondaryDark = Color(0xffbac5ec);
-  static const Color onSecondaryDark = Color(0xffbac5ec);
-  static const Color secondaryContainerDark = Color(0xff3b4666);
-  static const Color onSecondaryContainerDark = Color(0xff3b4666);
+  static const Color secondaryDark = Color(0xff00007A);
+  static const Color onSecondaryDark = Color(0xffFFFFFF);
+  static const Color secondaryContainerDark = Color(0xff00003D);
+  static const Color onSecondaryContainerDark = Color(0xffFFFFFF);
   static const Color surfaceDark = Color(0xff000000);
   static const Color surfaceVariantDark = Color(0xff141414);
   static const Color onSurfaceDark = Color(0xffFFFFFF);
   static const Color onSurfaceVariantDark = Color(0xff7A7A7A);
-  static const Color tertiaryDark = Color(0xffffffff);
-  static const Color onTertiaryDark = Color(0xffffffff);
-  static const Color tertiaryContainerDark = Color(0xffbeeaf7);
-  static const Color onTertiaryContainerDark = Color(0xffbeeaf7);
-  static const Color appBarColorDark = Color(0x0DB3C5FF);
-  static const Color errorDark = Color(0xffb00020);
-  static const Color onErrorDark = Color(0xffb00020);
-  static const Color errorContainerDark = Color(0xffb00020);
-  static const Color onErrorContainerDark = Color(0xffb00020);
+  static const Color tertiaryDark = Color(0xff006E6E);
+  static const Color onTertiaryDark = Color(0xffFFFFFF);
+  static const Color tertiaryContainerDark = Color(0xff003737);
+  static const Color onTertiaryContainerDark = Color(0xffFFFFFF);
+  static const Color errorDark = Color(0xff7A0000);
+  static const Color onErrorDark = Color(0xffFFFFFF);
+  static const Color errorContainerDark = Color(0xff3D0000);
+  static const Color onErrorContainerDark = Color(0xffFFFFFF);
   static const Color outlineDark = Color(0xff292929);
   static const Color outlineVariantDark = Color(0xff3D3D3D);
 }
