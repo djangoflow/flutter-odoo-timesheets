@@ -6,12 +6,8 @@ export 'login_sheet.dart';
 
 const loginRoutes = [
   AutoRoute(
-    path: '',
-    page: LoginOptionsPage,
-    initial: true,
-  ),
-  AutoRoute(
     path: 'email',
     page: EmailPasswordLoginPage,
+    initial: true,
   ),
 ];
