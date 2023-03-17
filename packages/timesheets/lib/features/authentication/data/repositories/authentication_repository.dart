@@ -60,12 +60,6 @@ class AuthenticationRepository extends OdooRpcRepositoryBase {
     }
   }
 
-  Future<List?> getDb() async {
-    try {
-      return await rpcClient.getDbList();
-    } catch (e) {
-      handleError(e);
-      return null;
-    }
-  }
+  Future<List<String>> getDb({required String serverUrl}) async =>
+      await rpcClient.getDbList(serverUrl);
 }
