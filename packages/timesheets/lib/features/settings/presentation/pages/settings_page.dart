@@ -78,16 +78,6 @@ class SettingsPage extends StatelessWidget {
                         const SizedBox(
                           height: kPadding,
                         ),
-
-                        // const SectionTitle(title: 'Account'),
-                        // LinearProgressBuilder(
-                        //   action: (_) async =>
-                        //       await AuthCubit.instance.logout(),
-                        //   builder: (context, action, error) => ListItem(
-                        //     title: 'Sign Out',
-                        //     onTap: () => action,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),

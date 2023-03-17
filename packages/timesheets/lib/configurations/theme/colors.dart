@@ -23,6 +23,7 @@ class AppColors {
         onBackground: onBackground,
         surface: surface,
         onSurface: onSurface,
+        onSurfaceVariant: onSurfaceVariant,
         outline: outline,
         outlineVariant: outlineVariant,
       );
@@ -49,6 +50,7 @@ class AppColors {
         onBackground: onBackgroundDark,
         surface: surfaceDark,
         onSurface: onSurfaceDark,
+        onSurfaceVariant: onSurfaceVariantDark,
         outline: outlineDark,
         outlineVariant: outlineVariantDark,
       );

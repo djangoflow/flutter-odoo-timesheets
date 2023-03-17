@@ -56,6 +56,7 @@ class AppTheme {
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       subThemesData: _commonSubThemeData,
+      lightIsWhite: true,
     );
 
     return theme;
