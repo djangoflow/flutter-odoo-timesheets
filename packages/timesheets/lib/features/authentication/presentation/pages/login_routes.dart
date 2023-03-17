@@ -6,8 +6,8 @@ export 'login_sheet.dart';
 
 const loginRoutes = [
   AutoRoute(
-    path: 'email',
-    page: EmailPasswordLoginPage,
+    path: 'odoo_auth',
+    page: OdooLoginPage,
     initial: true,
   ),
 ];
