@@ -13,7 +13,9 @@ class EmptyTaskListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final schemeColors = Theme.of(context).colorScheme;
+    final schemeColors = Theme
+        .of(context)
+        .colorScheme;
     return Column(
       children: [
         SizedBox(
@@ -27,9 +29,13 @@ class EmptyTaskListPage extends StatelessWidget {
                 children: [
                   Text(
                     'You don\'t have any tasks yet',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: schemeColors.onPrimaryContainer,
-                        ),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(
+                      color: schemeColors.onPrimaryContainer,
+                    ),
                   ),
                   const SizedBox(
                     height: kPadding * 2,
@@ -39,12 +45,15 @@ class EmptyTaskListPage extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: schemeColors.surface,
-                        elevation: kPadding * 3/8,
+                        elevation: kPadding * 3 / 8,
                       ),
                       onPressed: () {},
                       child: Text(
                         'Add new task',
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .titleMedium,
                       ),
                     ),
                   )
@@ -63,27 +72,23 @@ class EmptyTaskListPage extends StatelessWidget {
               itemBuilder: (context, index) => TaskCard.placeholder(),
               itemCount: emptyTasksCount,
             ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0.8, 1],
-                    colors: [
-                      if (AppCubit.instance.state.themeMode == ThemeMode.light)
-                        Colors.white.withOpacity(0.2)
-                      else
+            if(AppCubit.instance.state.themeMode ==
+                ThemeMode.dark)
+              Positioned.fill(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.8, 1],
+                      colors: [
                         Colors.transparent,
-                      if (AppCubit.instance.state.themeMode == ThemeMode.light)
-                        Colors.white
-                      else
                         Colors.black,
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ],
