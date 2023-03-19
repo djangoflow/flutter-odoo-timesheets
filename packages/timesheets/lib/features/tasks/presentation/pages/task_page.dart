@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
@@ -13,6 +14,7 @@ class TaskPage extends StatelessWidget {
     final activeTaskState = context.watch<ActiveTaskCubit>().state;
     final activeTasks = activeTaskState.activeTasks;
     final isTasksEmpty = activeTasks.isEmpty;
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -20,7 +22,7 @@ class TaskPage extends StatelessWidget {
           padding: const EdgeInsets.all(kPadding * 2),
           child: Text(
             'Tasks',
-            style: Theme.of(context).textTheme.headlineLarge,
+            style: theme.textTheme.headlineLarge,
           ),
         ),
         actions: [
@@ -37,22 +39,29 @@ class TaskPage extends StatelessWidget {
               context.router.push(const SettingsRouterRoute());
             },
           ),
-          IconButton(
-            style: IconButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(kPadding),
-              ),
-            ),
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              context.router.push(const CreateTaskRoute());
-            },
-          ),
         ],
       ),
       body: isTasksEmpty
           ? const EmptyTaskListPage()
           : TaskListPage(activeTasks: activeTasks),
+      floatingActionButton: Card(
+        elevation: kPadding / 4,
+        color: theme.colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.all(
+            kPadding * 1.5,
+          ),
+          child: IconButton(
+            onPressed: () {
+              context.router.push(const CreateTaskRoute());
+            },
+            icon: Icon(
+              CupertinoIcons.plus,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
