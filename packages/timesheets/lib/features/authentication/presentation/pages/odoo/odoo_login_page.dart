@@ -1,4 +1,5 @@
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,15 @@ class OdooLoginPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Odoo Login'),
             centerTitle: true,
-            leading: const AutoLeadingButton(),
+            leadingWidth: kPadding * 9,
+            leading: Row(
+              children: const [
+                SizedBox(width: kPadding * 2),
+                IconCard(
+                  child: AutoLeadingButton(),
+                ),
+              ],
+            ),
           ),
           body: ReactiveFormBuilder(
             form: _formBuilder,
