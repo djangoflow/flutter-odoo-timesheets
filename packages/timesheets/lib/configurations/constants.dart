@@ -1,6 +1,6 @@
 // https://dart.dev/guides/language/effective-dart/style#prefer-using-lowercamelcase-for-constant-names
 // Global APP - specific constants
-const appLogoSvgPath = 'assets/app_logo/logo.svg';
+const appLogoPngPath = 'assets/app_logo/logo.png';
 const appTitle = 'Odoo Timesheets';
 
 ///This endpoint provides meta-calls which don’t require authentication.
