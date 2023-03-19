@@ -45,7 +45,7 @@ class AppTextStyle {
       );
 
   static TextStyle get titleSmall => const TextStyle(
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         fontSize: 14,
         height: 1.43,
       );

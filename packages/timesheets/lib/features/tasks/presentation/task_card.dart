@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timesheets/features/tasks/data/models/active_task_model.dart';
+import 'package:timesheets/features/timer/presentation/timer_small.dart';
 
 import '../../../configurations/theme/size_constants.dart';
 
@@ -45,7 +46,11 @@ class TaskCard extends _TaskCardAbstract {
                             ),
                           ],
                         ),
-                        //Todo: add timer widget
+                        TimerSmall(
+                          isActive: false,
+                          startTime: DateTime.now(),
+                          isPlaceholder: true,
+                        ),
                       ],
                     ),
                   ),
@@ -59,38 +64,43 @@ class TaskCard extends _TaskCardAbstract {
     super.key,
   }) : super(
           taskCardWidget: Builder(
-              builder: (context) => Container(
-                    margin: const EdgeInsets.only(top: kPadding),
-                    child: Card(
-                      margin: EdgeInsets.zero,
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      child: Padding(
-                        padding: const EdgeInsets.all(kPadding * 2),
-                        child: Row(
+            builder: (context) => Container(
+              margin: const EdgeInsets.only(top: kPadding),
+              child: Card(
+                margin: EdgeInsets.zero,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(kPadding * 2),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    color: Colors.white
-                                        .withAlpha((kPadding).toInt()),
-                                    height: kPadding * 3,
-                                  ),
-                                  const SizedBox(height: kPadding / 2),
-                                  Container(
-                                    color: Colors.white
-                                        .withAlpha((kPadding * 2).toInt()),
-                                    height: kPadding * 2,
-                                  ),
-                                ],
-                              ),
+                            Container(
+                              color: Colors.white.withAlpha((kPadding).toInt()),
+                              height: kPadding * 3,
                             ),
-                            //Todo: add timer widget
+                            const SizedBox(height: kPadding / 2),
+                            Container(
+                              color: Colors.white
+                                  .withAlpha((kPadding * 2).toInt()),
+                              height: kPadding * 2,
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  )),
+                      const SizedBox(width: kPadding),
+                      TimerSmall(
+                        isActive: false,
+                        startTime: DateTime.now(),
+                        isPlaceholder: true,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
 }
