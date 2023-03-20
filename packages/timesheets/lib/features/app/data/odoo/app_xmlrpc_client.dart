@@ -53,4 +53,22 @@ class AppXmlRpcClient {
       }
     }
   }
+
+  Future<List<String>> getDbList(String serverUrl, {String? search}) async {
+    Uri uri = Uri.parse('$serverUrl$dbEndpoint');
+    try {
+      final response = await xml_rpc.call(
+        uri,
+        'list',
+        [],
+      );
+      if (response != null) {
+        return response.cast<String>();
+      } else {
+        throw Exception('No response from server');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
