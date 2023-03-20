@@ -17,6 +17,7 @@ class AuthState with _$AuthState {
     String? password,
     String? serverUrl,
     String? db,
+    @Default([]) List<String> availableDbs,
   }) = _AuthState;
 
   factory AuthState.fromJson(Map<String, dynamic> json) =>
@@ -88,6 +89,22 @@ class AuthCubit extends HydratedCubit<AuthState> {
       DjangoflowAppSnackbar.showError(e.message);
     } on Exception catch (e) {
       DjangoflowAppSnackbar.showError(e.toString());
+    }
+  }
+
+  Future<void> loadDbList(String serverUrl) async {
+    if (_authenticationRepository == null) {
+      throw Exception('AuthCubit not initialized');
+    }
+    final dbList = await _authenticationRepository?.getDb(
+      serverUrl: serverUrl,
+    );
+    if (dbList != null) {
+      emit(
+        state.copyWith(
+          availableDbs: dbList,
+        ),
+      );
     }
   }
 
