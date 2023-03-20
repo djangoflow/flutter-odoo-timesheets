@@ -127,9 +127,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                                     items: state.availableDbs,
                                     formControlName: dbControlName,
                                     hintText: 'Select DB',
-                                        helperText: 'example-db',
-
-                                        validationMessages: {
+                                    validationMessages: {
                                       ValidationMessage.required: (_) =>
                                           'Please select DB',
                                     },
