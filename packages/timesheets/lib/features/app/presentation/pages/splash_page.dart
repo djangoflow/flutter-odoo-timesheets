@@ -1,6 +1,4 @@
-import 'dart:math';
-import 'package:timesheets/configurations/router/router.gr.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:flutter/material.dart';
 import 'package:timesheets/features/app/presentation/app_logo.dart';
 
@@ -27,16 +25,11 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final side = min(size.width, size.height) * 0.3;
-
-    return Scaffold(
-      body: Center(
-        child: AppLogoWidget(
-          size: side,
+  Widget build(BuildContext context) => const Scaffold(
+        body: Center(
+          child: AppLogoWidget(
+            size: kPadding * 28,
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
