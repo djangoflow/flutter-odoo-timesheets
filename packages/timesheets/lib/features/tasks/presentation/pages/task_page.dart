@@ -56,7 +56,7 @@ class TaskPage extends StatelessWidget {
         color: theme.colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.all(
-            kPadding * 1.5,
+            kPadding,
           ),
           child: IconButton(
             onPressed: () {
