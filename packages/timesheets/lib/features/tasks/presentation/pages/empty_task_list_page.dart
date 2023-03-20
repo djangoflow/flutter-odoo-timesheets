@@ -42,7 +42,7 @@ class EmptyTaskListPage extends StatelessWidget {
                         elevation: kPadding * 3 / 8,
                       ),
                       onPressed: () {
-                        context.router.push(const CreateTaskRoute());
+                        context.router.push(const CreateOdooTaskRoute());
                       },
                       child: Text(
                         'Add new task',

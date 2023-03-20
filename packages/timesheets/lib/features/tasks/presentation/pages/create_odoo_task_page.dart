@@ -9,8 +9,8 @@ import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
-class CreateTaskPage extends StatelessWidget {
-  const CreateTaskPage({Key? key}) : super(key: key);
+class CreateOdooTaskPage extends StatelessWidget {
+  const CreateOdooTaskPage({Key? key}) : super(key: key);
 
   FormGroup _formBuilder() => fb.group({
         projectControlName: FormControl<Project>(

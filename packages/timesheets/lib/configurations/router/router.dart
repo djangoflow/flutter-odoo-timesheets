@@ -8,7 +8,6 @@ import 'package:timesheets/features/tasks/presentation/pages/task_router_page.da
 import 'package:timesheets/features/settings/presentation/pages/settings_routes.dart';
 
 import '../../features/tasks/presentation/pages/task_routes.dart';
-import 'auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'auth_guard.dart';
@@ -25,7 +24,6 @@ export 'router.gr.dart';
       path: '/tasks',
       page: TasksRouterPage,
       children: taskRoutes,
-      guards: [AuthGuard],
     ),
     AutoRoute(
       path: '/settings',

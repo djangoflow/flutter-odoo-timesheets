@@ -4,6 +4,7 @@ export 'blocs/tasks_list_bloc/task_list_cubit.dart';
 export 'blocs/tasks_list_bloc/task_list_filter.dart';
 export 'presentation/pages/task_list_page.dart';
 export 'presentation/pages/task_page.dart';
+export 'presentation/pages/create_odoo_task_page.dart';
 export 'presentation/pages/task_router_page.dart';
 export 'presentation/pages/task_routes.dart';
 export 'presentation/task_card.dart';

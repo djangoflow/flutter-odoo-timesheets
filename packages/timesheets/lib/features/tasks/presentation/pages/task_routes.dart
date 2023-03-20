@@ -1,8 +1,6 @@
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
-import 'create_task_page.dart';
-
 const taskRoutes = [
   AutoRoute(
     path: '',
@@ -10,7 +8,8 @@ const taskRoutes = [
     initial: true,
   ),
   AutoRoute(
-    path: 'create_task',
-    page: CreateTaskPage,
+    path: 'create_odoo_task',
+    page: CreateOdooTaskPage,
+    guards: [AuthGuard],
   ),
 ];

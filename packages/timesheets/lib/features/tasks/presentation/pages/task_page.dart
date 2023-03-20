@@ -19,7 +19,7 @@ class TaskPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        toolbarHeight: kPadding*10,
+        toolbarHeight: kPadding * 10,
         title: Padding(
           padding: const EdgeInsets.all(kPadding * 2),
           child: Text(
@@ -60,7 +60,7 @@ class TaskPage extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () {
-              context.router.push(const CreateTaskRoute());
+              context.router.push(const CreateOdooTaskRoute());
             },
             icon: Icon(
               CupertinoIcons.plus,
