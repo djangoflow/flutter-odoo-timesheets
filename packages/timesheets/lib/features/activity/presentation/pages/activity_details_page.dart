@@ -31,9 +31,6 @@ class ActivityDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: kPadding * 4,
-              ),
               Text(
                 activityState.description ?? '',
                 style: textTheme.headlineMedium,
@@ -59,7 +56,7 @@ class ActivityDetailsPage extends StatelessWidget {
                 'Total worked today',
                 style: textTheme.labelLarge,
               ),
-              const TimerWidget(),
+              const LargeTimerWidget(),
             ],
           ),
         ),

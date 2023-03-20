@@ -10,7 +10,7 @@ export 'size_constants.dart';
 export 'typography.dart';
 
 class AppTheme {
-  static const double _buttonRadius = 10;
+  static const double _buttonRadius = kPadding;
 
   // Shared sub theme data for light, darktheme.
   static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
@@ -18,6 +18,7 @@ class AppTheme {
           horizontal: kPadding * 2,
           vertical: kPadding * 2.5,
         ),
+        elevatedButtonElevation: kPadding / 2,
         elevatedButtonRadius: _buttonRadius,
         textButtonRadius: _buttonRadius,
         outlinedButtonRadius: _buttonRadius,
@@ -33,13 +34,13 @@ class AppTheme {
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
         cardElevation: kPadding * 0.4,
-        cardRadius: kPadding * 1.5,
+        cardRadius: kPadding * 2,
         popupMenuRadius: kPadding,
       );
 
   static ThemeData get light {
     final theme = FlexThemeData.light(
-      colors: AppColors.flexSchemeColor,
+      colorScheme: AppColors.getLightColorScheme,
       textTheme: AppTextStyle.textTheme,
       primaryTextTheme: AppTextStyle.textTheme.apply(
         bodyColor: AppColors.primary,
@@ -50,12 +51,12 @@ class AppTheme {
       surfaceMode: FlexSurfaceMode.level,
       blendLevel: 9,
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surfaceTint: AppColors.surfaceTint,
       surface: AppColors.surface,
       tones: FlexTones.material(Brightness.light).onMainsUseBW(),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       subThemesData: _commonSubThemeData,
+      lightIsWhite: true,
     );
 
     return theme;
@@ -63,7 +64,7 @@ class AppTheme {
 
   static ThemeData get dark {
     final theme = FlexThemeData.dark(
-      colors: AppColors.flexSchemeColor,
+      colorScheme: AppColors.getDarkColorScheme,
       textTheme: AppTextStyle.textTheme,
       primaryTextTheme: AppTextStyle.textTheme.apply(
         bodyColor: AppColors.surface,
@@ -78,6 +79,7 @@ class AppTheme {
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       subThemesData: _commonSubThemeData,
+      darkIsTrueBlack: true,
     );
 
     return theme;

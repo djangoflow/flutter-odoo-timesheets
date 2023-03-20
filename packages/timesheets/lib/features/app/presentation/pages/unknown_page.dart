@@ -33,7 +33,7 @@ class UnknownRoutePage extends StatelessWidget {
                 if (router.canNavigateBack) {
                   router.navigateBack();
                 } else {
-                  router.replace(const HomeRoute());
+                  router.replace(const TasksRouter());
                 }
               },
               child: const Text('Go to Home'),

@@ -1,7 +1,9 @@
 // https://dart.dev/guides/language/effective-dart/style#prefer-using-lowercamelcase-for-constant-names
 // Global APP - specific constants
-const appLogoSvgPath = 'assets/app_logo/logo.svg';
+const appLogoPath = 'assets/app_logo/logo.svg';
+const appLogoDarkPath = 'assets/app_logo/logo_dark.svg';
 const appTitle = 'Odoo Timesheets';
+const apexiveUrl = 'https://apexive.com/';
 
 ///This endpoint provides meta-calls which don’t require authentication.
 const commonEndpoint = 'xmlrpc/2/common';

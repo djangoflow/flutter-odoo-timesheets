@@ -9,8 +9,8 @@ import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/tasks/tasks.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
-class ActivityStart extends StatelessWidget {
-  const ActivityStart({Key? key}) : super(key: key);
+class CreateTaskPage extends StatelessWidget {
+  const CreateTaskPage({Key? key}) : super(key: key);
 
   FormGroup _formBuilder() => fb.group({
         projectControlName: FormControl<Project>(
@@ -31,16 +31,37 @@ class ActivityStart extends StatelessWidget {
       });
 
   @override
-  Widget build(BuildContext context) => ReactiveFormBuilder(
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.all(kPadding * 2),
+          child: Text(
+            'Add Task',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: ReactiveFormBuilder(
         form: _formBuilder,
         builder: (context, form, child) => AutofillGroup(
           child: Padding(
-            padding: const EdgeInsets.all(kPadding * 2),
+            padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
             child: Column(
               children: [
-                const SizedBox(
-                  height: kPadding * 2,
+                Padding(
+                  padding: const EdgeInsets.all(
+                    kPadding * 2,
+                  ),
+                  child: Text(
+                    'You can add an independent task or synchronize with your task with Odoo or Github',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
+                const SizedBox(height: kPadding * 2),
                 RepositoryProvider<ProjectRepository>(
                   create: (context) => ProjectRepository(
                     context.read<AppXmlRpcClient>(),
@@ -87,59 +108,61 @@ class ActivityStart extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: kPadding * 2),
                 ReactiveValueListenableBuilder<Project>(
                   formControlName: projectControlName,
                   builder: (context, control, child) {
                     final project = control.value;
 
                     if (project != null) {
-                      return RepositoryProvider(
-                        key: ObjectKey(project),
-                        create: (context) => TaskRepository(
-                          context.read<AppXmlRpcClient>(),
-                        ),
-                        child: BlocProvider(
-                          create: (context) => TaskListCubit(
-                            context.read<TaskRepository>(),
-                          )..load(
-                              TaskListFilter(projectId: project.id),
+                      return Padding(
+                        padding: const EdgeInsets.only(top: kPadding * 2),
+                        child: RepositoryProvider(
+                          key: ObjectKey(project),
+                          create: (context) => TaskRepository(
+                            context.read<AppXmlRpcClient>(),
+                          ),
+                          child: BlocProvider(
+                            create: (context) => TaskListCubit(
+                              context.read<TaskRepository>(),
+                            )..load(
+                                TaskListFilter(projectId: project.id),
+                              ),
+                            child: BlocBuilder<TaskListCubit,
+                                Data<List<Task>, TaskListFilter>>(
+                              builder: (context, state) {
+                                if (state is Loading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state is Empty) {
+                                  return const Center(
+                                    child: Text('No Tasks Found'),
+                                  );
+                                }
+
+                                return AppReactiveDropdown<Task, Task>(
+                                  itemAsString: (task) => task.name,
+                                  asyncItems: (searchTerm) async {
+                                    if (searchTerm.isNotEmpty) {
+                                      final taskListCubit =
+                                          context.read<TaskListCubit>();
+                                      return await taskListCubit.loader(
+                                        state.filter
+                                            ?.copyWith(search: searchTerm),
+                                      );
+                                    }
+
+                                    return state.data ?? [];
+                                  },
+                                  formControlName: taskControlName,
+                                  hintText: 'Select task',
+                                  validationMessages: {
+                                    ValidationMessage.required: (_) =>
+                                        'Please select task',
+                                  },
+                                );
+                              },
                             ),
-                          child: BlocBuilder<TaskListCubit,
-                              Data<List<Task>, TaskListFilter>>(
-                            builder: (context, state) {
-                              if (state is Loading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (state is Empty) {
-                                return const Center(
-                                  child: Text('No Tasks Found'),
-                                );
-                              }
-
-                              return AppReactiveDropdown<Task, Task>(
-                                itemAsString: (task) => task.name,
-                                asyncItems: (searchTerm) async {
-                                  if (searchTerm.isNotEmpty) {
-                                    final taskListCubit =
-                                        context.read<TaskListCubit>();
-                                    return await taskListCubit.loader(
-                                      state.filter
-                                          ?.copyWith(search: searchTerm),
-                                    );
-                                  }
-
-                                  return state.data ?? [];
-                                },
-                                formControlName: taskControlName,
-                                hintText: 'Select task',
-                                validationMessages: {
-                                  ValidationMessage.required: (_) =>
-                                      'Please select task',
-                                },
-                              );
-                            },
                           ),
                         ),
                       );
@@ -154,7 +177,7 @@ class ActivityStart extends StatelessWidget {
                   textCapitalization: TextCapitalization.none,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: const InputDecoration(
-                    hintText: 'Enter Description',
+                    hintText: 'Description',
                   ),
                   validationMessages: {
                     ValidationMessage.required: (_) =>
@@ -171,13 +194,16 @@ class ActivityStart extends StatelessWidget {
                 ),
                 ReactiveFormConsumer(
                   builder: (context, form, child) => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.surface,
+                    ),
                     onPressed: form.valid
                         ? () {
                             _startWork(context: context, form: form);
                           }
                         : null,
                     child: const Center(
-                      child: Text('Start Activity'),
+                      child: Text('Add task'),
                     ),
                   ),
                 ),
@@ -185,7 +211,9 @@ class ActivityStart extends StatelessWidget {
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   _startWork({required BuildContext context, required FormGroup form}) async {
     final project = form.control(projectControlName).value as Project;

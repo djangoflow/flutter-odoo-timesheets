@@ -1,11 +1,14 @@
-import 'package:timesheets/configurations/router/auth_guard.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/activity/activity.dart';
-import 'package:timesheets/features/profile/profile.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:timesheets/features/settings/presentation/pages/settings_router_page.dart';
+import 'package:timesheets/features/tasks/presentation/pages/task_router_page.dart';
+import 'package:timesheets/features/settings/presentation/pages/settings_routes.dart';
+
+import '../../features/tasks/presentation/pages/task_routes.dart';
+import 'auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'auth_guard.dart';
@@ -17,23 +20,19 @@ export 'router.gr.dart';
   replaceInRouteName: 'Page,Route',
   deferredLoading: true,
   routes: <AutoRoute>[
-    RedirectRoute(path: '/', redirectTo: '/home'),
+    RedirectRoute(path: '/', redirectTo: '/tasks'),
     AutoRoute(
-      page: HomePage,
-      path: '/home',
+      path: '/tasks',
+      page: TasksRouterPage,
+      children: taskRoutes,
+      name: 'TasksRouter',
       guards: [AuthGuard],
-      children: [
-        AutoRoute(
-          path: 'activity',
-          page: ActivityRouterPage,
-          children: activityRoutes,
-        ),
-        AutoRoute(
-          path: 'profile',
-          page: ProfileRouterPage,
-          children: profileRoutes,
-        ),
-      ],
+    ),
+    AutoRoute(
+      path: '/settings',
+      page: SettingsRouterPage,
+      name: 'SettingsRouter',
+      children: settingsRoutes,
     ),
     AutoRoute(
       path: '/splash',
