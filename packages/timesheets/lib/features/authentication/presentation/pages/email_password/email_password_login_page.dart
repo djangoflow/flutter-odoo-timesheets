@@ -32,7 +32,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
             validators: [
               Validators.required,
             ],
-            value: serverUrl ?? AuthCubit.instance.state.serverUrl,
+            value: serverUrl ?? AuthCubit.instance.state.serverUrl ?? 'https://',
           ),
           dbControlName: FormControl<String>(
             validators: [
@@ -70,6 +70,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                             keyboardType: TextInputType.url,
                             decoration: const InputDecoration(
                               hintText: 'Server Url',
+                              helperText: 'https://www.example.com',
                             ),
                             autofillHints: const [AutofillHints.url],
                             validationMessages: {
@@ -87,6 +88,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
                             hintText: 'Database',
+                            helperText: 'example-db',
                           ),
                           validationMessages: {
                             ValidationMessage.required: (_) =>
