@@ -48,7 +48,18 @@ class SettingsPage extends StatelessWidget {
                       SettingsListItem(
                         title: 'Dark theme',
                         trailing: BlocBuilder<AppCubit, AppState>(
-                          builder: (context, state) => CupertinoSwitch(
+                          builder: (context, state) => Switch(
+                            thumbColor: MaterialStateProperty.all(
+                              schemeColors.primary,
+                            ),
+                            thumbIcon: MaterialStateProperty.all(
+                              Icon(
+                                state.themeMode == ThemeMode.dark
+                                    ? CupertinoIcons.moon_fill
+                                    : CupertinoIcons.sun_min_fill,
+                                color: schemeColors.onPrimary,
+                              ),
+                            ),
                             value: state.themeMode == ThemeMode.dark,
                             onChanged: (value) {
                               final isDarkTheme =
