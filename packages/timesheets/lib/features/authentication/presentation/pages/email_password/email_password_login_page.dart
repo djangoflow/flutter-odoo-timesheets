@@ -38,7 +38,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
             ],
             asyncValidators: [_validServer],
             asyncValidatorsDebounceTime: 500,
-            value: serverUrl ?? AuthCubit.instance.state.serverUrl,
+            value: serverUrl ?? AuthCubit.instance.state.serverUrl ?? 'https://',
           ),
           dbControlName: FormControl<String>(
             validators: [
@@ -79,10 +79,52 @@ class EmailPasswordLoginPage extends StatelessWidget {
                         child: ReactiveTextField<String>(
                           autofocus: true,
                           formControlName: serverUrlControlName,
+  Widget build(BuildContext context) => DefaultActionController(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Sign in'),
+            leading: const AutoLeadingButton(),
+          ),
+          body: Center(
+            child: SingleChildScrollView(
+              child: ReactiveFormBuilder(
+                form: _formBuilder,
+                builder: (context, form, child) => AutofillGroup(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kPadding * 2,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AutofillGroup(
+                          child: ReactiveTextField(
+                            autofocus: true,
+                            formControlName: serverUrlControlName,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.url,
+                            decoration: const InputDecoration(
+                              hintText: 'Server Url',
+                              helperText: 'https://www.example.com',
+                            ),
+                            autofillHints: const [AutofillHints.url],
+                            validationMessages: {
+                              ValidationMessage.required: (_) =>
+                                  'Server Url is required',
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: kPadding * 3,
+                        ),
+                        ReactiveTextField(
+                          formControlName: dbControlName,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.url,
                           decoration: const InputDecoration(
                             hintText: 'Server Url',
+                            hintText: 'Database',
+                            helperText: 'example-db',
                           ),
                           onChanged: (control) {
                             final value = control.value;
