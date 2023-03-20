@@ -38,7 +38,6 @@ class EmailPasswordLoginPage extends StatelessWidget {
             ],
             asyncValidators: [_validServer],
             asyncValidatorsDebounceTime: 500,
-            value: serverUrl ?? AuthCubit.instance.state.serverUrl,
             value: serverUrl ?? AuthCubit.instance.state.serverUrl ?? 'https://',
           ),
           dbControlName: FormControl<String>(
