@@ -25,11 +25,13 @@ export 'router.gr.dart';
       path: '/tasks',
       page: TasksRouterPage,
       children: taskRoutes,
+      name: 'TasksRouter',
       guards: [AuthGuard],
     ),
     AutoRoute(
       path: '/settings',
       page: SettingsRouterPage,
+      name: 'SettingsRouter',
       children: settingsRoutes,
     ),
     AutoRoute(
