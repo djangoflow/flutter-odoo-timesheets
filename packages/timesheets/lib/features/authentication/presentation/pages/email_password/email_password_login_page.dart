@@ -39,6 +39,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
             asyncValidators: [_validServer],
             asyncValidatorsDebounceTime: 500,
             value: serverUrl ?? AuthCubit.instance.state.serverUrl,
+            value: serverUrl ?? AuthCubit.instance.state.serverUrl ?? 'https://',
           ),
           dbControlName: FormControl<String>(
             validators: [
@@ -83,6 +84,7 @@ class EmailPasswordLoginPage extends StatelessWidget {
                           keyboardType: TextInputType.url,
                           decoration: const InputDecoration(
                             hintText: 'Server Url',
+                            helperText: 'https://www.example.com',
                           ),
                           onChanged: (control) {
                             final value = control.value;
@@ -126,7 +128,9 @@ class EmailPasswordLoginPage extends StatelessWidget {
                                     items: state.availableDbs,
                                     formControlName: dbControlName,
                                     hintText: 'Select DB',
-                                    validationMessages: {
+                                        helperText: 'example-db',
+
+                                        validationMessages: {
                                       ValidationMessage.required: (_) =>
                                           'Please select DB',
                                     },
