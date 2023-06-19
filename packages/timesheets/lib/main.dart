@@ -16,7 +16,9 @@ Future<void> main() async {
       // Dispatch exception to error reporters
       // ExeptionFilter.filter(exception); returns: true -> show exception to user or false -> do not show
       DjangoflowAppSnackbar.showError(
-        exception is DioError ? exception.message : exception.toString(),
+        exception is DioException
+            ? exception.message ?? 'Something went wrong!'
+            : exception.toString(),
       );
     },
     rootWidgetBuilder: (appBuilder) async {

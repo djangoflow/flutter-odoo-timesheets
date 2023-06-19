@@ -62,8 +62,8 @@ class OdooLoginPage extends StatelessWidget {
           title: const Text('Odoo Login'),
           centerTitle: true,
           leadingWidth: kPadding * 9,
-          leading: Row(
-            children: const [
+          leading: const Row(
+            children: [
               SizedBox(width: kPadding * 2),
               IconCard(
                 child: AutoLeadingButton(),
@@ -112,8 +112,8 @@ class OdooLoginPage extends StatelessWidget {
                         ReactiveStatusListenableBuilder(
                           builder: (context, control, child) {
                             if (control.pending) {
-                              return Column(
-                                children: const [
+                              return const Column(
+                                children: [
                                   SizedBox(
                                     height: kPadding * 2,
                                   ),
