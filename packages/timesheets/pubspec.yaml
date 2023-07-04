@@ -3,7 +3,7 @@ description: Odoo timesheets flutter application
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.0+4
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -23,10 +23,10 @@ dependencies:
   flutter_bloc: ^8.1.3
   firebase_core: ^2.14.0
   flex_color_scheme: ^7.1.2
-  
+
   flutter_list_bloc: ^4.1.0
   freezed_annotation: ^2.2.0
-  
+
   hydrated_bloc: ^9.1.1
   json_annotation: ^4.8.1
   list_bloc: ^3.1.0
@@ -37,7 +37,7 @@ dependencies:
   progress_builder: ^1.1.3
   reactive_forms: ^15.0.0
   responsive_framework: ^0.2.0
-  
+
   upgrader: ^6.2.0
 
 dev_dependencies:
@@ -50,7 +50,7 @@ dev_dependencies:
   icons_launcher: ^2.1.1
   json_serializable: ^6.7.0
   openapi_repository: ^3.0.0
-  
+
 # Uncomment to override djangoflow_openapi from generated local lib
 # dependency_overrides:
 #  djangoflow_openapi:
@@ -60,3 +60,24 @@ flutter:
   uses-material-design: true
   assets:
     - assets/app_logo/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: fonts/inter/Inter-Thin.ttf
+          weight: 100
+        - asset: fonts/inter/Inter-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/inter/Inter-Light.ttf
+          weight: 300
+        - asset: fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: fonts/inter/Inter-Bold.ttf
+          weight: 700
+        - asset: fonts/inter/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: fonts/inter/Inter-Black.ttf
+          weight: 900
