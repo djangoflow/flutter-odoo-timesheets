@@ -34,8 +34,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="None" />
-                <data android:host="None" />
+                <data android:host="timesheets.odoo.djangoflow.com" />
+                <data android:host="timesheets.odoo.djangoflow.com" />
             </intent-filter>
         </activity>
         

@@ -1,22 +1,19 @@
 # Changes here will be overwritten by Copier
-_commit: 2.1.4
+_commit: 3.0.7
 _src_path: gh:djangoflow/copier-flutter-project
 app_description: Odoo timesheets flutter application
 app_label: Odoo Timesheets
 app_name: timesheets
-apple_itc_team_id: null
-apple_team_id: null
-deep_link_host_prod: null
-deep_link_host_sandbox: null
+apple_itc_team_id: '119349213'
+apple_team_id: WL7JZP9DQS
+deep_link_host_prod: timesheets.odoo.djangoflow.com
+deep_link_host_sandbox: timesheets.odoo.djangoflow.com
 enable_apple_sign_in: false
 enable_facebook_sign_in: false
 enable_google_sign_in: false
-facebook_app_id: null
-facebook_client_token: null
-firebase_project_id: null
-openapi_prod_base_url: null
-openapi_sandbox_base_url: null
+firebase_project_id: ''
+openapi_prod_base_url: ''
+openapi_sandbox_base_url: ''
 organization: com.djangoflow.odoo
-package_name: com.djangoflow.odoo.timesheets
 project_description: Odoo timesheets Flutter project
 project_name: flutter-odoo-timesheets
