@@ -28,6 +28,7 @@ export 'router.gr.dart';
     AutoRoute(
       path: '/settings',
       page: SettingsRouterPage,
+      name: 'SettingsRouter',
       children: settingsRoutes,
     ),
     AutoRoute(

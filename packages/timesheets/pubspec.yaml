@@ -17,13 +17,14 @@ dependencies:
   bloc: ^8.1.0
   countdown_widget: ^2.0.2
   cupertino_icons: ^1.0.5
-  dio: 4.0.4
+  dio: ^5.2.1+1
   djangoflow_app: ^3.0.0
   djangoflow_app_links: ^1.1.3
   flutter_bloc: ^8.1.1
   firebase_core: ^2.4.1
   flex_color_scheme: ^6.1.2
   flutter_list_bloc: ^4.0.1
+  flutter_svg: ^2.0.4
   freezed_annotation: ^2.2.0
   hydrated_bloc: ^9.0.0
   intl: ^0.18.0
@@ -50,14 +51,7 @@ dev_dependencies:
   icons_launcher: ^2.0.7
   json_serializable: ^6.5.4
 
-# Tempo: until built_value_generator bug is fixed
 dependency_overrides:
-  dio: 4.0.4
-  # Conflict for icons_launcher and flutter_test
-  path: 1.8.2
-  # Conflict with flutter_test and test packages
-  test_api: 0.4.18
-  # Conflict between auto_router and xml_rpc
   xml: ^6.0.1
   # Until null check error fixed pushed https://github.com/Milad-Akarie/auto_route_library/pull/1301
   auto_route:

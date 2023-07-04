@@ -43,7 +43,7 @@ class TimerSmall extends StatelessWidget {
                     : theme.colorScheme.onPrimaryContainer,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: kPadding,
             ),
             if (isActive)

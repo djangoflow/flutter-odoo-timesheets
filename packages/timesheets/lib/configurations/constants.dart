@@ -1,6 +1,7 @@
 // https://dart.dev/guides/language/effective-dart/style#prefer-using-lowercamelcase-for-constant-names
 // Global APP - specific constants
-const appLogoPngPath = 'assets/app_logo/logo.png';
+const appLogoPath = 'assets/app_logo/logo.svg';
+const appLogoDarkPath = 'assets/app_logo/logo_dark.svg';
 const appTitle = 'Odoo Timesheets';
 const apexiveUrl = 'https://apexive.com/';
 
@@ -9,6 +10,9 @@ const commonEndpoint = 'xmlrpc/2/common';
 
 ///It is used to call methods of odoo models. Require authentication.
 const objectEndpoint = 'xmlrpc/2/object';
+
+///Used to get db list
+const dbEndpoint = 'xmlrpc/db';
 
 const rpcFunction = 'execute_kw';
 const rpcAuthenticationFunction = 'authenticate';

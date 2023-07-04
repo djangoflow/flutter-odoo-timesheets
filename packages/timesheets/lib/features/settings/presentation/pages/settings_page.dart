@@ -21,8 +21,8 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         leadingWidth: kPadding * 9,
-        leading: Row(
-          children: const [
+        leading: const Row(
+          children: [
             SizedBox(width: kPadding * 2),
             IconCard(
               child: AutoLeadingButton(),

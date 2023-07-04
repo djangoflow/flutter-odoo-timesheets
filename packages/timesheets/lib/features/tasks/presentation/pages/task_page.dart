@@ -39,7 +39,7 @@ class TaskPage extends StatelessWidget {
                 Icons.settings_outlined,
               ),
               onPressed: () {
-                context.router.push(const SettingsRouterRoute());
+                context.router.push(const SettingsRouter());
               },
             ),
           ),

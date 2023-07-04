@@ -11,6 +11,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
     this.formControlName,
     this.validationMessages,
     this.hintText,
+    this.helperText,
     this.asyncItems,
   });
 
@@ -21,6 +22,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
   final String? formControlName;
   final Map<String, String Function(Object)>? validationMessages;
   final String? hintText;
+  final String? helperText;
 
   @override
   Widget build(BuildContext context) => ReactiveDropdownSearch<T, V>(
@@ -28,6 +30,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           baseStyle: Theme.of(context).textTheme.bodyLarge,
           dropdownSearchDecoration: InputDecoration(
             hintText: hintText,
+            helperText: helperText,
           ),
         ),
         popupProps: PopupProps.menu(
