@@ -60,7 +60,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             builder: (context, appState) => MaterialApp.router(
               debugShowCheckedModeBanner: false,
               scaffoldMessengerKey: DjangoflowAppSnackbar.scaffoldMessengerKey,
-              title: kAppTitle,
+              title: appTitle,
               routeInformationParser: RouteParser(
                 appRouter.matcher,
                 includePrefixMatches: true,

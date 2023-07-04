@@ -1,90 +1,143 @@
 import 'package:flutter/material.dart';
+import 'package:timesheets/configurations/configurations.dart';
 
-// ignore: avoid_classes_with_only_static_members
 class AppTextStyle {
-  static TextStyle get displayLarge => const TextStyle(
-        fontWeight: FontWeight.bold,
+  static TextStyle get _baseTextStyle => const TextStyle(
+        fontFamily: appFontFamily,
+      );
+  static TextStyle get displayLarge => _baseTextStyle.copyWith(
         fontSize: 57,
-        height: 1.12,
-        letterSpacing: -.25,
-      );
-  static TextStyle get displayMedium => const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 45,
-        height: 1.16,
-      );
-  static TextStyle get displaySmall => const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 36,
-        height: 1.22,
-      );
-  static TextStyle get headlineLarge => const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 32,
-        height: 1.25,
-      );
-  static TextStyle get headlineMedium => const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 28,
-        height: 1.29,
-      );
-  static TextStyle get headlineSmall => const TextStyle(
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        fontSize: 24,
-        height: 1.33,
-      );
-  static TextStyle get titleLarge => const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 22,
-        height: 1.27,
-      );
-  static TextStyle get titleMedium => const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 16,
-        height: 1.5,
+        height: 64 / 57,
+        letterSpacing: 0,
       );
 
-  static TextStyle get titleSmall => const TextStyle(
+  static TextStyle get displayMedium => _baseTextStyle.copyWith(
+        fontSize: 45,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        fontSize: 14,
-        height: 1.43,
+        height: 52 / 45,
+        letterSpacing: 0,
       );
-  static TextStyle get labelLarge => const TextStyle(
+
+  static TextStyle get displaySmall => _baseTextStyle.copyWith(
+        fontSize: 36,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w700,
+        height: 44 / 36,
+        letterSpacing: 0,
+      );
+
+  static TextStyle get headlineLarge => _baseTextStyle.copyWith(
+        fontSize: 32,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w700,
+        height: 40 / 32,
+        letterSpacing: 0,
+      );
+
+  static TextStyle get headlineMedium => _baseTextStyle.copyWith(
+        fontSize: 28,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
+        height: 36 / 28,
+        letterSpacing: 0,
+      );
+
+  static TextStyle get headlineSmall => _baseTextStyle.copyWith(
+        fontSize: 24,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w700,
+        height: 32 / 24,
+        letterSpacing: 0,
+      );
+
+  static TextStyle get titleLarge => _baseTextStyle.copyWith(
+        fontSize: 22,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w700,
+        height: 28 / 22,
+        letterSpacing: 0,
+      );
+
+  static TextStyle get titleMedium => _baseTextStyle.copyWith(
+        fontSize: 16,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w500,
+        height: 24 / 16,
+        letterSpacing: 0.15,
+      );
+
+  static TextStyle get titleSmall => _baseTextStyle.copyWith(
         fontSize: 14,
-        height: 1.43,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w500,
+        height: 20 / 14,
         letterSpacing: 0.1,
       );
-  static TextStyle get labelMedium => const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 12,
-        height: 1.33,
-        letterSpacing: 0.5,
+
+  static TextStyle get labelLarge => _baseTextStyle.copyWith(
+        fontSize: 14,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        height: 20 / 14,
+        letterSpacing: 0.1,
       );
-  static TextStyle get labelSmall => const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 11,
-        height: 1.45,
+
+  static TextStyle get labelMedium => _baseTextStyle.copyWith(
+        fontSize: 12,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        height: 16 / 12,
         letterSpacing: 0.5,
       );
 
-  static TextStyle get bodyLarge => const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 16,
-        height: 1.5,
-        letterSpacing: 0.5,
-      );
-  static TextStyle get bodyMedium => const TextStyle(
-        fontWeight: FontWeight.w400,
-        fontSize: 12,
-        height: 1.33,
-        letterSpacing: 0.4,
-      );
-  static TextStyle get bodySmall => const TextStyle(
-        fontWeight: FontWeight.w500,
+  static TextStyle get labelSmall => _baseTextStyle.copyWith(
         fontSize: 11,
-        height: 1.45,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w500,
+        height: 16 / 11,
         letterSpacing: 0.5,
+      );
+
+  static TextStyle get bodyLarge => _baseTextStyle.copyWith(
+        fontSize: 16,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        height: 24 / 16,
+        letterSpacing: 0.5,
+      );
+
+  static TextStyle get bodyMedium => _baseTextStyle.copyWith(
+        fontSize: 14,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        height: 20 / 14,
+        letterSpacing: 0.25,
+      );
+
+  static TextStyle get bodySmall => _baseTextStyle.copyWith(
+        fontSize: 12,
+        decoration: TextDecoration.none,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+        height: 16 / 12,
+        letterSpacing: 0.4,
       );
 
   static TextTheme get textTheme => TextTheme(
