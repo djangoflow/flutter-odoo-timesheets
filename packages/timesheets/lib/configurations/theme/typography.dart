@@ -157,4 +157,10 @@ class AppTextStyle {
         bodyMedium: bodyMedium,
         bodySmall: bodySmall,
       );
+
+  static TextTheme primaryTextTheme(Color primaryColor) => textTheme.apply(
+        displayColor: primaryColor,
+        bodyColor: primaryColor,
+        decorationColor: primaryColor,
+      );
 }

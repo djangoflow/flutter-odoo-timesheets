@@ -9,14 +9,13 @@ export 'colors.dart';
 export 'size_constants.dart';
 export 'typography.dart';
 
-// TODO  fix theme later with black,blue and green from fimga
 class AppTheme {
   static const double _buttonRadius = 10;
   // Shared sub theme data for light, darktheme.
   static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
         buttonPadding: const EdgeInsets.symmetric(
           horizontal: kPadding * 2,
-          vertical: kPadding * 2.5,
+          vertical: kPadding * 2,
         ),
         elevatedButtonRadius: _buttonRadius,
         textButtonRadius: _buttonRadius,
@@ -33,21 +32,14 @@ class AppTheme {
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
       );
+
   static ThemeData get light {
+    final colorScheme = AppColors.lightThemeColorScheme;
     final theme = FlexThemeData.light(
-      colors: AppColors.flexSchemeColor,
+      colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
-      primaryTextTheme: AppTextStyle.textTheme.apply(
-        bodyColor: AppColors.primary,
-        displayColor: AppColors.primary,
-        decorationColor: AppColors.primary,
-      ),
-      usedColors: 2,
-      surfaceMode: FlexSurfaceMode.level,
-      blendLevel: 9,
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surfaceTint: const Color(0xff000000),
-      tones: FlexTones.material(Brightness.light).onMainsUseBW(),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       subThemesData: _commonSubThemeData,
@@ -57,26 +49,14 @@ class AppTheme {
   }
 
   static ThemeData get dark {
+    final colorScheme = AppColors.darkThemeColorScheme;
     final theme = FlexThemeData.dark(
-        colors: AppColors.flexSchemeColor,
+        colorScheme: colorScheme,
         textTheme: AppTextStyle.textTheme,
-        primaryTextTheme: AppTextStyle.textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-          decorationColor: Colors.white,
-        ),
-        usedColors: 6,
-        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-        blendLevel: 15,
+        primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         subThemesData: _commonSubThemeData);
     return theme;
   }
-  // TODO implement setting up google font https://pub.dev/packages/google_fonts#getting-started
-  // static ThemeData applyGoogleFontTextTheme(ThemeData baseTheme){
-  //   return baseTheme.copyWith(
-  //     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
-  //   );
-  // }
 }
