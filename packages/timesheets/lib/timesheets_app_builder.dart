@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'features/app/app.dart';
 import 'configurations/configurations.dart';
@@ -57,65 +58,70 @@ class TimesheetsAppBuilder extends AppBuilder {
               // setup environment for error reporters
               // ErrorReporter.instance.updateEnv(describeEnum(state));
             },
-            builder: (context, appState) => MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              scaffoldMessengerKey: DjangoflowAppSnackbar.scaffoldMessengerKey,
-              title: appTitle,
-              routeInformationParser: RouteParser(
-                appRouter.matcher,
-                includePrefixMatches: true,
-              ),
-              theme: AppTheme.light,
-              darkTheme: AppTheme.dark,
-              themeMode: appState.themeMode,
-              locale: Locale(appState.locale, ''),
-              supportedLocales: const [
-                Locale('en', ''),
-              ],
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              routerDelegate: appRouter.delegate(
-                initialDeepLink: initialDeepLink, // only for Android and iOS
-                // if initialDeepLink found then don't provide initialRoutes
-                initialRoutes: kIsWeb || initialDeepLink != null
-                    ? null
-                    : [
-                        SplashRoute(backgroundColor: Colors.white),
-                      ],
-                // List of global navigation obsersers here
-                // Firebase Screen event observer
-                // SentryNavigationObserver
-                // navigatorObservers: () => {RouteObserver()},
-              ),
-              builder: (context, child) => AppResponsiveLayoutBuilder(
-                background: Container(
-                  color: Colors.black87, // use theme color
+            builder: (context, appState) => ScreenUtilInit(
+              designSize: const Size(designWidth, designHeight),
+              minTextAdapt: true,
+              builder: (context, child) => MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                scaffoldMessengerKey:
+                    DjangoflowAppSnackbar.scaffoldMessengerKey,
+                title: appTitle,
+                routeInformationParser: RouteParser(
+                  appRouter.matcher,
+                  includePrefixMatches: true,
                 ),
-                child: SandboxBanner(
-                  isSandbox: appState.environment == AppEnvironment.sandbox,
-                  child: child != null
-                      ? kIsWeb
-                          ? child
-                          : AppLinksCubitListener(
-                              listenWhen: (previous, current) =>
-                                  current != null,
-                              listener: (context, appLink) {
-                                final path = appLink?.path;
-                                if (path != null) {
-                                  appRouter.navigateNamed(
-                                    path,
-                                    onFailure: (failure) {
-                                      appRouter.navigate(const HomeRoute());
-                                    },
-                                  );
-                                }
-                              },
-                              child: child,
-                            )
-                      : const Offstage(),
+                theme: AppTheme.light,
+                darkTheme: AppTheme.dark,
+                themeMode: appState.themeMode,
+                locale: Locale(appState.locale, ''),
+                supportedLocales: const [
+                  Locale('en', ''),
+                ],
+                localizationsDelegates: const [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                routerDelegate: appRouter.delegate(
+                  initialDeepLink: initialDeepLink, // only for Android and iOS
+                  // if initialDeepLink found then don't provide initialRoutes
+                  initialRoutes: kIsWeb || initialDeepLink != null
+                      ? null
+                      : [
+                          SplashRoute(backgroundColor: Colors.white),
+                        ],
+                  // List of global navigation obsersers here
+                  // Firebase Screen event observer
+                  // SentryNavigationObserver
+                  // navigatorObservers: () => {RouteObserver()},
+                ),
+                builder: (context, child) => AppResponsiveLayoutBuilder(
+                  background: Container(
+                    color: Colors.black87, // use theme color
+                  ),
+                  child: SandboxBanner(
+                    isSandbox: appState.environment == AppEnvironment.sandbox,
+                    child: child != null
+                        ? kIsWeb
+                            ? child
+                            : AppLinksCubitListener(
+                                listenWhen: (previous, current) =>
+                                    current != null,
+                                listener: (context, appLink) {
+                                  final path = appLink?.path;
+                                  if (path != null) {
+                                    appRouter.navigateNamed(
+                                      path,
+                                      onFailure: (failure) {
+                                        appRouter.navigate(const TasksRoute());
+                                      },
+                                    );
+                                  }
+                                },
+                                child: child,
+                              )
+                        : const Offstage(),
+                  ),
                 ),
               ),
             ),

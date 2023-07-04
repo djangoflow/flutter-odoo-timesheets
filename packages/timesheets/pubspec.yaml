@@ -39,6 +39,7 @@ dependencies:
   responsive_framework: ^0.2.0
 
   upgrader: ^6.2.0
+  flutter_screenutil: ^5.8.4
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +47,7 @@ dev_dependencies:
   auto_route_generator: ^7.1.1
   build_runner: ^2.4.5
   flutter_lints: ^2.0.1
+  flutter_gen_runner: ^5.3.1
   freezed: ^2.3.5
   icons_launcher: ^2.1.1
   json_serializable: ^6.7.0
@@ -55,6 +57,16 @@ dev_dependencies:
 # dependency_overrides:
 #  djangoflow_openapi:
 #    path: ../djangoflow_openapi
+
+flutter_gen:
+  output: lib/utils/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  assets:
+    enabled: true
+    outputs:
+      style: camel-case
 
 flutter:
   uses-material-design: true
