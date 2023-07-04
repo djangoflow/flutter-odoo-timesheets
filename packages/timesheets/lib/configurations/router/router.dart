@@ -23,6 +23,7 @@ export 'router.gr.dart';
     AutoRoute(
       path: '/tasks',
       page: TasksRouterPage,
+      name: 'TasksRouter',
       children: taskRoutes,
     ),
     AutoRoute(
