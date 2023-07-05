@@ -19,6 +19,7 @@ class TimerCubit extends Cubit<TimerState> {
         super(initialState);
 
   void startTimer() {
+    emit(TimerState.running(_elapsedTime));
     _timer = Timer.periodic(tickDuration, (_) {
       _elapsedTime += tickDuration;
       emit(TimerState.running(_elapsedTime));
