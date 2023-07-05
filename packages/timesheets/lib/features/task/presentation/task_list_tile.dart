@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/task/task.dart';
+
+class TaskListTile extends StatelessWidget {
+  const TaskListTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    this.disabled = false,
+  });
+  final Widget title;
+  final Widget subtitle;
+  final bool disabled;
+
+  factory TaskListTile.placeholder({
+    Key? key,
+  }) =>
+      TaskListTile(
+        key: key,
+        title: Builder(
+          builder: (context) => _PlaceholderContainer(
+            height: kPadding.h * 3.5,
+            color: Theme.of(context)
+                .colorScheme
+                .onPrimaryContainer
+                .withOpacity(.16),
+          ),
+        ),
+        subtitle: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(top: kPadding.h / 2),
+            child: _PlaceholderContainer(
+              height: kPadding.h * 2,
+              color: Theme.of(context)
+                  .colorScheme
+                  .onPrimaryContainer
+                  .withOpacity(.08),
+            ),
+          ),
+        ),
+        disabled: true,
+      );
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          ListTile(
+            title: title,
+            subtitle: subtitle,
+            trailing: TaskTimer.small(
+              disabled: disabled,
+            ),
+          ),
+          if (disabled)
+            Positioned.fill(
+              child: Container(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer
+                    .withOpacity(0.5),
+              ),
+            ),
+        ],
+      );
+}
+
+class _PlaceholderContainer extends StatelessWidget {
+  const _PlaceholderContainer({required this.color, required this.height});
+  final Color color;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        height: height,
+        decoration: BoxDecoration(
+          color: color,
+        ),
+      );
+}

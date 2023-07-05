@@ -20,7 +20,7 @@ class TaskTimer extends StatefulWidget {
         builder: (context, state, animationController) => _TaskTimerSmall(
           animationController: animationController,
           padding: padding,
-          disabled: true,
+          disabled: disabled,
           onTicked: () {},
         ),
       );
