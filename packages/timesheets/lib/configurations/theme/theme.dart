@@ -24,6 +24,12 @@ class AppTheme {
         inputDecoratorRadius: _buttonRadius,
         elevatedButtonTextStyle:
             MaterialStateProperty.all(AppTextStyle.titleMedium),
+        textButtonTextStyle:
+            MaterialStateProperty.all(AppTextStyle.titleMedium),
+        outlinedButtonTextStyle:
+            MaterialStateProperty.all(AppTextStyle.titleMedium),
+        filledButtonTextStyle:
+            MaterialStateProperty.all(AppTextStyle.titleMedium),
         elevatedButtonSchemeColor: SchemeColor.onPrimary,
         elevatedButtonSecondarySchemeColor: SchemeColor.primary,
         outlinedButtonOutlineSchemeColor: SchemeColor.primary,
@@ -44,6 +50,7 @@ class AppTheme {
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
+      useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
     );
 
@@ -58,6 +65,7 @@ class AppTheme {
       primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
+      useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
     );
     return theme;
