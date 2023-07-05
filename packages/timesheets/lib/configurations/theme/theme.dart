@@ -1,5 +1,6 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'colors.dart';
 import 'size_constants.dart';
@@ -39,6 +40,7 @@ class AppTheme {
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
         cardElevation: 3,
+        cardRadius: kPadding.r * 2,
       );
 
   static ThemeData get light {
@@ -54,7 +56,7 @@ class AppTheme {
       subThemesData: _commonSubThemeData,
     );
 
-    return theme;
+    return applyCommonTheme(theme);
   }
 
   static ThemeData get dark {
@@ -68,6 +70,28 @@ class AppTheme {
       useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
     );
-    return theme;
+    return applyCommonTheme(theme);
+  }
+
+  static ThemeData applyCommonTheme(ThemeData theme) {
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return theme.copyWith(
+      listTileTheme: theme.listTileTheme.copyWith(
+        tileColor: theme.colorScheme.primaryContainer,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: kPadding.w * 2,
+          vertical: kPadding.h,
+        ),
+        titleTextStyle: textTheme.titleMedium,
+        subtitleTextStyle: textTheme.bodySmall?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding.r),
+        ),
+      ),
+    );
   }
 }
