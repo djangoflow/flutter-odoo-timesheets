@@ -46,7 +46,7 @@ class AppTheme {
     final theme = FlexThemeData.light(
       colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
-      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
@@ -62,7 +62,7 @@ class AppTheme {
     final theme = FlexThemeData.dark(
       colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
-      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       useMaterial3ErrorColors: true,
