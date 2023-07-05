@@ -28,6 +28,7 @@ class AppColors {
         outlineVariant: darkThemeOutlinevariant,
         background: darkThemeBackground,
         onBackground: darkThemeOnBackground,
+        shadow: Colors.transparent,
       );
 
   /// ColorScheme for light theme
@@ -57,6 +58,7 @@ class AppColors {
         outlineVariant: lightThemeOutlinevariant,
         background: lightThemeBackground,
         onBackground: lightThemeOnBackground,
+        shadow: Colors.transparent,
       );
 
   // Dark theme colors

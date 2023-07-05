@@ -157,9 +157,7 @@ class AppTextStyle {
         bodyLarge: bodyLarge,
         bodyMedium: bodyMedium,
         bodySmall: bodySmall,
-      )..apply(
-          fontSizeFactor: 1.0.sp,
-        );
+      );
 
   static TextTheme primaryTextTheme(Color primaryColor) => textTheme.apply(
         displayColor: primaryColor,

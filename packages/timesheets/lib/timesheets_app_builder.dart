@@ -95,32 +95,38 @@ class TimesheetsAppBuilder extends AppBuilder {
                   // SentryNavigationObserver
                   // navigatorObservers: () => {RouteObserver()},
                 ),
-                builder: (context, child) => AppResponsiveLayoutBuilder(
-                  background: Container(
-                    color: Colors.black87, // use theme color
+                builder: (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    textScaleFactor: 1.0.sp,
                   ),
-                  child: SandboxBanner(
-                    isSandbox: appState.environment == AppEnvironment.sandbox,
-                    child: child != null
-                        ? kIsWeb
-                            ? child
-                            : AppLinksCubitListener(
-                                listenWhen: (previous, current) =>
-                                    current != null,
-                                listener: (context, appLink) {
-                                  final path = appLink?.path;
-                                  if (path != null) {
-                                    appRouter.navigateNamed(
-                                      path,
-                                      onFailure: (failure) {
-                                        appRouter.navigate(const TasksRoute());
-                                      },
-                                    );
-                                  }
-                                },
-                                child: child,
-                              )
-                        : const Offstage(),
+                  child: AppResponsiveLayoutBuilder(
+                    background: Container(
+                      color: Colors.black87, // use theme color
+                    ),
+                    child: SandboxBanner(
+                      isSandbox: appState.environment == AppEnvironment.sandbox,
+                      child: child != null
+                          ? kIsWeb
+                              ? child
+                              : AppLinksCubitListener(
+                                  listenWhen: (previous, current) =>
+                                      current != null,
+                                  listener: (context, appLink) {
+                                    final path = appLink?.path;
+                                    if (path != null) {
+                                      appRouter.navigateNamed(
+                                        path,
+                                        onFailure: (failure) {
+                                          appRouter
+                                              .navigate(const TasksRoute());
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: child,
+                                )
+                          : const Offstage(),
+                    ),
                   ),
                 ),
               ),

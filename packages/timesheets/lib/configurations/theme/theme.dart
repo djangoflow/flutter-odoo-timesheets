@@ -20,6 +20,7 @@ class AppTheme {
         elevatedButtonRadius: _buttonRadius,
         textButtonRadius: _buttonRadius,
         outlinedButtonRadius: _buttonRadius,
+        filledButtonRadius: _buttonRadius,
         inputDecoratorRadius: _buttonRadius,
         elevatedButtonTextStyle:
             MaterialStateProperty.all(AppTextStyle.titleMedium),
@@ -31,6 +32,7 @@ class AppTheme {
         inputDecoratorIsFilled: false,
         fabSchemeColor: SchemeColor.primary,
         chipSchemeColor: SchemeColor.primary,
+        cardElevation: 3,
       );
 
   static ThemeData get light {
@@ -51,12 +53,13 @@ class AppTheme {
   static ThemeData get dark {
     final colorScheme = AppColors.darkThemeColorScheme;
     final theme = FlexThemeData.dark(
-        colorScheme: colorScheme,
-        textTheme: AppTextStyle.textTheme,
-        primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        useMaterial3: true,
-        subThemesData: _commonSubThemeData);
+      colorScheme: colorScheme,
+      textTheme: AppTextStyle.textTheme,
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.primary),
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      subThemesData: _commonSubThemeData,
+    );
     return theme;
   }
 }
