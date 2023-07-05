@@ -18,14 +18,8 @@ class TimesheetsAppBuilder extends AppBuilder {
     required AppLinksRepository appLinksRepository,
     final String? initialDeepLink,
   }) : super(
-          onInitState: (context) {
-            final env = context.read<AppCubit>().state.environment;
-
-            // TODO check if came from initial RemoteMessage
-
-            // TODO update baseUrl based on state
-          },
           repositoryProviders: [
+            RepositoryProvider<AppDatabase>(create: (_) => AppDatabase()),
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
@@ -42,22 +36,11 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
               lazy: false,
             ),
-            // TODO FCMBloc, RemoteConfigBloc etc can go here
           ],
-          // listeners: [
-          // TODO DjangoflowFCMBlocTokenListener, DjangoflowFCMBlocMessageListener
-          // ],
           builder: (context) => AppCubitConsumer(
             listenWhen: (previous, current) =>
                 previous.environment != current.environment,
-            listener: (context, state) async {
-              // Setup logout if was logged in
-
-              // TODO setup base url for env
-              // ApiRepository.instance.updateBaseUrl(isSandbox? sandBoxBaseurl: liveBaseUrl)
-              // setup environment for error reporters
-              // ErrorReporter.instance.updateEnv(describeEnum(state));
-            },
+            listener: (context, state) async {},
             builder: (context, appState) => ScreenUtilInit(
               designSize: const Size(designWidth, designHeight),
               minTextAdapt: true,
