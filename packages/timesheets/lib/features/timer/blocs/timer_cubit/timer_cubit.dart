@@ -12,6 +12,8 @@ class TimerCubit extends Cubit<TimerState> {
   Duration? _elapsedTime;
   final Duration tickDuration;
 
+  set elapsedTime(Duration? value) => _elapsedTime = value;
+
   TimerCubit({
     this.tickDuration = const Duration(seconds: 1),
     required TimerState initialState,

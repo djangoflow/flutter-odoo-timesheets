@@ -9,18 +9,6 @@ import 'package:timesheets/features/timer/presentation/timer_bloc_listener.dart'
 import 'package:timesheets/utils/utils.dart';
 
 abstract class _TaskTimer extends StatefulWidget {
-  final Widget Function(
-    BuildContext context,
-    TimerState state,
-    AnimationController animationController,
-    int tickDurationInSeconds,
-  ) builder;
-  final int? elapsedTime;
-  final TimerStatus? initialTimerStatus;
-  final void Function(TimerState timerState, int tickInterval)?
-      onTimerStateChange;
-  final EdgeInsetsGeometry? padding;
-  final bool disabled;
   const _TaskTimer({
     super.key,
     required this.builder,
@@ -29,7 +17,34 @@ abstract class _TaskTimer extends StatefulWidget {
     this.onTimerStateChange,
     this.padding,
     this.disabled = false,
+    this.onTimerResume,
   });
+
+  /// builder is used to build the timer widget.
+  final Widget Function(
+    BuildContext context,
+    TimerState state,
+    AnimationController animationController,
+    int tickDurationInSeconds,
+  ) builder;
+
+  /// elapsedTime is used to set the initial duration of the timer.
+  final int? elapsedTime;
+
+  /// initialTimerStatus is used to set the initial status of the timer.
+  final TimerStatus? initialTimerStatus;
+
+  /// onTimerStateChange is used to notify the parent widget about the timer state change.
+  final void Function(TimerState timerState, int tickInterval)?
+      onTimerStateChange;
+
+  /// padding is used to set the padding of the timer widget.
+  final EdgeInsetsGeometry? padding;
+
+  /// disabled is used to disable the timer widget.
+  final bool disabled;
+
+  final void Function(BuildContext context)? onTimerResume;
 
   @override
   State<_TaskTimer> createState() => __TaskTimerState();
@@ -59,7 +74,8 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
       duration: animationDurationDefault,
     );
 
-    if (widget.initialTimerStatus == TimerStatus.running) {
+    if ([TimerStatus.running, TimerStatus.pausedByForce]
+        .contains(widget.initialTimerStatus)) {
       controller.forward();
       _timerCubit.startTimer();
     }
@@ -73,29 +89,32 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) => AppLifeCycleListener(
-        onLifeCycleStateChanged: (appLifecycleState) {
-          if (appLifecycleState == AppLifecycleState.resumed) {
-            if (_timerCubit.state.status == TimerStatus.pausedByForce) {
-              _timerCubit.resumeTimer();
-            }
-          } else {
-            if (_timerCubit.state.status == TimerStatus.running) {
-              _timerCubit.forcePauseTimer();
-            }
-          }
-        },
-        child: BlocProvider<TimerCubit>.value(
-          value: _timerCubit,
-          child: TimerBlocBuilder(
-            builder: (context, state) => widget.builder(
-              context,
-              state,
-              controller,
-              _timerCubit.tickDuration.inSeconds,
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) => BlocProvider<TimerCubit>.value(
+        value: _timerCubit,
+        child: Builder(
+            builder: (context) => AppLifeCycleListener(
+                  onLifeCycleStateChanged: (appLifecycleState) {
+                    if (appLifecycleState == AppLifecycleState.resumed) {
+                      if (_timerCubit.state.status ==
+                          TimerStatus.pausedByForce) {
+                        widget.onTimerResume?.call(context);
+                        _timerCubit.resumeTimer();
+                      }
+                    } else {
+                      if (_timerCubit.state.status == TimerStatus.running) {
+                        _timerCubit.forcePauseTimer();
+                      }
+                    }
+                  },
+                  child: TimerBlocBuilder(
+                    builder: (context, state) => widget.builder(
+                      context,
+                      state,
+                      controller,
+                      _timerCubit.tickDuration.inSeconds,
+                    ),
+                  ),
+                )),
       );
 }
 
@@ -115,6 +134,7 @@ class TaskTimer extends _TaskTimer {
     super.onTimerStateChange,
     super.padding,
     super.disabled,
+    super.onTimerResume,
   }) : super(
           builder:
               (context, state, animationController, tickDurationInSeconds) =>

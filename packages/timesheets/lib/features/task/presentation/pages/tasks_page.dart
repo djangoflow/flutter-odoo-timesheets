@@ -1,7 +1,9 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/presentation/task_list_tile.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
@@ -51,22 +53,34 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                   ),
                   itemBuilder: (context, index) {
                     final task = value.data![index];
+                    final elapsedTime = _calculateElapsedTime(task);
+
                     return TaskListTile(
                       key: ValueKey(task.id),
                       title: Text(task.name),
                       subtitle: Text(task.description),
-                      elapsedTime: task.duration,
+                      elapsedTime: elapsedTime,
                       initialTimerStatus: TimerStatus.values[task.status],
                       onTap: () {},
-                      onTimerStateChange: (timerState, tickDurationInSeconds) {
+                      onTimerResume: (context) {
+                        context.read<TimerCubit>().elapsedTime = Duration(
+                          seconds: elapsedTime,
+                        );
+                      },
+                      onTimerStateChange:
+                          (timerState, tickDurationInSeconds) async {
+                        final isRunning =
+                            timerState.status == TimerStatus.running;
                         final updatableSeconds =
-                            (timerState.status == TimerStatus.running
-                                ? tickDurationInSeconds
-                                : 0);
-                        context.read<TasksListCubit>().updateTask(
+                            (isRunning ? tickDurationInSeconds : 0);
+                        final lastTickedValue =
+                            isRunning ? DateTime.now() : task.lastTicked;
+
+                        await context.read<TasksListCubit>().updateTask(
                               task.copyWith(
-                                duration: task.duration + updatableSeconds,
+                                duration: elapsedTime + updatableSeconds,
                                 status: timerState.status.index,
+                                lastTicked: Value(lastTickedValue),
                               ),
                             );
                       },
@@ -95,4 +109,13 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
           ),
         child: this,
       );
+  int _calculateElapsedTime(Task task) {
+    final elapsedTime = Duration(seconds: task.duration) +
+        ([TimerStatus.running.index, TimerStatus.pausedByForce.index]
+                    .contains(task.status) &&
+                task.lastTicked != null
+            ? DateTime.now().difference(task.lastTicked!)
+            : Duration.zero);
+    return elapsedTime.inSeconds;
+  }
 }

@@ -14,6 +14,7 @@ class TaskListTile extends StatelessWidget {
     this.elapsedTime,
     this.initialTimerStatus,
     this.onTimerStateChange,
+    this.onTimerResume,
   });
   final Widget title;
   final Widget subtitle;
@@ -24,6 +25,7 @@ class TaskListTile extends StatelessWidget {
   final TimerStatus? initialTimerStatus;
   final VoidCallback? onTap;
   final void Function(TimerState, int)? onTimerStateChange;
+  final void Function(BuildContext context)? onTimerResume;
 
   factory TaskListTile.placeholder({
     Key? key,
@@ -65,6 +67,7 @@ class TaskListTile extends StatelessWidget {
               onTimerStateChange: onTimerStateChange,
               elapsedTime: elapsedTime,
               initialTimerStatus: initialTimerStatus,
+              onTimerResume: onTimerResume,
             ),
             onTap: onTap,
           ),
