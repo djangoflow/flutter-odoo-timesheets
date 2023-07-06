@@ -101,7 +101,7 @@ class TimesheetsAppBuilder extends AppBuilder {
                                         path,
                                         onFailure: (failure) {
                                           appRouter
-                                              .navigate(const TasksRoute());
+                                              .navigate(const TasksRouter());
                                         },
                                       );
                                     }
