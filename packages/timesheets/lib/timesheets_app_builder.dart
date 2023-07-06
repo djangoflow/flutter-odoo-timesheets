@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timesheets/features/task/data/repositories/tasks_repository.dart';
 
 import 'features/app/app.dart';
 import 'configurations/configurations.dart';
@@ -23,7 +24,10 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
-            // provide more reporsitories like DjangoflowFCMRepository etc
+            RepositoryProvider<TasksRepository>(
+              create: (context) =>
+                  TasksRepository(context.read<AppDatabase>().tasksDao),
+            ),
           ],
           providers: [
             BlocProvider<AppCubit>(
@@ -73,10 +77,6 @@ class TimesheetsAppBuilder extends AppBuilder {
                       : [
                           SplashRoute(backgroundColor: Colors.white),
                         ],
-                  // List of global navigation obsersers here
-                  // Firebase Screen event observer
-                  // SentryNavigationObserver
-                  // navigatorObservers: () => {RouteObserver()},
                 ),
                 builder: (context, child) => MediaQuery(
                   data: MediaQuery.of(context).copyWith(
