@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:timesheets/features/app/app.dart';
 
 /// a Tasks class that will extend a Table class to create a table in the database
 /// There should Backends, and TaskBackends class for Table. Backends will hold list of available Backends
