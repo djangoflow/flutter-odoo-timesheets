@@ -7,33 +7,34 @@ import 'package:timesheets/features/timer/presentation/timer_bloc_builder.dart';
 import 'package:timesheets/features/timer/presentation/timer_bloc_listener.dart';
 import 'package:timesheets/utils/utils.dart';
 
-class TaskTimer extends StatefulWidget {
-  const TaskTimer({
+abstract class _TaskTimer extends StatefulWidget {
+  final Widget Function(
+    BuildContext context,
+    TimerState state,
+    AnimationController animationController,
+    int tickDurationInSeconds,
+  ) builder;
+  final int? elapsedTime;
+  final TimerStatus? initialTimerStatus;
+  final void Function(TimerState timerState, int tickInterval)?
+      onTimerStateChange;
+  final EdgeInsetsGeometry? padding;
+  final bool disabled;
+  const _TaskTimer({
     super.key,
     required this.builder,
+    this.elapsedTime,
+    this.initialTimerStatus,
+    this.onTimerStateChange,
+    this.padding,
+    this.disabled = false,
   });
 
-  factory TaskTimer.small(
-          {Key? key, EdgeInsetsGeometry? padding, bool disabled = false}) =>
-      TaskTimer(
-        key: key,
-        builder: (context, state, animationController) => _TaskTimerSmall(
-          animationController: animationController,
-          padding: padding,
-          disabled: disabled,
-          onTicked: () {},
-        ),
-      );
-
-  /// builder is called with the current [TimerState] and [AnimationController] to build the widget.
-  final Widget Function(BuildContext context, TimerState state,
-      AnimationController animationController) builder;
-
   @override
-  State<TaskTimer> createState() => _TaskTimerState();
+  State<_TaskTimer> createState() => __TaskTimerState();
 }
 
-class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
+class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
   /// TimerCubit is used to manage the timer state.
   late final TimerCubit _timerCubit;
 
@@ -45,11 +46,27 @@ class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     // can initiate with different values later
-    _timerCubit = TimerCubit(initialState: TimerState.initial());
+    _timerCubit = TimerCubit(
+      initialState: widget.elapsedTime != null
+          ? TimerState(
+              duration: Duration(seconds: widget.elapsedTime!),
+              status: widget.initialTimerStatus ?? TimerStatus.initial)
+          : TimerState.initial(),
+    );
     controller = AnimationController(
       vsync: this,
       duration: animationDurationDefault,
     );
+
+    if (widget.initialTimerStatus == TimerStatus.running) {
+      controller.forward();
+      _timerCubit.startTimer();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant TaskTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -63,10 +80,45 @@ class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
   Widget build(BuildContext context) => BlocProvider<TimerCubit>.value(
         value: _timerCubit,
         child: TimerBlocBuilder(
-          builder: (context, state) =>
-              widget.builder(context, state, controller),
+          builder: (context, state) => widget.builder(
+            context,
+            state,
+            controller,
+            _timerCubit.tickDuration.inSeconds,
+          ),
         ),
       );
+}
+
+class TaskTimer extends _TaskTimer {
+  const TaskTimer({
+    super.key,
+    required super.builder,
+    super.elapsedTime,
+    super.initialTimerStatus,
+    super.onTimerStateChange,
+  });
+
+  TaskTimer.small({
+    super.key,
+    super.elapsedTime,
+    super.initialTimerStatus,
+    super.onTimerStateChange,
+    super.padding,
+    super.disabled,
+  }) : super(
+          builder:
+              (context, state, animationController, tickDurationInSeconds) =>
+                  _TaskTimerSmall(
+            animationController: animationController,
+            padding: padding,
+            disabled: disabled,
+            onTimerStateChange: onTimerStateChange != null
+                ? (currentState) =>
+                    onTimerStateChange(currentState, tickDurationInSeconds)
+                : null,
+          ),
+        );
 }
 
 class _TaskTimerSmall extends StatefulWidget {
@@ -74,7 +126,7 @@ class _TaskTimerSmall extends StatefulWidget {
     required this.animationController,
     this.padding,
     required this.disabled,
-    required this.onTicked,
+    this.onTimerStateChange,
   });
   final AnimationController animationController;
 
@@ -91,7 +143,7 @@ class _TaskTimerSmall extends StatefulWidget {
 
   final bool disabled;
 
-  final VoidCallback onTicked;
+  final void Function(TimerState timerState)? onTimerStateChange;
   @override
   State<_TaskTimerSmall> createState() => __TaskTimerSmallState();
 }
@@ -129,8 +181,9 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
     final theme = Theme.of(context);
 
     return TimerBlocListener(
-      listenWhen: (prev, current) => prev.duration != current.duration,
-      listener: (context, state) => widget.onTicked(),
+      listenWhen: (prev, current) =>
+          prev.duration != current.duration || prev.status != current.status,
+      listener: (context, state) => widget.onTimerStateChange?.call(state),
       child: TimerBlocBuilder(
         builder: (context, state) {
           final timerStatus = state.status;
@@ -194,7 +247,8 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
                                 timerStatus == TimerStatus.running) {
                               timerCubit.pauseTimer();
                               widget.animationController.reverse();
-                            } else {
+                            } else if ([TimerStatus.initial, TimerStatus.paused]
+                                .contains(timerStatus)) {
                               if (timerStatus == TimerStatus.initial) {
                                 timerCubit.startTimer();
                               } else if (timerStatus == TimerStatus.paused) {

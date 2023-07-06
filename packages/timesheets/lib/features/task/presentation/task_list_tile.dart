@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 
 class TaskListTile extends StatelessWidget {
   const TaskListTile({
@@ -9,10 +10,20 @@ class TaskListTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.disabled = false,
+    this.onTap,
+    this.elapsedTime,
+    this.initialTimerStatus,
+    this.onTimerStateChange,
   });
   final Widget title;
   final Widget subtitle;
   final bool disabled;
+
+  /// In seconds
+  final int? elapsedTime;
+  final TimerStatus? initialTimerStatus;
+  final VoidCallback? onTap;
+  final void Function(TimerState, int)? onTimerStateChange;
 
   factory TaskListTile.placeholder({
     Key? key,
@@ -51,7 +62,11 @@ class TaskListTile extends StatelessWidget {
             subtitle: subtitle,
             trailing: TaskTimer.small(
               disabled: disabled,
+              onTimerStateChange: onTimerStateChange,
+              elapsedTime: elapsedTime,
+              initialTimerStatus: initialTimerStatus,
             ),
+            onTap: onTap,
           ),
           if (disabled)
             Positioned.fill(
