@@ -8,8 +8,8 @@ export 'timer_state.dart';
 
 // Timer Cubit
 class TimerCubit extends Cubit<TimerState> {
-  late Timer _timer;
-  late Duration _elapsedTime;
+  Timer? _timer;
+  Duration? _elapsedTime;
   final Duration tickDuration;
 
   TimerCubit({
@@ -19,26 +19,31 @@ class TimerCubit extends Cubit<TimerState> {
         super(initialState);
 
   void startTimer() {
-    emit(TimerState.running(_elapsedTime));
+    emit(TimerState.running(_elapsedTime ?? Duration.zero));
     _timer = Timer.periodic(tickDuration, (_) {
-      _elapsedTime += tickDuration;
-      emit(TimerState.running(_elapsedTime));
+      // should check as sometimes the timer is not cancelled in time
+      if (state.status == TimerStatus.running) {
+        _elapsedTime ??= Duration.zero;
+        _elapsedTime = _elapsedTime! + tickDuration;
+
+        emit(TimerState.running(_getDurationOrZero(_elapsedTime)));
+      }
     });
   }
 
   void forcePauseTimer() {
     _maybeCancelTimer();
-    emit(TimerState.pausedByForce(_elapsedTime));
+    emit(TimerState.pausedByForce(_getDurationOrZero(_elapsedTime)));
   }
 
   void pauseTimer() {
     _maybeCancelTimer();
-    emit(TimerState.paused(_elapsedTime));
+    emit(TimerState.paused(_getDurationOrZero(_elapsedTime)));
   }
 
   void stopTimer() {
     _maybeCancelTimer();
-    emit(TimerState.stopped(_elapsedTime));
+    emit(TimerState.stopped(_getDurationOrZero(_elapsedTime)));
   }
 
   void resetTimer() {
@@ -53,12 +58,17 @@ class TimerCubit extends Cubit<TimerState> {
   }
 
   void _maybeCancelTimer() {
-    if (_timer.isActive) _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
+    }
   }
+
+  // Method that will take duration and return duration or zero
+  Duration _getDurationOrZero(Duration? duration) => duration ?? Duration.zero;
 
   @override
   Future<void> close() {
-    _timer.cancel();
+    _timer?.cancel();
     return super.close();
   }
 }
