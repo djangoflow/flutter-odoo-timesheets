@@ -16,41 +16,16 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<List<Task>> getAllTasks() => select(tasks).get();
 
+  Future<List<Task>> getTasks(int limit, int offset) => (select(tasks)
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+        ])
+        ..limit(limit, offset: offset))
+      .get();
+
   Future<void> updateTask(Task task) => update(tasks).replace(task);
 
   Future<void> deleteTask(Task task) => delete(tasks).delete(task);
-
-  Stream<List<Task>> watchTasksWithBackends() {
-    final taskSelect = select(tasks).join([
-      innerJoin(
-        taskBackends,
-        taskBackends.taskId.equalsExp(tasks.id),
-      ),
-      innerJoin(
-        backends,
-        backends.id.equalsExp(taskBackends.backendId),
-      ),
-    ]);
-
-    return taskSelect.watch().map((rows) {
-      final resultMap = <int, Task>{};
-
-      for (final row in rows) {
-        final taskId = row.readTable(tasks).id;
-
-        if (!resultMap.containsKey(taskId)) {
-          resultMap[taskId] = row.readTable(tasks);
-          // resultMap[taskId]!.backends = [];
-        }
-
-        final backend = row.readTable(backends);
-        print(backend);
-        // resultMap[taskId]!.backends.add(backend);
-      }
-
-      return resultMap.values.toList();
-    });
-  }
 }
 
 @DriftAccessor(tables: [Backends])
