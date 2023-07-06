@@ -7,3 +7,7 @@ export 'data/db_models/backend.dart';
 export 'data/daos/tasks_dao.dart';
 export 'data/daos/backends_dao.dart';
 export 'data/daos/task_backends_dao.dart';
+export 'blocs/tasks_list_cubit/tasks_list_cubit.dart';
+export 'data/repositories/backends_repository.dart';
+export 'data/repositories/tasks_repository.dart';
+export 'data/repositories/task_backends_repository.dart';
