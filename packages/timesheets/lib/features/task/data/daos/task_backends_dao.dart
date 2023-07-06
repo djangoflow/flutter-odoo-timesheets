@@ -10,8 +10,8 @@ class TaskBackendsDao extends DatabaseAccessor<AppDatabase>
   TaskBackendsDao(AppDatabase db) : super(db);
 
   // TaskBackends CRUD operations
-  Future<int> createTaskBackend(TaskBackendsCompanion taskBackend) =>
-      into(taskBackends).insert(taskBackend);
+  Future<int> createTaskBackend(TaskBackendsCompanion taskBackendsCompanion) =>
+      into(taskBackends).insert(taskBackendsCompanion);
 
   Future<void> deleteTaskBackend(TaskBackend taskBackend) =>
       delete(taskBackends).delete(taskBackend);

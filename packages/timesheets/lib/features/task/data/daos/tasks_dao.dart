@@ -9,14 +9,15 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   TasksDao(AppDatabase db) : super(db);
 
   // Task CRUD operations
-  Future<int> createTask(TasksCompanion task) => into(tasks).insert(task);
+  Future<int> createTask(TasksCompanion tasksCompanion) =>
+      into(tasks).insert(tasksCompanion);
 
   Future<Task?> getTaskById(int taskId) =>
       (select(tasks)..where((t) => t.id.equals(taskId))).getSingleOrNull();
 
   Future<List<Task>> getAllTasks() => select(tasks).get();
 
-  Future<List<Task>> getTasks(int limit, int offset) => (select(tasks)
+  Future<List<Task>> getTasks(int limit, int? offset) => (select(tasks)
         ..orderBy([
           (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
         ])

@@ -10,8 +10,8 @@ class BackendsDao extends DatabaseAccessor<AppDatabase>
   BackendsDao(AppDatabase db) : super(db);
 
   // Backend CRUD operations
-  Future<int> createBackend(BackendsCompanion backend) =>
-      into(backends).insert(backend);
+  Future<int> createBackend(BackendsCompanion backendsCompanion) =>
+      into(backends).insert(backendsCompanion);
 
   Future<Backend?> getBackendById(int backendId) =>
       (select(backends)..where((b) => b.id.equals(backendId)))
