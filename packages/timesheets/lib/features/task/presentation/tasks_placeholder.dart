@@ -65,14 +65,14 @@ class TasksPlaceHolder extends StatelessWidget {
             ),
             Positioned.fill(
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: [0.1, 1],
+                    stops: const [0.1, 1],
                     colors: [
                       Colors.transparent,
-                      Colors.black,
+                      theme.colorScheme.onPrimary,
                     ],
                   ),
                 ),
