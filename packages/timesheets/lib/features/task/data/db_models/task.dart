@@ -10,7 +10,12 @@ class Tasks extends Table {
   TextColumn get project => text().nullable()();
   IntColumn get duration => integer().withDefault(const Constant(0))();
   IntColumn get status => integer().withDefault(const Constant(0))();
+
+  /// lastTicked is the last time the task was started freshly
   DateTimeColumn get lastTicked => dateTime().nullable()();
+
+  /// firstTicked is the first time the task was started freshly
+  DateTimeColumn get firstTicked => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get deletedAt => dateTime().nullable()();

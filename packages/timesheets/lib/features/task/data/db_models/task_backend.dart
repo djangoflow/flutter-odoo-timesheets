@@ -1,13 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:timesheets/features/task/task.dart';
 
 class TaskBackends extends Table {
-  IntColumn get taskId => integer()();
-  IntColumn get backendId => integer()();
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get taskId => integer().references(Tasks, #id)();
+  IntColumn get backendId => integer().references(Backends, #id)();
   DateTimeColumn get lastSynced => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get deletedAt => dateTime().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {taskId, backendId};
 }
