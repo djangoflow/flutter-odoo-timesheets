@@ -10,7 +10,13 @@ typedef TasksListState = Data<List<Task>, TasksListFilter>;
 class TasksListCubit extends ListCubit<Task, TasksListFilter>
     with CubitMaybeEmit {
   final TasksRepository tasksRepository;
-  TasksListCubit(this.tasksRepository) : super(tasksRepository.getTasks);
+  TasksListCubit(this.tasksRepository)
+      : super(
+          ListBlocUtil.listLoader<Task, TasksListFilter>(
+            loader: ([filter]) => tasksRepository.getTasks(
+                filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
+          ),
+        );
 
   Future<void> createTask(TasksCompanion tasksCompanion) async {
     final taskId = await tasksRepository.createTask(tasksCompanion);
