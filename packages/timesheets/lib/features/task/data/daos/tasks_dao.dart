@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 
 part 'tasks_dao.g.dart';
 
@@ -27,4 +28,14 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   Future<void> updateTask(Task task) => update(tasks).replace(task);
 
   Future<void> deleteTask(Task task) => delete(tasks).delete(task);
+
+  /// Refreshes the task by resetting the timer.
+  Future<void> resetTask(Task task) => update(tasks).replace(
+        task.copyWith(
+          firstTicked: const Value(null),
+          lastTicked: const Value(null),
+          duration: 0,
+          status: TimerStatus.initial.index,
+        ),
+      );
 }
