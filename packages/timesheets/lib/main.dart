@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_app_links/djangoflow_app_links.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'timesheets_app_builder.dart';
 import 'configurations/configurations.dart';
@@ -26,7 +27,9 @@ Future<void> main() async {
       if (!kIsWeb) {
         initialDeepLink = (await appLinksRepository.getInitialLink())?.path;
       }
-
+      AppCubit.initialState = const AppState(
+        themeMode: ThemeMode.dark,
+      );
       // initialize router
       final router = AppRouter();
 
