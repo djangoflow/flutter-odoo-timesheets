@@ -11,3 +11,4 @@ export 'blocs/tasks_list_cubit/tasks_list_cubit.dart';
 export 'data/repositories/backends_repository.dart';
 export 'data/repositories/tasks_repository.dart';
 export 'data/repositories/task_backends_repository.dart';
+export 'blocs/task_data_cubit/task_data_cubit.dart';

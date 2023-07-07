@@ -19,11 +19,8 @@ class TasksRepository {
 
   Future<List<Task>> getAllTasks() => tasksDao.getAllTasks();
 
-  Future<List<Task>> getTasks([TasksListFilter? tasksListFilter]) =>
-      tasksDao.getTasks(
-        tasksListFilter?.limit ?? TasksListFilter.kPageSize,
-        tasksListFilter?.offset,
-      );
+  Future<List<Task>> getTasks(int limit, int? offset) =>
+      tasksDao.getTasks(limit, offset);
 
   Future<void> updateTask(Task task) => tasksDao.updateTask(
         task.copyWith(

@@ -70,7 +70,9 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                       subtitle: Text(task.description ?? ''),
                       elapsedTime: elapsedTime,
                       initialTimerStatus: TimerStatus.values[task.status],
-                      onTap: () {},
+                      onTap: () {
+                        context.router.push(TaskDetailsRoute(taskId: task.id));
+                      },
                       onTimerResume: (context) {
                         context.read<TimerCubit>().elapsedTime = Duration(
                           seconds: elapsedTime,
@@ -84,6 +86,12 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                             (isRunning ? tickDurationInSeconds : 0);
                         final lastTickedValue =
                             isRunning ? DateTime.now() : task.lastTicked;
+
+                        if (isRunning && task.firstTicked == null) {
+                          task.copyWith(
+                            firstTicked: Value(DateTime.now()),
+                          );
+                        }
 
                         await context.read<TasksListCubit>().updateTask(
                               task.copyWith(

@@ -32,6 +32,14 @@ class AppRouter extends $AppRouter {
               path: 'add',
               page: TaskAddRoute.page,
             ),
+            AutoRoute(
+              path: 'edit',
+              page: TaskEditRoute.page,
+            ),
+            AutoRoute(
+              path: ':id',
+              page: TaskDetailsRoute.page,
+            ),
           ],
         ),
 
