@@ -325,8 +325,7 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
 
 class _TaskTimerLarge extends StatefulWidget {
   const _TaskTimerLarge(
-      {super.key,
-      required this.animationController,
+      {required this.animationController,
       this.padding,
       required this.disabled,
       required this.state});

@@ -77,9 +77,6 @@ class _TaskDetails extends StatelessWidget {
   final Task task;
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
     final elapsedTime = task.elapsedTime;
 
     return ListView(
