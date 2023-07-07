@@ -6,6 +6,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:timesheets/features/task/data/db_models/task_history.dart';
 import 'package:timesheets/features/task/task.dart';
 
 part 'app_database.g.dart';
@@ -15,6 +16,7 @@ part 'app_database.g.dart';
     Tasks,
     Backends,
     TaskBackends,
+    TaskHistories,
   ],
   daos: [
     TasksDao,
