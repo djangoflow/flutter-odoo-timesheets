@@ -36,7 +36,16 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
             Icons.add,
             size: kPadding.r * 4,
           ),
-          onPressed: () async {},
+          onPressed: () async {
+            final result = await context.router.push(const TaskAddRoute());
+            if (result != null && result == true) {
+              if (context.mounted) {
+                context.read<TasksListCubit>().load(
+                      const TasksListFilter(),
+                    );
+              }
+            }
+          },
         ),
         body: Padding(
           padding: EdgeInsets.only(top: kPadding.h * 3),
@@ -58,7 +67,7 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                     return TaskListTile(
                       key: ValueKey(task.id),
                       title: Text(task.name),
-                      subtitle: Text(task.description),
+                      subtitle: Text(task.description ?? ''),
                       elapsedTime: elapsedTime,
                       initialTimerStatus: TimerStatus.values[task.status],
                       onTap: () {},
