@@ -7,6 +7,7 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/presentation/task_list_tile.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
+import 'package:timesheets/utils/utils.dart';
 
 @RoutePage()
 class TasksPage extends StatelessWidget with AutoRouteWrapper {
@@ -62,7 +63,7 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                   ),
                   itemBuilder: (context, index) {
                     final task = value.data![index];
-                    final elapsedTime = _calculateElapsedTime(task);
+                    final elapsedTime = task.elapsedTime;
 
                     return TaskListTile(
                       key: ValueKey(task.id),
@@ -126,13 +127,4 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
           ),
         child: this,
       );
-  int _calculateElapsedTime(Task task) {
-    final elapsedTime = Duration(seconds: task.duration) +
-        ([TimerStatus.running.index, TimerStatus.pausedByForce.index]
-                    .contains(task.status) &&
-                task.lastTicked != null
-            ? DateTime.now().difference(task.lastTicked!)
-            : Duration.zero);
-    return elapsedTime.inSeconds;
-  }
 }

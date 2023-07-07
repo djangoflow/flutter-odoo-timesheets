@@ -1,9 +1,13 @@
+import 'package:drift/drift.dart' hide Column;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
+import 'package:timesheets/utils/utils.dart';
 
 @RoutePage()
 class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
@@ -37,7 +41,9 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
                         'No data!',
                       ),
                     )
-                  : _TaskDetails(task: value.data!),
+                  : _TaskDetails(
+                      task: value.data!,
+                    ),
               loading: (value) => const Center(
                 child: CircularProgressIndicator(),
               ),
@@ -67,13 +73,14 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
 }
 
 class _TaskDetails extends StatelessWidget {
-  const _TaskDetails({required this.task});
+  const _TaskDetails({super.key, required this.task});
   final Task task;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
+    final elapsedTime = task.elapsedTime;
 
     return ListView(
       children: [
@@ -81,9 +88,95 @@ class _TaskDetails extends StatelessWidget {
           _TaskDescription(
             description: task.description!,
           ),
+        Card(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: kPadding.h * 2,
+              ),
+              child: TaskTimer.large(
+                key: ValueKey(task.status),
+                disabled: false,
+                elapsedTime: task.duration,
+                initialTimerStatus: TimerStatus.values[task.status],
+                onTimerResume: (context) {
+                  context.read<TimerCubit>().elapsedTime = Duration(
+                    seconds: elapsedTime,
+                  );
+                },
+                onTimerStateChange: (timerState, tickDurationInSeconds) async {
+                  final taskDataCubit = context.read<TaskDataCubit>();
+
+                  final isRunning = timerState.status == TimerStatus.running;
+                  final updatableSeconds =
+                      (isRunning ? tickDurationInSeconds : 0);
+                  final lastTickedValue =
+                      isRunning ? DateTime.now() : task.lastTicked;
+
+                  if (isRunning && task.firstTicked == null) {
+                    task.copyWith(
+                      firstTicked: Value(DateTime.now()),
+                    );
+                  }
+
+                  await taskDataCubit.updateTask(
+                    task.copyWith(
+                      duration: elapsedTime + updatableSeconds,
+                      status: timerState.status.index,
+                      lastTicked: Value(lastTickedValue),
+                    ),
+                  );
+
+                  if (timerState.status == TimerStatus.stopped) {
+                    if (context.mounted) {
+                      final result = await _showActionSheet(context);
+                      if (result == null || result == _TaskStopAction.cancel) {
+                        await taskDataCubit.updateTask(
+                          task.copyWith(
+                            status: TimerStatus.paused.index,
+                          ),
+                        );
+                      } else if (result == _TaskStopAction.saveLocally) {
+                        print('Saving locally');
+                      }
+                    }
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
+
+  Future<_TaskStopAction?> _showActionSheet(BuildContext context) =>
+      showCupertinoModalPopup<_TaskStopAction?>(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+          message: const Text('Timesheet is not synchronized'),
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              context.router.pop(_TaskStopAction.cancel);
+            },
+            child: const Text('Cancel'),
+          ),
+          actions: <CupertinoActionSheetAction>[
+            CupertinoActionSheetAction(
+              onPressed: () {
+                context.router.pop(_TaskStopAction.syncOdoo);
+              },
+              child: const Text('Connect wih Odoo account'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                context.router.pop(_TaskStopAction.saveLocally);
+              },
+              child: const Text('Save locally'),
+            ),
+          ],
+        ),
+      );
 }
 
 class _TaskDescription extends StatelessWidget {
@@ -114,3 +207,5 @@ class _TaskDescription extends StatelessWidget {
     );
   }
 }
+
+enum _TaskStopAction { syncOdoo, cancel, saveLocally }
