@@ -41,6 +41,7 @@ class AppTheme {
         chipSchemeColor: SchemeColor.primary,
         cardElevation: 3,
         cardRadius: kPadding.r * 2,
+        inputDecoratorBorderSchemeColor: SchemeColor.primary,
       );
 
   static ThemeData get light {
