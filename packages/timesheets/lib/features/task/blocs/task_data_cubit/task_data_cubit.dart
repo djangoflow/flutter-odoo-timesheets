@@ -1,13 +1,14 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/utils/list_bloc_util.dart';
+import 'package:timesheets/utils/utils.dart';
 
 export 'task_retrieve_filter.dart';
 
 typedef TasksDataState = Data<Task?, TaskRetrieveFilter>;
 
-class TaskDataCubit extends DataCubit<Task?, TaskRetrieveFilter> {
+class TaskDataCubit extends DataCubit<Task?, TaskRetrieveFilter>
+    with CubitMaybeEmit {
   final TasksRepository tasksRepository;
 
   TaskDataCubit(this.tasksRepository)
