@@ -151,6 +151,25 @@ class TaskTimer extends _TaskTimer {
             state: state,
           ),
         );
+
+  TaskTimer.large({
+    super.key,
+    super.elapsedTime,
+    super.initialTimerStatus,
+    super.padding,
+    super.disabled,
+    super.onTimerResume,
+    super.onTimerStateChange,
+  }) : super(
+          builder:
+              (context, state, animationController, tickDurationInSeconds) =>
+                  _TaskTimerLarge(
+            animationController: animationController,
+            padding: padding,
+            disabled: disabled,
+            state: state,
+          ),
+        );
 }
 
 class _TaskTimerSmall extends StatefulWidget {
@@ -258,7 +277,8 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
                     ? ValueListenableBuilder<TextStyle>(
                         valueListenable: textStyleAnimation!,
                         builder: (context, value, child) => Text(
-                          widget.state.duration.timerString,
+                          widget.state.duration
+                              .timerString(DurationFormat.minutesSeconds),
                           style: value,
                         ),
                       )
@@ -298,6 +318,156 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _TaskTimerLarge extends StatefulWidget {
+  const _TaskTimerLarge(
+      {super.key,
+      required this.animationController,
+      this.padding,
+      required this.disabled,
+      required this.state});
+
+  final AnimationController animationController;
+
+  /// Default is
+  /// ```dart
+  ///EdgeInsets.fromLTRB(
+  ///   kPadding.w * 2,
+  ///   kPadding.h,
+  ///   kPadding.w,
+  ///   kPadding.h,
+  /// ),
+  /// ```
+  final EdgeInsetsGeometry? padding;
+
+  final bool disabled;
+
+  final TimerState state;
+
+  @override
+  State<_TaskTimerLarge> createState() => __TaskTimerLargeState();
+}
+
+class __TaskTimerLargeState extends State<_TaskTimerLarge> {
+  late Animation<double> animation;
+
+  @override
+  void initState() {
+    super.initState();
+    animation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(widget.animationController);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    final timerStatus = widget.state.status;
+
+    return TimerBlocListener(
+      listenWhen: (prev, current) => prev.status != current.status,
+      listener: (context, state) {
+        // Listen to status change and trigger animations
+        final timerStatus = state.status;
+        if (timerStatus == TimerStatus.running) {
+          widget.animationController.forward();
+        } else if ([
+          TimerStatus.initial,
+          TimerStatus.paused,
+          TimerStatus.pausedByForce
+        ].contains(timerStatus)) {
+          widget.animationController.reverse();
+        }
+      },
+      child: Column(
+        children: [
+          Text(
+            widget.state.duration
+                .timerString(DurationFormat.hoursMinutesSeconds),
+            style: textTheme.displaySmall,
+          ),
+          SizedBox(
+            height: kPadding.h,
+          ),
+          Padding(
+            padding: widget.padding ??
+                EdgeInsets.symmetric(
+                  horizontal: kPadding.w * 2,
+                ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: ElevationOverlay.applySurfaceTint(
+                      theme.colorScheme.primaryContainer,
+                      theme.colorScheme.surfaceTint,
+                      2,
+                    ),
+                    shape: const StadiumBorder(),
+                    maximumSize: Size(64.w, 44.h),
+                    minimumSize: Size(64.w, 44.h),
+                    padding: const EdgeInsets.all(kPadding),
+                  ),
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.play_pause,
+                    size: 32.w,
+                    progress: animation,
+                    color: theme.colorScheme.primary,
+                  ),
+                  onPressed: widget.disabled
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          if (timerStatus == TimerStatus.running) {
+                            timerCubit.pauseTimer();
+                          } else if ([TimerStatus.initial, TimerStatus.paused]
+                              .contains(timerStatus)) {
+                            if (timerStatus == TimerStatus.initial) {
+                              timerCubit.startTimer();
+                            } else if (timerStatus == TimerStatus.paused) {
+                              timerCubit.resumeTimer();
+                            }
+                          }
+                        },
+                ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
+                IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: ElevationOverlay.applySurfaceTint(
+                      theme.colorScheme.primaryContainer,
+                      theme.colorScheme.surfaceTint,
+                      2,
+                    ),
+                    shape: const StadiumBorder(),
+                    maximumSize: Size(64.w, 44.h),
+                    minimumSize: Size(64.w, 44.h),
+                    padding: const EdgeInsets.all(kPadding),
+                  ),
+                  icon: Icon(
+                    Icons.stop,
+                    size: kPadding.w * 4,
+                    color: theme.colorScheme.primary,
+                  ),
+                  onPressed: widget.disabled
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          timerCubit.stopTimer();
+                        },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
