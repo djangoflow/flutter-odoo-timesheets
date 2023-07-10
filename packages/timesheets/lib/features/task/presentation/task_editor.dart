@@ -64,7 +64,7 @@ class TaskEditor extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: kPadding.h,
+              height: kPadding.h * 3,
             ),
             ReactiveTextField<String>(
               formControlName: descriptionControlName,
