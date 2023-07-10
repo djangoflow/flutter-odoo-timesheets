@@ -246,6 +246,14 @@ class _TimesheetListView extends StatelessWidget {
 
           return ListTile(
             key: ValueKey(timesheet.id),
+            onTap: () => context.router.push(
+              TimesheetsRouter(
+                timesheetId: timesheet.id,
+                children: const [
+                  TimesheetDetailsRoute(),
+                ],
+              ),
+            ),
             title: Text(
               DateFormat.yMd().format(timesheet.startTime),
             ),

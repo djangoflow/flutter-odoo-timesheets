@@ -7,28 +7,37 @@ import 'timesheet_retrieve_filter.dart';
 
 export 'timesheet_retrieve_filter.dart';
 
-typedef TimesheetDataState = Data<Timesheet?, TimesheetRetrieveFilter>;
+typedef TimesheetDataState = Data<TimesheetWithTask?, TimesheetRetrieveFilter>;
 
-class TimesheetDataCubit extends DataCubit<Timesheet?, TimesheetRetrieveFilter>
+class TimesheetDataCubit
+    extends DataCubit<TimesheetWithTask?, TimesheetRetrieveFilter>
     with CubitMaybeEmit {
   final TimesheetsRepository timesheetsRepository;
 
   TimesheetDataCubit(this.timesheetsRepository)
       : super(
-          ListBlocUtil.dataLoader<Timesheet?, TimesheetRetrieveFilter>(
+          ListBlocUtil.dataLoader<TimesheetWithTask?, TimesheetRetrieveFilter>(
             loader: ([filter]) {
               if (filter == null) {
                 throw ArgumentError.notNull('taskId');
               }
               return timesheetsRepository
-                  .getTimesheetById(filter.taskHistoryId);
+                  .getTimesheetWithTaskById(filter.timesheetId);
             },
           ),
         );
 
   Future<void> updateTimesheet(Timesheet timesheet) async {
     await timesheetsRepository.updateTimesheet(timesheet);
-    emit(Data(data: timesheet, filter: state.filter));
+    if (state.data != null) {
+      emit(
+        Data(
+            data: state.data!.copyWith(
+              timesheet: timesheet,
+            ),
+            filter: state.filter),
+      );
+    }
   }
 
   Future<void> deleteTimesheet(Timesheet timesheet) async {

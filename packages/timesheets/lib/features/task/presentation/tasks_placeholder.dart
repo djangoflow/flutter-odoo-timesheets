@@ -39,7 +39,9 @@ class TasksPlaceHolder extends StatelessWidget {
                         backgroundColor: Colors.transparent,
                         foregroundColor: theme.colorScheme.primary,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        context.router.push(const TaskAddRoute());
+                      },
                       child: const Text('Add new task'),
                     ),
                   ),

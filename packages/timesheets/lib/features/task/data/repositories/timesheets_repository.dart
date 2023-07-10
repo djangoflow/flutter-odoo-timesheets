@@ -22,6 +22,9 @@ class TimesheetsRepository {
   Future<void> updateTimesheet(Timesheet timesheet) =>
       timesheetsDao.updateTimesheet(timesheet);
 
-  Future<Timesheet?> getTimesheetById(int taskHistoryId) =>
-      timesheetsDao.getTimesheetById(taskHistoryId);
+  Future<Timesheet?> getTimesheetById(int timesheetId) =>
+      timesheetsDao.getTimesheetById(timesheetId);
+
+  Future<TimesheetWithTask> getTimesheetWithTaskById(int timesheetId) =>
+      timesheetsDao.getTimesheetWithTaskById(timesheetId);
 }
