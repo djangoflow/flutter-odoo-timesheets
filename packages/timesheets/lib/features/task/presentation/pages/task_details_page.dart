@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/task/blocs/task_histories_list_cubit/task_histories_list_cubit.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -63,11 +64,22 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
       );
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => TaskDataCubit(context.read<TasksRepository>())
-          ..load(
-            TaskRetrieveFilter(taskId: taskId),
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider<TaskDataCubit>(
+            create: (context) => TaskDataCubit(context.read<TasksRepository>())
+              ..load(
+                TaskRetrieveFilter(taskId: taskId),
+              ),
           ),
+          BlocProvider<TaskHistoriesListCubit>(
+            create: (context) =>
+                TaskHistoriesListCubit(context.read<TaskHistoriesRepository>())
+                  ..load(
+                    TaskHistoriesListFilter(taskId: taskId),
+                  ),
+          )
+        ],
         child: this,
       );
 }

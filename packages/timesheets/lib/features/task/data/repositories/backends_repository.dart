@@ -5,7 +5,7 @@ import 'package:timesheets/features/task/task.dart';
 class BackendsRepository {
   final BackendsDao backendsDao;
 
-  BackendsRepository(
+  const BackendsRepository(
     this.backendsDao,
   );
 

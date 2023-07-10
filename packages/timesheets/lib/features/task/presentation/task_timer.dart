@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -378,7 +380,8 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
         } else if ([
           TimerStatus.initial,
           TimerStatus.paused,
-          TimerStatus.pausedByForce
+          TimerStatus.pausedByForce,
+          TimerStatus.stopped,
         ].contains(timerStatus)) {
           widget.animationController.reverse();
         }
@@ -426,11 +429,15 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                           final timerCubit = context.read<TimerCubit>();
                           if (timerStatus == TimerStatus.running) {
                             timerCubit.pauseTimer();
-                          } else if ([TimerStatus.initial, TimerStatus.paused]
-                              .contains(timerStatus)) {
+                          } else if ([
+                            TimerStatus.initial,
+                            TimerStatus.paused,
+                            TimerStatus.pausedByForce,
+                            TimerStatus.stopped
+                          ].contains(timerStatus)) {
                             if (timerStatus == TimerStatus.initial) {
                               timerCubit.startTimer();
-                            } else if (timerStatus == TimerStatus.paused) {
+                            } else {
                               timerCubit.resumeTimer();
                             }
                           }

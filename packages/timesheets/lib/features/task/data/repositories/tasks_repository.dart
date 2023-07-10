@@ -5,7 +5,7 @@ import 'package:timesheets/features/task/task.dart';
 class TasksRepository {
   final TasksDao tasksDao;
 
-  TasksRepository(
+  const TasksRepository(
     this.tasksDao,
   );
 

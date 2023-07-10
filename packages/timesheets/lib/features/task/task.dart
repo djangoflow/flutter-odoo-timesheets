@@ -12,3 +12,6 @@ export 'data/repositories/backends_repository.dart';
 export 'data/repositories/tasks_repository.dart';
 export 'data/repositories/task_backends_repository.dart';
 export 'blocs/task_data_cubit/task_data_cubit.dart';
+export 'data/db_models/task_history.dart';
+export 'data/daos/task_histories_dao.dart';
+export 'data/repositories/task_histories_repository.dart';
