@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:list_bloc/list_bloc.dart';
 
 part 'task_histories_list_filter.freezed.dart';
 part 'task_histories_list_filter.g.dart';
