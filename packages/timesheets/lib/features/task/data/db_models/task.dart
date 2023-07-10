@@ -11,7 +11,6 @@ class Tasks extends Table {
   TextColumn get onlineId => text().nullable()();
   TextColumn get name => text()();
   TextColumn get description => text().nullable()();
-  TextColumn get project => text().nullable()();
   IntColumn get duration => integer().withDefault(const Constant(0))();
   IntColumn get status => integer().withDefault(const Constant(0))();
 
@@ -20,6 +19,6 @@ class Tasks extends Table {
 
   /// firstTicked is the first time the task was started freshly
   DateTimeColumn get firstTicked => dateTime().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

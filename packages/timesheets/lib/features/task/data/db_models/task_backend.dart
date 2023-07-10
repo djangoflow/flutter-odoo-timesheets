@@ -6,6 +6,6 @@ class TaskBackends extends Table {
   IntColumn get taskId => integer().references(Tasks, #id)();
   IntColumn get backendId => integer().references(Backends, #id)();
   DateTimeColumn get lastSynced => dateTime().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

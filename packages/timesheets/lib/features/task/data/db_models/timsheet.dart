@@ -9,5 +9,5 @@ class Timesheets extends Table {
   IntColumn get totalSpentSeconds => integer()();
   IntColumn get taskId => integer().references(Tasks, #id)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
