@@ -20,3 +20,4 @@ export 'data/models/timesheet_with_task.dart';
 export 'blocs/timesheet_data_cubit/timesheet_data_cubit.dart';
 export 'data/db_models/project.dart';
 export 'data/daos/projects_dao.dart';
+export 'data/daos/task_with_project_dao.dart';

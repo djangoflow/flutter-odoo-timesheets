@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 
 class TasksRepository {
@@ -22,10 +23,26 @@ class TasksRepository {
   Future<List<Task>> getTasks(int limit, int? offset) =>
       tasksDao.getTasks(limit, offset);
 
+  Future<List<TaskWithProject>> getTasksWithProjects(int limit, int? offset) =>
+      tasksDao.getTasksWithProjects(limit, offset);
+
+  Future<int> createTaskWithProject(
+          TasksCompanion tasksCompanion, ProjectsCompanion projectsCompanion) =>
+      tasksDao.createTaskWithProject(tasksCompanion, projectsCompanion);
+
+  Future<TaskWithProject?> getTaskWithProjectById(int taskId) =>
+      tasksDao.getTaskWithProjectById(taskId);
+
   Future<void> updateTask(Task task) => tasksDao.updateTask(
         task.copyWith(
           updatedAt: DateTime.now(),
         ),
+      );
+
+  Future<void> updateTaskWithProject(Task task, Project project) =>
+      tasksDao.updateTaskWithProject(
+        task,
+        project,
       );
 
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);

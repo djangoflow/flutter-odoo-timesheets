@@ -1,5 +1,6 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 
@@ -13,29 +14,57 @@ class TimesheetDataCubit
     extends DataCubit<TimesheetWithTask?, TimesheetRetrieveFilter>
     with CubitMaybeEmit {
   final TimesheetsRepository timesheetsRepository;
+  final TasksRepository tasksRepository;
 
-  TimesheetDataCubit(this.timesheetsRepository)
+  TimesheetDataCubit(this.timesheetsRepository, this.tasksRepository)
       : super(
           ListBlocUtil.dataLoader<TimesheetWithTask?, TimesheetRetrieveFilter>(
             loader: ([filter]) {
               if (filter == null) {
                 throw ArgumentError.notNull('taskId');
               }
-              return timesheetsRepository
-                  .getTimesheetWithTaskById(filter.timesheetId);
+              final timesheet = timesheetsRepository
+                  .getTimesheetById(filter.timesheetId)
+                  .then((timesheet) async {
+                if (timesheet == null) {
+                  throw ArgumentError.notNull('timesheet');
+                }
+                final taskWithProject = await tasksRepository
+                    .getTaskWithProjectById(timesheet.taskId);
+                if (taskWithProject == null) {
+                  throw ArgumentError.notNull('task');
+                }
+                return TimesheetWithTask(
+                  timesheet: timesheet,
+                  taskWithProject: taskWithProject,
+                );
+              });
+
+              return timesheet;
             },
           ),
         );
 
-  Future<void> updateTimesheet(Timesheet timesheet) async {
+  Future<void> updateTimesheet(
+      Timesheet timesheet, TaskWithProject taskWithProject) async {
     await timesheetsRepository.updateTimesheet(timesheet);
+    await tasksRepository.updateTaskWithProject(
+        taskWithProject.task, taskWithProject.project);
+    final updatedTaskWithProject =
+        await tasksRepository.getTaskWithProjectById(taskWithProject.task.id);
+    if (updatedTaskWithProject == null) {
+      throw ArgumentError.notNull('updatedTaskWithProject');
+    }
+
     if (state.data != null) {
       emit(
         Data(
-            data: state.data!.copyWith(
-              timesheet: timesheet,
-            ),
-            filter: state.filter),
+          data: state.data!.copyWith(
+            timesheet: timesheet,
+            taskWithProject: updatedTaskWithProject,
+          ),
+          filter: state.filter,
+        ),
       );
     }
   }

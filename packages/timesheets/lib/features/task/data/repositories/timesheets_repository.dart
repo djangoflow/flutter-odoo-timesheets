@@ -24,7 +24,4 @@ class TimesheetsRepository {
 
   Future<Timesheet?> getTimesheetById(int timesheetId) =>
       timesheetsDao.getTimesheetById(timesheetId);
-
-  Future<TimesheetWithTask> getTimesheetWithTaskById(int timesheetId) =>
-      timesheetsDao.getTimesheetWithTaskById(timesheetId);
 }

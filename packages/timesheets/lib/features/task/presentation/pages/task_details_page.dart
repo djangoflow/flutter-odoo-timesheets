@@ -18,7 +18,8 @@ class TaskDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<TaskDataCubit, TasksDataState>(
         builder: (context, state) {
-          final task = state.data;
+          final taskWithProject = state.data;
+          final task = taskWithProject?.task;
           final timesheets = context.select(
             (TimesheetListCubit cubit) => cubit.state.data,
           );
@@ -28,11 +29,11 @@ class TaskDetailsPage extends StatelessWidget {
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),
               actions: [
-                if (task != null)
+                if (taskWithProject != null)
                   IconButton(
                     onPressed: () {
                       context.router.push(
-                        TaskEditRoute(task: task),
+                        TaskEditRoute(taskWithProject: taskWithProject),
                       );
                     },
                     icon: const Icon(Icons.edit),
@@ -49,7 +50,7 @@ class TaskDetailsPage extends StatelessWidget {
                   : ListView(
                       children: [
                         _TaskDetails(
-                          task: value.data!,
+                          task: value.data!.task,
                         ),
                         SizedBox(
                           height: kPadding.h,

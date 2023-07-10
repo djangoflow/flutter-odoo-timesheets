@@ -13,6 +13,7 @@ class TimesheetsRouterPage extends AutoRouter with AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) => BlocProvider<TimesheetDataCubit>(
         create: (context) => TimesheetDataCubit(
           context.read<TimesheetsRepository>(),
+          context.read<TasksRepository>(),
         )..load(
             TimesheetRetrieveFilter(timesheetId: timesheetId),
           ),

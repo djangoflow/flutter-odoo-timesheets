@@ -30,18 +30,15 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
       (select(timesheets)..where((th) => th.id.equals(timesheetId)))
           .getSingleOrNull();
 
-  Future<TimesheetWithTask> getTimesheetWithTaskById(int timesheetId) async {
-    final timesheet = await getTimesheetById(timesheetId);
+  Future<Timesheet> getTimesheetByTaskId(int timesheetId) async {
+    final timesheet = await (select(timesheets)
+          ..where((th) => th.taskId.equals(timesheetId)))
+        .getSingleOrNull();
+
     if (timesheet == null) {
-      throw ArgumentError.value(timesheetId, 'timesheetId');
+      throw Exception('Timesheet not found');
     }
 
-    final task = await (select(tasks)
-          ..where(
-            (t) => t.id.equals(timesheet.taskId),
-          ))
-        .getSingle();
-
-    return TimesheetWithTask(timesheet: timesheet, task: task);
+    return timesheet;
   }
 }

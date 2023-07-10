@@ -1,26 +1,29 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/data/repositories/tasks_repository.dart';
 import 'package:timesheets/utils/utils.dart';
 import 'tasks_list_filter.dart';
 export 'tasks_list_filter.dart';
 
-typedef TasksListState = Data<List<Task>, TasksListFilter>;
+typedef TasksListState = Data<List<TaskWithProject>, TasksListFilter>;
 
-class TasksListCubit extends ListCubit<Task, TasksListFilter>
+class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
     with CubitMaybeEmit {
   final TasksRepository tasksRepository;
   TasksListCubit(this.tasksRepository)
       : super(
-          ListBlocUtil.listLoader<Task, TasksListFilter>(
-            loader: ([filter]) => tasksRepository.getTasks(
+          ListBlocUtil.listLoader<TaskWithProject, TasksListFilter>(
+            loader: ([filter]) => tasksRepository.getTasksWithProjects(
                 filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
           ),
         );
 
-  Future<void> createTask(TasksCompanion tasksCompanion) async {
-    final taskId = await tasksRepository.createTask(tasksCompanion);
-    final task = await tasksRepository.getTaskById(taskId);
+  Future<void> createTaskWithProject(TasksCompanion tasksCompanion,
+      ProjectsCompanion projectsCompanion) async {
+    final taskId = await tasksRepository.createTaskWithProject(
+        tasksCompanion, projectsCompanion);
+    final task = await tasksRepository.getTaskWithProjectById(taskId);
     if (state is Empty) {
       emit(
         Data(
@@ -42,12 +45,13 @@ class TasksListCubit extends ListCubit<Task, TasksListFilter>
 
   Future<void> updateTask(Task task) async {
     await tasksRepository.updateTask(task);
-    final updatedTask = await tasksRepository.getTaskById(task.id);
+    final updatedTaskWithProject =
+        await tasksRepository.getTaskWithProjectById(task.id);
     emit(
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.id == task.id) updatedTask! else t,
+            if (t.task.id == task.id) updatedTaskWithProject! else t,
         ],
       ),
     );
@@ -59,7 +63,7 @@ class TasksListCubit extends ListCubit<Task, TasksListFilter>
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.id != task.id) t,
+            if (t.task.id != task.id) t,
         ],
       ),
     );
@@ -70,7 +74,7 @@ class TasksListCubit extends ListCubit<Task, TasksListFilter>
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.id == task.id) task else t,
+            if (t.task.id == task.id) t.copyWith(task: task) else t,
         ],
       ),
     );

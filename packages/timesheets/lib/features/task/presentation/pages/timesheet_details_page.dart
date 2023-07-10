@@ -75,46 +75,51 @@ class _TimesheetDetails extends StatelessWidget {
   final TimesheetWithTask timesheetWithTask;
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _TimesheetItem(
-            title: 'Task',
-            value: timesheetWithTask.task.name,
-          ),
-          SizedBox(
-            height: kPadding.h * 2,
-          ),
-          _TimesheetItem(
-            title: 'Project',
-            value: '${timesheetWithTask.task.project}',
-          ),
-          SizedBox(
-            height: kPadding.h * 2,
-          ),
-          _TimesheetItem(
-            title: 'Date',
-            value: DateFormat('dd/MM/yyyy')
-                .format(timesheetWithTask.timesheet.startTime),
-          ),
-          SizedBox(
-            height: kPadding.h * 2,
-          ),
-          _TimesheetItem(
-            title: 'Start time',
-            value: DateFormat('HH:mm:ss')
-                .format(timesheetWithTask.timesheet.startTime),
-          ),
-          SizedBox(
-            height: kPadding.h * 2,
-          ),
-          _TimesheetItem(
-            title: 'End time',
-            value: DateFormat('HH:mm:ss')
-                .format(timesheetWithTask.timesheet.finishTime),
-          ),
-        ],
-      );
+  Widget build(BuildContext context) {
+    final task = timesheetWithTask.taskWithProject.task;
+    final project = timesheetWithTask.taskWithProject.project;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _TimesheetItem(
+          title: 'Task',
+          value: task.name,
+        ),
+        SizedBox(
+          height: kPadding.h * 2,
+        ),
+        _TimesheetItem(
+          title: 'Project',
+          value: project.name ?? '',
+        ),
+        SizedBox(
+          height: kPadding.h * 2,
+        ),
+        _TimesheetItem(
+          title: 'Date',
+          value: DateFormat('dd/MM/yyyy')
+              .format(timesheetWithTask.timesheet.startTime),
+        ),
+        SizedBox(
+          height: kPadding.h * 2,
+        ),
+        _TimesheetItem(
+          title: 'Start time',
+          value: DateFormat('HH:mm:ss')
+              .format(timesheetWithTask.timesheet.startTime),
+        ),
+        SizedBox(
+          height: kPadding.h * 2,
+        ),
+        _TimesheetItem(
+          title: 'End time',
+          value: DateFormat('HH:mm:ss')
+              .format(timesheetWithTask.timesheet.finishTime),
+        ),
+      ],
+    );
+  }
 }
 
 class _TimesheetItem extends StatelessWidget {
