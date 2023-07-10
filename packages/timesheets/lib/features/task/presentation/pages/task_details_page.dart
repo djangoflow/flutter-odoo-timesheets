@@ -11,9 +11,9 @@ import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
 
 @RoutePage()
-class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
-  const TaskDetailsPage({super.key, @pathParam required this.taskId});
-  final int taskId;
+class TaskDetailsPage extends StatelessWidget {
+  const TaskDetailsPage({super.key});
+
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<TaskDataCubit, TasksDataState>(
@@ -26,6 +26,7 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
           return Scaffold(
             appBar: AppBar(
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
+              leading: const AutoLeadingButton(),
               actions: [
                 if (task != null)
                   IconButton(
@@ -74,26 +75,6 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
             ),
           );
         },
-      );
-
-  @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider<TaskDataCubit>(
-            create: (context) => TaskDataCubit(context.read<TasksRepository>())
-              ..load(
-                TaskRetrieveFilter(taskId: taskId),
-              ),
-          ),
-          BlocProvider<TaskHistoriesListCubit>(
-            create: (context) =>
-                TaskHistoriesListCubit(context.read<TaskHistoriesRepository>())
-                  ..load(
-                    TaskHistoriesListFilter(taskId: taskId),
-                  ),
-          )
-        ],
-        child: this,
       );
 }
 

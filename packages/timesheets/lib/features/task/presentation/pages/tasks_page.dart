@@ -123,7 +123,13 @@ class _TasksPageState extends State<TasksPage>
                                           TimerStatus.values[task.status],
                                       onTap: () {
                                         context.router.push(
-                                            TaskDetailsRoute(taskId: task.id));
+                                          TaskDetailsRouter(
+                                            taskId: task.id,
+                                            children: const [
+                                              TaskDetailsRoute()
+                                            ],
+                                          ),
+                                        );
                                       },
                                       onTimerResume: (context) {
                                         context.read<TimerCubit>().elapsedTime =

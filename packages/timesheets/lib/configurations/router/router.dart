@@ -33,12 +33,32 @@ class AppRouter extends $AppRouter {
               page: TaskAddRoute.page,
             ),
             AutoRoute(
-              path: 'edit',
-              page: TaskEditRoute.page,
-            ),
-            AutoRoute(
               path: ':id',
-              page: TaskDetailsRoute.page,
+              page: TaskDetailsRouter.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  page: TaskDetailsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'edit',
+                  page: TaskEditRoute.page,
+                ),
+                AutoRoute(
+                  path: 'timesheets/:timesheetId',
+                  page: TimesheetsRouter.page,
+                  children: [
+                    AutoRoute(
+                      path: '',
+                      page: TimesheetDetailsRoute.page,
+                    ),
+                    AutoRoute(
+                      path: 'edit',
+                      page: TimesheetEditRoute.page,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
