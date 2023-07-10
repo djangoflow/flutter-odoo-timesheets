@@ -16,6 +16,7 @@ part 'app_database.g.dart';
     Backends,
     TaskBackends,
     Timesheets,
+    Projects,
   ],
   daos: [
     TasksDao,

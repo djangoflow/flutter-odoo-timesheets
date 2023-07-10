@@ -1,5 +1,3 @@
-// freezed class with Timesheet and Task
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
 

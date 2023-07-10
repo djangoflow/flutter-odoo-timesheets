@@ -18,3 +18,4 @@ export 'data/repositories/timesheets_repository.dart';
 export 'blocs/timesheet_list_cubit/task_histories_list_cubit.dart';
 export 'data/models/timesheet_with_task.dart';
 export 'blocs/timesheet_data_cubit/timesheet_data_cubit.dart';
+export 'data/db_models/project.dart';
