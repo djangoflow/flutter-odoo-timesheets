@@ -33,6 +33,11 @@ class TaskDataCubit extends DataCubit<Task?, TaskRetrieveFilter>
     emit(const Data.empty());
   }
 
+  Future<void> resetTask(Task task) async {
+    await tasksRepository.resetTask(task);
+    await load();
+  }
+
   Future<void> refreshTask() async {
     await load();
   }

@@ -29,4 +29,6 @@ class TasksRepository {
       );
 
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);
+
+  Future<void> resetTask(Task task) => tasksDao.resetTask(task);
 }

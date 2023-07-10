@@ -6,9 +6,6 @@ part 'task_histories_list_filter.g.dart';
 
 @freezed
 class TaskHistoriesListFilter with _$TaskHistoriesListFilter {
-  const TaskHistoriesListFilter._();
-
-  @Implements<OffsetLimitFilter>()
   const factory TaskHistoriesListFilter({
     int? taskId,
   }) = _TaskHistoriesListFilter;

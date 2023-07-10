@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/blocs/task_histories_list_cubit/task_histories_list_cubit.dart';
@@ -19,6 +20,9 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
       BlocBuilder<TaskDataCubit, TasksDataState>(
         builder: (context, state) {
           final task = state.data;
+          final taskHistories = context.select(
+            (TaskHistoriesListCubit cubit) => cubit.state.data,
+          );
 
           return Scaffold(
             appBar: AppBar(
@@ -42,18 +46,28 @@ class TaskDetailsPage extends StatelessWidget with AutoRouteWrapper {
                         'No data!',
                       ),
                     )
-                  : _TaskDetails(
-                      task: value.data!,
+                  : ListView(
+                      children: [
+                        _TaskDetails(
+                          task: value.data!,
+                        ),
+                        SizedBox(
+                          height: kPadding.h,
+                        ),
+                        _TaskHistoriesList(
+                          taskHistories: taskHistories ?? [],
+                        ),
+                      ],
                     ),
-              loading: (value) => const Center(
+              loading: (_) => const Center(
                 child: CircularProgressIndicator(),
               ),
-              empty: (value) => const Center(
+              empty: (_) => const Center(
                 child: Text(
                   'No data!',
                 ),
               ),
-              error: (value) => const Center(
+              error: (_) => const Center(
                 child: Text(
                   'Something went wrong!',
                 ),
@@ -91,13 +105,16 @@ class _TaskDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final elapsedTime = task.elapsedTime;
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (task.description != null)
           _TaskDescription(
             description: task.description!,
           ),
         Card(
+          margin: EdgeInsets.zero,
           child: Center(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -115,23 +132,24 @@ class _TaskDetails extends StatelessWidget {
                 },
                 onTimerStateChange: (timerState, tickDurationInSeconds) async {
                   final taskDataCubit = context.read<TaskDataCubit>();
+                  final taskHistoriesListCubit =
+                      context.read<TaskHistoriesListCubit>();
 
                   final isRunning = timerState.status == TimerStatus.running;
                   final updatableSeconds =
                       (isRunning ? tickDurationInSeconds : 0);
+                  final firstTickedValue =
+                      (isRunning && task.firstTicked == null)
+                          ? Value(DateTime.now())
+                          : Value(task.firstTicked);
                   final lastTickedValue =
                       isRunning ? DateTime.now() : task.lastTicked;
-
-                  if (isRunning && task.firstTicked == null) {
-                    task.copyWith(
-                      firstTicked: Value(DateTime.now()),
-                    );
-                  }
 
                   await taskDataCubit.updateTask(
                     task.copyWith(
                       duration: elapsedTime + updatableSeconds,
                       status: timerState.status.index,
+                      firstTicked: firstTickedValue,
                       lastTicked: Value(lastTickedValue),
                     ),
                   );
@@ -146,7 +164,16 @@ class _TaskDetails extends StatelessWidget {
                           ),
                         );
                       } else if (result == _TaskStopAction.saveLocally) {
-                        print('Saving locally');
+                        await taskHistoriesListCubit.createTaskHisoty(
+                          TaskHistoriesCompanion(
+                            taskId: Value(task.id),
+                            totalSpentSeconds: Value(task.duration),
+                            startTime: Value(task.firstTicked!),
+                            finishTime: Value(task.lastTicked!),
+                          ),
+                        );
+
+                        await taskDataCubit.resetTask(task);
                       }
                     }
                   }
@@ -218,3 +245,39 @@ class _TaskDescription extends StatelessWidget {
 }
 
 enum _TaskStopAction { syncOdoo, cancel, saveLocally }
+
+class _TaskHistoriesList extends StatelessWidget {
+  const _TaskHistoriesList({super.key, required this.taskHistories});
+  final List<TaskHistory> taskHistories;
+
+  @override
+  Widget build(BuildContext context) => ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: taskHistories.length,
+        separatorBuilder: (context, index) => SizedBox(
+          height: kPadding.h,
+        ),
+        itemBuilder: (context, index) {
+          final taskHistory = taskHistories[index];
+
+          return ListTile(
+            key: ValueKey(taskHistory.id),
+            title: Text(
+              DateFormat.yMd().format(taskHistory.startTime),
+            ),
+            subtitle: Text(
+              DateFormat.jms().format(taskHistory.startTime),
+            ),
+            trailing: Text(
+              Duration(
+                seconds: taskHistory.totalSpentSeconds,
+              ).timerString(
+                DurationFormat.hoursMinutesSeconds,
+              ),
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          );
+        },
+      );
+}
