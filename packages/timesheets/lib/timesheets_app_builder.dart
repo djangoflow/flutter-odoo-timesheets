@@ -46,6 +46,13 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
               lazy: false,
             ),
+            BlocProvider<TasksListCubit>(
+              create: (context) => TasksListCubit(
+                context.read<TasksRepository>(),
+              )..load(
+                  const TasksListFilter(),
+                ),
+            )
           ],
           builder: (context) => AppCubitConsumer(
             listenWhen: (previous, current) =>
