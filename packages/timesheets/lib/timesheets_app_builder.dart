@@ -29,9 +29,9 @@ class TimesheetsAppBuilder extends AppBuilder {
               create: (context) =>
                   TasksRepository(context.read<AppDatabase>().tasksDao),
             ),
-            RepositoryProvider<TaskHistoriesRepository>(
-              create: (context) => TaskHistoriesRepository(
-                context.read<AppDatabase>().taskHistoriesDao,
+            RepositoryProvider<TimesheetsRepository>(
+              create: (context) => TimesheetsRepository(
+                context.read<AppDatabase>().timesheetsDao,
               ),
             ),
           ],

@@ -19,8 +19,8 @@ class TaskDetailsPage extends StatelessWidget {
       BlocBuilder<TaskDataCubit, TasksDataState>(
         builder: (context, state) {
           final task = state.data;
-          final taskHistories = context.select(
-            (TaskHistoriesListCubit cubit) => cubit.state.data,
+          final timesheets = context.select(
+            (TimesheetListCubit cubit) => cubit.state.data,
           );
 
           return Scaffold(
@@ -54,8 +54,8 @@ class TaskDetailsPage extends StatelessWidget {
                         SizedBox(
                           height: kPadding.h,
                         ),
-                        _TaskHistoriesList(
-                          taskHistories: taskHistories ?? [],
+                        _TimesheetListView(
+                          timesheets: timesheets ?? [],
                         ),
                       ],
                     ),
@@ -79,7 +79,7 @@ class TaskDetailsPage extends StatelessWidget {
 }
 
 class _TaskDetails extends StatelessWidget {
-  const _TaskDetails({super.key, required this.task});
+  const _TaskDetails({required this.task});
   final Task task;
   @override
   Widget build(BuildContext context) {
@@ -112,8 +112,7 @@ class _TaskDetails extends StatelessWidget {
                 },
                 onTimerStateChange: (timerState, tickDurationInSeconds) async {
                   final taskDataCubit = context.read<TaskDataCubit>();
-                  final taskHistoriesListCubit =
-                      context.read<TaskHistoriesListCubit>();
+                  final timesheetListCubit = context.read<TimesheetListCubit>();
 
                   final isRunning = timerState.status == TimerStatus.running;
                   final updatableSeconds =
@@ -148,8 +147,8 @@ class _TaskDetails extends StatelessWidget {
                             task.lastTicked == null) {
                           throw Exception('Timer was not started');
                         }
-                        await taskHistoriesListCubit.createTaskHisoty(
-                          TaskHistoriesCompanion(
+                        await timesheetListCubit.createTimesheet(
+                          TimesheetsCompanion(
                             taskId: Value(task.id),
                             totalSpentSeconds: Value(task.duration),
                             startTime: Value(task.firstTicked!),
@@ -200,7 +199,7 @@ class _TaskDetails extends StatelessWidget {
 }
 
 class _TaskDescription extends StatelessWidget {
-  const _TaskDescription({super.key, required this.description});
+  const _TaskDescription({required this.description});
   final String description;
 
   @override
@@ -230,32 +229,32 @@ class _TaskDescription extends StatelessWidget {
 
 enum _TaskStopAction { syncOdoo, cancel, saveLocally }
 
-class _TaskHistoriesList extends StatelessWidget {
-  const _TaskHistoriesList({super.key, required this.taskHistories});
-  final List<TaskHistory> taskHistories;
+class _TimesheetListView extends StatelessWidget {
+  const _TimesheetListView({required this.timesheets});
+  final List<Timesheet> timesheets;
 
   @override
   Widget build(BuildContext context) => ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: taskHistories.length,
+        itemCount: timesheets.length,
         separatorBuilder: (context, index) => SizedBox(
           height: kPadding.h,
         ),
         itemBuilder: (context, index) {
-          final taskHistory = taskHistories[index];
+          final timesheet = timesheets[index];
 
           return ListTile(
-            key: ValueKey(taskHistory.id),
+            key: ValueKey(timesheet.id),
             title: Text(
-              DateFormat.yMd().format(taskHistory.startTime),
+              DateFormat.yMd().format(timesheet.startTime),
             ),
             subtitle: Text(
-              DateFormat.jms().format(taskHistory.startTime),
+              DateFormat.jms().format(timesheet.startTime),
             ),
             trailing: Text(
               Duration(
-                seconds: taskHistory.totalSpentSeconds,
+                seconds: timesheet.totalSpentSeconds,
               ).timerString(
                 DurationFormat.hoursMinutesSeconds,
               ),

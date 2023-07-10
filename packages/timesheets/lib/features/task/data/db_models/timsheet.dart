@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/task/task.dart';
 
-@DataClassName('TaskHistory')
-class TaskHistories extends Table {
+class Timesheets extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get startTime => dateTime()();
   DateTimeColumn get finishTime => dateTime()();

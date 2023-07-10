@@ -15,13 +15,13 @@ part 'app_database.g.dart';
     Tasks,
     Backends,
     TaskBackends,
-    TaskHistories,
+    Timesheets,
   ],
   daos: [
     TasksDao,
     BackendsDao,
     TaskBackendsDao,
-    TaskHistoriesDao,
+    TimesheetsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

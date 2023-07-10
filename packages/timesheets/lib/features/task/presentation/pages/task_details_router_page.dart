@@ -17,11 +17,11 @@ class TaskDetailsRouterPage extends AutoRouter with AutoRouteWrapper {
                 TaskRetrieveFilter(taskId: taskId),
               ),
           ),
-          BlocProvider<TaskHistoriesListCubit>(
+          BlocProvider<TimesheetListCubit>(
             create: (context) =>
-                TaskHistoriesListCubit(context.read<TaskHistoriesRepository>())
+                TimesheetListCubit(context.read<TimesheetsRepository>())
                   ..load(
-                    TaskHistoriesListFilter(taskId: taskId),
+                    TimesheetListFilter(taskId: taskId),
                   ),
           )
         ],
