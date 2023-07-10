@@ -64,4 +64,15 @@ class TasksListCubit extends ListCubit<Task, TasksListFilter>
       ),
     );
   }
+
+  void updateTaskLocally(Task task) {
+    emit(
+      state.copyWith(
+        data: [
+          for (final t in state.data!)
+            if (t.id == task.id) task else t,
+        ],
+      ),
+    );
+  }
 }
