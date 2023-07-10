@@ -134,36 +134,41 @@ class _TaskDetails extends StatelessWidget {
                   final taskDataCubit = context.read<TaskDataCubit>();
                   final taskHistoriesListCubit =
                       context.read<TaskHistoriesListCubit>();
+                  final tasksListCubit = context.read<TasksListCubit>();
 
                   final isRunning = timerState.status == TimerStatus.running;
                   final updatableSeconds =
                       (isRunning ? tickDurationInSeconds : 0);
                   final firstTickedValue =
                       (isRunning && task.firstTicked == null)
-                          ? Value(DateTime.now())
-                          : Value(task.firstTicked);
+                          ? DateTime.now()
+                          : task.firstTicked;
                   final lastTickedValue =
                       isRunning ? DateTime.now() : task.lastTicked;
-
-                  await taskDataCubit.updateTask(
-                    task.copyWith(
-                      duration: elapsedTime + updatableSeconds,
-                      status: timerState.status.index,
-                      firstTicked: firstTickedValue,
-                      lastTicked: Value(lastTickedValue),
-                    ),
+                  final updatableTask = task.copyWith(
+                    duration: elapsedTime + updatableSeconds,
+                    status: timerState.status.index,
+                    firstTicked: Value(firstTickedValue),
+                    lastTicked: Value(lastTickedValue),
                   );
+                  await taskDataCubit.updateTask(updatableTask);
+
+                  // update task locally in task list cubit
 
                   if (timerState.status == TimerStatus.stopped) {
                     if (context.mounted) {
                       final result = await _showActionSheet(context);
                       if (result == null || result == _TaskStopAction.cancel) {
                         await taskDataCubit.updateTask(
-                          task.copyWith(
+                          updatableTask.copyWith(
                             status: TimerStatus.paused.index,
                           ),
                         );
                       } else if (result == _TaskStopAction.saveLocally) {
+                        if (task.firstTicked == null ||
+                            task.lastTicked == null) {
+                          throw Exception('Timer was not started');
+                        }
                         await taskHistoriesListCubit.createTaskHisoty(
                           TaskHistoriesCompanion(
                             taskId: Value(task.id),
