@@ -23,6 +23,7 @@ part 'app_database.g.dart';
     BackendsDao,
     TaskBackendsDao,
     TimesheetsDao,
+    ProjectsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
