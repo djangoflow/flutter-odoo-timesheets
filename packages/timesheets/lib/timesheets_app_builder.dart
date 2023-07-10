@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:timesheets/features/task/data/repositories/tasks_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 
+import 'configurations/router/route_observer.dart';
 import 'features/app/app.dart';
 import 'configurations/configurations.dart';
 
@@ -83,6 +83,10 @@ class TimesheetsAppBuilder extends AppBuilder {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 routerDelegate: appRouter.delegate(
+                  navigatorObservers: () => [
+                    AutoRouteObserver(),
+                    AppRouteObserver(),
+                  ],
                   initialDeepLink: initialDeepLink, // only for Android and iOS
                   // if initialDeepLink found then don't provide initialRoutes
                   initialRoutes: kIsWeb || initialDeepLink != null

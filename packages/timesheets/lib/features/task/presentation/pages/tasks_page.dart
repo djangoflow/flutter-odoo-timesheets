@@ -7,10 +7,45 @@ import 'package:timesheets/features/task/presentation/task_list_tile.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/utils/utils.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 @RoutePage()
-class TasksPage extends StatelessWidget with AutoRouteWrapper {
+class TasksPage extends StatefulWidget with AutoRouteWrapper {
   const TasksPage({super.key});
+
+  @override
+  State<TasksPage> createState() => _TasksPageState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) => BlocProvider<TasksListCubit>(
+        create: (context) => TasksListCubit(
+          context.read<TasksRepository>(),
+        )..load(
+            const TasksListFilter(),
+          ),
+        child: this,
+      );
+}
+
+class _TasksPageState extends State<TasksPage>
+    with AutoRouteAwareStateMixin<TasksPage> {
+  bool? _isPageVisible;
+  final mainKey = const ValueKey('tasks_list_visiblity_detector');
+
+  @override
+  void didPopNext() {
+    context.read<TasksListCubit>().load(
+          const TasksListFilter(),
+        );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isPageVisible = true;
+    VisibilityDetectorController.instance.updateInterval =
+        animationDurationShort;
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -37,14 +72,7 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
             size: kPadding.r * 4,
           ),
           onPressed: () async {
-            final result = await context.router.push(const TaskAddRoute());
-            if (result != null && result == true) {
-              if (context.mounted) {
-                context.read<TasksListCubit>().load(
-                      const TasksListFilter(),
-                    );
-              }
-            }
+            context.router.push(const TaskAddRoute());
           },
         ),
         body: Padding(
@@ -55,54 +83,78 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
                 ),
             child: BlocBuilder<TasksListCubit, TasksListState>(
               builder: (context, state) => state.map(
-                (value) => ListView.separated(
-                  itemCount: value.data?.length ?? 0,
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: kPadding.h,
-                  ),
-                  itemBuilder: (context, index) {
-                    final task = value.data![index];
-                    final elapsedTime = task.elapsedTime;
-
-                    return TaskListTile(
-                      key: ValueKey(task.id),
-                      title: Text(task.name),
-                      subtitle: Text(task.description ?? ''),
-                      elapsedTime: elapsedTime,
-                      initialTimerStatus: TimerStatus.values[task.status],
-                      onTap: () {
-                        context.router.push(TaskDetailsRoute(taskId: task.id));
-                      },
-                      onTimerResume: (context) {
-                        context.read<TimerCubit>().elapsedTime = Duration(
-                          seconds: elapsedTime,
-                        );
-                      },
-                      onTimerStateChange:
-                          (timerState, tickDurationInSeconds) async {
-                        final isRunning =
-                            timerState.status == TimerStatus.running;
-                        final updatableSeconds =
-                            (isRunning ? tickDurationInSeconds : 0);
-                        final lastTickedValue =
-                            isRunning ? DateTime.now() : task.lastTicked;
-
-                        if (isRunning && task.firstTicked == null) {
-                          task.copyWith(
-                            firstTicked: Value(DateTime.now()),
-                          );
-                        }
-
-                        await context.read<TasksListCubit>().updateTask(
-                              task.copyWith(
-                                duration: elapsedTime + updatableSeconds,
-                                status: timerState.status.index,
-                                lastTicked: Value(lastTickedValue),
-                              ),
-                            );
-                      },
-                    );
+                (value) => VisibilityDetector(
+                  key: mainKey,
+                  onVisibilityChanged: (info) {
+                    if (info.visibleFraction == 0) {
+                      setState(() {
+                        _isPageVisible = false;
+                      });
+                    } else {
+                      setState(() {
+                        _isPageVisible = true;
+                      });
+                    }
                   },
+                  child: !(_isPageVisible ?? false)
+                      ? const SizedBox(
+                          height: 20,
+                          child: Text('kaka'),
+                        )
+                      : ListView.separated(
+                          itemCount: value.data?.length ?? 0,
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: kPadding.h,
+                          ),
+                          itemBuilder: (context, index) {
+                            final task = value.data![index];
+                            final elapsedTime = task.elapsedTime;
+
+                            return TaskListTile(
+                              key: ValueKey(task.id),
+                              title: Text(task.name),
+                              subtitle: Text(task.description ?? ''),
+                              elapsedTime: elapsedTime,
+                              initialTimerStatus:
+                                  TimerStatus.values[task.status],
+                              onTap: () {
+                                context.router
+                                    .push(TaskDetailsRoute(taskId: task.id));
+                              },
+                              onTimerResume: (context) {
+                                context.read<TimerCubit>().elapsedTime =
+                                    Duration(
+                                  seconds: elapsedTime,
+                                );
+                              },
+                              onTimerStateChange:
+                                  (timerState, tickDurationInSeconds) async {
+                                final isRunning =
+                                    timerState.status == TimerStatus.running;
+                                final updatableSeconds =
+                                    (isRunning ? tickDurationInSeconds : 0);
+                                final lastTickedValue = isRunning
+                                    ? DateTime.now()
+                                    : task.lastTicked;
+
+                                if (isRunning && task.firstTicked == null) {
+                                  task.copyWith(
+                                    firstTicked: Value(DateTime.now()),
+                                  );
+                                }
+
+                                await context.read<TasksListCubit>().updateTask(
+                                      task.copyWith(
+                                        duration:
+                                            elapsedTime + updatableSeconds,
+                                        status: timerState.status.index,
+                                        lastTicked: Value(lastTickedValue),
+                                      ),
+                                    );
+                              },
+                            );
+                          },
+                        ),
                 ),
                 loading: (_) => const Center(
                   child: CircularProgressIndicator(),
@@ -115,15 +167,5 @@ class TasksPage extends StatelessWidget with AutoRouteWrapper {
             ),
           ),
         ),
-      );
-
-  @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider<TasksListCubit>(
-        create: (context) => TasksListCubit(
-          context.read<TasksRepository>(),
-        )..load(
-            const TasksListFilter(),
-          ),
-        child: this,
       );
 }

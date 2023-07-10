@@ -15,3 +15,4 @@ export 'blocs/task_data_cubit/task_data_cubit.dart';
 export 'data/db_models/task_history.dart';
 export 'data/daos/task_histories_dao.dart';
 export 'data/repositories/task_histories_repository.dart';
+export 'blocs/task_histories_list_cubit/task_histories_list_cubit.dart';

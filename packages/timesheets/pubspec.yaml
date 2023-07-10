@@ -41,6 +41,7 @@ dependencies:
   responsive_framework: ^0.2.0
   sqlite3_flutter_libs: ^0.5.15
   upgrader: ^6.2.0
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
