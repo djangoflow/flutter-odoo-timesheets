@@ -3,9 +3,7 @@ import 'package:timesheets/configurations/configurations.dart';
 
 @RoutePage()
 class TimesheetDetailsPage extends StatelessWidget {
-  const TimesheetDetailsPage({super.key, @pathParam required this.timesheetId});
-
-  final int timesheetId;
+  const TimesheetDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
