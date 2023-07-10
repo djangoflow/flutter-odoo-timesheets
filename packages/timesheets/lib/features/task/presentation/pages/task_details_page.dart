@@ -133,7 +133,6 @@ class _TaskDetails extends StatelessWidget {
                   final taskDataCubit = context.read<TaskDataCubit>();
                   final taskHistoriesListCubit =
                       context.read<TaskHistoriesListCubit>();
-                  final tasksListCubit = context.read<TasksListCubit>();
 
                   final isRunning = timerState.status == TimerStatus.running;
                   final updatableSeconds =
