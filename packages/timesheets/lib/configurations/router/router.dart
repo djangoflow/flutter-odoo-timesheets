@@ -19,47 +19,55 @@ class AppRouter extends $AppRouter {
           path: '/splash',
           page: SplashRoute.page,
         ),
-        RedirectRoute(path: '/', redirectTo: '/tasks'),
+
         AutoRoute(
-          page: TasksRouter.page,
-          path: '/tasks',
+          page: HomeRouter.page,
+          path: '/',
           children: [
             AutoRoute(
-              path: '',
-              page: TasksRoute.page,
-            ),
-            AutoRoute(
-              path: 'add',
-              page: TaskAddRoute.page,
-            ),
-            AutoRoute(
-              path: ':id',
-              page: TaskDetailsRouter.page,
+              page: TasksRouter.page,
+              path: 'tasks',
+              initial: true,
               children: [
                 AutoRoute(
                   path: '',
-                  page: TaskDetailsRoute.page,
+                  page: TasksRoute.page,
                 ),
                 AutoRoute(
-                  path: 'edit',
-                  page: TaskEditRoute.page,
+                  path: 'add',
+                  page: TaskAddRoute.page,
                 ),
                 AutoRoute(
-                  path: 'timesheets/:timesheetId',
-                  page: TimesheetsRouter.page,
+                  path: ':id',
+                  page: TaskDetailsRouter.page,
                   children: [
                     AutoRoute(
                       path: '',
-                      page: TimesheetDetailsRoute.page,
+                      page: TaskDetailsRoute.page,
                     ),
                     AutoRoute(
                       path: 'edit',
-                      page: TimesheetEditRoute.page,
+                      page: TaskEditRoute.page,
+                    ),
+                    AutoRoute(
+                      path: 'timesheets/:timesheetId',
+                      page: TimesheetsRouter.page,
+                      children: [
+                        AutoRoute(
+                          path: '',
+                          page: TimesheetDetailsRoute.page,
+                        ),
+                        AutoRoute(
+                          path: 'edit',
+                          page: TimesheetEditRoute.page,
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
+            AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),
 

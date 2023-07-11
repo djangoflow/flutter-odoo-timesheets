@@ -1,5 +1,6 @@
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:drift/drift.dart' hide Column;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,12 @@ class TaskEditPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit task'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(CupertinoIcons.delete),
+          )
+        ],
       ),
       body: TaskEditor(
         taskName: task.name,

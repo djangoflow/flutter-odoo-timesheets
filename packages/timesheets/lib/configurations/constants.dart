@@ -10,3 +10,5 @@ const designWidth = 393.0;
 const animationDurationDefault = Duration(milliseconds: 300);
 const animationDurationShort = Duration(milliseconds: 150);
 const animationDurationLong = Duration(milliseconds: 500);
+
+const apexiveUrl = 'https://apexive.com/';

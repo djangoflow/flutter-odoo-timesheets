@@ -68,7 +68,9 @@ class _TasksPageState extends State<TasksPage>
             title: const Text('Tasks'),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.router.push(const SettingsRoute());
+                },
                 icon: Icon(
                   Icons.settings_outlined,
                   size: kPadding.r * 4,
