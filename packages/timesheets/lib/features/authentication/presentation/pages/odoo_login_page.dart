@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
@@ -60,23 +61,25 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
   Widget build(BuildContext context) => DefaultActionController(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Sign in'),
+            title: const Text('Odoo Login'),
             leading: const AutoLeadingButton(),
           ),
-          body: Center(
-            child: SingleChildScrollView(
-              child: ReactiveFormBuilder(
-                form: () => _formBuilder(context),
-                builder: (context, form, child) => AutofillGroup(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: kPadding * 2,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AutofillGroup(
-                          child: ReactiveTextField<String>(
+          body: ReactiveFormBuilder(
+            form: () => _formBuilder(context),
+            builder: (context, form, child) => AutofillGroup(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: kPadding.w * 2,
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ScrollableColumn(
+                        children: [
+                          SizedBox(
+                            height: kPadding.h * 3,
+                          ),
+                          ReactiveTextField<String>(
                             autofocus: true,
                             formControlName: serverUrlControlName,
                             textInputAction: TextInputAction.next,
@@ -102,106 +105,107 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
                               'invalid_server': (_) => 'Invalid server url',
                             },
                           ),
-                        ),
-                        ReactiveStatusListenableBuilder(
-                          builder: (context, control, child) {
-                            if (control.pending) {
-                              return const Column(
-                                children: [
-                                  SizedBox(
-                                    height: kPadding * 2,
-                                  ),
-                                  Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ],
-                              );
-                            } else if (control.value != null && control.valid) {
-                              return Column(
-                                children: [
-                                  const SizedBox(
-                                    height: kPadding * 2,
-                                  ),
-                                  BlocBuilder<OdooInformationCubit,
-                                      OdooInformationState>(
-                                    builder: (context, state) =>
-                                        AppReactiveDropdown(
-                                      itemAsString: (db) => db.toString(),
-                                      items: state.dbList,
-                                      formControlName: dbControlName,
-                                      hintText: 'Select DB',
-                                      validationMessages: {
-                                        ValidationMessage.required: (_) =>
-                                            'Please select DB',
-                                      },
+                          ReactiveStatusListenableBuilder(
+                            builder: (context, control, child) {
+                              if (control.pending) {
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      height: kPadding.h * 2,
                                     ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Offstage();
-                            }
-                          },
-                          formControlName: serverUrlControlName,
-                        ),
-                        const SizedBox(
-                          height: kPadding * 2,
-                        ),
-                        ReactiveTextField(
-                          formControlName: emailControlName,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
+                                    const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ],
+                                );
+                              } else if (control.value != null &&
+                                  control.valid) {
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      height: kPadding.h * 2,
+                                    ),
+                                    BlocBuilder<OdooInformationCubit,
+                                        OdooInformationState>(
+                                      builder: (context, state) =>
+                                          AppReactiveDropdown(
+                                        itemAsString: (db) => db.toString(),
+                                        items: state.dbList,
+                                        formControlName: dbControlName,
+                                        hintText: 'Select DB',
+                                        validationMessages: {
+                                          ValidationMessage.required: (_) =>
+                                              'Please select DB',
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return const Offstage();
+                              }
+                            },
+                            formControlName: serverUrlControlName,
                           ),
-                          autofillHints: const [AutofillHints.email],
-                          validationMessages: {
-                            ValidationMessage.required: (_) =>
-                                'Email is required',
-                            ValidationMessage.email: (_) => 'Invalid format',
-                          },
-                        ),
-                        const SizedBox(
-                          height: kPadding * 2,
-                        ),
-                        ReactiveTextField(
-                          formControlName: passControlName,
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: const InputDecoration(
-                            hintText: 'Password',
+                          SizedBox(
+                            height: kPadding.h * 3,
                           ),
-                          autofillHints: const [AutofillHints.password],
-                          validationMessages: {
-                            ValidationMessage.required: (_) =>
-                                'Password is required',
-                          },
-                          obscureText: true,
-                          onSubmitted: (_) {
-                            if (!form.valid) {
-                              form.markAsTouched();
-                            } else {
-                              DefaultActionController.of(context)
-                                  ?.add(ActionType.start);
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          height: kPadding * 5,
-                        ),
-                        LinearProgressBuilder(
-                          builder: (context, action, error) => ElevatedButton(
-                            onPressed:
-                                (ReactiveForm.of(context)?.valid ?? false)
-                                    ? action
-                                    : null,
-                            child: const Center(child: Text('Login')),
+                          ReactiveTextField(
+                            formControlName: emailControlName,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              hintText: 'Email',
+                            ),
+                            autofillHints: const [AutofillHints.email],
+                            validationMessages: {
+                              ValidationMessage.required: (_) =>
+                                  'Email is required',
+                              ValidationMessage.email: (_) => 'Invalid format',
+                            },
                           ),
-                          action: (_) => _signIn(context, form),
-                        ),
-                      ],
+                          SizedBox(
+                            height: kPadding.h * 3,
+                          ),
+                          ReactiveTextField(
+                            formControlName: passControlName,
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.visiblePassword,
+                            decoration: const InputDecoration(
+                              hintText: 'Password',
+                            ),
+                            autofillHints: const [AutofillHints.password],
+                            validationMessages: {
+                              ValidationMessage.required: (_) =>
+                                  'Password is required',
+                            },
+                            obscureText: true,
+                            onSubmitted: (_) {
+                              if (!form.valid) {
+                                form.markAsTouched();
+                              } else {
+                                DefaultActionController.of(context)
+                                    ?.add(ActionType.start);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    SafeArea(
+                      bottom: true,
+                      child: LinearProgressBuilder(
+                        builder: (context, action, error) => ElevatedButton(
+                          onPressed: (ReactiveForm.of(context)?.valid ?? false)
+                              ? action
+                              : null,
+                          child: const Center(child: Text('Login')),
+                        ),
+                        action: (_) => _signIn(context, form),
+                        onSuccess: () => context.router.pop(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
