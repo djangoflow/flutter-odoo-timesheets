@@ -41,6 +41,10 @@ class AppRouter extends $AppRouter {
                   page: TaskAddRoute.page,
                 ),
                 AutoRoute(
+                  path: 'add-odoo',
+                  page: OdooTaskAddRoute.page,
+                ),
+                AutoRoute(
                   path: ':id',
                   page: TaskDetailsRouter.page,
                   children: [
