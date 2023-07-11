@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 
-import 'odoo_repository_exception.dart';
-import 'odoo_xmlrpc_client.dart';
+import '../odoo_repository_exception.dart';
+import '../odoo_xmlrpc_client.dart';
 
 ///Repository to communicate with odoo external_api using xml_rpc
 class OdooRpcRepositoryBase {
