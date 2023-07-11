@@ -10,11 +10,13 @@ class TaskEditor extends StatelessWidget {
     this.description,
     this.projectName,
     required this.builder,
+    this.additionalChildren,
   });
 
   final String? taskName;
   final String? description;
   final String? projectName;
+  final List<Widget>? additionalChildren;
 
   final Widget Function(
       BuildContext context, FormGroup form, Widget formListView) builder;
@@ -69,6 +71,7 @@ class TaskEditor extends StatelessWidget {
                 helperText: 'Optional',
               ),
             ),
+            if (additionalChildren != null) ...additionalChildren!,
           ],
         );
 
