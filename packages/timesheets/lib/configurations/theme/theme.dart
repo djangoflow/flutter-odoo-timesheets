@@ -93,6 +93,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(kPadding.r),
         ),
       ),
+      inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: kPadding.w * 2,
+          vertical: kPadding.h * 2,
+        ),
+      ),
     );
   }
 }
