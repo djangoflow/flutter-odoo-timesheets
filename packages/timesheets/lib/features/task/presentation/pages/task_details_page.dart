@@ -85,6 +85,8 @@ class _TaskDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final elapsedTime = task.elapsedTime;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,67 +103,87 @@ class _TaskDetails extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 vertical: kPadding.h * 2,
               ),
-              child: TaskTimer.large(
-                key: ValueKey(task.status == TimerStatus.initial.index),
-                disabled: false,
-                elapsedTime: task.duration,
-                initialTimerStatus: TimerStatus.values[task.status],
-                onTimerResume: (context) {
-                  context.read<TimerCubit>().elapsedTime = Duration(
-                    seconds: elapsedTime,
-                  );
-                },
-                onTimerStateChange: (timerState, tickDurationInSeconds) async {
-                  final taskDataCubit = context.read<TaskDataCubit>();
-                  final timesheetListCubit = context.read<TimesheetListCubit>();
+              child: Column(
+                children: [
+                  if (task.firstTicked != null)
+                    _TaskStartedDetails(
+                      firstTicked: task.firstTicked!,
+                    )
+                  else
+                    Text(
+                      'Task is not started',
+                      style: textTheme.titleMedium,
+                    ),
+                  SizedBox(
+                    height: kPadding.h,
+                  ),
+                  TaskTimer.large(
+                    key: ValueKey(task.status == TimerStatus.initial.index),
+                    disabled: false,
+                    elapsedTime: task.duration,
+                    initialTimerStatus: TimerStatus.values[task.status],
+                    onTimerResume: (context) {
+                      context.read<TimerCubit>().elapsedTime = Duration(
+                        seconds: elapsedTime,
+                      );
+                    },
+                    onTimerStateChange:
+                        (timerState, tickDurationInSeconds) async {
+                      final taskDataCubit = context.read<TaskDataCubit>();
+                      final timesheetListCubit =
+                          context.read<TimesheetListCubit>();
 
-                  final isRunning = timerState.status == TimerStatus.running;
-                  final updatableSeconds =
-                      (isRunning ? tickDurationInSeconds : 0);
-                  final firstTickedValue =
-                      (isRunning && task.firstTicked == null)
-                          ? DateTime.now()
-                          : task.firstTicked;
-                  final lastTickedValue =
-                      isRunning ? DateTime.now() : task.lastTicked;
-                  final updatableTask = task.copyWith(
-                    duration: elapsedTime + updatableSeconds,
-                    status: timerState.status.index,
-                    firstTicked: Value(firstTickedValue),
-                    lastTicked: Value(lastTickedValue),
-                  );
-                  await taskDataCubit.updateTask(updatableTask);
+                      final isRunning =
+                          timerState.status == TimerStatus.running;
+                      final updatableSeconds =
+                          (isRunning ? tickDurationInSeconds : 0);
+                      final firstTickedValue =
+                          (isRunning && task.firstTicked == null)
+                              ? DateTime.now()
+                              : task.firstTicked;
+                      final lastTickedValue =
+                          isRunning ? DateTime.now() : task.lastTicked;
+                      final updatableTask = task.copyWith(
+                        duration: elapsedTime + updatableSeconds,
+                        status: timerState.status.index,
+                        firstTicked: Value(firstTickedValue),
+                        lastTicked: Value(lastTickedValue),
+                      );
+                      await taskDataCubit.updateTask(updatableTask);
 
-                  // update task locally in task list cubit
+                      // update task locally in task list cubit
 
-                  if (timerState.status == TimerStatus.stopped) {
-                    if (context.mounted) {
-                      final result = await _showActionSheet(context);
-                      if (result == null || result == _TaskStopAction.cancel) {
-                        await taskDataCubit.updateTask(
-                          updatableTask.copyWith(
-                            status: TimerStatus.paused.index,
-                          ),
-                        );
-                      } else if (result == _TaskStopAction.saveLocally) {
-                        if (task.firstTicked == null ||
-                            task.lastTicked == null) {
-                          throw Exception('Timer was not started');
+                      if (timerState.status == TimerStatus.stopped) {
+                        if (context.mounted) {
+                          final result = await _showActionSheet(context);
+                          if (result == null ||
+                              result == _TaskStopAction.cancel) {
+                            await taskDataCubit.updateTask(
+                              updatableTask.copyWith(
+                                status: TimerStatus.paused.index,
+                              ),
+                            );
+                          } else if (result == _TaskStopAction.saveLocally) {
+                            if (task.firstTicked == null ||
+                                task.lastTicked == null) {
+                              throw Exception('Timer was not started');
+                            }
+                            await timesheetListCubit.createTimesheet(
+                              TimesheetsCompanion(
+                                taskId: Value(task.id),
+                                totalSpentSeconds: Value(task.duration),
+                                startTime: Value(task.firstTicked!),
+                                finishTime: Value(task.lastTicked!),
+                              ),
+                            );
+
+                            await taskDataCubit.resetTask(task);
+                          }
                         }
-                        await timesheetListCubit.createTimesheet(
-                          TimesheetsCompanion(
-                            taskId: Value(task.id),
-                            totalSpentSeconds: Value(task.duration),
-                            startTime: Value(task.firstTicked!),
-                            finishTime: Value(task.lastTicked!),
-                          ),
-                        );
-
-                        await taskDataCubit.resetTask(task);
                       }
-                    }
-                  }
-                },
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -224,6 +246,33 @@ class _TaskDescription extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TaskStartedDetails extends StatelessWidget {
+  const _TaskStartedDetails({super.key, required this.firstTicked});
+  final DateTime firstTicked;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          DateFormat('dd/MM/yyyy').format(firstTicked),
+          style: textTheme.titleMedium,
+        ),
+        Text(
+          'Time Started ${DateFormat('HH:mm:ss').format(firstTicked)}',
+          style: textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }
