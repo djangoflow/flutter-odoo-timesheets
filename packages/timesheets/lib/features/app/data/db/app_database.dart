@@ -42,11 +42,6 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (m, from, to) async {
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
-
-          // await transaction(() async {
-          //   // put your migration logic here
-          // });
-
           // Assert that the schema is valid after migrations
           if (kDebugMode) {
             final wrongForeignKeys =
@@ -57,6 +52,17 @@ class AppDatabase extends _$AppDatabase {
         },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
+          await transaction(() async {
+            final value = await into(backends).insert(
+              const BackendsCompanion(
+                id: Value(1),
+                name: Value('Odoo'),
+                description: Value('Odoo backend'),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+            debugPrint('inserted backend $value');
+          });
         },
       );
 }
