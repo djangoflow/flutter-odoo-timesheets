@@ -15,14 +15,14 @@ part 'app_database.g.dart';
   tables: [
     Tasks,
     Backends,
-    TaskBackends,
+    TimesheetBackends,
     Timesheets,
     Projects,
   ],
   daos: [
     TasksDao,
     BackendsDao,
-    TaskBackendsDao,
+    TimesheetBackendsDao,
     TimesheetsDao,
     ProjectsDao,
     TasksWithProjectDao,
@@ -42,6 +42,7 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (m, from, to) async {
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
+
           // Assert that the schema is valid after migrations
           if (kDebugMode) {
             final wrongForeignKeys =
@@ -54,10 +55,11 @@ class AppDatabase extends _$AppDatabase {
           await customStatement('PRAGMA foreign_keys = ON');
           await transaction(() async {
             final value = await into(backends).insert(
-              const BackendsCompanion(
-                id: Value(1),
-                name: Value('Odoo'),
-                description: Value('Odoo backend'),
+              BackendsCompanion(
+                id: const Value(1),
+                name: const Value('Odoo'),
+                description: const Value('Odoo backend'),
+                backendType: Value(BackendType.odoo.index),
               ),
               mode: InsertMode.insertOrReplace,
             );

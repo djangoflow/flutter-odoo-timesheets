@@ -1,6 +1,4 @@
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/odoo/blocs/odoo_task_list_cubit/odoo_task_list_filter.dart';
-import 'package:timesheets/features/odoo/data/models/odoo_task.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
 ///Repository to fetch task data

@@ -6,7 +6,8 @@ import 'odoo_project_list_filter.dart';
 
 export 'odoo_project_list_filter.dart';
 
-class ProjectListCubit extends ListCubit<OdooProject, OdooProjectListFilter> {
-  ProjectListCubit(OdooProjectRepository projectRepository)
+class OdooProjectListCubit
+    extends ListCubit<OdooProject, OdooProjectListFilter> {
+  OdooProjectListCubit(OdooProjectRepository projectRepository)
       : super(projectRepository.getProjects);
 }
