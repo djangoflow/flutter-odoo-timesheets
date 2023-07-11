@@ -1,0 +1,44 @@
+import 'dart:async';
+
+import 'package:timesheets/features/authentication/authentication.dart';
+
+import 'router.dart';
+
+class AuthGuard extends AutoRedirectGuard {
+  late StreamSubscription<AuthState> _subscription;
+
+  AuthGuard() {
+    _subscription = AuthCubit.instance.stream.listen(
+      (state) {
+        // Don't reevaluate if only token updated but not user object
+        // Without this reevaulate gets called twice and pushes routes twice
+        if (state.odooUser != null) {
+          reevaluate();
+        } else {
+          reevaluate(
+              strategy:
+                  const ReevaluationStrategy.removeAllAndPush(HomeRouter()));
+        }
+      },
+    );
+  }
+
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) async {
+    if (await canNavigate(resolver.route)) {
+      resolver.next();
+    } else {
+      redirect(OdooLoginRoute(), resolver: resolver);
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  Future<bool> canNavigate(RouteMatch route) async =>
+      AuthCubit.instance.isAuthenticated;
+}

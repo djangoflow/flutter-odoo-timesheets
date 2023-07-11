@@ -3,10 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
-const taskControlName = 'taskName';
-const descriptionControlName = 'description';
-const projectControlName = 'projectName';
-
 class TaskEditor extends StatelessWidget {
   const TaskEditor({
     super.key,

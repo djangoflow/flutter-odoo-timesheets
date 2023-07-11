@@ -19,7 +19,10 @@ class AppRouter extends $AppRouter {
           path: '/splash',
           page: SplashRoute.page,
         ),
-
+        AutoRoute(
+          page: OdooLoginRoute.page,
+          path: '/login',
+        ),
         AutoRoute(
           page: HomeRouter.page,
           path: '/',

@@ -5,6 +5,7 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timesheets/features/authentication/authentication.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -75,13 +76,58 @@ class SettingsPage extends StatelessWidget {
                       height: kPadding,
                     ),
                     const SectionTitle(title: 'Synchronizations'),
-                    ListTile(
-                      title: const Text('Add Odoo account'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        if (state.odooUser != null) {
+                          return ListTile(
+                            title: const Text('Odoo'),
+                            subtitle: Text(state.odooUser?.email ?? ''),
+                            trailing: Icon(
+                              Icons.chevron_right,
+                              size: kPadding.w * 4,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                            // Logout
+                            onTap: () => showCupertinoDialog<bool?>(
+                              context: context,
+                              builder: (context) => CupertinoAlertDialog(
+                                title: const Text('Disconnect from Odoo?'),
+                                content: const Text(
+                                  'You will be logged out from Odoo and lose synchronization.',
+                                ),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    child: const Text('Cancel'),
+                                    onPressed: () => context.router.pop(false),
+                                  ),
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    child: const Text('Disconnect'),
+                                    onPressed: () {
+                                      context.router.pop(true);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ).then((value) async {
+                              if (value == true) {
+                                context.read<AuthCubit>().logout();
+                              }
+                            }),
+                          );
+                        }
+                        return ListTile(
+                          title: const Text('Add Odoo account'),
+                          trailing: Icon(
+                            Icons.chevron_right,
+                            size: kPadding.w * 4,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          onTap: () => context.router.push(
+                            OdooLoginRoute(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: kPadding,

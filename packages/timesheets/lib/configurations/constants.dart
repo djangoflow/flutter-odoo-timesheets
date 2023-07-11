@@ -21,6 +21,9 @@ const commonEndpoint = 'xmlrpc/2/common';
 ///It is used to call methods of odoo models. Require authentication.
 const objectEndpoint = 'xmlrpc/2/object';
 
+///Used to get db list
+const dbEndpoint = 'xmlrpc/db';
+
 const rpcFunction = 'execute_kw';
 const rpcAuthenticationFunction = 'authenticate';
 
@@ -33,3 +36,14 @@ const timesheetEntryModel = 'account.analytic.line';
 const offset = 'offset';
 const limit = 'limit';
 const fields = 'fields';
+
+// form control names
+const emailControlName = 'email';
+const passControlName = 'pass';
+const serverUrlControlName = 'serverUrl';
+const dbControlName = 'db';
+const projectControlName = 'selectedProject';
+const taskControlName = 'selectedTask';
+const descriptionControlName = 'description';
+
+const searchDelayMs = 500;
