@@ -102,7 +102,7 @@ class _TaskDetails extends StatelessWidget {
                 vertical: kPadding.h * 2,
               ),
               child: TaskTimer.large(
-                key: ValueKey(task.status),
+                key: ValueKey(task.status == TimerStatus.initial.index),
                 disabled: false,
                 elapsedTime: task.duration,
                 initialTimerStatus: TimerStatus.values[task.status],
