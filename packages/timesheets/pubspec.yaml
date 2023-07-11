@@ -41,9 +41,12 @@ dependencies:
   reactive_forms: ^15.0.0
   responsive_framework: ^0.2.0
   sqlite3_flutter_libs: ^0.5.15
-  upgrader: ^6.2.0
+  # Disabled due to incompatible with xml_rpc
+  # upgrader: ^6.2.0
   url_launcher: ^6.1.12
   visibility_detector: ^0.4.0+2
+  xml_rpc:
+    path: /Users/saifulislam/Development/apexlabs/djangoflow/dart-xmlrpc
 
 dev_dependencies:
   flutter_test:

@@ -12,3 +12,24 @@ const animationDurationShort = Duration(milliseconds: 150);
 const animationDurationLong = Duration(milliseconds: 500);
 
 const apexiveUrl = 'https://apexive.com/';
+
+// odoo related
+
+///This endpoint provides meta-calls which don’t require authentication.
+const commonEndpoint = 'xmlrpc/2/common';
+
+///It is used to call methods of odoo models. Require authentication.
+const objectEndpoint = 'xmlrpc/2/object';
+
+const rpcFunction = 'execute_kw';
+const rpcAuthenticationFunction = 'authenticate';
+
+const projectModel = 'project.project';
+const taskModel = 'project.task';
+const usersModel = 'res.users';
+const timesheetEntryModel = 'account.analytic.line';
+
+//Odoo fields
+const offset = 'offset';
+const limit = 'limit';
+const fields = 'fields';
