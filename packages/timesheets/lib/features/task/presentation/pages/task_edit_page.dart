@@ -77,7 +77,7 @@ class TaskEditPage extends StatelessWidget {
                       onPressed: ReactiveForm.of(context)?.valid == true
                           ? action
                           : null,
-                      child: const Text('Add task'),
+                      child: const Text('Update task'),
                     ),
                   ),
                 ),
