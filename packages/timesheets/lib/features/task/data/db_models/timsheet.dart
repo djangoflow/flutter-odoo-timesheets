@@ -3,9 +3,9 @@ import 'package:timesheets/features/task/task.dart';
 
 class Timesheets extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get onlineId => text().nullable()();
+  IntColumn get onlineId => integer().nullable()();
   DateTimeColumn get startTime => dateTime()();
-  DateTimeColumn get finishTime => dateTime()();
+  DateTimeColumn get endTime => dateTime()();
   IntColumn get totalSpentSeconds => integer()();
   IntColumn get taskId => integer().references(Tasks, #id)();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();

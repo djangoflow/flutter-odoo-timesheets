@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -56,6 +57,7 @@ class TaskDetailsPage extends StatelessWidget {
                           height: kPadding.h,
                         ),
                         _TimesheetListView(
+                          key: ValueKey(timesheets),
                           timesheets: timesheets ?? [],
                         ),
                       ],
@@ -155,29 +157,48 @@ class _TaskDetails extends StatelessWidget {
 
                       if (timerState.status == TimerStatus.stopped) {
                         if (context.mounted) {
-                          final result = await _showActionSheet(context);
-                          if (result == null ||
-                              result == _TaskStopAction.cancel) {
-                            await taskDataCubit.updateTask(
-                              updatableTask.copyWith(
-                                status: TimerStatus.paused.index,
-                              ),
-                            );
-                          } else if (result == _TaskStopAction.saveLocally) {
+                          if (context.read<AuthCubit>().isAuthenticated) {
                             if (task.firstTicked == null ||
                                 task.lastTicked == null) {
                               throw Exception('Timer was not started');
                             }
-                            await timesheetListCubit.createTimesheet(
+                            await timesheetListCubit.createTimesheetWithOdoo(
                               TimesheetsCompanion(
                                 taskId: Value(task.id),
                                 totalSpentSeconds: Value(task.duration),
                                 startTime: Value(task.firstTicked!),
-                                finishTime: Value(task.lastTicked!),
+                                endTime: Value(task.lastTicked!),
                               ),
                             );
-
                             await taskDataCubit.resetTask(task);
+                            if (context.mounted) {
+                              _showSuccessDialog(context);
+                            }
+                          } else {
+                            final result = await _showActionSheet(context);
+                            if (result == null ||
+                                result == _TaskStopAction.cancel) {
+                              await taskDataCubit.updateTask(
+                                updatableTask.copyWith(
+                                  status: TimerStatus.paused.index,
+                                ),
+                              );
+                            } else if (result == _TaskStopAction.saveLocally) {
+                              if (task.firstTicked == null ||
+                                  task.lastTicked == null) {
+                                throw Exception('Timer was not started');
+                              }
+                              await timesheetListCubit.createTimesheet(
+                                TimesheetsCompanion(
+                                  taskId: Value(task.id),
+                                  totalSpentSeconds: Value(task.duration),
+                                  startTime: Value(task.firstTicked!),
+                                  endTime: Value(task.lastTicked!),
+                                ),
+                              );
+
+                              await taskDataCubit.resetTask(task);
+                            }
                           }
                         }
                       }
@@ -215,6 +236,24 @@ class _TaskDetails extends StatelessWidget {
                 context.router.pop(_TaskStopAction.saveLocally);
               },
               child: const Text('Save locally'),
+            ),
+          ],
+        ),
+      );
+
+  Future<void> _showSuccessDialog(BuildContext context) =>
+      showCupertinoDialog<void>(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: const Text('Timesheet submitted'),
+          content: const Text(
+              'Your timesheet has been successfully sent to your Odoo account.'),
+          actions: <CupertinoDialogAction>[
+            CupertinoDialogAction(
+              onPressed: () {
+                context.router.pop();
+              },
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -280,7 +319,7 @@ class _TaskStartedDetails extends StatelessWidget {
 enum _TaskStopAction { syncOdoo, cancel, saveLocally }
 
 class _TimesheetListView extends StatelessWidget {
-  const _TimesheetListView({required this.timesheets});
+  const _TimesheetListView({super.key, required this.timesheets});
   final List<Timesheet> timesheets;
 
   @override

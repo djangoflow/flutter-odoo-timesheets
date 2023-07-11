@@ -8,7 +8,7 @@ import 'project.dart';
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get projectId => integer().nullable().references(Projects, #id)();
-  TextColumn get onlineId => text().nullable()();
+  IntColumn get onlineId => integer().nullable()();
   TextColumn get name => text()();
   TextColumn get description => text().nullable()();
   IntColumn get duration => integer().withDefault(const Constant(0))();

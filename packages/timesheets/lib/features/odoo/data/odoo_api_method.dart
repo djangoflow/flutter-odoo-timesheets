@@ -5,7 +5,8 @@ enum OdooApiMethod {
   fieldsGet('fields_get'),
   create('create'),
   write('write'),
-  unlink('unlink');
+  unlink('unlink'),
+  onChange('onchange');
 
   const OdooApiMethod(this.name);
 

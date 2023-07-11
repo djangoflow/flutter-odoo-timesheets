@@ -114,7 +114,7 @@ class _TimesheetDetails extends StatelessWidget {
         _TimesheetItem(
           title: 'End time',
           value: DateFormat('HH:mm:ss')
-              .format(timesheetWithTask.timesheet.finishTime),
+              .format(timesheetWithTask.timesheet.endTime),
         ),
       ],
     );

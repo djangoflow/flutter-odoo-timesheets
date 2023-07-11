@@ -456,17 +456,19 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                     minimumSize: Size(64.w, 44.h),
                     padding: const EdgeInsets.all(kPadding),
                   ),
+                  disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+                  color: theme.colorScheme.primary,
                   icon: Icon(
                     Icons.stop,
                     size: kPadding.w * 4,
-                    color: theme.colorScheme.primary,
                   ),
-                  onPressed: widget.disabled
-                      ? null
-                      : () {
-                          final timerCubit = context.read<TimerCubit>();
-                          timerCubit.stopTimer();
-                        },
+                  onPressed:
+                      widget.disabled || timerStatus == TimerStatus.initial
+                          ? null
+                          : () {
+                              final timerCubit = context.read<TimerCubit>();
+                              timerCubit.stopTimer();
+                            },
                 ),
               ],
             ),

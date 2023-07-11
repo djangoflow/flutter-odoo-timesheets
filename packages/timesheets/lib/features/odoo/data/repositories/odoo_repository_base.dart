@@ -31,6 +31,7 @@ class OdooRpcRepositoryBase {
         params: rpcParams,
       );
     } catch (e) {
+      debugPrint(e.toString());
       handleError(e);
     }
   }

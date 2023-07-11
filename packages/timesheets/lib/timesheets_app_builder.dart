@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
+import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/task.dart';
 
@@ -43,6 +44,19 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<OdooAuthenticationRepository>(
               create: (context) => OdooAuthenticationRepository(
                 context.read<OdooXmlRpcClient>(),
+              ),
+            ),
+            RepositoryProvider<OdooTimesheetRepository>(
+              create: (context) {
+                final odooXmlRpcClient = context.read<OdooXmlRpcClient>();
+                return OdooTimesheetRepository(
+                  odooXmlRpcClient,
+                );
+              },
+            ),
+            RepositoryProvider<TimesheetBackendRepository>(
+              create: (context) => TimesheetBackendRepository(
+                context.read<AppDatabase>().timesheetBackendsDao,
               ),
             ),
           ],

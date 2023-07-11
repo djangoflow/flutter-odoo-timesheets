@@ -30,7 +30,7 @@ const rpcAuthenticationFunction = 'authenticate';
 const projectModel = 'project.project';
 const taskModel = 'project.task';
 const usersModel = 'res.users';
-const timesheetEntryModel = 'account.analytic.line';
+const timesheetModel = 'account.analytic.line';
 
 //Odoo fields
 const offset = 'offset';
