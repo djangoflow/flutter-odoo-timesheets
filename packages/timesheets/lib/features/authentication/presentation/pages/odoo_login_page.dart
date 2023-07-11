@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -221,7 +222,7 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
     if (!serverUrl.endsWith('/')) {
       serverUrl += '/';
     }
-
+    TextInput.finishAutofillContext();
     await context.read<AuthCubit>().loginWithOdoo(
           email: email,
           password: pass,
