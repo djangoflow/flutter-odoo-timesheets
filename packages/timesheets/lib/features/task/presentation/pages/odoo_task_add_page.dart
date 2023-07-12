@@ -62,33 +62,34 @@ class OdooTaskAddPage extends StatelessWidget {
     final odooTask = form.control(taskControlName).value as OdooTask;
     final description = form.control(descriptionControlName).value as String;
 
+    final taskRepository = context.read<TasksRepository>();
     if (taskWithProject != null) {
-      await context.read<TasksRepository>().updateTaskWithProject(
-            task: taskWithProject!.task.copyWith(
-              name: odooTask.name,
-              description: Value(description),
-              onlineId: Value(odooTask.id),
-            ),
-            project: taskWithProject!.project.copyWith(
-              name: Value(odooProject.name),
-              onlineId: Value(odooProject.id),
-            ),
-          );
-      debugPrint('updated task with project');
+      await taskRepository.updateTaskWithProject(
+        task: taskWithProject!.task.copyWith(
+          name: odooTask.name,
+          description: Value(description),
+          onlineId: Value(odooTask.id),
+        ),
+        project: taskWithProject!.project.copyWith(
+          name: Value(odooProject.name),
+          onlineId: Value(odooProject.id),
+        ),
+      );
+      final updatedTask =
+          await taskRepository.getTaskById(taskWithProject!.task.id);
+      debugPrint('updated task with project ${updatedTask!.toJson()}');
     } else {
-      await context.read<TasksRepository>().createTaskWithProject(
-            TasksCompanion(
-              name: Value(odooTask.name),
-              onlineId: Value(odooTask.id),
-              description: Value(description),
-            ),
-            ProjectsCompanion(
-              name: Value(odooProject.name),
-              onlineId: Value(odooProject.id),
-            ),
-          );
+      await taskRepository.createTaskWithProject(
+        TasksCompanion(
+          name: Value(odooTask.name),
+          onlineId: Value(odooTask.id),
+          description: Value(description),
+        ),
+        ProjectsCompanion(
+          name: Value(odooProject.name),
+          onlineId: Value(odooProject.id),
+        ),
+      );
     }
-
-    //TODO: or update local task, project with online ids when task was already created before
   }
 }

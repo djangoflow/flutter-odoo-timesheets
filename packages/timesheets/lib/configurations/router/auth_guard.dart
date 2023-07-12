@@ -4,41 +4,37 @@ import 'package:timesheets/features/authentication/authentication.dart';
 
 import 'router.dart';
 
-class AuthGuard extends AutoRedirectGuard {
-  late StreamSubscription<AuthState> _subscription;
-
-  AuthGuard() {
-    _subscription = AuthCubit.instance.stream.listen(
-      (state) {
-        // Don't reevaluate if only token updated but not user object
-        // Without this reevaulate gets called twice and pushes routes twice
-        if (state.odooUser != null) {
-          reevaluate();
-        } else {
-          reevaluate(
-              strategy:
-                  const ReevaluationStrategy.removeAllAndPush(HomeRouter()));
-        }
-      },
-    );
-  }
+class AuthGuard extends AutoRouteGuard {
+  // @override
+  // void onNavigation(NavigationResolver resolver, StackRouter router) async {
+  //   if (await canNavigate(resolver.route)) {
+  //     resolver.next();
+  //   } else {
+  //     redirect(OdooLoginRoute(), resolver: resolver);
+  //   }
+  // }
 
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    if (await canNavigate(resolver.route)) {
-      resolver.next();
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
+    // the navigation is paused until resolver.next() is called with either
+    // true to resume/continue navigation or false to abort navigation
+    if (AuthCubit.instance.isAuthenticated) {
+      // if user is authenticated we continue
+      resolver.next(true);
     } else {
-      redirect(OdooLoginRoute(), resolver: resolver);
+      // we redirect the user to our login page
+      // tip: use resolver.redirect to have the redirected route
+      // automatically removed from the stack when the resolver is completed
+      resolver.redirect(
+        OdooLoginRoute(
+          onLoginSuccess: (success) {
+            // if success == true the navigation will be resumed
+            // else it will be aborted
+            resolver.next(success);
+          },
+        ),
+        onFailure: (failure) => resolver.next(false),
+      );
     }
   }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-
-  @override
-  Future<bool> canNavigate(RouteMatch route) async =>
-      AuthCubit.instance.isAuthenticated;
 }

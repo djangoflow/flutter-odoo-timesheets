@@ -16,10 +16,13 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
     super.key,
     @queryParam this.serverUrl,
     @queryParam this.db,
+    this.onLoginSuccess,
   });
 
   final String? serverUrl;
   final String? db;
+
+  final void Function(bool success)? onLoginSuccess;
 
   FormGroup _formBuilder(BuildContext context) => fb.group(
         {
@@ -203,7 +206,13 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
                           child: const Center(child: Text('Login')),
                         ),
                         action: (_) => _signIn(context, form),
-                        onSuccess: () => context.router.pop(),
+                        onSuccess: () {
+                          if (onLoginSuccess != null) {
+                            onLoginSuccess!(true);
+                          } else {
+                            context.router.pop(true);
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -215,23 +224,20 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
       );
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
-    final router = context.router.root;
-    final guarded = router.activeGuardObserver.guardInProgress;
-    debugPrint('Guarded: $guarded');
-    // final email = form.control(emailControlName).value as String;
-    // final pass = form.control(passControlName).value as String;
-    // String serverUrl = form.control(serverUrlControlName).value as String;
-    // final db = form.control(dbControlName).value as String;
-    // if (!serverUrl.endsWith('/')) {
-    //   serverUrl += '/';
-    // }
-    // TextInput.finishAutofillContext();
-    // await context.read<AuthCubit>().loginWithOdoo(
-    //       email: email,
-    //       password: pass,
-    //       serverUrl: serverUrl,
-    //       db: db,
-    //     );
+    final email = form.control(emailControlName).value as String;
+    final pass = form.control(passControlName).value as String;
+    String serverUrl = form.control(serverUrlControlName).value as String;
+    final db = form.control(dbControlName).value as String;
+    if (!serverUrl.endsWith('/')) {
+      serverUrl += '/';
+    }
+    TextInput.finishAutofillContext();
+    await context.read<AuthCubit>().loginWithOdoo(
+          email: email,
+          password: pass,
+          serverUrl: serverUrl,
+          db: db,
+        );
   }
 
   @override

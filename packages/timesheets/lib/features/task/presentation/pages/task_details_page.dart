@@ -77,6 +77,7 @@ class _TaskDetailsBody extends StatelessWidget {
         if (taskWithProject != null)
           _TaskDetails(
             taskWithProject: taskWithProject,
+            isSyncing: state.isSyncing,
           ),
         SizedBox(
           height: kPadding.h,
@@ -141,8 +142,9 @@ class _TaskDetailsBody extends StatelessWidget {
 }
 
 class _TaskDetails extends StatelessWidget {
-  const _TaskDetails({required this.taskWithProject});
+  const _TaskDetails({required this.taskWithProject, required this.isSyncing});
   final TaskWithProject taskWithProject;
+  final bool isSyncing;
   @override
   Widget build(BuildContext context) {
     final task = taskWithProject.task;
@@ -173,7 +175,7 @@ class _TaskDetails extends StatelessWidget {
                   ),
                   TaskTimer.large(
                     key: ValueKey(task.status == TimerStatus.initial.index),
-                    disabled: false,
+                    disabled: isSyncing,
                     elapsedTime: task.duration,
                     initialTimerStatus: TimerStatus.values[task.status],
                     onTimerResume: (context) {
@@ -232,12 +234,8 @@ class _TaskDetails extends StatelessWidget {
                               updatableTask = updatableTask.copyWith(
                                 status: TimerStatus.paused.index,
                               );
-                              await taskDetailsCubit.updateTask(
-                                updatableTask.copyWith(
-                                  status: TimerStatus.paused.index,
-                                ),
-                              );
-                              final updatedTask = await router.push(
+                              await taskDetailsCubit.updateTask(updatableTask);
+                              final didUpdateTask = await router.push(
                                 OdooTaskAddRoute(
                                   taskWithProject: taskWithProject.copyWith(
                                     task: updatableTask,
@@ -245,14 +243,20 @@ class _TaskDetails extends StatelessWidget {
                                 ),
                               );
                               if (context.mounted) {
-                                await _syncTask(
-                                  context: context,
-                                  task: task,
-                                  backendId: hardcodedBackendId,
-                                );
-                                print('updated task $updatedTask');
-                                if (updatedTask != null) {
-                                  taskDetailsCubit.loadTaskDetails(task.id);
+                                final latestTask = await taskDetailsCubit
+                                    .tasksRepository
+                                    .getTaskById(task.id);
+                                if (latestTask != null && context.mounted) {
+                                  await _syncTask(
+                                    context: context,
+                                    task: task,
+                                    backendId: hardcodedBackendId,
+                                  );
+                                  print(
+                                      'updated task $didUpdateTask ${task.id}');
+                                  if (didUpdateTask != null) {
+                                    taskDetailsCubit.loadTaskDetails(task.id);
+                                  }
                                 }
                               }
                             }
