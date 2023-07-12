@@ -18,13 +18,13 @@ class TimesheetListCubit extends ListCubit<Timesheet, TimesheetListFilter?>
   final TimesheetsRepository timesheetsRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final TasksRepository tasksRepository;
-  final TimesheetBackendRepository timesheetBackendRepository;
+  final TaskBackendRepository taskBackendRepository;
 
   TimesheetListCubit({
     required this.timesheetsRepository,
     required this.odooTimesheetRepository,
     required this.tasksRepository,
-    required this.timesheetBackendRepository,
+    required this.taskBackendRepository,
   }) : super(
           ListBlocUtil.listLoader<Timesheet, TimesheetListFilter?>(
             loader: ([filter]) => timesheetsRepository.getTimesheets(
@@ -86,59 +86,6 @@ class TimesheetListCubit extends ListCubit<Timesheet, TimesheetListFilter?>
         ),
       );
     }
-  }
-
-  Future<void> syncTimesheet(int timesheetId) async {
-    final timesheet = await timesheetsRepository.getTimesheetById(timesheetId);
-    if (timesheet == null) {
-      throw Exception('Timesheet not found');
-    }
-
-    final taskWithProject =
-        await tasksRepository.getTaskWithProjectById(timesheet.taskId);
-    if (taskWithProject == null) {
-      throw Exception('Task and Project not found');
-    }
-
-    final taskId = taskWithProject.task.onlineId;
-    final projectId = taskWithProject.project.onlineId;
-
-    if (taskId == null || projectId == null) {
-      throw Exception('Task or Project not found');
-    }
-
-    final startTime = timesheet.startTime;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    final timesheetOnlineId = await odooTimesheetRepository.create(
-      OdooTimesheet(
-        projectId: projectId,
-        taskId: taskId,
-        startTime: formatter.format(startTime),
-        endTime: formatter.format(
-          startTime.add(
-            Duration(seconds: timesheet.totalSpentSeconds),
-          ),
-        ),
-        unitAmount: double.parse(
-            (timesheet.totalSpentSeconds / 3600).toStringAsFixed(2)),
-        name: taskWithProject.task.description,
-      ),
-    );
-
-    await timesheetsRepository.updateTimesheet(
-      timesheet.copyWith(
-        onlineId: Value(timesheetOnlineId),
-      ),
-    );
-
-    await timesheetBackendRepository.createTimesheetBackend(
-      TimesheetBackendsCompanion(
-        timesheetId: Value(timesheet.id),
-        // TODO Fetch from backend via type
-        backendId: const Value(1),
-        lastSynced: Value(DateTime.now()),
-      ),
-    );
   }
 
   Future<void> updateTimesheet(Timesheet timesheet) async {
