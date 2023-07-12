@@ -16,7 +16,7 @@ import 'package:timesheets/features/task/task.dart';
 @RoutePage()
 class OdooTaskAddPage extends StatelessWidget {
   const OdooTaskAddPage({Key? key}) : super(key: key);
-
+  // TODO: Pass offline task object optionally if available
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -66,5 +66,6 @@ class OdooTaskAddPage extends StatelessWidget {
             onlineId: Value(project.id),
           ),
         );
+    //TODO: or update local task, project with online ids when task was already created before
   }
 }

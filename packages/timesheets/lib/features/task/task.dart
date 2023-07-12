@@ -11,7 +11,7 @@ export 'blocs/tasks_list_cubit/tasks_list_cubit.dart';
 export 'data/repositories/backends_repository.dart';
 export 'data/repositories/tasks_repository.dart';
 export 'data/repositories/timesheet_backends_repository.dart';
-export 'blocs/task_data_cubit/task_details_cubit.dart';
+export 'blocs/task_details_cubit/task_details_cubit.dart';
 export 'data/db_models/timsheet.dart';
 export 'data/daos/timesheets_dao.dart';
 export 'data/repositories/timesheets_repository.dart';

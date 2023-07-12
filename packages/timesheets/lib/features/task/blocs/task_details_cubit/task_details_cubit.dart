@@ -1,14 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
-import 'package:timesheets/features/task/blocs/task_data_cubit/task_details_state.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
+import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
 import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/utils/utils.dart';
 
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TasksRepository tasksRepository;
@@ -51,7 +48,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> updateTask(Task task) async {
     await errorWrapper(() async {
-      emit(TaskDetailsState.loading());
       await tasksRepository.updateTaskWithProject(
         task: task,
       );
@@ -66,7 +62,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> updateProject(Project project) async {
     await errorWrapper(() async {
-      emit(TaskDetailsState.loading());
       await tasksRepository.updateTaskWithProject(
         project: project,
       );
@@ -207,6 +202,25 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
             for (final timesheet in state.timesheets)
               if (timesheet.id == timesheetId) updatedTimesheet else timesheet,
           ],
+        ),
+      );
+    });
+  }
+
+  Future<void> resetTask(Task task) async {
+    await errorWrapper(() async {
+      await tasksRepository.resetTask(task);
+      final taskWithProject =
+          await tasksRepository.getTaskWithProjectById(task.id);
+
+      if (taskWithProject == null) {
+        throw Exception('Task not found');
+      }
+
+      emit(
+        TaskDetailsState.loaded(
+          taskWithProject: taskWithProject,
+          timesheets: state.timesheets,
         ),
       );
     });

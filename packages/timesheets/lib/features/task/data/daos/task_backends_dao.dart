@@ -4,42 +4,35 @@ import 'package:timesheets/features/task/task.dart';
 
 part 'task_backends_dao.g.dart';
 
-@DriftAccessor(tables: [TimesheetBackends])
-class TimesheetBackendsDao extends DatabaseAccessor<AppDatabase>
-    with _$TimesheetBackendsDaoMixin {
-  TimesheetBackendsDao(AppDatabase db) : super(db);
+@DriftAccessor(tables: [TaskBackends])
+class TaskBackendsDao extends DatabaseAccessor<AppDatabase>
+    with _$TaskBackendsDaoMixin {
+  TaskBackendsDao(AppDatabase db) : super(db);
 
-  // TimesheetBackend CRUD operations
-  Future<int> createTimesheetBackend(
-          TimesheetBackendsCompanion timesheetBackendsCompanion) =>
-      into(timesheetBackends).insert(timesheetBackendsCompanion);
+  // TaskBackend CRUD operations
+  Future<int> createTaskBackend(TaskBackendsCompanion taskBackendsCompanion) =>
+      into(taskBackends).insert(taskBackendsCompanion);
 
-  Future<void> deleteTimesheetBackend(TimesheetBackend timesheetBackend) =>
-      delete(timesheetBackends).delete(timesheetBackend);
+  Future<void> deleteTaskBackend(TaskBackend taskBackend) =>
+      delete(taskBackends).delete(taskBackend);
 
-  Future<void> deleteTimesheetBackendByTimesheetId(int timesheetId) =>
-      (delete(timesheetBackends)
-            ..where((tb) => tb.timesheetId.equals(timesheetId)))
+  Future<void> deleteTaskBackendByTaskId(int taskId) =>
+      (delete(taskBackends)..where((tb) => tb.taskId.equals(taskId))).go();
+
+  Future<void> deleteTaskBackendByBackendId(int backendId) =>
+      (delete(taskBackends)..where((tb) => tb.backendId.equals(backendId)))
           .go();
 
-  Future<void> deleteTimesheetBackendByBackendId(int backendId) =>
-      (delete(timesheetBackends)..where((tb) => tb.backendId.equals(backendId)))
-          .go();
+  Future<TaskBackend?> getTaskBackendByTaskId(int taskId) =>
+      (select(taskBackends)..where((tb) => tb.taskId.equals(taskId)))
+          .getSingleOrNull();
 
-  Future<List<TimesheetBackend>> getTimesheetBackendByTimesheetId(
-          int timesheetId) =>
-      (select(timesheetBackends)
-            ..where((tb) => tb.timesheetId.equals(timesheetId)))
+  Future<List<TaskBackend>> getTaskBackendListByBackendId(int backendId) =>
+      (select(taskBackends)..where((tb) => tb.backendId.equals(backendId)))
           .get();
 
-  Future<List<TimesheetBackend>> getTimesheetBackendByBackendId(
-          int backendId) =>
-      (select(timesheetBackends)..where((tb) => tb.backendId.equals(backendId)))
-          .get();
+  Future<List<TaskBackend>> getAllTaskBackend() => select(taskBackends).get();
 
-  Future<List<TimesheetBackend>> getAllTimesheetBackend() =>
-      select(timesheetBackends).get();
-
-  Future<void> updateTimesheetBackend(TimesheetBackend taskBackend) =>
-      update(timesheetBackends).replace(taskBackend);
+  Future<void> updateTaskBackend(TaskBackend taskBackend) =>
+      update(taskBackends).replace(taskBackend);
 }

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -17,13 +18,11 @@ class TaskDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocBuilder<TaskDataCubit, TasksDataState>(
+      BlocBuilder<TaskDetailsCubit, TaskDetailsState>(
         builder: (context, state) {
-          final taskWithProject = state.data;
+          final taskWithProject = state.taskWithProject;
           final task = taskWithProject?.task;
-          final timesheets = context.select(
-            (TimesheetListCubit cubit) => cubit.state.data,
-          );
+          final timesheets = state.timesheets;
 
           return Scaffold(
             appBar: AppBar(
@@ -41,44 +40,47 @@ class TaskDetailsPage extends StatelessWidget {
                   )
               ],
             ),
-            body: state.map(
-              (value) => value.data == null
-                  ? const Center(
-                      child: Text(
-                        'No data!',
-                      ),
-                    )
-                  : ListView(
-                      children: [
-                        _TaskDetails(
-                          task: value.data!.task,
-                        ),
-                        SizedBox(
-                          height: kPadding.h,
-                        ),
-                        _TimesheetListView(
-                          key: ValueKey(timesheets),
-                          timesheets: timesheets ?? [],
-                        ),
-                      ],
-                    ),
-              loading: (_) => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              empty: (_) => const Center(
-                child: Text(
-                  'No data!',
-                ),
-              ),
-              error: (_) => const Center(
-                child: Text(
-                  'Something went wrong!',
-                ),
-              ),
+            body: _TaskDetailsBody(
+              state: state,
             ),
           );
         },
       );
+}
+
+class _TaskDetailsBody extends StatelessWidget {
+  const _TaskDetailsBody({super.key, required this.state});
+  final TaskDetailsState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    final taskWithProject = state.taskWithProject;
+    final timesheets = state.timesheets;
+
+    return ListView(
+      children: [
+        if (taskWithProject != null)
+          _TaskDetails(
+            task: taskWithProject.task,
+          ),
+        SizedBox(
+          height: kPadding.h,
+        ),
+        _TimesheetListView(
+          key: ValueKey(timesheets),
+          timesheets: timesheets,
+        ),
+      ],
+    );
+
+    return const Placeholder();
+  }
 }
 
 class _TaskDetails extends StatelessWidget {
@@ -123,9 +125,7 @@ class _TaskDetails extends StatelessWidget {
                     },
                     onTimerStateChange:
                         (timerState, tickDurationInSeconds) async {
-                      final taskDataCubit = context.read<TaskDataCubit>();
-                      final timesheetListCubit =
-                          context.read<TimesheetListCubit>();
+                      final taskDetailsCubit = context.read<TaskDetailsCubit>();
 
                       final isRunning =
                           timerState.status == TimerStatus.running;
@@ -143,7 +143,7 @@ class _TaskDetails extends StatelessWidget {
                         firstTicked: Value(firstTickedValue),
                         lastTicked: Value(lastTickedValue),
                       );
-                      await taskDataCubit.updateTask(updatableTask);
+                      await taskDetailsCubit.updateTask(updatableTask);
 
                       // update task locally in task list cubit
 
@@ -154,15 +154,17 @@ class _TaskDetails extends StatelessWidget {
                                 task.lastTicked == null) {
                               throw Exception('Timer was not started');
                             }
-                            await timesheetListCubit.createTimesheetWithOdoo(
-                              TimesheetsCompanion(
+                            await taskDetailsCubit.createTimesheet(
+                              timesheetsCompanion: TimesheetsCompanion(
                                 taskId: Value(task.id),
                                 totalSpentSeconds: Value(task.duration),
                                 startTime: Value(task.firstTicked!),
                                 endTime: Value(task.lastTicked!),
                               ),
+                              // TODO change hardcoded backend id
+                              backendId: 1,
                             );
-                            await taskDataCubit.resetTask(task);
+                            await taskDetailsCubit.resetTask(task);
                             if (context.mounted) {
                               _showSuccessDialog(context);
                             }
@@ -170,7 +172,7 @@ class _TaskDetails extends StatelessWidget {
                             final result = await _showActionSheet(context);
                             if (result == null ||
                                 result == _TaskStopAction.cancel) {
-                              await taskDataCubit.updateTask(
+                              await taskDetailsCubit.updateTask(
                                 updatableTask.copyWith(
                                   status: TimerStatus.paused.index,
                                 ),
@@ -180,8 +182,8 @@ class _TaskDetails extends StatelessWidget {
                                   task.lastTicked == null) {
                                 throw Exception('Timer was not started');
                               }
-                              await timesheetListCubit.createTimesheet(
-                                TimesheetsCompanion(
+                              await taskDetailsCubit.createTimesheet(
+                                timesheetsCompanion: TimesheetsCompanion(
                                   taskId: Value(task.id),
                                   totalSpentSeconds: Value(task.duration),
                                   startTime: Value(task.firstTicked!),
@@ -189,7 +191,7 @@ class _TaskDetails extends StatelessWidget {
                                 ),
                               );
 
-                              await taskDataCubit.resetTask(task);
+                              await taskDetailsCubit.resetTask(task);
                             }
                           }
                         }

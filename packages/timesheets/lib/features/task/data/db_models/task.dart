@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 import 'project.dart';
 
 /// a Tasks class that will extend a Table class to create a table in the database
-/// There should Backends, and TimesheetBackend class for Table. Backends will hold list of available Backends
-/// and TimesheetBackend will hold the relation between Tasks and Backends
+/// There should Backends, and TaskBackend class for Table. Backends will hold list of available Backends
+/// and TaskBackend will hold the relation between Tasks and Backends
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get projectId => integer().nullable().references(Projects, #id)();

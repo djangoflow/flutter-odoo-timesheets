@@ -1,37 +1,34 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
 
-class TimesheetBackendRepository {
-  final TimesheetBackendsDao timesheetBackendsDao;
+class TaskBackendRepository {
+  final TaskBackendsDao taskBackendsDao;
 
-  const TimesheetBackendRepository(
-    this.timesheetBackendsDao,
+  const TaskBackendRepository(
+    this.taskBackendsDao,
   );
 
-  Future<int> createTimesheetBackend(
-          TimesheetBackendsCompanion timesheetBackendsCompanion) =>
-      timesheetBackendsDao.createTimesheetBackend(timesheetBackendsCompanion);
+  Future<int> createTaskBackend(TaskBackendsCompanion taskBackendsCompanion) =>
+      taskBackendsDao.createTaskBackend(taskBackendsCompanion);
 
-  Future<void> deleteTimesheetBackend(TimesheetBackend taskBackend) =>
-      timesheetBackendsDao.deleteTimesheetBackend(taskBackend);
+  Future<void> deleteTaskBackend(TaskBackend taskBackend) =>
+      taskBackendsDao.deleteTaskBackend(taskBackend);
 
-  Future<void> deleteTimesheetBackendByTimesheetId(int timesheetId) =>
-      timesheetBackendsDao.deleteTimesheetBackendByTimesheetId(timesheetId);
+  Future<void> deleteTaskBackendByTaskId(int taskId) =>
+      taskBackendsDao.deleteTaskBackendByTaskId(taskId);
 
-  Future<void> deleteTimesheetBackendByBackendId(int backendId) =>
-      timesheetBackendsDao.deleteTimesheetBackendByBackendId(backendId);
+  Future<void> deleteTaskBackendByBackendId(int backendId) =>
+      taskBackendsDao.deleteTaskBackendByBackendId(backendId);
 
-  Future<List<TimesheetBackend>> getTimesheetBackendByTimesheetId(
-          int timesheetId) =>
-      timesheetBackendsDao.getTimesheetBackendByTimesheetId(timesheetId);
+  Future<TaskBackend?> getTaskBackendByTaskId(int taskId) =>
+      taskBackendsDao.getTaskBackendByTaskId(taskId);
 
-  Future<List<TimesheetBackend>> getTimesheetBackendByBackendId(
-          int backendId) =>
-      timesheetBackendsDao.getTimesheetBackendByBackendId(backendId);
+  Future<List<TaskBackend>> getTaskBackendListByBackendId(int backendId) =>
+      taskBackendsDao.getTaskBackendListByBackendId(backendId);
 
-  Future<List<TimesheetBackend>> getAllTimesheetBackend() =>
-      timesheetBackendsDao.getAllTimesheetBackend();
+  Future<List<TaskBackend>> getAllTaskBackend() =>
+      taskBackendsDao.getAllTaskBackend();
 
-  Future<void> updateTimesheetBackend(TimesheetBackend taskBackend) =>
-      timesheetBackendsDao.updateTimesheetBackend(taskBackend);
+  Future<void> updateTaskBackend(TaskBackend taskBackend) =>
+      taskBackendsDao.updateTaskBackend(taskBackend);
 }

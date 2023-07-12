@@ -15,14 +15,14 @@ part 'app_database.g.dart';
   tables: [
     Tasks,
     Backends,
-    TimesheetBackends,
+    TaskBackends,
     Timesheets,
     Projects,
   ],
   daos: [
     TasksDao,
     BackendsDao,
-    TimesheetBackendsDao,
+    TaskBackendsDao,
     TimesheetsDao,
     ProjectsDao,
     TasksWithProjectDao,
@@ -35,14 +35,20 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition.
   // Migrations are covered later in the documentation.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) async {
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
-
+          transaction(() async {
+            if (from < 2) {
+              await m.renameTable(taskBackends, 'timesheet_backends');
+              await m.renameColumn(
+                  taskBackends, 'timesheetId', taskBackends.taskId);
+            }
+          });
           // Assert that the schema is valid after migrations
           if (kDebugMode) {
             final wrongForeignKeys =

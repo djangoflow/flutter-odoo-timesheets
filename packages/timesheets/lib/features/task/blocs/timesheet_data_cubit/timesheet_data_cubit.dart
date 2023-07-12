@@ -49,7 +49,7 @@ class TimesheetDataCubit
       Timesheet timesheet, TaskWithProject taskWithProject) async {
     await timesheetsRepository.updateTimesheet(timesheet);
     await tasksRepository.updateTaskWithProject(
-        taskWithProject.task, taskWithProject.project);
+        task: taskWithProject.task, project: taskWithProject.project);
     final updatedTaskWithProject =
         await tasksRepository.getTaskWithProjectById(taskWithProject.task.id);
     if (updatedTaskWithProject == null) {

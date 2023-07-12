@@ -39,7 +39,7 @@ class TasksRepository {
         ),
       );
 
-  Future<void> updateTaskWithProject(Task task, Project project) =>
+  Future<void> updateTaskWithProject({Task? task, Project? project}) =>
       tasksDao.updateTaskWithProject(
         task,
         project,
@@ -48,4 +48,10 @@ class TasksRepository {
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);
 
   Future<void> resetTask(Task task) => tasksDao.resetTask(task);
+
+  Future<List<Task>> getTasksWithoutBackend() =>
+      tasksDao.getTasksWithoutBackend();
+
+  Future<List<Task>> getTasksByBackendId(int backendId) =>
+      tasksDao.getTasksByBackendId(backendId);
 }

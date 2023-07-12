@@ -58,11 +58,11 @@ class TaskEditPage extends StatelessWidget {
                         .value as String?;
 
                     await context.read<TasksRepository>().updateTaskWithProject(
-                          task.copyWith(
+                          task: task.copyWith(
                             name: taskName,
                             description: Value(description),
                           ),
-                          project.copyWith(
+                          project: project.copyWith(
                             name: Value(projectName),
                           ),
                         );

@@ -54,9 +54,9 @@ class TimesheetsAppBuilder extends AppBuilder {
                 );
               },
             ),
-            RepositoryProvider<TimesheetBackendRepository>(
-              create: (context) => TimesheetBackendRepository(
-                context.read<AppDatabase>().timesheetBackendsDao,
+            RepositoryProvider<TaskBackendRepository>(
+              create: (context) => TaskBackendRepository(
+                context.read<AppDatabase>().taskBackendsDao,
               ),
             ),
           ],

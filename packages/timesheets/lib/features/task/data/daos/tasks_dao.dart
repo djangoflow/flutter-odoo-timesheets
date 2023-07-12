@@ -6,7 +6,7 @@ import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 
 part 'tasks_dao.g.dart';
 
-@DriftAccessor(tables: [Tasks, Projects])
+@DriftAccessor(tables: [Tasks, Projects, TaskBackends])
 class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   TasksDao(AppDatabase db) : super(db);
 
@@ -94,15 +94,36 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
       );
 
   Future<void> updateTaskWithProject(
-    Task task,
-    Project project,
+    Task? task,
+    Project? project,
   ) =>
       transaction(() async {
-        await update(tasks).replace(task.copyWith(
-          updatedAt: DateTime.now(),
-        ));
-        await update(projects).replace(project.copyWith(
-          updatedAt: DateTime.now(),
-        ));
+        if (task != null) {
+          await update(tasks).replace(task.copyWith(
+            updatedAt: DateTime.now(),
+          ));
+        }
+        if (project != null) {
+          await update(projects).replace(project.copyWith(
+            updatedAt: DateTime.now(),
+          ));
+        }
       });
+
+  Future<List<Task>> getTasksByBackendId(int backendId) => (select(tasks)
+        ..join([
+          leftOuterJoin(taskBackends, taskBackends.taskId.equalsExp(tasks.id)),
+        ]).where(taskBackends.backendId.equals(backendId))
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+        ]))
+      .get();
+
+  Future<List<Task>> getTasksWithoutBackend() async {
+    final allTaskBackends = await select(taskBackends).get();
+    return (select(tasks)
+          ..where((t) =>
+              t.id.isNotIn(allTaskBackends.map((tb) => tb.taskId).toList())))
+        .get();
+  }
 }
