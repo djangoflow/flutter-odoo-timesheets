@@ -21,7 +21,9 @@ class OdooTaskAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Add Odoo Task'),
+          title: Text(taskWithProject != null
+              ? 'Sync with Odoo Task'
+              : 'Add Odoo Task'),
         ),
         body: OdooTaskEditor(
           description: taskWithProject?.task.description,
@@ -43,8 +45,9 @@ class OdooTaskAddPage extends StatelessWidget {
                           context: context, form: form),
                       builder: (context, action, state) => ElevatedButton(
                         onPressed: form.valid ? action : null,
-                        child: const Center(
-                          child: Text('Add Task'),
+                        child: Center(
+                          child: Text(
+                              taskWithProject != null ? 'Confirm' : 'Add Task'),
                         ),
                       ),
                     ),
