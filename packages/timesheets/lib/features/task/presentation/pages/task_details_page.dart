@@ -107,15 +107,9 @@ class _TaskDetails extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  if (task.firstTicked != null)
-                    _TaskStartedDetails(
-                      firstTicked: task.firstTicked!,
-                    )
-                  else
-                    Text(
-                      'Task is not started',
-                      style: textTheme.titleMedium,
-                    ),
+                  _TaskStartedDetails(
+                    firstTicked: task.firstTicked,
+                  ),
                   SizedBox(
                     height: kPadding.h,
                   ),
@@ -290,8 +284,8 @@ class _TaskDescription extends StatelessWidget {
 }
 
 class _TaskStartedDetails extends StatelessWidget {
-  const _TaskStartedDetails({super.key, required this.firstTicked});
-  final DateTime firstTicked;
+  const _TaskStartedDetails({super.key, this.firstTicked});
+  final DateTime? firstTicked;
 
   @override
   Widget build(BuildContext context) {
@@ -302,11 +296,15 @@ class _TaskStartedDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          DateFormat('dd/MM/yyyy').format(firstTicked),
+          firstTicked != null
+              ? DateFormat('dd/MM/yyyy').format(firstTicked!)
+              : 'Timer not started',
           style: textTheme.titleMedium,
         ),
         Text(
-          'Time Started ${DateFormat('HH:mm:ss').format(firstTicked)}',
+          firstTicked != null
+              ? 'Time Started ${DateFormat('HH:mm:ss').format(firstTicked!)}'
+              : 'Please start the timer to track time',
           style: textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
