@@ -96,7 +96,7 @@ class TaskAddPage extends StatelessWidget {
                 foregroundColor: theme.colorScheme.onSurface,
               ),
               onPressed: () {
-                context.router.push(const OdooTaskAddRoute());
+                context.router.push(OdooTaskAddRoute());
               },
               child: const Text('Add task from Odoo'),
             ),

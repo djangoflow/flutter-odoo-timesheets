@@ -215,20 +215,23 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
       );
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
-    final email = form.control(emailControlName).value as String;
-    final pass = form.control(passControlName).value as String;
-    String serverUrl = form.control(serverUrlControlName).value as String;
-    final db = form.control(dbControlName).value as String;
-    if (!serverUrl.endsWith('/')) {
-      serverUrl += '/';
-    }
-    TextInput.finishAutofillContext();
-    await context.read<AuthCubit>().loginWithOdoo(
-          email: email,
-          password: pass,
-          serverUrl: serverUrl,
-          db: db,
-        );
+    final router = context.router.root;
+    final guarded = router.activeGuardObserver.guardInProgress;
+    debugPrint('Guarded: $guarded');
+    // final email = form.control(emailControlName).value as String;
+    // final pass = form.control(passControlName).value as String;
+    // String serverUrl = form.control(serverUrlControlName).value as String;
+    // final db = form.control(dbControlName).value as String;
+    // if (!serverUrl.endsWith('/')) {
+    //   serverUrl += '/';
+    // }
+    // TextInput.finishAutofillContext();
+    // await context.read<AuthCubit>().loginWithOdoo(
+    //       email: email,
+    //       password: pass,
+    //       serverUrl: serverUrl,
+    //       db: db,
+    //     );
   }
 
   @override

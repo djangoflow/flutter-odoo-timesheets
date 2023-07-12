@@ -9,19 +9,22 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
 import 'package:timesheets/features/odoo/odoo.dart';
+import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/presentation/odoo_task_editor.dart';
 import 'package:timesheets/features/task/task.dart';
 
 @RoutePage()
 class OdooTaskAddPage extends StatelessWidget {
-  const OdooTaskAddPage({Key? key}) : super(key: key);
-  // TODO: Pass offline task object optionally if available
+  const OdooTaskAddPage({Key? key, this.taskWithProject}) : super(key: key);
+  final TaskWithProject? taskWithProject;
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('Add Odoo Task'),
         ),
         body: OdooTaskEditor(
+          description: taskWithProject?.task.description,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
@@ -36,8 +39,8 @@ class OdooTaskAddPage extends StatelessWidget {
                         DjangoflowAppSnackbar.showInfo('Task added');
                         await router.pop(true);
                       },
-                      action: (_) =>
-                          _addOdooTimesheet(context: context, form: form),
+                      action: (_) => _addOrUpdateOdooTimesheet(
+                          context: context, form: form),
                       builder: (context, action, state) => ElevatedButton(
                         onPressed: form.valid ? action : null,
                         child: const Center(
@@ -53,23 +56,39 @@ class OdooTaskAddPage extends StatelessWidget {
         ),
       );
 
-  Future<void> _addOdooTimesheet(
+  Future<void> _addOrUpdateOdooTimesheet(
       {required BuildContext context, required FormGroup form}) async {
-    final project = form.control(projectControlName).value as OdooProject;
-    final task = form.control(taskControlName).value as OdooTask;
+    final odooProject = form.control(projectControlName).value as OdooProject;
+    final odooTask = form.control(taskControlName).value as OdooTask;
     final description = form.control(descriptionControlName).value as String;
 
-    await context.read<TasksRepository>().createTaskWithProject(
-          TasksCompanion(
-            name: Value(task.name),
-            onlineId: Value(task.id),
-            description: Value(description),
-          ),
-          ProjectsCompanion(
-            name: Value(project.name),
-            onlineId: Value(project.id),
-          ),
-        );
+    if (taskWithProject != null) {
+      await context.read<TasksRepository>().updateTaskWithProject(
+            task: taskWithProject!.task.copyWith(
+              name: odooTask.name,
+              description: Value(description),
+              onlineId: Value(odooTask.id),
+            ),
+            project: taskWithProject!.project.copyWith(
+              name: Value(odooProject.name),
+              onlineId: Value(odooProject.id),
+            ),
+          );
+      debugPrint('updated task with project');
+    } else {
+      await context.read<TasksRepository>().createTaskWithProject(
+            TasksCompanion(
+              name: Value(odooTask.name),
+              onlineId: Value(odooTask.id),
+              description: Value(description),
+            ),
+            ProjectsCompanion(
+              name: Value(odooProject.name),
+              onlineId: Value(odooProject.id),
+            ),
+          );
+    }
+
     //TODO: or update local task, project with online ids when task was already created before
   }
 }

@@ -10,6 +10,7 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
+import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -30,7 +31,8 @@ class TaskDetailsPage extends StatelessWidget {
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),
               actions: [
-                if (taskWithProject != null)
+                if (taskWithProject != null &&
+                    taskWithProject.task.onlineId == null)
                   IconButton(
                     onPressed: () {
                       context.router
@@ -74,7 +76,7 @@ class _TaskDetailsBody extends StatelessWidget {
       children: [
         if (taskWithProject != null)
           _TaskDetails(
-            task: taskWithProject.task,
+            taskWithProject: taskWithProject,
           ),
         SizedBox(
           height: kPadding.h,
@@ -139,10 +141,11 @@ class _TaskDetailsBody extends StatelessWidget {
 }
 
 class _TaskDetails extends StatelessWidget {
-  const _TaskDetails({required this.task});
-  final Task task;
+  const _TaskDetails({required this.taskWithProject});
+  final TaskWithProject taskWithProject;
   @override
   Widget build(BuildContext context) {
+    final task = taskWithProject.task;
     final elapsedTime = task.elapsedTime;
 
     return Column(
@@ -180,6 +183,7 @@ class _TaskDetails extends StatelessWidget {
                     },
                     onTimerStateChange:
                         (timerState, tickDurationInSeconds) async {
+                      final router = context.router;
                       final taskDetailsCubit = context.read<TaskDetailsCubit>();
 
                       final isRunning =
@@ -192,7 +196,7 @@ class _TaskDetails extends StatelessWidget {
                               : task.firstTicked;
                       final lastTickedValue =
                           isRunning ? DateTime.now() : task.lastTicked;
-                      final updatableTask = task.copyWith(
+                      Task updatableTask = task.copyWith(
                         duration: elapsedTime + updatableSeconds,
                         status: timerState.status.index,
                         firstTicked: Value(firstTickedValue),
@@ -204,29 +208,13 @@ class _TaskDetails extends StatelessWidget {
 
                       if (timerState.status == TimerStatus.stopped) {
                         if (context.mounted) {
-                          if (context.read<AuthCubit>().isAuthenticated) {
-                            if (task.firstTicked == null ||
-                                task.lastTicked == null) {
-                              throw Exception('Timer was not started');
-                            }
-                            await taskDetailsCubit.createTimesheet(
-                              timesheetsCompanion: TimesheetsCompanion(
-                                taskId: Value(task.id),
-                                totalSpentSeconds: Value(task.duration),
-                                startTime: Value(task.firstTicked!),
-                                endTime: Value(task.lastTicked!),
-                              ),
+                          if (context.read<AuthCubit>().isAuthenticated &&
+                              task.onlineId != null) {
+                            _syncTask(
+                              context: context,
+                              task: task,
                               backendId: hardcodedBackendId,
                             );
-                            await taskDetailsCubit.resetTask(task);
-                            if (context.mounted) {
-                              AppDialog.showSuccessDialog(
-                                context: context,
-                                title: 'Timesheet submitted',
-                                content:
-                                    'Your timesheet has been successfully sent to your Odoo account.',
-                              );
-                            }
                           } else {
                             final result = await _showActionSheet(context);
                             if (result == null ||
@@ -237,20 +225,36 @@ class _TaskDetails extends StatelessWidget {
                                 ),
                               );
                             } else if (result == _TaskStopAction.saveLocally) {
-                              if (task.firstTicked == null ||
-                                  task.lastTicked == null) {
-                                throw Exception('Timer was not started');
+                              if (context.mounted) {
+                                await _syncTask(context: context, task: task);
                               }
-                              await taskDetailsCubit.createTimesheet(
-                                timesheetsCompanion: TimesheetsCompanion(
-                                  taskId: Value(task.id),
-                                  totalSpentSeconds: Value(task.duration),
-                                  startTime: Value(task.firstTicked!),
-                                  endTime: Value(task.lastTicked!),
+                            } else if (result == _TaskStopAction.syncOdoo) {
+                              updatableTask = updatableTask.copyWith(
+                                status: TimerStatus.paused.index,
+                              );
+                              await taskDetailsCubit.updateTask(
+                                updatableTask.copyWith(
+                                  status: TimerStatus.paused.index,
                                 ),
                               );
-
-                              await taskDetailsCubit.resetTask(task);
+                              final updatedTask = await router.push(
+                                OdooTaskAddRoute(
+                                  taskWithProject: taskWithProject.copyWith(
+                                    task: updatableTask,
+                                  ),
+                                ),
+                              );
+                              if (context.mounted) {
+                                await _syncTask(
+                                  context: context,
+                                  task: task,
+                                  backendId: hardcodedBackendId,
+                                );
+                                print('updated task $updatedTask');
+                                if (updatedTask != null) {
+                                  taskDetailsCubit.loadTaskDetails(task.id);
+                                }
+                              }
                             }
                           }
                         }
@@ -264,6 +268,35 @@ class _TaskDetails extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// Sync task with Odoo or locally, depending on `backendId` value
+  Future<void> _syncTask(
+      {required BuildContext context,
+      required Task task,
+      int? backendId}) async {
+    final taskDetailsCubit = context.read<TaskDetailsCubit>();
+    if (task.firstTicked == null || task.lastTicked == null) {
+      throw Exception('Timer was not started');
+    }
+    await taskDetailsCubit.createTimesheet(
+      timesheetsCompanion: TimesheetsCompanion(
+        taskId: Value(task.id),
+        totalSpentSeconds: Value(task.duration),
+        startTime: Value(task.firstTicked!),
+        endTime: Value(task.lastTicked!),
+      ),
+      backendId: backendId,
+    );
+    await taskDetailsCubit.resetTask(task);
+    if (context.mounted) {
+      AppDialog.showSuccessDialog(
+        context: context,
+        title: 'Timesheet submitted',
+        content:
+            'Your timesheet has been successfully ${backendId == null ? 'saved locally' : 'sent to your Odoo account'}.',
+      );
+    }
   }
 
   Future<_TaskStopAction?> _showActionSheet(BuildContext context) =>
