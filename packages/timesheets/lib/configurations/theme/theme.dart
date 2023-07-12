@@ -13,36 +13,37 @@ export 'typography.dart';
 class AppTheme {
   static const double _buttonRadius = 10;
   // Shared sub theme data for light, darktheme.
-  static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
-        buttonPadding: const EdgeInsets.symmetric(
-          horizontal: kPadding * 2,
-          vertical: kPadding * 2,
-        ),
-        elevatedButtonRadius: _buttonRadius,
-        textButtonRadius: _buttonRadius,
-        outlinedButtonRadius: _buttonRadius,
-        filledButtonRadius: _buttonRadius,
-        inputDecoratorRadius: _buttonRadius,
-        elevatedButtonTextStyle:
-            MaterialStateProperty.all(AppTextStyle.titleMedium),
-        textButtonTextStyle:
-            MaterialStateProperty.all(AppTextStyle.titleMedium),
-        outlinedButtonTextStyle:
-            MaterialStateProperty.all(AppTextStyle.titleMedium),
-        filledButtonTextStyle:
-            MaterialStateProperty.all(AppTextStyle.titleMedium),
-        elevatedButtonSchemeColor: SchemeColor.onPrimary,
-        elevatedButtonSecondarySchemeColor: SchemeColor.primary,
-        outlinedButtonOutlineSchemeColor: SchemeColor.primary,
-        checkboxSchemeColor: SchemeColor.primary,
-        inputDecoratorSchemeColor: SchemeColor.tertiary,
-        inputDecoratorIsFilled: false,
-        fabSchemeColor: SchemeColor.primary,
-        chipSchemeColor: SchemeColor.primary,
-        cardElevation: 3,
-        cardRadius: kPadding.r * 2,
-        inputDecoratorBorderSchemeColor: SchemeColor.primary,
-      );
+  static FlexSubThemesData get _commonSubThemeData {
+    final buttonTextStyle = AppTextStyle.titleMedium.copyWith(
+      height: 1,
+    );
+    return FlexSubThemesData(
+      buttonPadding: EdgeInsets.symmetric(
+        horizontal: kPadding.w * 2,
+        vertical: kPadding.h * 2.5,
+      ),
+      elevatedButtonRadius: _buttonRadius,
+      textButtonRadius: _buttonRadius,
+      outlinedButtonRadius: _buttonRadius,
+      filledButtonRadius: _buttonRadius,
+      inputDecoratorRadius: _buttonRadius,
+      elevatedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      textButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      outlinedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      filledButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      elevatedButtonSchemeColor: SchemeColor.onPrimary,
+      elevatedButtonSecondarySchemeColor: SchemeColor.primary,
+      outlinedButtonOutlineSchemeColor: SchemeColor.primary,
+      checkboxSchemeColor: SchemeColor.primary,
+      inputDecoratorSchemeColor: SchemeColor.tertiary,
+      inputDecoratorIsFilled: false,
+      fabSchemeColor: SchemeColor.primary,
+      chipSchemeColor: SchemeColor.primary,
+      cardElevation: 3,
+      cardRadius: kPadding.r * 2,
+      inputDecoratorBorderSchemeColor: SchemeColor.primary,
+    );
+  }
 
   static ThemeData get light {
     final colorScheme = AppColors.lightThemeColorScheme;

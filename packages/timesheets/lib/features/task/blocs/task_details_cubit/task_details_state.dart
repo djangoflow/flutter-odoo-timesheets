@@ -30,10 +30,10 @@ class TaskDetailsState with _$TaskDetailsState {
         error: null,
       );
 
-  factory TaskDetailsState.syncing(
-    TaskWithProject taskWithProject,
-    List<Timesheet> timesheets,
-  ) =>
+  factory TaskDetailsState.syncing({
+    required TaskWithProject taskWithProject,
+    required List<Timesheet> timesheets,
+  }) =>
       TaskDetailsState(
         taskWithProject: taskWithProject,
         timesheets: timesheets,
@@ -54,11 +54,11 @@ class TaskDetailsState with _$TaskDetailsState {
         error: null,
       );
 
-  factory TaskDetailsState.error(
+  factory TaskDetailsState.error({
     TaskWithProject? taskWithProject,
-    List<Timesheet> timesheets,
-    Object error,
-  ) =>
+    required List<Timesheet> timesheets,
+    required Object error,
+  }) =>
       TaskDetailsState(
         taskWithProject: taskWithProject,
         timesheets: timesheets,

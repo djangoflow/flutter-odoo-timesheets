@@ -83,7 +83,6 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
   }
 
   Future<int> create(OdooTimesheet timesheet) async {
-    print(timesheet.toJson());
     final response = await odooCallMethod(
       method: OdooApiMethod.create.name,
       odooModel: timesheetModel,

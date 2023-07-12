@@ -6,3 +6,4 @@ export 'presentation/app_logo.dart';
 export 'data/db/app_database.dart';
 export 'presentation/scrollable_column.dart';
 export 'presentation/app_reactive_dropdown.dart';
+export 'presentation/app_dialog.dart';

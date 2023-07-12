@@ -1,9 +1,11 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
@@ -22,7 +24,6 @@ class TaskDetailsPage extends StatelessWidget {
         builder: (context, state) {
           final taskWithProject = state.taskWithProject;
           final task = taskWithProject?.task;
-          final timesheets = state.timesheets;
 
           return Scaffold(
             appBar: AppBar(
@@ -78,14 +79,62 @@ class _TaskDetailsBody extends StatelessWidget {
         SizedBox(
           height: kPadding.h,
         ),
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, authState) {
+            final user = authState.odooUser;
+            if (user != null && timesheets.hasUnsyncedTimesheets) {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: kPadding.h * 2,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kPadding.h * 2,
+                      ),
+                      child: LinearProgressBuilder(
+                        action: (_) async {
+                          final taskDetailsCubit =
+                              context.read<TaskDetailsCubit>();
+
+                          await taskDetailsCubit
+                              .syncUnsyncedTimesheets(hardcodedBackendId);
+                          if (context.mounted) {
+                            AppDialog.showSuccessDialog(
+                              context: context,
+                              title: 'Success',
+                              content:
+                                  'Timesheets synced successfully, cheers!',
+                            );
+                          }
+                        },
+                        builder: (context, action, error) =>
+                            ElevatedButton.icon(
+                          icon: const Icon(CupertinoIcons.arrow_2_circlepath),
+                          onPressed: action,
+                          label: const Text('Sync task with Odoo'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: kPadding.h * 3,
+                  ),
+                ],
+              );
+            }
+
+            return const SizedBox();
+          },
+        ),
         _TimesheetListView(
           key: ValueKey(timesheets),
           timesheets: timesheets,
         ),
       ],
     );
-
-    return const Placeholder();
   }
 }
 
@@ -167,12 +216,16 @@ class _TaskDetails extends StatelessWidget {
                                 startTime: Value(task.firstTicked!),
                                 endTime: Value(task.lastTicked!),
                               ),
-                              // TODO change hardcoded backend id
-                              backendId: 1,
+                              backendId: hardcodedBackendId,
                             );
                             await taskDetailsCubit.resetTask(task);
                             if (context.mounted) {
-                              _showSuccessDialog(context);
+                              AppDialog.showSuccessDialog(
+                                context: context,
+                                title: 'Timesheet submitted',
+                                content:
+                                    'Your timesheet has been successfully sent to your Odoo account.',
+                              );
                             }
                           } else {
                             final result = await _showActionSheet(context);
@@ -236,24 +289,6 @@ class _TaskDetails extends StatelessWidget {
                 context.router.pop(_TaskStopAction.saveLocally);
               },
               child: const Text('Save locally'),
-            ),
-          ],
-        ),
-      );
-
-  Future<void> _showSuccessDialog(BuildContext context) =>
-      showCupertinoDialog<void>(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('Timesheet submitted'),
-          content: const Text(
-              'Your timesheet has been successfully sent to your Odoo account.'),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              onPressed: () {
-                context.router.pop();
-              },
-              child: const Text('OK'),
             ),
           ],
         ),

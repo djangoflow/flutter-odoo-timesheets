@@ -52,3 +52,6 @@ const taskControlName = 'selectedTask';
 const descriptionControlName = 'description';
 
 const searchDelayMs = 500;
+
+// TODO need to change it to support multiple backend properly
+const hardcodedBackendId = 1;

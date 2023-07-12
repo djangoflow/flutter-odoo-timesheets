@@ -7,6 +7,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/task/task.dart';
 
 part 'app_database.g.dart';
@@ -40,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) async {
-          print('Migrating from $from to $to');
+          debugPrint('Migrating from $from to $to');
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
 
@@ -57,7 +58,7 @@ class AppDatabase extends _$AppDatabase {
           await transaction(() async {
             final value = await into(backends).insert(
               BackendsCompanion(
-                id: const Value(1),
+                id: const Value(hardcodedBackendId),
                 name: const Value('Odoo'),
                 description: const Value('Odoo backend'),
                 backendType: Value(BackendType.odoo.index),

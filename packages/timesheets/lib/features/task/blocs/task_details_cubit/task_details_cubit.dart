@@ -6,6 +6,7 @@ import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/utils/utils.dart';
 
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TasksRepository tasksRepository;
@@ -80,6 +81,54 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       await tasksRepository.deleteTask(state.taskWithProject!.task);
       emit(
         TaskDetailsState.initial(),
+      );
+    });
+  }
+
+  Future<void> syncUnsyncedTimesheets(int backendId) async {
+    await errorWrapper(() async {
+      emit(TaskDetailsState.syncing(
+        taskWithProject: state.taskWithProject!,
+        timesheets: state.timesheets,
+      ));
+      final taskWithProject = state.taskWithProject;
+      if (taskWithProject == null) {
+        throw Exception('Task not found');
+      }
+      final taskId = taskWithProject.task.id;
+
+      TaskBackend? taskBackend =
+          await taskBackendRepository.getTaskBackendByTaskId(taskId);
+      if (taskBackend == null) {
+        await taskBackendRepository.createTaskBackend(
+          TaskBackendsCompanion(
+            taskId: Value(taskId),
+            backendId: Value(backendId),
+          ),
+        );
+        taskBackend =
+            await taskBackendRepository.getTaskBackendByTaskId(taskId);
+      }
+
+      if (taskBackend == null) {
+        throw Exception('Task backend not found');
+      }
+
+      final unsyncedTimesheets = state.timesheets.unsyncedTimesheets;
+      if (unsyncedTimesheets.isEmpty) {
+        throw Exception('No unsynced timesheets found');
+      }
+
+      for (final timesheet in unsyncedTimesheets) {
+        await _syncTimesheet(timesheet.id, backendId);
+      }
+
+      emit(
+        TaskDetailsState.loaded(
+          taskWithProject: taskWithProject,
+          timesheets:
+              await timesheetsRepository.getTimesheets(taskWithProject.task.id),
+        ),
       );
     });
   }
@@ -164,7 +213,11 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
           timesheets: [timesheet, ...state.timesheets]));
       if (backendId != null) {
         emit(
-            TaskDetailsState.syncing(state.taskWithProject!, state.timesheets));
+          TaskDetailsState.syncing(
+            taskWithProject: state.taskWithProject!,
+            timesheets: state.timesheets,
+          ),
+        );
         await _syncTimesheet(timesheetId, backendId);
         final updatedTimesheet =
             await timesheetsRepository.getTimesheetById(timesheetId);
@@ -189,7 +242,12 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> syncTimesheet(int timesheetId, int backendId) async {
     errorWrapper(() async {
-      emit(TaskDetailsState.syncing(state.taskWithProject!, state.timesheets));
+      emit(
+        TaskDetailsState.syncing(
+          taskWithProject: state.taskWithProject!,
+          timesheets: state.timesheets,
+        ),
+      );
       await _syncTimesheet(timesheetId, backendId);
       final updatedTimesheet =
           await timesheetsRepository.getTimesheetById(timesheetId);
@@ -239,9 +297,9 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   void handleError(Object error) {
     emit(
       TaskDetailsState.error(
-        state.taskWithProject,
-        state.timesheets,
-        error,
+        taskWithProject: state.taskWithProject,
+        timesheets: state.timesheets,
+        error: error,
       ),
     );
   }
