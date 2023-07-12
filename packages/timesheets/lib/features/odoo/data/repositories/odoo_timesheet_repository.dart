@@ -76,8 +76,8 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
       parameters: [
         [
           timesheet.id,
+          timesheet.toJson(),
         ],
-        timesheet.toJson(),
       ],
     );
   }
