@@ -69,6 +69,30 @@ class TimesheetListCubit extends ListCubit<Timesheet, TimesheetListFilter?>
     if (timesheet == null) {
       throw Exception('Timesheet not found');
     }
+    if (state is Empty) {
+      emit(
+        Data(
+          data: [timesheet],
+          filter: state.filter,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          data: [
+            timesheet,
+            ...state.data!,
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> syncTimesheet(int timesheetId) async {
+    final timesheet = await timesheetsRepository.getTimesheetById(timesheetId);
+    if (timesheet == null) {
+      throw Exception('Timesheet not found');
+    }
 
     final taskWithProject =
         await tasksRepository.getTaskWithProjectById(timesheet.taskId);
@@ -84,15 +108,19 @@ class TimesheetListCubit extends ListCubit<Timesheet, TimesheetListFilter?>
     }
 
     final startTime = timesheet.startTime;
-    final endTime = timesheet.endTime;
     final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     final timesheetOnlineId = await odooTimesheetRepository.create(
       OdooTimesheet(
         projectId: projectId,
         taskId: taskId,
         startTime: formatter.format(startTime),
-        endTime: formatter.format(endTime),
-        unitAmount: timesheet.totalSpentSeconds / 3600,
+        endTime: formatter.format(
+          startTime.add(
+            Duration(seconds: timesheet.totalSpentSeconds),
+          ),
+        ),
+        unitAmount: double.parse(
+            (timesheet.totalSpentSeconds / 3600).toStringAsFixed(2)),
         name: taskWithProject.task.description,
       ),
     );
@@ -111,24 +139,6 @@ class TimesheetListCubit extends ListCubit<Timesheet, TimesheetListFilter?>
         lastSynced: Value(DateTime.now()),
       ),
     );
-
-    if (state is Empty) {
-      emit(
-        Data(
-          data: [timesheet],
-          filter: state.filter,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          data: [
-            timesheet,
-            ...state.data!,
-          ],
-        ),
-      );
-    }
   }
 
   Future<void> updateTimesheet(Timesheet timesheet) async {
