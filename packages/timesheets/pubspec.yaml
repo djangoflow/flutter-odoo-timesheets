@@ -47,7 +47,8 @@ dependencies:
   url_launcher: ^6.1.12
   visibility_detector: ^0.4.0+2
   xml_rpc:
-    path: /Users/saifulislam/Development/apexlabs/djangoflow/dart-xmlrpc
+    git:
+      url: https://github.com/djangoflow/dart-xmlrpc.git
 
 dev_dependencies:
   flutter_test:
