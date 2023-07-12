@@ -87,8 +87,6 @@ class _TaskDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final elapsedTime = task.elapsedTime;
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
