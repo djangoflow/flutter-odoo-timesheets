@@ -1,3 +1,4 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,11 @@ class OdooTaskAddPage extends StatelessWidget {
                   builder: (context, form, child) => Padding(
                     padding: EdgeInsets.symmetric(horizontal: kPadding.w * 2),
                     child: LinearProgressBuilder(
+                      onSuccess: () async {
+                        final router = context.router;
+                        DjangoflowAppSnackbar.showInfo('Task added');
+                        await router.pop(true);
+                      },
                       action: (_) =>
                           _addOdooTimesheet(context: context, form: form),
                       builder: (context, action, state) => ElevatedButton(

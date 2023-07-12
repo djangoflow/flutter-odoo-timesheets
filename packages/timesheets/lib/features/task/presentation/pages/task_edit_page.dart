@@ -27,9 +27,17 @@ class TaskEditPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Edit task'),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.delete),
+          CircularProgressBuilder(
+            action: (_) async {
+              final router = context.router;
+              await context.read<TasksRepository>().deleteTask(task);
+              DjangoflowAppSnackbar.showInfo('Task deleted');
+              router.pop(true);
+            },
+            builder: (context, action, error) => IconButton(
+              onPressed: action,
+              icon: const Icon(CupertinoIcons.delete),
+            ),
           )
         ],
       ),

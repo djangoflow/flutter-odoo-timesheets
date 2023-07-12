@@ -32,9 +32,15 @@ class TaskDetailsPage extends StatelessWidget {
                 if (taskWithProject != null)
                   IconButton(
                     onPressed: () {
-                      context.router.push(
+                      context.router
+                          .push(
                         TaskEditRoute(taskWithProject: taskWithProject),
-                      );
+                      )
+                          .then((value) {
+                        if (value != null && value == true) {
+                          context.router.pop(true);
+                        }
+                      });
                     },
                     icon: const Icon(Icons.edit),
                   )

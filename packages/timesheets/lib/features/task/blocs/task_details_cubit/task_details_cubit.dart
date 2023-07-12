@@ -96,10 +96,10 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       throw Exception('Task and Project not found');
     }
 
-    final taskId = taskWithProject.task.onlineId;
-    final projectId = taskWithProject.project.onlineId;
+    final taskOnlineId = taskWithProject.task.onlineId;
+    final projectOnlineId = taskWithProject.project.onlineId;
 
-    if (taskId == null || projectId == null) {
+    if (taskOnlineId == null || projectOnlineId == null) {
       throw Exception('Task or Project not found');
     }
 
@@ -107,8 +107,8 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     final timesheetOnlineId = await odooTimesheetRepository.create(
       OdooTimesheet(
-        projectId: projectId,
-        taskId: taskId,
+        projectId: projectOnlineId,
+        taskId: taskOnlineId,
         startTime: formatter.format(startTime),
         endTime: formatter.format(
           startTime.add(
@@ -128,6 +128,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     );
 
     // update task backend to mark as synced, all the timesheets are under one TaskBackend
+    final taskId = taskWithProject.task.id;
     final taskBackend =
         await taskBackendRepository.getTaskBackendByTaskId(taskId);
     if (taskBackend == null) {

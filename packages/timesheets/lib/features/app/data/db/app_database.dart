@@ -35,20 +35,15 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition.
   // Migrations are covered later in the documentation.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) async {
+          print('Migrating from $from to $to');
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
-          transaction(() async {
-            if (from < 2) {
-              await m.renameTable(taskBackends, 'timesheet_backends');
-              await m.renameColumn(
-                  taskBackends, 'timesheetId', taskBackends.taskId);
-            }
-          });
+
           // Assert that the schema is valid after migrations
           if (kDebugMode) {
             final wrongForeignKeys =
