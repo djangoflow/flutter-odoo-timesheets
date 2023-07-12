@@ -331,6 +331,12 @@ class _TimesheetListView extends StatelessWidget {
 
           return ListTile(
             key: ValueKey(timesheet.id),
+            leading: Icon(
+              timesheet.onlineId == null
+                  ? CupertinoIcons.cloud_upload_fill
+                  : CupertinoIcons.check_mark_circled_solid,
+              size: 32,
+            ),
             onTap: () => context.router.push(
               TimesheetsRouter(
                 timesheetId: timesheet.id,
