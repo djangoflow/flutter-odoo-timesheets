@@ -7,8 +7,6 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
-import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/presentation/odoo_task_editor.dart';
