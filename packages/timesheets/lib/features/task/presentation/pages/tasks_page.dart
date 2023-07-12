@@ -10,21 +10,11 @@ import 'package:timesheets/utils/utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 @RoutePage()
-class TasksPage extends StatefulWidget with AutoRouteWrapper {
+class TasksPage extends StatefulWidget {
   const TasksPage({super.key});
 
   @override
   State<TasksPage> createState() => _TasksPageState();
-
-  @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider<TasksListCubit>(
-        create: (context) => TasksListCubit(
-          context.read<TasksRepository>(),
-        )..load(
-            const TasksListFilter(),
-          ),
-        child: this,
-      );
 }
 
 class _TasksPageState extends State<TasksPage>
