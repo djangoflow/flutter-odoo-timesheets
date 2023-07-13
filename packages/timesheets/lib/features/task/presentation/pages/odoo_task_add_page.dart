@@ -38,7 +38,9 @@ class OdooTaskAddPage extends StatelessWidget {
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;
-                        DjangoflowAppSnackbar.showInfo('Task added');
+                        DjangoflowAppSnackbar.showInfo(taskWithProject != null
+                            ? 'Task updated'
+                            : 'Task added');
                         await router.pop(true);
                       },
                       action: (_) => _addOrUpdateOdooTimesheet(
