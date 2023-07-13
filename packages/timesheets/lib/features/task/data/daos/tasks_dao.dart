@@ -31,6 +31,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<List<TaskWithProject>> getTasksWithProjects(int limit, int? offset) =>
       (select(tasks)
+            // should be ordered by createdAt and onlineIds
             ..orderBy([
               (t) =>
                   OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)

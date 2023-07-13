@@ -110,7 +110,11 @@ class _TasksPageState extends State<TasksPage>
                                     return TaskListTile(
                                       key: ValueKey(task.id),
                                       title: Text(task.name),
-                                      subtitle: Text(task.description ?? ''),
+                                      subtitle: Text(
+                                        task.description ?? '',
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                       elapsedTime: elapsedTime,
                                       initialTimerStatus:
                                           TimerStatus.values[task.status],
