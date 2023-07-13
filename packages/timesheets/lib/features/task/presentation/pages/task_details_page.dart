@@ -26,6 +26,84 @@ class TaskDetailsPage extends StatelessWidget {
           final taskWithProject = state.taskWithProject;
           final task = taskWithProject?.task;
 
+          final timesheets = state.timesheets;
+          Widget body;
+
+          if (state.isLoading) {
+            body = const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          print(taskWithProject?.task.onlineId);
+          body = ListView(
+            children: [
+              if (taskWithProject != null)
+                _TaskDetails(
+                  key: ValueKey(taskWithProject.task.onlineId),
+                  taskWithProject: taskWithProject,
+                  isSyncing: state.isSyncing,
+                ),
+              SizedBox(
+                height: kPadding.h,
+              ),
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, authState) {
+                  final user = authState.odooUser;
+                  if (user != null && timesheets.hasUnsyncedTimesheets) {
+                    return Column(
+                      children: [
+                        SizedBox(
+                          height: kPadding.h * 2,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: kPadding.h * 2,
+                            ),
+                            child: LinearProgressBuilder(
+                              action: (_) async {
+                                final taskDetailsCubit =
+                                    context.read<TaskDetailsCubit>();
+
+                                await taskDetailsCubit
+                                    .syncUnsyncedTimesheets(hardcodedBackendId);
+                                if (context.mounted) {
+                                  AppDialog.showSuccessDialog(
+                                    context: context,
+                                    title: 'Success',
+                                    content:
+                                        'Timesheets synced successfully, cheers!',
+                                  );
+                                }
+                              },
+                              builder: (context, action, error) =>
+                                  ElevatedButton.icon(
+                                icon: const Icon(
+                                    CupertinoIcons.arrow_2_circlepath),
+                                onPressed: action,
+                                label: const Text('Sync task with Odoo'),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: kPadding.h * 3,
+                        ),
+                      ],
+                    );
+                  }
+
+                  return const SizedBox();
+                },
+              ),
+              _TimesheetListView(
+                key: ValueKey(timesheets),
+                timesheets: timesheets,
+              ),
+            ],
+          );
+
           return Scaffold(
             appBar: AppBar(
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
@@ -49,100 +127,15 @@ class TaskDetailsPage extends StatelessWidget {
                   )
               ],
             ),
-            body: _TaskDetailsBody(
-              state: state,
-            ),
+            body: body,
           );
         },
       );
 }
 
-class _TaskDetailsBody extends StatelessWidget {
-  const _TaskDetailsBody({super.key, required this.state});
-  final TaskDetailsState state;
-
-  @override
-  Widget build(BuildContext context) {
-    if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    final taskWithProject = state.taskWithProject;
-    final timesheets = state.timesheets;
-
-    return ListView(
-      children: [
-        if (taskWithProject != null)
-          _TaskDetails(
-            taskWithProject: taskWithProject,
-            isSyncing: state.isSyncing,
-          ),
-        SizedBox(
-          height: kPadding.h,
-        ),
-        BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            final user = authState.odooUser;
-            if (user != null && timesheets.hasUnsyncedTimesheets) {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: kPadding.h * 2,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kPadding.h * 2,
-                      ),
-                      child: LinearProgressBuilder(
-                        action: (_) async {
-                          final taskDetailsCubit =
-                              context.read<TaskDetailsCubit>();
-
-                          await taskDetailsCubit
-                              .syncUnsyncedTimesheets(hardcodedBackendId);
-                          if (context.mounted) {
-                            AppDialog.showSuccessDialog(
-                              context: context,
-                              title: 'Success',
-                              content:
-                                  'Timesheets synced successfully, cheers!',
-                            );
-                          }
-                        },
-                        builder: (context, action, error) =>
-                            ElevatedButton.icon(
-                          icon: const Icon(CupertinoIcons.arrow_2_circlepath),
-                          onPressed: action,
-                          label: const Text('Sync task with Odoo'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: kPadding.h * 3,
-                  ),
-                ],
-              );
-            }
-
-            return const SizedBox();
-          },
-        ),
-        _TimesheetListView(
-          key: ValueKey(timesheets),
-          timesheets: timesheets,
-        ),
-      ],
-    );
-  }
-}
-
 class _TaskDetails extends StatelessWidget {
-  const _TaskDetails({required this.taskWithProject, required this.isSyncing});
+  const _TaskDetails(
+      {super.key, required this.taskWithProject, required this.isSyncing});
   final TaskWithProject taskWithProject;
   final bool isSyncing;
   @override
@@ -249,10 +242,10 @@ class _TaskDetails extends StatelessWidget {
                                 if (latestTask != null && context.mounted) {
                                   await _syncTask(
                                     context: context,
-                                    task: task,
+                                    task: latestTask,
                                     backendId: hardcodedBackendId,
                                   );
-                                  print(
+                                  debugPrint(
                                       'updated task $didUpdateTask ${task.id}');
                                   if (didUpdateTask != null) {
                                     taskDetailsCubit.loadTaskDetails(task.id);
