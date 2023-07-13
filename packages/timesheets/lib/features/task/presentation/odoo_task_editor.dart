@@ -41,7 +41,9 @@ class OdooTaskEditor extends StatelessWidget {
           ),
           descriptionControlName: FormControl<String>(
             value: description,
-            validators: [],
+            validators: [
+              Validators.required,
+            ],
           ),
         },
       );
