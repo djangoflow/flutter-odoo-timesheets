@@ -16,12 +16,8 @@ class Assets {
   static const AssetGenImage appLogoLogo =
       AssetGenImage('assets/app_logo/logo.png');
 
-  /// File path: assets/app_logo/logo_round.png
-  static const AssetGenImage appLogoLogoRound =
-      AssetGenImage('assets/app_logo/logo_round.png');
-
   /// List of all assets
-  List<AssetGenImage> get values => [appLogoLogo, appLogoLogoRound];
+  List<AssetGenImage> get values => [appLogoLogo];
 }
 
 class AssetGenImage {
