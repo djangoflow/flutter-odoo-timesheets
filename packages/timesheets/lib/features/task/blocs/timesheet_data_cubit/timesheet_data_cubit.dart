@@ -4,8 +4,6 @@ import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 
-import 'timesheet_retrieve_filter.dart';
-
 export 'timesheet_retrieve_filter.dart';
 
 typedef TimesheetDataState = Data<TimesheetWithTask?, TimesheetRetrieveFilter>;

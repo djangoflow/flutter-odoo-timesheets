@@ -1,4 +1,3 @@
-import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

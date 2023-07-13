@@ -3,11 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 

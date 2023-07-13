@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:timesheets/features/authentication/authentication.dart';
 
 import 'router.dart';
