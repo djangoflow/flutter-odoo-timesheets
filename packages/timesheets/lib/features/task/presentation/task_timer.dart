@@ -384,96 +384,92 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
           widget.animationController.reverse();
         }
       },
-      child: Column(
-        children: [
-          Text(
-            widget.state.duration
-                .timerString(DurationFormat.hoursMinutesSeconds),
-            style: textTheme.displaySmall,
-          ),
-          SizedBox(
-            height: kPadding.h,
-          ),
-          Padding(
-            padding: widget.padding ??
-                EdgeInsets.symmetric(
-                  horizontal: kPadding.w * 2,
-                ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: ElevationOverlay.applySurfaceTint(
-                      theme.colorScheme.primaryContainer,
-                      theme.colorScheme.surfaceTint,
-                      2,
-                    ),
-                    shape: const StadiumBorder(),
-                    maximumSize: Size(64.w, 44.h),
-                    minimumSize: Size(64.w, 44.h),
-                    padding: const EdgeInsets.all(kPadding),
-                  ),
-                  icon: AnimatedIcon(
-                    icon: AnimatedIcons.play_pause,
-                    size: 32.w,
-                    progress: animation,
-                    color: theme.colorScheme.primary,
-                  ),
-                  onPressed: widget.disabled
-                      ? null
-                      : () {
-                          final timerCubit = context.read<TimerCubit>();
-                          if (timerStatus == TimerStatus.running) {
-                            timerCubit.pauseTimer();
-                          } else if ([
-                            TimerStatus.initial,
-                            TimerStatus.paused,
-                            TimerStatus.pausedByForce,
-                            TimerStatus.stopped
-                          ].contains(timerStatus)) {
-                            if (timerStatus == TimerStatus.initial) {
-                              timerCubit.startTimer();
-                            } else {
-                              timerCubit.resumeTimer();
-                            }
-                          }
-                        },
-                ),
-                SizedBox(
-                  width: kPadding.w * 2,
-                ),
-                IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: ElevationOverlay.applySurfaceTint(
-                      theme.colorScheme.primaryContainer,
-                      theme.colorScheme.surfaceTint,
-                      2,
-                    ),
-                    shape: const StadiumBorder(),
-                    maximumSize: Size(64.w, 44.h),
-                    minimumSize: Size(64.w, 44.h),
-                    padding: const EdgeInsets.all(kPadding),
-                  ),
-                  disabledColor: theme.colorScheme.primary.withOpacity(0.5),
-                  color: theme.colorScheme.primary,
-                  icon: Icon(
-                    Icons.stop,
-                    size: kPadding.w * 4,
-                  ),
-                  onPressed:
-                      widget.disabled || timerStatus == TimerStatus.initial
-                          ? null
-                          : () {
-                              final timerCubit = context.read<TimerCubit>();
-                              timerCubit.stopTimer();
-                            },
-                ),
-              ],
+      child: Theme(
+        data: theme.copyWith(
+          iconButtonTheme: IconButtonThemeData(
+              style: theme.iconButtonTheme.style?.copyWith(
+            backgroundColor: MaterialStatePropertyAll(
+              ElevationOverlay.applySurfaceTint(
+                theme.colorScheme.primaryContainer,
+                theme.colorScheme.surfaceTint,
+                2,
+              ),
             ),
-          ),
-        ],
+            shape: const MaterialStatePropertyAll(StadiumBorder()),
+            maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
+            minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
+            padding: const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
+          )),
+        ),
+        child: Column(
+          children: [
+            Text(
+              widget.state.duration
+                  .timerString(DurationFormat.hoursMinutesSeconds),
+              style: textTheme.displaySmall,
+            ),
+            SizedBox(
+              height: kPadding.h,
+            ),
+            Padding(
+              padding: widget.padding ??
+                  EdgeInsets.symmetric(
+                    horizontal: kPadding.w * 2,
+                  ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      size: 32.w,
+                      progress: animation,
+                      color: theme.colorScheme.primary,
+                    ),
+                    onPressed: widget.disabled
+                        ? null
+                        : () {
+                            final timerCubit = context.read<TimerCubit>();
+                            if (timerStatus == TimerStatus.running) {
+                              timerCubit.pauseTimer();
+                            } else if ([
+                              TimerStatus.initial,
+                              TimerStatus.paused,
+                              TimerStatus.pausedByForce,
+                              TimerStatus.stopped
+                            ].contains(timerStatus)) {
+                              if (timerStatus == TimerStatus.initial) {
+                                timerCubit.startTimer();
+                              } else {
+                                timerCubit.resumeTimer();
+                              }
+                            }
+                          },
+                  ),
+                  SizedBox(
+                    width: kPadding.w * 2,
+                  ),
+                  IconButton(
+                    disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+                    color: theme.colorScheme.primary,
+                    icon: Icon(
+                      Icons.stop,
+                      size: kPadding.w * 4,
+                    ),
+                    onPressed:
+                        widget.disabled || timerStatus == TimerStatus.initial
+                            ? null
+                            : () {
+                                final timerCubit = context.read<TimerCubit>();
+                                timerCubit.stopTimer();
+                              },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
