@@ -34,7 +34,7 @@ class TaskDetailsPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          print(taskWithProject?.task.onlineId);
+
           body = ListView(
             children: [
               if (taskWithProject != null)
@@ -49,7 +49,7 @@ class TaskDetailsPage extends StatelessWidget {
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, authState) {
                   final user = authState.odooUser;
-                  if (user != null && timesheets.hasUnsyncedTimesheets) {
+                  if (user != null && timesheets.isNotEmpty) {
                     return Column(
                       children: [
                         SizedBox(
@@ -67,7 +67,7 @@ class TaskDetailsPage extends StatelessWidget {
                                     context.read<TaskDetailsCubit>();
 
                                 await taskDetailsCubit
-                                    .syncUnsyncedTimesheets(hardcodedBackendId);
+                                    .syncAllTimesheets(hardcodedBackendId);
                                 if (context.mounted) {
                                   AppDialog.showSuccessDialog(
                                     context: context,

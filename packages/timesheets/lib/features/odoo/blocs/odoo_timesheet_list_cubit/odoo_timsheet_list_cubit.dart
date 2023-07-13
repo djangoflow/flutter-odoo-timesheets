@@ -10,27 +10,38 @@ class OdooTimesheetListCubit
   OdooTimesheetListCubit(this._odooTimesheetRepository)
       : super(_odooTimesheetRepository.getTimesheetList);
 
-  Future<void> updateOdooTimesheet(OdooTimesheet timesheet) async {
-    await _odooTimesheetRepository.update(timesheet);
+  Future<void> updateOdooTimesheet(OdooTimesheetRequest timesheet) async {
+    final updatedOdooTimesheet =
+        await _odooTimesheetRepository.update(timesheet);
+    if (updatedOdooTimesheet == null) {
+      throw Exception('Failed to update timesheet');
+    }
     if (state.data != null) {
       emit(state.copyWith(
         data: [
           for (final item in state.data!)
-            if (item.id == timesheet.id) timesheet else item
+            if (item.id == updatedOdooTimesheet.id)
+              updatedOdooTimesheet
+            else
+              item
         ],
       ));
     } else {
-      emit(Data(data: [timesheet], filter: state.filter));
+      emit(Data(data: [updatedOdooTimesheet], filter: state.filter));
     }
   }
 
-  Future<void> deleteOdooTimesheet(OdooTimesheet timesheet) async {
+  Future<void> deleteOdooTimesheet(OdooTimesheetRequest timesheet) async {
+    final odooTimesheetId = timesheet.id;
+    if (odooTimesheetId == null) {
+      throw Exception('Failed to delete timesheet');
+    }
     await _odooTimesheetRepository.delete(timesheet);
     if (state.data != null) {
       emit(state.copyWith(
         data: [
           for (final item in state.data!)
-            if (item.id != timesheet.id) item
+            if (item.id != odooTimesheetId) item
         ],
       ));
     } else {
@@ -38,17 +49,22 @@ class OdooTimesheetListCubit
     }
   }
 
-  Future<void> createOdooTimesheet(OdooTimesheet timesheet) async {
-    await _odooTimesheetRepository.create(timesheet);
+  Future<void> createOdooTimesheet(OdooTimesheetRequest timesheet) async {
+    final timesheetId = await _odooTimesheetRepository.create(timesheet);
+    final odooTimesheet =
+        await _odooTimesheetRepository.getTimesheetById(timesheetId);
+    if (odooTimesheet == null) {
+      throw Exception('Failed to create timesheet');
+    }
     if (state.data != null) {
       emit(state.copyWith(
         data: [
           ...state.data!,
-          timesheet,
+          odooTimesheet,
         ],
       ));
     } else {
-      emit(Data(data: [timesheet], filter: state.filter));
+      emit(Data(data: [odooTimesheet], filter: state.filter));
     }
   }
 }

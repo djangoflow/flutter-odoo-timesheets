@@ -7,14 +7,13 @@ part 'odoo_timesheet.g.dart';
 
 @Freezed()
 class OdooTimesheet with _$OdooTimesheet {
-  @JsonSerializable(includeIfNull: false)
   const factory OdooTimesheet({
     String? name,
-    int? id,
-    @JsonKey(name: 'project_id') required int projectId,
-    @JsonKey(name: 'task_id') required int taskId,
-    @JsonKey(name: 'date_time') required String startTime,
-    @JsonKey(name: 'date_time_end') required String endTime,
+    required int id,
+    @JsonKey(name: 'project_id') required List<Object> project,
+    @JsonKey(name: 'task_id') required List<Object> task,
+    @JsonKey(name: 'date_time') required DateTime startTime,
+    @JsonKey(name: 'date_time_end') required DateTime endTime,
     @JsonKey(name: 'unit_amount') required double unitAmount,
   }) = _OdooTimesheet;
 

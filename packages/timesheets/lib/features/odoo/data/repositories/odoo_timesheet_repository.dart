@@ -21,16 +21,7 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
               ['project_id', '=', filter.projectId],
             ],
         ],
-        buildFilterableFields([
-          'name',
-          'unit_amount',
-          'project_id',
-          'task_id',
-          'user_id',
-          'date_time',
-          'date_time_end',
-          'id',
-        ]),
+        buildFilterableFields(_timesheetDefaultParams),
       ],
     );
     final timesheets = <OdooTimesheet>[];
@@ -51,16 +42,7 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
             ['id', '=', id],
           ],
         ],
-        buildFilterableFields([
-          'name',
-          'unit_amount',
-          'project_id',
-          'task_id',
-          'user_id',
-          'date_time',
-          'date_time_end',
-          'id',
-        ]),
+        buildFilterableFields(_timesheetDefaultParams),
       ],
     );
     if (response['records'].isEmpty) {
@@ -69,26 +51,53 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
     return OdooTimesheet.fromJson(response['records'][0]);
   }
 
-  Future<void> update(OdooTimesheet timesheet) async {
+  Future<List<OdooTimesheet>> getOdooTimesheetsByIds(List<int> ids) async {
+    final response = await odooCallMethod(
+      method: OdooApiMethod.searchRead.name,
+      odooModel: timesheetModel,
+      parameters: [
+        [
+          [
+            ['id', 'in', ids],
+          ],
+        ],
+        buildFilterableFields(_timesheetDefaultParams),
+      ],
+    );
+    final timesheets = <OdooTimesheet>[];
+
+    for (final timesheet in response) {
+      timesheets.add(OdooTimesheet.fromJson(timesheet));
+    }
+
+    return timesheets;
+  }
+
+  Future<OdooTimesheet?> update(OdooTimesheetRequest timesheetRequest) async {
+    if (timesheetRequest.id == null) {
+      throw const OdooRepositoryException('Timesheet id is null');
+    }
     await odooCallMethod(
       method: OdooApiMethod.write.name,
       odooModel: timesheetModel,
       parameters: [
         [
-          timesheet.id,
-          timesheet.toJson(),
+          timesheetRequest.id,
+          timesheetRequest.toJson(),
         ],
       ],
     );
+
+    return await getTimesheetById(timesheetRequest.id!);
   }
 
-  Future<int> create(OdooTimesheet timesheet) async {
+  Future<int> create(OdooTimesheetRequest timesheetRequest) async {
     final response = await odooCallMethod(
       method: OdooApiMethod.create.name,
       odooModel: timesheetModel,
       parameters: [
         [
-          timesheet.toJson(),
+          timesheetRequest.toJson(),
         ]
       ],
     );
@@ -98,15 +107,26 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
     return response;
   }
 
-  Future<void> delete(OdooTimesheet timesheet) async {
+  Future<void> delete(OdooTimesheetRequest timesheetRequest) async {
     await odooCallMethod(
       method: OdooApiMethod.unlink.name,
       odooModel: timesheetModel,
       parameters: [
         [
-          timesheet.id,
+          timesheetRequest.id,
         ],
       ],
     );
   }
+
+  static const _timesheetDefaultParams = [
+    'name',
+    'unit_amount',
+    'project_id',
+    'task_id',
+    'user_id',
+    'date_time',
+    'date_time_end',
+    'id',
+  ];
 }
