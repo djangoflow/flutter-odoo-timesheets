@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:progress_builder/progress_builder.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
+import 'package:timesheets/utils/assets.gen.dart';
 import 'package:timesheets/utils/utils.dart';
 
 @RoutePage()
@@ -59,27 +62,88 @@ class TaskDetailsPage extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                               horizontal: kPadding.h * 2,
                             ),
-                            child: LinearProgressBuilder(
-                              action: (_) async {
-                                final taskDetailsCubit =
-                                    context.read<TaskDetailsCubit>();
+                            child: Stack(
+                              children: [
+                                if (!state.isSyncing)
+                                  LinearProgressBuilder(
+                                    action: (_) async {
+                                      final taskDetailsCubit =
+                                          context.read<TaskDetailsCubit>();
 
-                                await taskDetailsCubit
-                                    .syncAllTimesheets(hardcodedBackendId);
-                              },
-                              onSuccess: () => AppDialog.showSuccessDialog(
-                                context: context,
-                                title: 'Success',
-                                content:
-                                    'Timesheets synced successfully, cheers!',
-                              ),
-                              builder: (context, action, error) =>
-                                  ElevatedButton.icon(
-                                icon: const Icon(
-                                    CupertinoIcons.arrow_2_circlepath),
-                                onPressed: action,
-                                label: const Text('Sync timesheets with Odoo'),
-                              ),
+                                      await taskDetailsCubit.syncAllTimesheets(
+                                          hardcodedBackendId);
+                                    },
+                                    onSuccess: () =>
+                                        AppDialog.showSuccessDialog(
+                                      context: context,
+                                      title: 'Success',
+                                      content:
+                                          'Timesheets synced successfully, cheers!',
+                                    ),
+                                    builder: (context, action, error) =>
+                                        SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton.icon(
+                                        icon: const Icon(
+                                            CupertinoIcons.arrow_2_circlepath),
+                                        onPressed: action,
+                                        label: const Text(
+                                            'Sync timesheets with Odoo'),
+                                      ),
+                                    ),
+                                  ),
+                                if (state.isSyncing)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Skeletonizer(
+                                      enabled: true,
+                                      child: ElevatedButton.icon(
+                                        onPressed: null,
+                                        label: const Skeleton.keep(
+                                          child: Text(
+                                            'Syncing',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        icon: const Icon(
+                                          CupertinoIcons.arrow_2_circlepath,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                if (state.isSyncing)
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Lottie.asset(
+                                            Assets.animationSyncing,
+                                            height: kPadding * 3,
+                                            width: kPadding * 3,
+                                            repeat: true,
+                                          ),
+                                          SizedBox(
+                                            width: kPadding.w,
+                                          ),
+                                          Text(
+                                            'Syncing...',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              ],
                             ),
                           ),
                         ),

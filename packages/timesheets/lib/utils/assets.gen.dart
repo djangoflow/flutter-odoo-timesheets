@@ -12,12 +12,15 @@ import 'package:flutter/widgets.dart';
 class Assets {
   Assets._();
 
+  /// File path: assets/animation_syncing.json
+  static const String animationSyncing = 'assets/animation_syncing.json';
+
   /// File path: assets/app_logo/logo.png
   static const AssetGenImage appLogoLogo =
       AssetGenImage('assets/app_logo/logo.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [appLogoLogo];
+  List<dynamic> get values => [animationSyncing, appLogoLogo];
 }
 
 class AssetGenImage {

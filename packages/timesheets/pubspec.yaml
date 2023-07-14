@@ -41,6 +41,7 @@ dependencies:
   reactive_dropdown_search: ^2.0.0
   reactive_forms: ^15.0.0
   responsive_framework: ^0.2.0
+  skeletonizer: ^0.2.0
   sqlite3_flutter_libs: ^0.5.15
   # Disabled due to incompatible with xml_rpc
   # upgrader: ^6.2.0
@@ -49,6 +50,7 @@ dependencies:
   xml_rpc:
     git:
       url: https://github.com/djangoflow/dart-xmlrpc.git
+  lottie: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -77,11 +79,14 @@ flutter_gen:
     enabled: true
     outputs:
       style: camel-case
+    integrations:
+      lottie: true
 
 flutter:
   uses-material-design: true
   assets:
     - assets/app_logo/
+    - assets/
   fonts:
     - family: Inter
       fonts:
