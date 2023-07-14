@@ -166,7 +166,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         taskWithProject: state.taskWithProject!,
         timesheets: state.timesheets,
       ));
-      await Future.delayed(Duration(seconds: 3));
       await _syncLocalTimesheetsToOdoo(backendId);
 
       await _syncFromOdooTimesheets();
