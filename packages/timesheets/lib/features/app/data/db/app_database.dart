@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/data/db/schema_versions.dart';
 import 'package:timesheets/features/task/task.dart';
 
 part 'app_database.g.dart';
@@ -44,53 +45,17 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
         },
-        onUpgrade: (m, from, to) async {
-          debugPrint('Migrating from $from to $to');
-          // disable foreign_keys before migrations
-          await customStatement('PRAGMA foreign_keys = OFF');
-          // from version 2 we have added onDelete cascade to task_backends, tasks, timesheets
-          if (from < 2) {
-            await transaction(() async {
-              await m.alterTable(
-                TableMigration(
-                  tasks,
-                  columnTransformer: {
-                    tasks.projectId: const CustomExpression<int>(
-                        'INTEGER REFERENCES projects(id) ON DELETE CASCADE'),
-                  },
-                ),
-              );
-              await m.alterTable(
-                TableMigration(
-                  taskBackends,
-                  columnTransformer: {
-                    taskBackends.taskId: const CustomExpression<int>(
-                        'INTEGER REFERENCES tasks(id) ON DELETE CASCADE'),
-                    taskBackends.backendId: const CustomExpression<int>(
-                        'INTEGER REFERENCES backends(id) ON DELETE CASCADE'),
-                  },
-                ),
-              );
-
-              await m.alterTable(
-                TableMigration(
-                  timesheets,
-                  columnTransformer: {
-                    timesheets.taskId: const CustomExpression<int>(
-                        'INTEGER REFERENCES tasks(id) ON DELETE CASCADE'),
-                  },
-                ),
-              );
+        onUpgrade: stepByStep(
+          from1To2: (m, schema) async {
+            await customStatement('PRAGMA foreign_keys = OFF');
+            // add new default constraint to onDelete cascade to tasks, timesheet_backends, timesheets
+            transaction(() async {
+              await m.alterTable(TableMigration(schema.tasks));
+              await m.alterTable(TableMigration(schema.taskBackends));
+              await m.alterTable(TableMigration(schema.timesheets));
             });
-          }
-          // Assert that the schema is valid after migrations
-          if (kDebugMode) {
-            final wrongForeignKeys =
-                await customSelect('PRAGMA foreign_key_check').get();
-            assert(wrongForeignKeys.isEmpty,
-                '${wrongForeignKeys.map((e) => e.data)}');
-          }
-        },
+          },
+        ),
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
           await transaction(() async {
