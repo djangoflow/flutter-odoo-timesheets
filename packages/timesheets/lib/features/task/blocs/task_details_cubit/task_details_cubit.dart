@@ -5,9 +5,10 @@ import 'package:collection/collection.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
+
+export 'task_details_state.dart';
 
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TasksRepository tasksRepository;
@@ -23,6 +24,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   }) : super(
           TaskDetailsState.initial(),
         );
+
   @override
   void onError(Object error, StackTrace stackTrace) {
     super.onError(error, stackTrace);
@@ -136,8 +138,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     final odooTimesheets =
         await odooTimesheetRepository.getOdooTimesheetsByIds(odooTimesheetIds);
 
-    print(odooTimesheets);
-
     // match alreadySycnedTimesheets with odooTimesheets and update the objects in alreadySycnedTimesheets from the odooTimesheets
     for (final timesheet in alreadySyncedTimesheets) {
       final odooTimesheet = odooTimesheets.firstWhereOrNull(
@@ -157,7 +157,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   }
 
   Future<void> syncAllTimesheets(int backendId) async {
-    errorWrapper(() async {
+    await errorWrapper(() async {
       final taskWithProject = state.taskWithProject;
       if (taskWithProject == null) {
         throw Exception('Task or Project not found');
@@ -166,8 +166,9 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         taskWithProject: state.taskWithProject!,
         timesheets: state.timesheets,
       ));
-
+      await Future.delayed(Duration(seconds: 3));
       await _syncLocalTimesheetsToOdoo(backendId);
+
       await _syncFromOdooTimesheets();
 
       final timesheets = await timesheetsRepository.getTimesheets(
@@ -182,6 +183,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     });
   }
 
+  /// Syncs a timesheet to Odoo and updates onlineId in the local database
   Future<void> _syncTimesheet(int timesheetId, int backendId) async {
     final timesheet = await timesheetsRepository.getTimesheetById(timesheetId);
     if (timesheet == null) {
@@ -290,7 +292,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   }
 
   Future<void> syncTimesheet(int timesheetId, int backendId) async {
-    errorWrapper(() async {
+    await errorWrapper(() async {
       emit(
         TaskDetailsState.syncing(
           taskWithProject: state.taskWithProject!,
@@ -339,6 +341,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       await callback.call();
     } catch (e) {
       handleError(e);
+      print('rethrowing');
       rethrow;
     }
   }

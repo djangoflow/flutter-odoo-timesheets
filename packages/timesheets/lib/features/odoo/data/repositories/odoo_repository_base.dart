@@ -40,9 +40,9 @@ class OdooRpcRepositoryBase {
   handleError(error) {
     if (error is xml_rpc.Fault) {
       throw OdooRepositoryException.fromCode(error.text);
-    } else if ((!kIsWeb && error is SocketException) ||
-        error is ArgumentError ||
-        error is FormatException) {
+    } else if ((!kIsWeb && error is SocketException)) {
+      throw const OdooRepositoryException('Seems like you are offline!');
+    } else if (error is ArgumentError || error is FormatException) {
       throw OdooRepositoryException.fromCode(error.message);
     } else {
       throw const OdooRepositoryException();

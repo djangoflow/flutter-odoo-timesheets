@@ -8,8 +8,7 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/task/blocs/task_details_cubit/task_details_state.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
+import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -67,21 +66,19 @@ class TaskDetailsPage extends StatelessWidget {
 
                                 await taskDetailsCubit
                                     .syncAllTimesheets(hardcodedBackendId);
-                                if (context.mounted) {
-                                  AppDialog.showSuccessDialog(
-                                    context: context,
-                                    title: 'Success',
-                                    content:
-                                        'Timesheets synced successfully, cheers!',
-                                  );
-                                }
                               },
+                              onSuccess: () => AppDialog.showSuccessDialog(
+                                context: context,
+                                title: 'Success',
+                                content:
+                                    'Timesheets synced successfully, cheers!',
+                              ),
                               builder: (context, action, error) =>
                                   ElevatedButton.icon(
                                 icon: const Icon(
                                     CupertinoIcons.arrow_2_circlepath),
                                 onPressed: action,
-                                label: const Text('Sync task with Odoo'),
+                                label: const Text('Sync timesheets with Odoo'),
                               ),
                             ),
                           ),
@@ -275,23 +272,38 @@ class _TaskDetails extends StatelessWidget {
     if (task.firstTicked == null || task.lastTicked == null) {
       throw Exception('Timer was not started');
     }
-    await taskDetailsCubit.createTimesheet(
-      timesheetsCompanion: TimesheetsCompanion(
-        taskId: Value(task.id),
-        totalSpentSeconds: Value(task.duration),
-        startTime: Value(task.firstTicked!),
-        endTime: Value(task.lastTicked!),
-      ),
-      backendId: backendId,
-    );
-    await taskDetailsCubit.resetTask(task);
-    if (context.mounted) {
-      AppDialog.showSuccessDialog(
-        context: context,
-        title: 'Timesheet submitted',
-        content:
-            'Your timesheet has been successfully ${backendId == null ? 'saved locally' : 'sent to your Odoo account'}.',
+    try {
+      await taskDetailsCubit.createTimesheet(
+        timesheetsCompanion: TimesheetsCompanion(
+          taskId: Value(task.id),
+          totalSpentSeconds: Value(task.duration),
+          startTime: Value(task.firstTicked!),
+          endTime: Value(task.lastTicked!),
+        ),
+        backendId: backendId,
       );
+      await taskDetailsCubit.resetTask(task);
+      if (context.mounted) {
+        AppDialog.showSuccessDialog(
+          context: context,
+          title: 'Timesheet submitted',
+          content:
+              'Your timesheet has been successfully ${backendId == null ? 'saved locally' : 'sent to your Odoo account'}.',
+        );
+      }
+    } catch (e) {
+      if (e is OdooRepositoryException) {
+        await taskDetailsCubit.resetTask(task);
+        if (context.mounted) {
+          AppDialog.showSuccessDialog(
+            context: context,
+            title: 'Timesheet submitted',
+            content: 'Your timesheet has been successfully saved locally.',
+          );
+        }
+      }
+      throw Exception(
+          'Seems like you are offline. But changes were saved locally.');
     }
   }
 
