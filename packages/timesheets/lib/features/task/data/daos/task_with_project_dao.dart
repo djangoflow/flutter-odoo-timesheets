@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 
 part 'task_with_project_dao.g.dart';

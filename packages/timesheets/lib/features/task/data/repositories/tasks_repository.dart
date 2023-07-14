@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 
 class TasksRepository {

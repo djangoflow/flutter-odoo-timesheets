@@ -22,3 +22,4 @@ export 'data/db_models/project.dart';
 export 'data/daos/projects_dao.dart';
 export 'data/daos/task_with_project_dao.dart';
 export 'data/models/backend_type_enum.dart';
+export 'data/models/task_with_project.dart';

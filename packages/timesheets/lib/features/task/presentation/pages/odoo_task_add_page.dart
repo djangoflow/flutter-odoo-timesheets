@@ -9,7 +9,6 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/presentation/odoo_task_editor.dart';
 import 'package:timesheets/features/task/task.dart';
 
