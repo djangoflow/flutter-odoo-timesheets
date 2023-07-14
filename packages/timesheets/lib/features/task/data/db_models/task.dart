@@ -7,7 +7,9 @@ import 'project.dart';
 /// and TaskBackend will hold the relation between Tasks and Backends
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get projectId => integer().nullable().references(Projects, #id)();
+  IntColumn get projectId => integer()
+      .nullable()
+      .references(Projects, #id, onDelete: KeyAction.cascade)();
   IntColumn get onlineId => integer().nullable()();
   TextColumn get name => text()();
   TextColumn get description => text().nullable()();

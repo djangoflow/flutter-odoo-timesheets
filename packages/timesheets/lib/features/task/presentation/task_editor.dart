@@ -11,12 +11,14 @@ class TaskEditor extends StatelessWidget {
     this.projectName,
     required this.builder,
     this.additionalChildren,
+    this.disabled = false,
   });
 
   final String? taskName;
   final String? description;
   final String? projectName;
   final List<Widget>? additionalChildren;
+  final bool disabled;
 
   final Widget Function(
       BuildContext context, FormGroup form, Widget formListView) builder;
@@ -27,13 +29,16 @@ class TaskEditor extends StatelessWidget {
             validators: [
               Validators.required,
             ],
+            disabled: disabled,
             value: taskName,
           ),
           projectControlName: FormControl<String>(
             value: projectName,
+            disabled: disabled,
           ),
           descriptionControlName: FormControl<String>(
             value: description,
+            disabled: disabled,
           ),
         },
       );
@@ -45,6 +50,22 @@ class TaskEditor extends StatelessWidget {
         final formListView = ListView(
           padding: EdgeInsets.all(kPadding.w * 2),
           children: [
+            if (disabled) ...[
+              Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: EdgeInsets.all(kPadding.h * 2),
+                  child: Text(
+                    'This task is already synced with the server. You cannot edit it.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: kPadding.h * 3,
+              ),
+            ],
             ReactiveTextField<String>(
               formControlName: taskControlName,
               decoration: const InputDecoration(

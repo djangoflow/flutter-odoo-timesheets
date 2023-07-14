@@ -7,7 +7,11 @@ class Timesheets extends Table {
   DateTimeColumn get startTime => dateTime()();
   DateTimeColumn get endTime => dateTime()();
   IntColumn get totalSpentSeconds => integer()();
-  IntColumn get taskId => integer().references(Tasks, #id)();
+  IntColumn get taskId => integer().references(
+        Tasks,
+        #id,
+        onDelete: KeyAction.cascade,
+      )();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

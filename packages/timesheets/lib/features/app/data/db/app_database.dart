@@ -36,15 +36,53 @@ class AppDatabase extends _$AppDatabase {
   // you should bump this number whenever you change or add a table definition.
   // Migrations are covered later in the documentation.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async {
+          await m.createAll();
+          await customStatement('PRAGMA foreign_keys = ON');
+        },
         onUpgrade: (m, from, to) async {
           debugPrint('Migrating from $from to $to');
           // disable foreign_keys before migrations
           await customStatement('PRAGMA foreign_keys = OFF');
+          // from version 2 we have added onDelete cascade to task_backends, tasks, timesheets
+          if (from < 2) {
+            await transaction(() async {
+              await m.alterTable(
+                TableMigration(
+                  tasks,
+                  columnTransformer: {
+                    tasks.projectId: const CustomExpression<int>(
+                        'INTEGER REFERENCES projects(id) ON DELETE CASCADE'),
+                  },
+                ),
+              );
+              await m.alterTable(
+                TableMigration(
+                  taskBackends,
+                  columnTransformer: {
+                    taskBackends.taskId: const CustomExpression<int>(
+                        'INTEGER REFERENCES tasks(id) ON DELETE CASCADE'),
+                    taskBackends.backendId: const CustomExpression<int>(
+                        'INTEGER REFERENCES backends(id) ON DELETE CASCADE'),
+                  },
+                ),
+              );
 
+              await m.alterTable(
+                TableMigration(
+                  timesheets,
+                  columnTransformer: {
+                    timesheets.taskId: const CustomExpression<int>(
+                        'INTEGER REFERENCES tasks(id) ON DELETE CASCADE'),
+                  },
+                ),
+              );
+            });
+          }
           // Assert that the schema is valid after migrations
           if (kDebugMode) {
             final wrongForeignKeys =

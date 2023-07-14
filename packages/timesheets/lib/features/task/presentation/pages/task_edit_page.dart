@@ -29,7 +29,12 @@ class TaskEditPage extends StatelessWidget {
           CircularProgressBuilder(
             action: (_) async {
               final router = context.router;
-              await context.read<TasksRepository>().deleteTask(task);
+              final projectId = project.id;
+
+              await context
+                  .read<TasksRepository>()
+                  .deleteTaskByProjectId(projectId);
+
               DjangoflowAppSnackbar.showInfo('Task deleted');
               router.pop(true);
             },
@@ -44,6 +49,7 @@ class TaskEditPage extends StatelessWidget {
         taskName: task.name,
         description: task.description,
         projectName: project.name,
+        disabled: task.onlineId != null,
         builder: (context, formGroup, formListView) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

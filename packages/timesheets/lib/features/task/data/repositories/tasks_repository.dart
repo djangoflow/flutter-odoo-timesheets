@@ -46,6 +46,9 @@ class TasksRepository {
 
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);
 
+  Future<void> deleteTaskByProjectId(int projectId) =>
+      tasksDao.deleteTaskByProjectId(projectId);
+
   Future<void> resetTask(Task task) => tasksDao.resetTask(task);
 
   Future<List<Task>> getTasksWithoutBackend() =>

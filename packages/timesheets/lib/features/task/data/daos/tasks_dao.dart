@@ -126,4 +126,10 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
               t.id.isNotIn(allTaskBackends.map((tb) => tb.taskId).toList())))
         .get();
   }
+
+  Future<void> deleteTaskByProjectId(int projectId) => transaction(
+        () async {
+          await (delete(projects)..where((p) => p.id.equals(projectId))).go();
+        },
+      );
 }

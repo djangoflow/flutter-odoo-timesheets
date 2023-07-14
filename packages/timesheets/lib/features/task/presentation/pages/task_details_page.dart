@@ -169,8 +169,9 @@ class TaskDetailsPage extends StatelessWidget {
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),
               actions: [
-                if (taskWithProject != null &&
-                    taskWithProject.task.onlineId == null)
+                if (taskWithProject != null)
+                  // &&
+                  //     taskWithProject.task.onlineId == null)
                   IconButton(
                     onPressed: () {
                       context.router
