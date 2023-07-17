@@ -24,14 +24,15 @@ part 'app_database.g.dart';
     ExternalTasks,
     ExternalTimesheets,
   ],
-  // daos: [
-  //   TasksDao,
-  //   BackendsDao,
-  //   TaskBackendsDao,
-  //   TimesheetsDao,
-  //   ProjectsDao,
-  //   TasksWithProjectDao,
-  // ],
+  daos: [
+    ProjectsDao,
+    TasksDao,
+    BackendsDao,
+    TimesheetsDao,
+    ExternalProjectsDao,
+    ExternalTasksDao,
+    ExternalTimesheetsDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   // we tell the database where to store the data with this constructor

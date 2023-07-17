@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/project/data/database_tables/project.dart';
-import 'package:timesheets/features/task/data/database_models/task.dart';
+import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 class Timesheets extends Table {

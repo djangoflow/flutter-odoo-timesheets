@@ -1,9 +1,10 @@
 import 'package:drift/drift.dart';
+import 'package:timesheets/features/external/external.dart';
 
 class Backends extends Table {
   IntColumn get id => integer().autoIncrement()();
   // odoo and github, etc
-  IntColumn get backendType => integer()();
+  IntColumn get backendType => intEnum<BackendTypeEnum>()();
   TextColumn get serverUrl => text().nullable()();
   TextColumn get db => text().nullable()();
   TextColumn get userId => text().nullable()();
