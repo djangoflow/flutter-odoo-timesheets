@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
 
-class Backends extends Table {
+class Projects extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get backendType => integer()();
-  TextColumn get name => text()();
-  TextColumn get description => text()();
+  TextColumn get name => text().nullable()();
+  TextColumn get description => text().nullable()();
+  BoolColumn get active => boolean().nullable()();
+  TextColumn get color => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

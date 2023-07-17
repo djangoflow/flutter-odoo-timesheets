@@ -1,28 +1,28 @@
-import 'package:drift/drift.dart';
+// import 'package:drift/drift.dart';
 
-import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/task/task.dart';
+// import 'package:timesheets/features/app/app.dart';
+// import 'package:timesheets/features/task/task.dart';
 
-part 'projects_dao.g.dart';
+// part 'projects_dao.g.dart';
 
-@DriftAccessor(tables: [Projects])
-class ProjectsDao extends DatabaseAccessor<AppDatabase>
-    with _$ProjectsDaoMixin {
-  ProjectsDao(AppDatabase db) : super(db);
+// @DriftAccessor(tables: [Projects])
+// class ProjectsDao extends DatabaseAccessor<AppDatabase>
+//     with _$ProjectsDaoMixin {
+//   ProjectsDao(AppDatabase db) : super(db);
 
-  // Project CRUD operations
-  Future<int> createProject(ProjectsCompanion projectsCompanion) =>
-      into(projects).insert(projectsCompanion);
+//   // Project CRUD operations
+//   Future<int> createProject(ProjectsCompanion projectsCompanion) =>
+//       into(projects).insert(projectsCompanion);
 
-  Future<Project?> getProjectById(int projectId) =>
-      (select(projects)..where((p) => p.id.equals(projectId)))
-          .getSingleOrNull();
+//   Future<Project?> getProjectById(int projectId) =>
+//       (select(projects)..where((p) => p.id.equals(projectId)))
+//           .getSingleOrNull();
 
-  Future<List<Project>> getAllProjects() => select(projects).get();
+//   Future<List<Project>> getAllProjects() => select(projects).get();
 
-  Future<void> updateProject(Project project) =>
-      update(projects).replace(project);
+//   Future<void> updateProject(Project project) =>
+//       update(projects).replace(project);
 
-  Future<void> deleteProject(Project project) =>
-      delete(projects).delete(project);
-}
+//   Future<void> deleteProject(Project project) =>
+//       delete(projects).delete(project);
+// }
