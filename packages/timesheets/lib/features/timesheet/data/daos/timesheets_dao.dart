@@ -11,12 +11,19 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Timesheet>> getAllTimesheets() => select(timesheets).get();
 
-  Future insertTimesheet(TimesheetsCompanion timesheetsCompanion) =>
+  Future<List<Timesheet>> getPaginatedTimesheets(int limit, int? offset) =>
+      (select(timesheets)..limit(limit, offset: offset)).get();
+
+  Future<int> createTimesheet(TimesheetsCompanion timesheetsCompanion) =>
       into(timesheets).insert(timesheetsCompanion);
 
-  Future updateTimesheet(Timesheet timesheet) =>
+  Future<void> updateTimesheet(Timesheet timesheet) =>
       update(timesheets).replace(timesheet);
 
-  Future deleteTimesheet(Timesheet timesheet) =>
+  Future<int> deleteTimesheet(Timesheet timesheet) =>
       delete(timesheets).delete(timesheet);
+
+  Future<Timesheet?> getTimesheetById(int timesheetId) =>
+      (select(timesheets)..where((t) => t.id.equals(timesheetId)))
+          .getSingleOrNull();
 }

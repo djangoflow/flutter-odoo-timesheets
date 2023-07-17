@@ -19,9 +19,12 @@ class BackendsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Backend>> getAllBackends() => select(backends).get();
 
+  Future<List<Backend>> getPaginatedBackends(int limit, int? offset) =>
+      (select(backends)..limit(limit, offset: offset)).get();
+
   Future<void> updateBackend(Backend backend) =>
       update(backends).replace(backend);
 
-  Future<void> deleteBackend(Backend backend) =>
+  Future<int> deleteBackend(Backend backend) =>
       delete(backends).delete(backend);
 }

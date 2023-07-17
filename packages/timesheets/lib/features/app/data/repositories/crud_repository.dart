@@ -1,7 +1,9 @@
 abstract class CrudRepository<M, C> {
-  Future<List<M>> getAll({int? offset = 0, int? limit = 50});
-  Future<M> get(String id);
-  Future<M> create(C entity);
-  Future<M> update(M entity);
-  Future<void> delete(M id);
+  const CrudRepository();
+  Future<List<M>> getPaginatedItems({int? offset = 0, int limit = 50});
+  Future<List<M>> getItems();
+  Future<int> create(C companion);
+  Future<void> update(M entity);
+  Future<int> delete(M entity);
+  Future<M?> getItemById(int id);
 }

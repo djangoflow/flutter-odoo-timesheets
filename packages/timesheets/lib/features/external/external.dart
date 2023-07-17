@@ -7,3 +7,7 @@ export 'data/backend_type_enum.dart';
 export 'data/daos/external_projects_dao.dart';
 export 'data/daos/external_tasks_dao.dart';
 export 'data/daos/external_timesheets_dao.dart';
+export 'data/repositories/backends_repository.dart';
+export 'data/repositories/external_projects_repository.dart';
+export 'data/repositories/external_tasks_repository.dart';
+export 'data/repositories/external_timesheets_repository.dart';

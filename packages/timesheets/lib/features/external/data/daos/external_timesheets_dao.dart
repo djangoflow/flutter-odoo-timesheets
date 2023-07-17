@@ -23,9 +23,13 @@ class ExternalTimesheetsDao extends DatabaseAccessor<AppDatabase>
   Future<List<ExternalTimesheet>> getAllExternalTimesheets() =>
       select(externalTimesheets).get();
 
+  Future<List<ExternalTimesheet>> getPaginatedExternalTimesheets(
+          int limit, int? offset) =>
+      (select(externalTimesheets)..limit(limit, offset: offset)).get();
+
   Future<void> updateExternalTimesheet(ExternalTimesheet externalTimesheet) =>
       update(externalTimesheets).replace(externalTimesheet);
 
-  Future<void> deleteExternalTimesheet(ExternalTimesheet externalTimesheet) =>
+  Future<int> deleteExternalTimesheet(ExternalTimesheet externalTimesheet) =>
       delete(externalTimesheets).delete(externalTimesheet);
 }

@@ -83,5 +83,5 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<void> updateTask(Task task) => update(tasks).replace(task);
 
-  Future<void> deleteTask(Task task) => delete(tasks).delete(task);
+  Future<int> deleteTask(Task task) => delete(tasks).delete(task);
 }

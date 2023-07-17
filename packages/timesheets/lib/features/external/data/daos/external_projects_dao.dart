@@ -20,9 +20,13 @@ class ExternalProjectsDao extends DatabaseAccessor<AppDatabase>
   Future<List<ExternalProject>> getAllExternalProjects() =>
       select(externalProjects).get();
 
+  Future<List<ExternalProject>> getPaginatedExternalProjects(
+          int limit, int? offset) =>
+      (select(externalProjects)..limit(limit, offset: offset)).get();
+
   Future<void> updateExternalProject(ExternalProject externalProject) =>
       update(externalProjects).replace(externalProject);
 
-  Future<void> deleteExternalProject(ExternalProject externalProject) =>
+  Future<int> deleteExternalProject(ExternalProject externalProject) =>
       delete(externalProjects).delete(externalProject);
 }

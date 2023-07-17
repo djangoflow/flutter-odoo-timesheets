@@ -21,9 +21,13 @@ class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
   Future<List<ExternalTask>> getAllExternalTasks() =>
       select(externalTasks).get();
 
+  Future<List<ExternalTask>> getPaginatedExternalTasks(
+          int limit, int? offset) =>
+      (select(externalTasks)..limit(limit, offset: offset)).get();
+
   Future<void> updateExternalTask(ExternalTask externalTask) =>
       update(externalTasks).replace(externalTask);
 
-  Future<void> deleteExternalTask(ExternalTask externalTask) =>
+  Future<int> deleteExternalTask(ExternalTask externalTask) =>
       delete(externalTasks).delete(externalTask);
 }

@@ -18,9 +18,12 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Project>> getAllProjects() => select(projects).get();
 
+  Future<List<Project>> getPaginatedProjects(int limit, int? offset) =>
+      (select(projects)..limit(limit, offset: offset)).get();
+
   Future<void> updateProject(Project project) =>
       update(projects).replace(project);
 
-  Future<void> deleteProject(Project project) =>
+  Future<int> deleteProject(Project project) =>
       delete(projects).delete(project);
 }
