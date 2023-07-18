@@ -35,6 +35,7 @@ class OdooXmlRpcClient {
     return response;
   }
 
+  // TODO : Add a way to fetch credentials from db using backendId
   Future rpcCallMethod({
     required List params,
   }) async {
