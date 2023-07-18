@@ -5,9 +5,12 @@ class Backends extends Table {
   IntColumn get id => integer().autoIncrement()();
   // odoo and github, etc
   IntColumn get backendType => intEnum<BackendTypeEnum>()();
+  // fields for odoo
   TextColumn get serverUrl => text().nullable()();
   TextColumn get db => text().nullable()();
   TextColumn get userId => text().nullable()();
+  TextColumn get name => text().nullable()();
+  TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
   // for github we may need
   TextColumn get token => text().nullable()();
