@@ -11,6 +11,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
   static AuthCubit get instance => _instance;
   static final AuthCubit _instance = AuthCubit._internal();
   OdooAuthenticationRepository? _odooAuthenticationRepository;
+  // TODO need to use local db to retrieve and save user credentials.
+  // It should hold list of backends and credentials for each backend.
 
   AuthCubit._internal() : super(const AuthState());
 
