@@ -50,7 +50,6 @@ class TaskAddPage extends StatelessWidget {
                     await context.read<TasksRepository>().createTaskWithProject(
                           TasksCompanion(
                             name: Value(taskName),
-                            description: Value(description),
                           ),
                           ProjectsCompanion(
                             name: Value(projectName),

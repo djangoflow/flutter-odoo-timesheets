@@ -2,15 +2,17 @@ import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
+import 'package:timesheets/features/task/data/models/task_with_project_external_data.dart';
 import 'package:timesheets/features/task/data/repositories/tasks_repository.dart';
 import 'package:timesheets/utils/utils.dart';
 import 'tasks_list_filter.dart';
 export 'tasks_list_filter.dart';
 
-typedef TasksListState = Data<List<TaskWithProject>, TasksListFilter>;
+typedef TasksListState
+    = Data<List<TaskWithProjectExternalData>, TasksListFilter>;
 
-class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
+class TasksListCubit
+    extends ListCubit<TaskWithProjectExternalData, TasksListFilter>
     with CubitMaybeEmit {
   final TasksRepository tasksRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
@@ -18,8 +20,8 @@ class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
     required this.tasksRepository,
     required this.odooTimesheetRepository,
   }) : super(
-          ListBlocUtil.listLoader<TaskWithProject, TasksListFilter>(
-            loader: ([filter]) => tasksRepository.getTasksWithProjects(
+          ListBlocUtil.listLoader<TaskWithProjectExternalData, TasksListFilter>(
+            loader: ([filter]) => tasksRepository.getPaginatedTasksWithProjects(
                 filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
           ),
         );
@@ -50,22 +52,26 @@ class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
 
   // TODO 1: Add a method to sync all tasks with onlineId from Odoo
   Future<void> syncAllTasksWithOnlineIdFromOdoo() async {
-    final tasks = await tasksRepository.getAllTasks();
-    for (final task in tasks) {
-      final onlineId = task.onlineId;
-      if (onlineId != null) {}
-    }
+    // final taskWithProjectExternalDataList =
+    //     await tasksRepository.getAllTasksWithProjects();
+    // for (final task in tasks) {
+    //   final onlineId = task.onlineId;
+    //   if (onlineId != null) {}
+    // }
   }
 
   Future<void> updateTask(Task task) async {
-    await tasksRepository.updateTask(task);
+    await tasksRepository.update(task);
     final updatedTaskWithProject =
         await tasksRepository.getTaskWithProjectById(task.id);
     emit(
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id == task.id) updatedTaskWithProject! else t,
+            if (t.taskWithExternalData.task.id == task.id)
+              updatedTaskWithProject!
+            else
+              t,
         ],
       ),
     );
@@ -77,7 +83,7 @@ class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id != task.id) t,
+            if (t.taskWithExternalData.task.id != task.id) t,
         ],
       ),
     );
@@ -88,7 +94,14 @@ class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id == task.id) t.copyWith(task: task) else t,
+            if (t.taskWithExternalData.task.id == task.id)
+              t.copyWith(
+                taskWithExternalData: t.taskWithExternalData.copyWith(
+                  task: task,
+                ),
+              )
+            else
+              t,
         ],
       ),
     );

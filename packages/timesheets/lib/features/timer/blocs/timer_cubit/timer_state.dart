@@ -1,39 +1,38 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 part 'timer_state.freezed.dart';
-
-enum TimerStatus { initial, running, paused, stopped, pausedByForce }
 
 // Freezed class for TimerState
 @freezed
 class TimerState with _$TimerState {
   const factory TimerState({
     required Duration duration,
-    required TimerStatus status,
+    required TimesheetStatusEnum status,
   }) = _TimerState;
 
   factory TimerState.initial() => const TimerState(
         duration: Duration.zero,
-        status: TimerStatus.initial,
+        status: TimesheetStatusEnum.initial,
       );
 
   factory TimerState.running(Duration duration) => TimerState(
         duration: duration,
-        status: TimerStatus.running,
+        status: TimesheetStatusEnum.running,
       );
 
   factory TimerState.paused(Duration duration) => TimerState(
         duration: duration,
-        status: TimerStatus.paused,
+        status: TimesheetStatusEnum.paused,
       );
 
   factory TimerState.pausedByForce(Duration duration) => TimerState(
         duration: duration,
-        status: TimerStatus.pausedByForce,
+        status: TimesheetStatusEnum.pausedByForce,
       );
 
   factory TimerState.stopped(Duration duration) => TimerState(
         duration: duration,
-        status: TimerStatus.stopped,
+        status: TimesheetStatusEnum.stopped,
       );
 }

@@ -7,20 +7,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:progress_builder/progress_builder.dart';
+import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 
 import '../task_editor.dart';
 
 @RoutePage()
 class TaskEditPage extends StatelessWidget {
-  const TaskEditPage({super.key, required this.taskWithProject});
+  const TaskEditPage({super.key, required this.taskWithProjectExternalData});
   // TODO: make it deep linkable
-  final TaskWithProject taskWithProject;
+  final TaskWithProjectExternalData taskWithProjectExternalData;
 
   @override
   Widget build(BuildContext context) {
-    final task = taskWithProject.task;
-    final project = taskWithProject.project;
+    final task = taskWithProjectExternalData.taskWithExternalData.task;
+    final externalProject =
+        taskWithProjectExternalData.projectWithExternalData.externalProject;
+    final project = taskWithProjectExternalData.projectWithExternalData.project;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,9 +34,7 @@ class TaskEditPage extends StatelessWidget {
               final router = context.router;
               final projectId = project.id;
 
-              await context
-                  .read<TasksRepository>()
-                  .deleteTaskByProjectId(projectId);
+              await context.read<ProjectsRepository>().delete(project);
 
               DjangoflowAppSnackbar.showInfo('Task deleted');
               router.pop(true);
@@ -47,9 +48,10 @@ class TaskEditPage extends StatelessWidget {
       ),
       body: TaskEditor(
         taskName: task.name,
-        description: task.description,
+        // TODO should be timesheet description
+        // description: task.description,
         projectName: project.name,
-        disabled: task.onlineId != null,
+        disabled: externalProject != null,
         builder: (context, formGroup, formListView) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,15 +72,15 @@ class TaskEditPage extends StatelessWidget {
                         .control(descriptionControlName)
                         .value as String?;
 
-                    await context.read<TasksRepository>().updateTaskWithProject(
-                          task: task.copyWith(
-                            name: taskName,
-                            description: Value(description),
-                          ),
-                          project: project.copyWith(
-                            name: Value(projectName),
-                          ),
-                        );
+                    // await context.read<TasksRepository>().updateTaskWithProject(
+                    //       task: task.copyWith(
+                    //         name: taskName,
+                    //         description: Value(description),
+                    //       ),
+                    //       project: project.copyWith(
+                    //         name: Value(projectName),
+                    //       ),
+                    //     );
                   },
                   onSuccess: () {
                     DjangoflowAppSnackbar.showInfo('Task updated');

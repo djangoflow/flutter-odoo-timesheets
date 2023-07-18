@@ -1,59 +1,50 @@
-import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
 
-class TasksRepository {
+class TasksRepository extends CrudRepository<Task, TasksCompanion> {
   final TasksDao tasksDao;
 
   const TasksRepository(
     this.tasksDao,
   );
 
-  Future<int> createTask(TasksCompanion tasksCompanion) =>
-      tasksDao.createTask(tasksCompanion.copyWith(
-        createdAt: Value(DateTime.now()),
-        updatedAt: Value(DateTime.now()),
-      ));
+  @override
+  Future<int> create(TasksCompanion companion) =>
+      tasksDao.createTask(companion);
 
-  Future<Task?> getTaskById(int taskId) => tasksDao.getTaskById(taskId);
+  @override
+  Future<Task?> getItemById(int id) => tasksDao.getTaskById(id);
 
-  Future<List<Task>> getAllTasks() => tasksDao.getAllTasks();
+  @override
+  Future<List<Task>> getPaginatedItems({int limit = 50, int? offset}) =>
+      tasksDao.getPaginatedTasks(limit, offset);
 
-  Future<List<Task>> getTasks(int limit, int? offset) =>
-      tasksDao.getTasks(limit, offset);
+  @override
+  Future<List<Task>> getItems() => tasksDao.getAllTasks();
 
-  Future<List<TaskWithProject>> getTasksWithProjects(int limit, int? offset) =>
-      tasksDao.getTasksWithProjects(limit, offset);
+  Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
+          int limit, int? offset) =>
+      tasksDao.getPaginatedTasksWithProjects(limit, offset);
+
+  Future<List<TaskWithProjectExternalData>> getAllTasksWithProjects() =>
+      tasksDao.getAllTasksWithProjects();
 
   Future<int> createTaskWithProject(
           TasksCompanion tasksCompanion, ProjectsCompanion projectsCompanion) =>
       tasksDao.createTaskWithProject(tasksCompanion, projectsCompanion);
 
-  Future<TaskWithProject?> getTaskWithProjectById(int taskId) =>
+  Future<TaskWithProjectExternalData?> getTaskWithProjectById(int taskId) =>
       tasksDao.getTaskWithProjectById(taskId);
-
-  Future<void> updateTask(Task task) => tasksDao.updateTask(
-        task.copyWith(
-          updatedAt: DateTime.now(),
-        ),
-      );
-
-  Future<void> updateTaskWithProject({Task? task, Project? project}) =>
-      tasksDao.updateTaskWithProject(
-        task,
-        project,
-      );
 
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);
 
-  Future<void> deleteTaskByProjectId(int projectId) =>
-      tasksDao.deleteTaskByProjectId(projectId);
+  @override
+  Future<int> delete(Task entity) => tasksDao.deleteTask(entity);
 
-  Future<void> resetTask(Task task) => tasksDao.resetTask(task);
-
-  Future<List<Task>> getTasksWithoutBackend() =>
-      tasksDao.getTasksWithoutBackend();
-
-  Future<List<Task>> getTasksByBackendId(int backendId) =>
-      tasksDao.getTasksByBackendId(backendId);
+  @override
+  Future<void> update(Task entity) => tasksDao.updateTask(
+        entity.copyWith(
+          updatedAt: DateTime.now(),
+        ),
+      );
 }

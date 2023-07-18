@@ -1,65 +1,61 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
 export 'timesheet_retrieve_filter.dart';
 
-typedef TimesheetDataState = Data<TimesheetWithTask?, TimesheetRetrieveFilter>;
+typedef TimesheetDataState
+    = Data<TimesheetWithTaskExternalData?, TimesheetRetrieveFilter>;
 
 class TimesheetDataCubit
-    extends DataCubit<TimesheetWithTask?, TimesheetRetrieveFilter>
+    extends DataCubit<TimesheetWithTaskExternalData?, TimesheetRetrieveFilter>
     with CubitMaybeEmit {
   final TimesheetsRepository timesheetsRepository;
   final TasksRepository tasksRepository;
+  final ProjectsRepository projectsRepository;
 
-  TimesheetDataCubit(this.timesheetsRepository, this.tasksRepository)
+  TimesheetDataCubit(
+      this.timesheetsRepository, this.tasksRepository, this.projectsRepository)
       : super(
-          ListBlocUtil.dataLoader<TimesheetWithTask?, TimesheetRetrieveFilter>(
+          ListBlocUtil.dataLoader<TimesheetWithTaskExternalData?,
+              TimesheetRetrieveFilter>(
             loader: ([filter]) {
               if (filter == null) {
                 throw ArgumentError.notNull('taskId');
               }
-              final timesheet = timesheetsRepository
-                  .getTimesheetById(filter.timesheetId)
-                  .then((timesheet) async {
-                if (timesheet == null) {
-                  throw ArgumentError.notNull('timesheet');
-                }
-                final taskWithProject = await tasksRepository
-                    .getTaskWithProjectById(timesheet.taskId);
-                if (taskWithProject == null) {
-                  throw ArgumentError.notNull('task');
-                }
-                return TimesheetWithTask(
-                  timesheet: timesheet,
-                  taskWithProject: taskWithProject,
-                );
-              });
+              final timesheetWithTaskExternalData = timesheetsRepository
+                  .getTimesheetWithTaskExternalDataById(filter.timesheetId);
 
-              return timesheet;
+              return timesheetWithTaskExternalData;
             },
           ),
         );
 
-  Future<void> updateTimesheet(
-      Timesheet timesheet, TaskWithProject taskWithProject) async {
-    await timesheetsRepository.updateTimesheet(timesheet);
-    await tasksRepository.updateTaskWithProject(
-        task: taskWithProject.task, project: taskWithProject.project);
-    final updatedTaskWithProject =
-        await tasksRepository.getTaskWithProjectById(taskWithProject.task.id);
-    if (updatedTaskWithProject == null) {
-      throw ArgumentError.notNull('updatedTaskWithProject');
+  Future<void> updateTimesheet(Timesheet timesheet,
+      TaskWithProjectExternalData taskWithProjectExternalData) async {
+    await timesheetsRepository.update(timesheet);
+    await tasksRepository.update(
+      taskWithProjectExternalData.taskWithExternalData.task,
+    );
+    await projectsRepository.update(
+      taskWithProjectExternalData.projectWithExternalData.project,
+    );
+
+    final timesheetWithTaskExternalData = await timesheetsRepository
+        .getTimesheetWithTaskExternalDataById(timesheet.id);
+
+    if (timesheetWithTaskExternalData == null) {
+      throw ArgumentError.notNull('timesheetWithTaskExternalData');
     }
 
     if (state.data != null) {
       emit(
         Data(
-          data: state.data!.copyWith(
-            timesheet: timesheet,
-            taskWithProject: updatedTaskWithProject,
-          ),
+          data: timesheetWithTaskExternalData,
           filter: state.filter,
         ),
       );
@@ -67,7 +63,7 @@ class TimesheetDataCubit
   }
 
   Future<void> deleteTimesheet(Timesheet timesheet) async {
-    await timesheetsRepository.deleteTimesheet(timesheet);
+    await timesheetsRepository.delete(timesheet);
     emit(const Data.empty());
   }
 

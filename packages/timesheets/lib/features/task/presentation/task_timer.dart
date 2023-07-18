@@ -6,6 +6,7 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/features/timer/presentation/timer_bloc_builder.dart';
 import 'package:timesheets/features/timer/presentation/timer_bloc_listener.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
 abstract class _TaskTimer extends StatefulWidget {
@@ -32,7 +33,7 @@ abstract class _TaskTimer extends StatefulWidget {
   final int? elapsedTime;
 
   /// initialTimerStatus is used to set the initial status of the timer.
-  final TimerStatus? initialTimerStatus;
+  final TimesheetStatusEnum? initialTimerStatus;
 
   /// onTimerStateChange is used to notify the parent widget about the timer state change.
   final void Function(TimerState timerState, int tickInterval)?
@@ -66,7 +67,7 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
       initialState: widget.elapsedTime != null
           ? TimerState(
               duration: Duration(seconds: widget.elapsedTime!),
-              status: widget.initialTimerStatus ?? TimerStatus.initial)
+              status: widget.initialTimerStatus ?? TimesheetStatusEnum.initial)
           : TimerState.initial(),
     );
     controller = AnimationController(
@@ -74,7 +75,7 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
       duration: animationDurationDefault,
     );
 
-    if ([TimerStatus.running, TimerStatus.pausedByForce]
+    if ([TimesheetStatusEnum.running, TimesheetStatusEnum.pausedByForce]
         .contains(widget.initialTimerStatus)) {
       controller.forward();
       _timerCubit.startTimer();
@@ -96,12 +97,13 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
                   onLifeCycleStateChanged: (appLifecycleState) {
                     if (appLifecycleState == AppLifecycleState.resumed) {
                       if (_timerCubit.state.status ==
-                          TimerStatus.pausedByForce) {
+                          TimesheetStatusEnum.pausedByForce) {
                         widget.onTimerResume?.call(context);
                         _timerCubit.resumeTimer();
                       }
                     } else {
-                      if (_timerCubit.state.status == TimerStatus.running) {
+                      if (_timerCubit.state.status ==
+                          TimesheetStatusEnum.running) {
                         _timerCubit.forcePauseTimer();
                       }
                     }
@@ -237,12 +239,12 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
       listener: (context, state) {
         // Listen to status change and trigger animations
         final timerStatus = state.status;
-        if (timerStatus == TimerStatus.running) {
+        if (timerStatus == TimesheetStatusEnum.running) {
           widget.animationController.forward();
         } else if ([
-          TimerStatus.initial,
-          TimerStatus.paused,
-          TimerStatus.pausedByForce
+          TimesheetStatusEnum.initial,
+          TimesheetStatusEnum.paused,
+          TimesheetStatusEnum.pausedByForce
         ].contains(timerStatus)) {
           widget.animationController.reverse();
         }
@@ -251,7 +253,7 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
         duration: animationDurationDefault,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(kPadding.r * 8),
-          color: timerStatus == TimerStatus.running
+          color: timerStatus == TimesheetStatusEnum.running
               ? theme.colorScheme.primary
               : ElevationOverlay.applySurfaceTint(
                   theme.colorScheme.primaryContainer,
@@ -303,13 +305,16 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
                     ? null
                     : () {
                         final timerCubit = context.read<TimerCubit>();
-                        if (timerStatus == TimerStatus.running) {
+                        if (timerStatus == TimesheetStatusEnum.running) {
                           timerCubit.pauseTimer();
-                        } else if ([TimerStatus.initial, TimerStatus.paused]
-                            .contains(timerStatus)) {
-                          if (timerStatus == TimerStatus.initial) {
+                        } else if ([
+                          TimesheetStatusEnum.initial,
+                          TimesheetStatusEnum.paused
+                        ].contains(timerStatus)) {
+                          if (timerStatus == TimesheetStatusEnum.initial) {
                             timerCubit.startTimer();
-                          } else if (timerStatus == TimerStatus.paused) {
+                          } else if (timerStatus ==
+                              TimesheetStatusEnum.paused) {
                             timerCubit.resumeTimer();
                           }
                         }
@@ -373,13 +378,13 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
       listener: (context, state) {
         // Listen to status change and trigger animations
         final timerStatus = state.status;
-        if (timerStatus == TimerStatus.running) {
+        if (timerStatus == TimesheetStatusEnum.running) {
           widget.animationController.forward();
         } else if ([
-          TimerStatus.initial,
-          TimerStatus.paused,
-          TimerStatus.pausedByForce,
-          TimerStatus.stopped,
+          TimesheetStatusEnum.initial,
+          TimesheetStatusEnum.paused,
+          TimesheetStatusEnum.pausedByForce,
+          TimesheetStatusEnum.stopped,
         ].contains(timerStatus)) {
           widget.animationController.reverse();
         }
@@ -431,15 +436,15 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                         ? null
                         : () {
                             final timerCubit = context.read<TimerCubit>();
-                            if (timerStatus == TimerStatus.running) {
+                            if (timerStatus == TimesheetStatusEnum.running) {
                               timerCubit.pauseTimer();
                             } else if ([
-                              TimerStatus.initial,
-                              TimerStatus.paused,
-                              TimerStatus.pausedByForce,
-                              TimerStatus.stopped
+                              TimesheetStatusEnum.initial,
+                              TimesheetStatusEnum.paused,
+                              TimesheetStatusEnum.pausedByForce,
+                              TimesheetStatusEnum.stopped
                             ].contains(timerStatus)) {
-                              if (timerStatus == TimerStatus.initial) {
+                              if (timerStatus == TimesheetStatusEnum.initial) {
                                 timerCubit.startTimer();
                               } else {
                                 timerCubit.resumeTimer();
@@ -457,13 +462,13 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                       Icons.stop,
                       size: kPadding.w * 4,
                     ),
-                    onPressed:
-                        widget.disabled || timerStatus == TimerStatus.initial
-                            ? null
-                            : () {
-                                final timerCubit = context.read<TimerCubit>();
-                                timerCubit.stopTimer();
-                              },
+                    onPressed: widget.disabled ||
+                            timerStatus == TimesheetStatusEnum.initial
+                        ? null
+                        : () {
+                            final timerCubit = context.read<TimerCubit>();
+                            timerCubit.stopTimer();
+                          },
                   ),
                 ],
               ),

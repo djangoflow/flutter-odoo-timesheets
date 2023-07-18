@@ -8,7 +8,7 @@ class TimerBlocListener extends BlocListener<TimerCubit, TimerState> {
     required super.child,
 
     /// listenWhen is used to determine whether or not to call listener,
-    /// by default will check TimerStatus changes.
+    /// by default will check TimesheetStatusEnum changes.
     bool Function(TimerState, TimerState)? listenWhen,
   }) : super(
           listenWhen: listenWhen ??
