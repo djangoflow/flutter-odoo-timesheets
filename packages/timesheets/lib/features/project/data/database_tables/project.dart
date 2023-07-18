@@ -6,6 +6,7 @@ class Projects extends Table {
   TextColumn get description => text().nullable()();
   BoolColumn get active => boolean().nullable()();
   TextColumn get color => text().nullable()();
+  BoolColumn get isFavorite => boolean().nullable()();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
