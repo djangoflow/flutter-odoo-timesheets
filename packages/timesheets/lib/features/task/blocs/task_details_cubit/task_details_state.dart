@@ -1,13 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
+import 'package:timesheets/features/task/data/models/task_with_project_external_data.dart';
 
 part 'task_details_state.freezed.dart';
 
 @freezed
 class TaskDetailsState with _$TaskDetailsState {
   const factory TaskDetailsState({
-    TaskWithProject? taskWithProject,
+    TaskWithProjectExternalData? taskWithProjectExternalData,
     required List<Timesheet> timesheets,
     required bool isLoading,
     required bool isSyncing,
@@ -15,7 +15,7 @@ class TaskDetailsState with _$TaskDetailsState {
   }) = _TaskDetailsState;
 
   factory TaskDetailsState.initial() => const TaskDetailsState(
-        taskWithProject: null,
+        taskWithProjectExternalData: null,
         timesheets: [],
         isLoading: false,
         isSyncing: false,
@@ -23,7 +23,7 @@ class TaskDetailsState with _$TaskDetailsState {
       );
 
   factory TaskDetailsState.loading() => const TaskDetailsState(
-        taskWithProject: null,
+        taskWithProjectExternalData: null,
         timesheets: [],
         isLoading: true,
         isSyncing: false,
@@ -31,11 +31,11 @@ class TaskDetailsState with _$TaskDetailsState {
       );
 
   factory TaskDetailsState.syncing({
-    required TaskWithProject taskWithProject,
+    required TaskWithProjectExternalData taskWithProjectExternalData,
     required List<Timesheet> timesheets,
   }) =>
       TaskDetailsState(
-        taskWithProject: taskWithProject,
+        taskWithProjectExternalData: taskWithProjectExternalData,
         timesheets: timesheets,
         isLoading: false,
         isSyncing: true,
@@ -43,11 +43,11 @@ class TaskDetailsState with _$TaskDetailsState {
       );
 
   factory TaskDetailsState.loaded({
-    required TaskWithProject taskWithProject,
+    required TaskWithProjectExternalData taskWithProjectExternalData,
     required List<Timesheet> timesheets,
   }) =>
       TaskDetailsState(
-        taskWithProject: taskWithProject,
+        taskWithProjectExternalData: taskWithProjectExternalData,
         timesheets: timesheets,
         isLoading: false,
         isSyncing: false,
@@ -55,12 +55,12 @@ class TaskDetailsState with _$TaskDetailsState {
       );
 
   factory TaskDetailsState.error({
-    TaskWithProject? taskWithProject,
+    TaskWithProjectExternalData? taskWithProjectExternalData,
     required List<Timesheet> timesheets,
     required Object error,
   }) =>
       TaskDetailsState(
-        taskWithProject: taskWithProject,
+        taskWithProjectExternalData: taskWithProjectExternalData,
         timesheets: timesheets,
         isLoading: false,
         isSyncing: false,

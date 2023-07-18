@@ -1,10 +1,20 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 part 'timesheets_dao.g.dart';
 
-@DriftAccessor(tables: [Timesheets])
+@DriftAccessor(tables: [
+  Timesheets,
+  ExternalTimesheets,
+  ExternalTasks,
+  ExternalProjects,
+  Tasks,
+  Projects
+])
 class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     with _$TimesheetsDaoMixin {
   TimesheetsDao(AppDatabase db) : super(db);
@@ -26,4 +36,102 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
   Future<Timesheet?> getTimesheetById(int timesheetId) =>
       (select(timesheets)..where((t) => t.id.equals(timesheetId)))
           .getSingleOrNull();
+
+  Future<TimesheetWithTaskExternalData?> getTimesheetWithTaskProjectDataById(
+      int timesheetId) async {
+    final query = select(timesheets).join([
+      leftOuterJoin(externalTimesheets,
+          timesheets.id.equalsExp(externalTimesheets.internalId)),
+      leftOuterJoin(tasks, tasks.id.equalsExp(timesheets.taskId)),
+      leftOuterJoin(
+          externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+      leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+      leftOuterJoin(
+          externalProjects, projects.id.equalsExp(externalProjects.internalId)),
+    ])
+      ..where(timesheets.id.equals(timesheetId));
+
+    final result = await query.map((row) {
+      final timesheet = row.readTable(timesheets);
+      final externalTimesheet = row.readTableOrNull(externalTimesheets);
+      final task = row.readTable(tasks);
+      final externalTask = row.readTableOrNull(externalTasks);
+      final project = row.readTable(projects);
+      final externalProject = row.readTableOrNull(externalProjects);
+
+      final timesheetExternalData = TimesheetExternalData(
+        timesheet: timesheet,
+        externalTimesheet: externalTimesheet,
+      );
+
+      final taskWithExternalData = TaskWithExternalData(
+        task: task,
+        externalTask: externalTask,
+      );
+
+      final projectWithExternalData = ProjectWithExternalData(
+        project: project,
+        externalProject: externalProject,
+      );
+
+      return TimesheetWithTaskExternalData(
+        timesheetExternalData: timesheetExternalData,
+        taskWithExternalData: TaskWithProjectExternalData(
+          taskWithExternalData: taskWithExternalData,
+          projectWithExternalData: projectWithExternalData,
+        ),
+      );
+    }).getSingleOrNull();
+
+    return result;
+  }
+
+  Future<List<TimesheetWithTaskExternalData>>
+      getTimesheetWithTaskProjectDataListByTaskId(int taskId) async {
+    final query = select(timesheets).join([
+      leftOuterJoin(externalTimesheets,
+          timesheets.id.equalsExp(externalTimesheets.internalId)),
+      leftOuterJoin(tasks, tasks.id.equalsExp(timesheets.taskId)),
+      leftOuterJoin(
+          externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+      leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+      leftOuterJoin(
+          externalProjects, projects.id.equalsExp(externalProjects.internalId)),
+    ])
+      ..where(tasks.id.equals(taskId));
+
+    final result = await query.map((row) {
+      final timesheet = row.readTable(timesheets);
+      final externalTimesheet = row.readTableOrNull(externalTimesheets);
+      final task = row.readTable(tasks);
+      final externalTask = row.readTableOrNull(externalTasks);
+      final project = row.readTable(projects);
+      final externalProject = row.readTableOrNull(externalProjects);
+
+      final timesheetExternalData = TimesheetExternalData(
+        timesheet: timesheet,
+        externalTimesheet: externalTimesheet,
+      );
+
+      final taskWithExternalData = TaskWithExternalData(
+        task: task,
+        externalTask: externalTask,
+      );
+
+      final projectWithExternalData = ProjectWithExternalData(
+        project: project,
+        externalProject: externalProject,
+      );
+
+      return TimesheetWithTaskExternalData(
+        timesheetExternalData: timesheetExternalData,
+        taskWithExternalData: TaskWithProjectExternalData(
+          taskWithExternalData: taskWithExternalData,
+          projectWithExternalData: projectWithExternalData,
+        ),
+      );
+    }).get();
+
+    return result;
+  }
 }

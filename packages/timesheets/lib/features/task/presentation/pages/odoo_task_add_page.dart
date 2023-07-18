@@ -14,18 +14,19 @@ import 'package:timesheets/features/task/task.dart';
 
 @RoutePage()
 class OdooTaskAddPage extends StatelessWidget {
-  const OdooTaskAddPage({Key? key, this.taskWithProject}) : super(key: key);
-  final TaskWithProject? taskWithProject;
+  const OdooTaskAddPage({Key? key, this.taskWithProjectExternalData})
+      : super(key: key);
+  final TaskWithProjectExternalData? taskWithProjectExternalData;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(taskWithProject != null
+          title: Text(taskWithProjectExternalData != null
               ? 'Sync with Odoo Task'
               : 'Add Odoo Task'),
         ),
         body: OdooTaskEditor(
-          description: taskWithProject?.task.description,
+          description: taskWithProjectExternalData?.task.description,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
@@ -37,9 +38,10 @@ class OdooTaskAddPage extends StatelessWidget {
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;
-                        DjangoflowAppSnackbar.showInfo(taskWithProject != null
-                            ? 'Task updated'
-                            : 'Task added');
+                        DjangoflowAppSnackbar.showInfo(
+                            taskWithProjectExternalData != null
+                                ? 'Task updated'
+                                : 'Task added');
                         await router.pop(true);
                       },
                       action: (_) => _addOrUpdateOdooTimesheet(
@@ -47,8 +49,9 @@ class OdooTaskAddPage extends StatelessWidget {
                       builder: (context, action, state) => ElevatedButton(
                         onPressed: form.valid ? action : null,
                         child: Center(
-                          child: Text(
-                              taskWithProject != null ? 'Confirm' : 'Add Task'),
+                          child: Text(taskWithProjectExternalData != null
+                              ? 'Confirm'
+                              : 'Add Task'),
                         ),
                       ),
                     ),
@@ -67,20 +70,20 @@ class OdooTaskAddPage extends StatelessWidget {
     final description = form.control(descriptionControlName).value as String;
 
     final taskRepository = context.read<TasksRepository>();
-    if (taskWithProject != null) {
+    if (taskWithProjectExternalData != null) {
       await taskRepository.updateTaskWithProject(
-        task: taskWithProject!.task.copyWith(
+        task: taskWithProjectExternalData!.task.copyWith(
           name: odooTask.name,
           description: Value(description),
           onlineId: Value(odooTask.id),
         ),
-        project: taskWithProject!.project.copyWith(
+        project: taskWithProjectExternalData!.project.copyWith(
           name: Value(odooProject.name),
           onlineId: Value(odooProject.id),
         ),
       );
-      final updatedTask =
-          await taskRepository.getTaskById(taskWithProject!.task.id);
+      final updatedTask = await taskRepository
+          .getTaskById(taskWithProjectExternalData!.task.id);
       debugPrint('updated task with project ${updatedTask!.toJson()}');
     } else {
       await taskRepository.createTaskWithProject(

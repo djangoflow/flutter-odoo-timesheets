@@ -75,8 +75,8 @@ class _TimesheetDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final task = timesheetWithTask.taskWithProject.task;
-    final project = timesheetWithTask.taskWithProject.project;
+    final task = timesheetWithTask.taskWithProjectExternalData.task;
+    final project = timesheetWithTask.taskWithProjectExternalData.project;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

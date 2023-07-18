@@ -23,7 +23,7 @@
 
 //   Future<void> deleteTask(Task task) => delete(tasks).delete(task);
 
-//   Future<List<TaskWithProject>> get tasksWithProjects => (select(tasks)
+//   Future<List<TaskWithProjectExternalData>> get tasksWithProjects => (select(tasks)
 //         ..orderBy([
 //           (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
 //         ]))
@@ -34,7 +34,7 @@
 //       .then(
 //         (rows) => rows
 //             .map(
-//               (row) => TaskWithProject(
+//               (row) => TaskWithProjectExternalData(
 //                 task: row.readTable(tasks),
 //                 project: row.readTable(projects),
 //               ),

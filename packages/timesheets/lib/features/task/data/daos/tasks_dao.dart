@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 
 part 'tasks_dao.g.dart';
 
-@DriftAccessor(tables: [Tasks, Projects])
+@DriftAccessor(tables: [Tasks, Projects, ExternalProjects, ExternalTasks])
 class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   TasksDao(AppDatabase db) : super(db);
 
@@ -29,7 +29,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         },
       );
 
-  Future<List<TaskWithProject>> getPaginatedTasksWithProjects(
+  Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
           int limit, int? offset) =>
       (select(tasks)
             // should be ordered by createdAt and onlineIds
@@ -39,38 +39,45 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
             ])
             ..limit(limit, offset: offset))
           .join([
-            leftOuterJoin(projects, projects.id.equalsExp(tasks.projectId)),
+            leftOuterJoin(
+                externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+            leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+            leftOuterJoin(externalProjects,
+                projects.id.equalsExp(externalProjects.internalId)),
           ])
           .get()
           .then(
             (rows) => rows
                 .map(
-                  (row) => TaskWithProject(
-                    task: row.readTable(tasks),
-                    project: row.readTable(projects),
-                  ),
+                  (row) => _rowTaskWithProjectExternalData(row),
                 )
                 .toList(),
           );
 
   Future<Task?> getTaskById(int taskId) =>
       (select(tasks)..where((t) => t.id.equals(taskId))).getSingleOrNull();
-
-  Future<TaskWithProject?> getTaskWithProjectById(int taskId) => (select(tasks)
-        ..where((t) => t.id.equals(taskId))
-        ..limit(1))
-      .join([
-        leftOuterJoin(projects, projects.id.equalsExp(tasks.projectId)),
-      ])
-      .getSingleOrNull()
-      .then(
-        (row) => row != null
-            ? TaskWithProject(
-                task: row.readTable(tasks),
-                project: row.readTable(projects),
-              )
-            : null,
-      );
+  // it should fetch Task with ExternalTask(nullable) and then the Project and ExternalProject(nullable) and map it to TaskWithProjectExternalData
+  Future<TaskWithProjectExternalData?> getTaskWithProjectById(int taskId) =>
+      (select(tasks)..where((t) => t.id.equals(taskId)))
+          .join(
+            [
+              leftOuterJoin(
+                  externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+              leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+              leftOuterJoin(externalProjects,
+                  projects.id.equalsExp(externalProjects.internalId)),
+            ],
+          )
+          .getSingleOrNull()
+          .then(
+            (row) {
+              if (row == null) {
+                return null;
+              } else {
+                return _rowTaskWithProjectExternalData(row);
+              }
+            },
+          );
 
   Future<List<Task>> getAllTasks() => select(tasks).get();
 
@@ -84,4 +91,26 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   Future<void> updateTask(Task task) => update(tasks).replace(task);
 
   Future<int> deleteTask(Task task) => delete(tasks).delete(task);
+
+  TaskWithProjectExternalData _rowTaskWithProjectExternalData(TypedResult row) {
+    final task = row.readTable(tasks);
+    final externalTask = row.readTableOrNull(externalTasks);
+    final project = row.readTable(projects);
+    final externalProject = row.readTableOrNull(externalProjects);
+
+    final taskWithExternalData = TaskWithExternalData(
+      task: task,
+      externalTask: externalTask,
+    );
+
+    final projectWithExternalData = ProjectWithExternalData(
+      project: project,
+      externalProject: externalProject,
+    );
+
+    return TaskWithProjectExternalData(
+      taskWithExternalData: taskWithExternalData,
+      projectWithExternalData: projectWithExternalData,
+    );
+  }
 }

@@ -26,14 +26,14 @@ class TimesheetDataCubit
                 if (timesheet == null) {
                   throw ArgumentError.notNull('timesheet');
                 }
-                final taskWithProject = await tasksRepository
+                final taskWithProjectExternalData = await tasksRepository
                     .getTaskWithProjectById(timesheet.taskId);
-                if (taskWithProject == null) {
+                if (taskWithProjectExternalData == null) {
                   throw ArgumentError.notNull('task');
                 }
                 return TimesheetWithTask(
                   timesheet: timesheet,
-                  taskWithProject: taskWithProject,
+                  taskWithProjectExternalData: taskWithProjectExternalData,
                 );
               });
 
@@ -42,13 +42,14 @@ class TimesheetDataCubit
           ),
         );
 
-  Future<void> updateTimesheet(
-      Timesheet timesheet, TaskWithProject taskWithProject) async {
+  Future<void> updateTimesheet(Timesheet timesheet,
+      TaskWithProjectExternalData taskWithProjectExternalData) async {
     await timesheetsRepository.updateTimesheet(timesheet);
     await tasksRepository.updateTaskWithProject(
-        task: taskWithProject.task, project: taskWithProject.project);
-    final updatedTaskWithProject =
-        await tasksRepository.getTaskWithProjectById(taskWithProject.task.id);
+        task: taskWithProjectExternalData.task,
+        project: taskWithProjectExternalData.project);
+    final updatedTaskWithProject = await tasksRepository
+        .getTaskWithProjectById(taskWithProjectExternalData.task.id);
     if (updatedTaskWithProject == null) {
       throw ArgumentError.notNull('updatedTaskWithProject');
     }
@@ -58,7 +59,7 @@ class TimesheetDataCubit
         Data(
           data: state.data!.copyWith(
             timesheet: timesheet,
-            taskWithProject: updatedTaskWithProject,
+            taskWithProjectExternalData: updatedTaskWithProject,
           ),
           filter: state.filter,
         ),

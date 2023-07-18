@@ -2,15 +2,17 @@ import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 
-import 'package:timesheets/features/task/data/models/task_with_project.dart';
+import 'package:timesheets/features/task/data/models/task_with_project_external_data.dart';
 import 'package:timesheets/features/task/data/repositories/tasks_repository.dart';
 import 'package:timesheets/utils/utils.dart';
 import 'tasks_list_filter.dart';
 export 'tasks_list_filter.dart';
 
-typedef TasksListState = Data<List<TaskWithProject>, TasksListFilter>;
+typedef TasksListState
+    = Data<List<TaskWithProjectExternalData>, TasksListFilter>;
 
-class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
+class TasksListCubit
+    extends ListCubit<TaskWithProjectExternalData, TasksListFilter>
     with CubitMaybeEmit {
   final TasksRepository tasksRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
@@ -18,7 +20,7 @@ class TasksListCubit extends ListCubit<TaskWithProject, TasksListFilter>
     required this.tasksRepository,
     required this.odooTimesheetRepository,
   }) : super(
-          ListBlocUtil.listLoader<TaskWithProject, TasksListFilter>(
+          ListBlocUtil.listLoader<TaskWithProjectExternalData, TasksListFilter>(
             loader: ([filter]) => tasksRepository.getTasksWithProjects(
                 filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
           ),

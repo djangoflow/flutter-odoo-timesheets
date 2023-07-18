@@ -24,8 +24,8 @@ class TaskDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<TaskDetailsCubit, TaskDetailsState>(
         builder: (context, state) {
-          final taskWithProject = state.taskWithProject;
-          final task = taskWithProject?.task;
+          final taskWithProjectExternalData = state.taskWithProjectExternalData;
+          final task = taskWithProjectExternalData?.task;
 
           final timesheets = state.timesheets;
           Widget body;
@@ -38,10 +38,10 @@ class TaskDetailsPage extends StatelessWidget {
 
           body = ListView(
             children: [
-              if (taskWithProject != null)
+              if (taskWithProjectExternalData != null)
                 _TaskDetails(
-                  key: ValueKey(taskWithProject.task.onlineId),
-                  taskWithProject: taskWithProject,
+                  key: ValueKey(taskWithProjectExternalData.task.onlineId),
+                  taskWithProjectExternalData: taskWithProjectExternalData,
                   isSyncing: state.isSyncing,
                 ),
               SizedBox(
@@ -169,14 +169,16 @@ class TaskDetailsPage extends StatelessWidget {
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),
               actions: [
-                if (taskWithProject != null)
+                if (taskWithProjectExternalData != null)
                   // &&
-                  //     taskWithProject.task.onlineId == null)
+                  //     taskWithProjectExternalData.task.onlineId == null)
                   IconButton(
                     onPressed: () {
                       context.router
                           .push(
-                        TaskEditRoute(taskWithProject: taskWithProject),
+                        TaskEditRoute(
+                            taskWithProjectExternalData:
+                                taskWithProjectExternalData),
                       )
                           .then((value) {
                         if (value != null && value == true) {
@@ -196,12 +198,14 @@ class TaskDetailsPage extends StatelessWidget {
 
 class _TaskDetails extends StatelessWidget {
   const _TaskDetails(
-      {super.key, required this.taskWithProject, required this.isSyncing});
-  final TaskWithProject taskWithProject;
+      {super.key,
+      required this.taskWithProjectExternalData,
+      required this.isSyncing});
+  final TaskWithProjectExternalData taskWithProjectExternalData;
   final bool isSyncing;
   @override
   Widget build(BuildContext context) {
-    final task = taskWithProject.task;
+    final task = taskWithProjectExternalData.task;
     final elapsedTime = task.elapsedTime;
 
     return Column(
@@ -291,7 +295,8 @@ class _TaskDetails extends StatelessWidget {
                               await taskDetailsCubit.updateTask(updatableTask);
                               final didUpdateTask = await router.push(
                                 OdooTaskAddRoute(
-                                  taskWithProject: taskWithProject.copyWith(
+                                  taskWithProjectExternalData:
+                                      taskWithProjectExternalData.copyWith(
                                     task: updatableTask,
                                   ),
                                 ),

@@ -103,8 +103,10 @@ class _TasksPageState extends State<TasksPage>
                                     height: kPadding.h,
                                   ),
                                   itemBuilder: (context, index) {
-                                    final taskWithProject = value.data![index];
-                                    final task = taskWithProject.task;
+                                    final taskWithProjectExternalData =
+                                        value.data![index];
+                                    final task =
+                                        taskWithProjectExternalData.task;
                                     final elapsedTime = task.elapsedTime;
 
                                     return TaskListTile(

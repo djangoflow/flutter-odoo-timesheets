@@ -13,14 +13,14 @@ import '../task_editor.dart';
 
 @RoutePage()
 class TaskEditPage extends StatelessWidget {
-  const TaskEditPage({super.key, required this.taskWithProject});
+  const TaskEditPage({super.key, required this.taskWithProjectExternalData});
   // TODO: make it deep linkable
-  final TaskWithProject taskWithProject;
+  final TaskWithProjectExternalData taskWithProjectExternalData;
 
   @override
   Widget build(BuildContext context) {
-    final task = taskWithProject.task;
-    final project = taskWithProject.project;
+    final task = taskWithProjectExternalData.task;
+    final project = taskWithProjectExternalData.project;
 
     return Scaffold(
       appBar: AppBar(

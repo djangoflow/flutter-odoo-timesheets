@@ -22,7 +22,7 @@ class TasksRepository extends CrudRepository<Task, TasksCompanion> {
   @override
   Future<List<Task>> getItems() => tasksDao.getAllTasks();
 
-  Future<List<TaskWithProject>> getPaginatedTasksWithProjects(
+  Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
           int limit, int? offset) =>
       tasksDao.getPaginatedTasksWithProjects(limit, offset);
 
@@ -30,7 +30,7 @@ class TasksRepository extends CrudRepository<Task, TasksCompanion> {
           TasksCompanion tasksCompanion, ProjectsCompanion projectsCompanion) =>
       tasksDao.createTaskWithProject(tasksCompanion, projectsCompanion);
 
-  Future<TaskWithProject?> getTaskWithProjectById(int taskId) =>
+  Future<TaskWithProjectExternalData?> getTaskWithProjectById(int taskId) =>
       tasksDao.getTaskWithProjectById(taskId);
 
   Future<void> deleteTask(Task task) => tasksDao.deleteTask(task);
