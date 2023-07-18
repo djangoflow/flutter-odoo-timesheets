@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/data/models/task_with_external_data.dart';
 

@@ -54,6 +54,29 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
                 .toList(),
           );
 
+  Future<List<TaskWithProjectExternalData>> getAllTasksWithProjects() =>
+      (select(tasks)
+            // should be ordered by createdAt and onlineIds
+            ..orderBy([
+              (t) =>
+                  OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+            ]))
+          .join([
+            leftOuterJoin(
+                externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+            leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+            leftOuterJoin(externalProjects,
+                projects.id.equalsExp(externalProjects.internalId)),
+          ])
+          .get()
+          .then(
+            (rows) => rows
+                .map(
+                  (row) => _rowTaskWithProjectExternalData(row),
+                )
+                .toList(),
+          );
+
   Future<Task?> getTaskById(int taskId) =>
       (select(tasks)..where((t) => t.id.equals(taskId))).getSingleOrNull();
   // it should fetch Task with ExternalTask(nullable) and then the Project and ExternalProject(nullable) and map it to TaskWithProjectExternalData

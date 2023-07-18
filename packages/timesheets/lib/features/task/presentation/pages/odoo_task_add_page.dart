@@ -26,7 +26,9 @@ class OdooTaskAddPage extends StatelessWidget {
               : 'Add Odoo Task'),
         ),
         body: OdooTaskEditor(
-          description: taskWithProjectExternalData?.task.description,
+          // TODO should be description of timesheets
+          // description: taskWithProjectExternalData
+          //     ?.taskWithProjectExternalData.task.description,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
@@ -71,32 +73,32 @@ class OdooTaskAddPage extends StatelessWidget {
 
     final taskRepository = context.read<TasksRepository>();
     if (taskWithProjectExternalData != null) {
-      await taskRepository.updateTaskWithProject(
-        task: taskWithProjectExternalData!.task.copyWith(
-          name: odooTask.name,
-          description: Value(description),
-          onlineId: Value(odooTask.id),
-        ),
-        project: taskWithProjectExternalData!.project.copyWith(
-          name: Value(odooProject.name),
-          onlineId: Value(odooProject.id),
-        ),
-      );
-      final updatedTask = await taskRepository
-          .getTaskById(taskWithProjectExternalData!.task.id);
-      debugPrint('updated task with project ${updatedTask!.toJson()}');
-    } else {
-      await taskRepository.createTaskWithProject(
-        TasksCompanion(
-          name: Value(odooTask.name),
-          onlineId: Value(odooTask.id),
-          description: Value(description),
-        ),
-        ProjectsCompanion(
-          name: Value(odooProject.name),
-          onlineId: Value(odooProject.id),
-        ),
-      );
+      //   await taskRepository.updateTaskWithProject(
+      //     task: taskWithProjectExternalData!.task.copyWith(
+      //       name: odooTask.name,
+      //       description: Value(description),
+      //       onlineId: Value(odooTask.id),
+      //     ),
+      //     project: taskWithProjectExternalData!.project.copyWith(
+      //       name: Value(odooProject.name),
+      //       onlineId: Value(odooProject.id),
+      //     ),
+      //   );
+      //   final updatedTask = await taskRepository
+      //       .getTaskById(taskWithProjectExternalData!.task.id);
+      //   debugPrint('updated task with project ${updatedTask!.toJson()}');
+      // } else {
+      //   await taskRepository.createTaskWithProject(
+      //     TasksCompanion(
+      //       name: Value(odooTask.name),
+      //       onlineId: Value(odooTask.id),
+      //       description: Value(description),
+      //     ),
+      //     ProjectsCompanion(
+      //       name: Value(odooProject.name),
+      //       onlineId: Value(odooProject.id),
+      //     ),
+      //   );
     }
   }
 }

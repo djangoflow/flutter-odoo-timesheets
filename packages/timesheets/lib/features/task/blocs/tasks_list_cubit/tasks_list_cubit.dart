@@ -21,7 +21,7 @@ class TasksListCubit
     required this.odooTimesheetRepository,
   }) : super(
           ListBlocUtil.listLoader<TaskWithProjectExternalData, TasksListFilter>(
-            loader: ([filter]) => tasksRepository.getTasksWithProjects(
+            loader: ([filter]) => tasksRepository.getPaginatedTasksWithProjects(
                 filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
           ),
         );
@@ -52,22 +52,26 @@ class TasksListCubit
 
   // TODO 1: Add a method to sync all tasks with onlineId from Odoo
   Future<void> syncAllTasksWithOnlineIdFromOdoo() async {
-    final tasks = await tasksRepository.getAllTasks();
-    for (final task in tasks) {
-      final onlineId = task.onlineId;
-      if (onlineId != null) {}
-    }
+    // final taskWithProjectExternalDataList =
+    //     await tasksRepository.getAllTasksWithProjects();
+    // for (final task in tasks) {
+    //   final onlineId = task.onlineId;
+    //   if (onlineId != null) {}
+    // }
   }
 
   Future<void> updateTask(Task task) async {
-    await tasksRepository.updateTask(task);
+    await tasksRepository.update(task);
     final updatedTaskWithProject =
         await tasksRepository.getTaskWithProjectById(task.id);
     emit(
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id == task.id) updatedTaskWithProject! else t,
+            if (t.taskWithExternalData.task.id == task.id)
+              updatedTaskWithProject!
+            else
+              t,
         ],
       ),
     );
@@ -79,7 +83,7 @@ class TasksListCubit
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id != task.id) t,
+            if (t.taskWithExternalData.task.id != task.id) t,
         ],
       ),
     );
@@ -90,7 +94,14 @@ class TasksListCubit
       state.copyWith(
         data: [
           for (final t in state.data!)
-            if (t.task.id == task.id) t.copyWith(task: task) else t,
+            if (t.taskWithExternalData.task.id == task.id)
+              t.copyWith(
+                taskWithExternalData: t.taskWithExternalData.copyWith(
+                  task: task,
+                ),
+              )
+            else
+              t,
         ],
       ),
     );

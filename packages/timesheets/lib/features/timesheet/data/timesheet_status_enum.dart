@@ -2,7 +2,7 @@
 enum TimesheetStatusEnum {
   initial,
   running,
-  runningInBackground,
+  pausedByForce,
   paused,
   stopped,
   submitted,

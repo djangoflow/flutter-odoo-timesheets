@@ -6,6 +6,7 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/task/presentation/task_list_tile.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -105,21 +106,22 @@ class _TasksPageState extends State<TasksPage>
                                   itemBuilder: (context, index) {
                                     final taskWithProjectExternalData =
                                         value.data![index];
-                                    final task =
-                                        taskWithProjectExternalData.task;
-                                    final elapsedTime = task.elapsedTime;
+                                    final task = taskWithProjectExternalData
+                                        .taskWithExternalData.task;
+                                    // final elapsedTime = task.elapsedTime;
 
                                     return TaskListTile(
                                       key: ValueKey(task.id),
-                                      title: Text(task.name),
+                                      title: Text(task.name ?? ''),
                                       subtitle: Text(
-                                        task.description ?? '',
+                                        // Should be timesheet description
+                                        '',
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      elapsedTime: elapsedTime,
-                                      initialTimerStatus:
-                                          TimerStatus.values[task.status],
+                                      // elapsedTime: elapsedTime,
+                                      // initialTimerStatus: TimesheetStatusEnum
+                                      //     .values[task.status],
                                       onTap: () {
                                         context.router.push(
                                           TaskDetailsRouter(
@@ -131,40 +133,14 @@ class _TasksPageState extends State<TasksPage>
                                         );
                                       },
                                       onTimerResume: (context) {
-                                        context.read<TimerCubit>().elapsedTime =
-                                            Duration(
-                                          seconds: elapsedTime,
-                                        );
+                                        // context.read<TimerCubit>().elapsedTime =
+                                        //     Duration(
+                                        //   seconds: elapsedTime,
+                                        // );
                                       },
                                       onTimerStateChange: (timerState,
                                           tickDurationInSeconds) async {
-                                        final isRunning = timerState.status ==
-                                            TimerStatus.running;
-                                        final updatableSeconds = (isRunning
-                                            ? tickDurationInSeconds
-                                            : 0);
-                                        final lastTickedValue = isRunning
-                                            ? DateTime.now()
-                                            : task.lastTicked;
-
-                                        if (isRunning &&
-                                            task.firstTicked == null) {
-                                          task.copyWith(
-                                            firstTicked: Value(DateTime.now()),
-                                          );
-                                        }
-
-                                        await context
-                                            .read<TasksListCubit>()
-                                            .updateTask(
-                                              task.copyWith(
-                                                duration: elapsedTime +
-                                                    updatableSeconds,
-                                                status: timerState.status.index,
-                                                lastTicked:
-                                                    Value(lastTickedValue),
-                                              ),
-                                            );
+                                        // Need to update timesheet
                                       },
                                     );
                                   },

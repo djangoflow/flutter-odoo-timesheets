@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
-
-import 'project.dart';
+import 'package:timesheets/features/project/project.dart';
 
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -8,7 +7,7 @@ class Tasks extends Table {
       .nullable()
       .references(Projects, #id, onDelete: KeyAction.cascade)();
   IntColumn get stageId => integer().nullable()();
-  TextColumn get description => text().nullable()();
+  TextColumn get name => text().nullable()();
   IntColumn get priority => integer().nullable()();
   DateTimeColumn get dateStart => dateTime().nullable()();
   DateTimeColumn get dateEnd => dateTime().nullable()();

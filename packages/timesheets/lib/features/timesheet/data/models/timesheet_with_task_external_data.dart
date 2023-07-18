@@ -9,6 +9,6 @@ part 'timesheet_with_task_external_data.freezed.dart';
 class TimesheetWithTaskExternalData with _$TimesheetWithTaskExternalData {
   const factory TimesheetWithTaskExternalData({
     required TimesheetExternalData timesheetExternalData,
-    required TaskWithProjectExternalData taskWithExternalData,
+    required TaskWithProjectExternalData taskWithProjectExternalData,
   }) = _TimesheetWithTaskExternalData;
 }

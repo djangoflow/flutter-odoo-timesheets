@@ -29,4 +29,11 @@ class TimesheetsRepository
   @override
   Future<void> update(Timesheet entity) =>
       timesheetsDao.updateTimesheet(entity);
+
+  Future<TimesheetWithTaskExternalData?> getTimesheetWithTaskExternalDataById(
+          int timesheetId) =>
+      timesheetsDao.getTimesheetWithTaskProjectDataById(timesheetId);
+
+  Future<List<Timesheet>> getItemsByTaskId(int taskId) =>
+      timesheetsDao.getTimesheetsByTaskId(taskId);
 }

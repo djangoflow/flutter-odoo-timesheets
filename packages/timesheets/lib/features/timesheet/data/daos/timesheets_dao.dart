@@ -64,7 +64,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
         externalTimesheet: externalTimesheet,
       );
 
-      final taskWithExternalData = TaskWithExternalData(
+      final taskWithProjectExternalData = TaskWithExternalData(
         task: task,
         externalTask: externalTask,
       );
@@ -76,8 +76,8 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
       return TimesheetWithTaskExternalData(
         timesheetExternalData: timesheetExternalData,
-        taskWithExternalData: TaskWithProjectExternalData(
-          taskWithExternalData: taskWithExternalData,
+        taskWithProjectExternalData: TaskWithProjectExternalData(
+          taskWithExternalData: taskWithProjectExternalData,
           projectWithExternalData: projectWithExternalData,
         ),
       );
@@ -87,7 +87,8 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<TimesheetWithTaskExternalData>>
-      getTimesheetWithTaskProjectDataListByTaskId(int taskId) async {
+      getTimesheetWithTaskProjectDataListByTaskId(int taskId,
+          {bool? hasStarted, bool? hasEnded}) async {
     final query = select(timesheets).join([
       leftOuterJoin(externalTimesheets,
           timesheets.id.equalsExp(externalTimesheets.internalId)),
@@ -98,7 +99,20 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
       leftOuterJoin(
           externalProjects, projects.id.equalsExp(externalProjects.internalId)),
     ])
-      ..where(tasks.id.equals(taskId));
+      ..where(
+        timesheets.taskId.equals(taskId),
+      );
+    if (hasStarted == true) {
+      query.where(timesheets.startTime.isNotNull());
+    } else if (hasStarted == false) {
+      query.where(timesheets.startTime.isNull());
+    }
+
+    if (hasEnded == true) {
+      query.where(timesheets.endTime.isNotNull());
+    } else if (hasEnded == false) {
+      query.where(timesheets.endTime.isNull());
+    }
 
     final result = await query.map((row) {
       final timesheet = row.readTable(timesheets);
@@ -113,7 +127,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
         externalTimesheet: externalTimesheet,
       );
 
-      final taskWithExternalData = TaskWithExternalData(
+      final taskWithProjectExternalData = TaskWithExternalData(
         task: task,
         externalTask: externalTask,
       );
@@ -125,8 +139,8 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
       return TimesheetWithTaskExternalData(
         timesheetExternalData: timesheetExternalData,
-        taskWithExternalData: TaskWithProjectExternalData(
-          taskWithExternalData: taskWithExternalData,
+        taskWithProjectExternalData: TaskWithProjectExternalData(
+          taskWithExternalData: taskWithProjectExternalData,
           projectWithExternalData: projectWithExternalData,
         ),
       );
@@ -134,4 +148,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
     return result;
   }
+
+  Future<List<Timesheet>> getTimesheetsByTaskId(int taskId) =>
+      (select(timesheets)..where((t) => t.taskId.equals(taskId))).get();
 }

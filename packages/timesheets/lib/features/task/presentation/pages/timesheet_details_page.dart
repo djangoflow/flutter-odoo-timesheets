@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage()
 class TimesheetDetailsPage extends StatelessWidget {
@@ -13,18 +14,20 @@ class TimesheetDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<TimesheetDataCubit, TimesheetDataState>(
         builder: (context, state) {
-          final timesheetWithTask = state.data;
+          final timesheetWithTaskExternalData = state.data;
+          final timesheet =
+              timesheetWithTaskExternalData?.timesheetExternalData.timesheet;
 
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                timesheetWithTask != null
-                    ? 'Timesheet ${timesheetWithTask.timesheet.id}'
+                timesheet != null
+                    ? 'Timesheet ${timesheet.id}'
                     : 'Timesheet details',
               ),
               leading: const AutoLeadingButton(),
               actions: [
-                if (timesheetWithTask != null)
+                if (timesheet != null)
                   IconButton(
                     onPressed: () {
                       context.router.push(
@@ -46,7 +49,8 @@ class TimesheetDetailsPage extends StatelessWidget {
                       padding: EdgeInsets.all(kPadding.w * 2),
                       children: [
                         _TimesheetDetails(
-                          timesheetWithTask: timesheetWithTask!,
+                          timesheetWithTaskExternalData:
+                              timesheetWithTaskExternalData!,
                         ),
                       ],
                     ),
@@ -70,20 +74,24 @@ class TimesheetDetailsPage extends StatelessWidget {
 }
 
 class _TimesheetDetails extends StatelessWidget {
-  const _TimesheetDetails({super.key, required this.timesheetWithTask});
-  final TimesheetWithTask timesheetWithTask;
+  const _TimesheetDetails(
+      {super.key, required this.timesheetWithTaskExternalData});
+  final TimesheetWithTaskExternalData timesheetWithTaskExternalData;
 
   @override
   Widget build(BuildContext context) {
-    final task = timesheetWithTask.taskWithProjectExternalData.task;
-    final project = timesheetWithTask.taskWithProjectExternalData.project;
-
+    final task = timesheetWithTaskExternalData
+        .taskWithProjectExternalData.taskWithExternalData.task;
+    final project = timesheetWithTaskExternalData
+        .taskWithProjectExternalData.projectWithExternalData.project;
+    final timesheet =
+        timesheetWithTaskExternalData.timesheetExternalData.timesheet;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TimesheetItem(
           title: 'Task',
-          value: task.name,
+          value: task.name ?? '',
         ),
         SizedBox(
           height: kPadding.h * 2,
@@ -97,24 +105,27 @@ class _TimesheetDetails extends StatelessWidget {
         ),
         _TimesheetItem(
           title: 'Date',
-          value: DateFormat('dd/MM/yyyy')
-              .format(timesheetWithTask.timesheet.startTime),
+          value: timesheet.startTime != null
+              ? DateFormat('dd/MM/yyyy').format(timesheet.startTime!)
+              : '',
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'Start time',
-          value: DateFormat('HH:mm:ss')
-              .format(timesheetWithTask.timesheet.startTime),
+          value: timesheet.startTime != null
+              ? DateFormat('HH:mm:ss').format(timesheet.startTime!)
+              : '',
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'End time',
-          value: DateFormat('HH:mm:ss')
-              .format(timesheetWithTask.timesheet.endTime),
+          value: timesheet.endTime != null
+              ? DateFormat('HH:mm:ss').format(timesheet.endTime!)
+              : '',
         ),
       ],
     );

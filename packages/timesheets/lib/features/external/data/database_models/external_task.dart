@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:timesheets/features/task/data/database_models/backend.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/task/data/database_tables/task.dart';
 
 class ExternalTasks extends Table {
