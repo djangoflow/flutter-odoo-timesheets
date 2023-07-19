@@ -8,7 +8,7 @@ class Tasks extends Table {
       .references(Projects, #id, onDelete: KeyAction.cascade)();
   IntColumn get stageId => integer().nullable()();
   TextColumn get name => text().nullable()();
-  IntColumn get priority => integer().nullable()();
+  TextColumn get priority => text().nullable()();
   DateTimeColumn get dateStart => dateTime().nullable()();
   DateTimeColumn get dateEnd => dateTime().nullable()();
   DateTimeColumn get dateDeadline => dateTime().nullable()();

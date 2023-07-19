@@ -82,12 +82,13 @@ class AuthCubit extends Cubit<AuthState> {
     if (backend == null) {
       throw Exception('Backend not found');
     }
+
+    if (state.connectedBackends.isEmpty) {
+      odooAuthenticationRepository.rpcClient.backendCrednetials =
+          [backend].backendCredentialsMap;
+    }
     emit(
       state.copyWith(
-        connectedBackends: [
-          backend,
-          ...state.connectedBackends,
-        ],
         lastConnectedOdooDb: db,
         lastConnectedOdooServerUrl: serverUrl,
       ),

@@ -33,8 +33,10 @@ class TimesheetsAppBuilder extends AppBuilder {
               value: appLinksRepository,
             ),
             RepositoryProvider<TaskRepository>(
-              create: (context) =>
-                  TaskRepository(context.read<AppDatabase>().tasksDao),
+              create: (context) => TaskRepository(
+                tasksDao: context.read<AppDatabase>().tasksDao,
+                externalTasksDao: context.read<AppDatabase>().externalTasksDao,
+              ),
             ),
             RepositoryProvider<TimesheetRepository>(
               create: (context) => TimesheetRepository(
@@ -74,11 +76,6 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<BackendsRepository>(
               create: (context) => BackendsRepository(
                 context.read<AppDatabase>().backendsDao,
-              ),
-            ),
-            RepositoryProvider<TaskRepository>(
-              create: (context) => TaskRepository(
-                context.read<AppDatabase>().tasksDao,
               ),
             ),
           ],

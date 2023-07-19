@@ -115,6 +115,12 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<int> deleteTask(Task task) => delete(tasks).delete(task);
 
+  Future<List<Task>> getTasksByIds(List<int> taskIds) => (select(tasks)
+        ..where(
+          (t) => t.id.isIn(taskIds),
+        ))
+      .get();
+
   TaskWithProjectExternalData _rowTaskWithProjectExternalData(TypedResult row) {
     final task = row.readTable(tasks);
     final externalTask = row.readTableOrNull(externalTasks);
@@ -135,5 +141,29 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
       taskWithExternalData: taskWithExternalData,
       projectWithExternalData: projectWithExternalData,
     );
+  }
+
+  Future<void> batchUpdateTasks(List<Task> tasks) async {
+    await batch((batch) {
+      batch.insertAll(
+        this.tasks,
+        tasks,
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+  }
+
+  Future<void> createTaskWithExternal({
+    required TasksCompanion tasksCompanion,
+    required ExternalTasksCompanion externalTasksCompanion,
+  }) async {
+    await transaction(() async {
+      final id = await createTask(tasksCompanion);
+      await into(externalTasks).insert(
+        externalTasksCompanion.copyWith(
+          internalId: Value(id),
+        ),
+      );
+    });
   }
 }

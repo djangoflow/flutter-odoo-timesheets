@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
@@ -39,9 +40,35 @@ class SyncCubit extends Cubit<SyncState> {
         backendId: backendId,
         odooProjects: odooProjects,
       );
-      // await projectRepository.syncProjects(projects);
 
       // Fetch tasks from Odoo and insert/update in the local database
+      final externalTaskIds = <int>[];
+
+      for (final project in odooProjects) {
+        externalTaskIds.addAll(project.taskIds ?? <int>[]);
+      }
+
+      final odooTasks = await odooTaskRepository.getTasksByTaskIds(
+        backendId: backendId,
+        taskIds: externalTaskIds,
+      );
+
+      final odooTasksWithInternalProjects = <OdooTask, Project>{};
+
+      for (final odooTask in odooTasks) {
+        final project = await projectRepository.getProjectByExternalId(
+          odooTask.id,
+        );
+
+        if (project != null) {
+          odooTasksWithInternalProjects[odooTask] = project;
+        }
+      }
+
+      await taskRepository.syncWithOdooTasks(
+        odooTasksWithProjectsMap: odooTasksWithInternalProjects,
+      );
+
       // final odooProjectIds = odooProjects.map((e) => e.id).toList();
       // List<OdooTask> odooTasks = await odooTaskRepository.getTasksByProjectIds(
       //     backendId: backendId, projectIds: odooProjectIds);

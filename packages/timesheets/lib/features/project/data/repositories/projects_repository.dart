@@ -100,4 +100,7 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
     print('Updated ${updatableProjects.length} projects');
     print('Inserted ${insertableProjectCompanions.length} projects');
   }
+
+  Future<Project?> getProjectByExternalId(int externalProjectId) =>
+      projectsDao.getProjectByExternalId(externalProjectId);
 }

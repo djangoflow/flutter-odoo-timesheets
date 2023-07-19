@@ -111,21 +111,24 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     required int backendId,
     required List<int> taskIds,
   }) async {
+    print(taskIds);
     Map<String, dynamic> optionalParams =
         buildFilterableFields(_taskDefaultFields);
+
+    final searchParameters = [
+      [
+        'id',
+        'in',
+        taskIds,
+      ],
+    ];
 
     var response = await odooCallMethod(
       backendId: backendId,
       odooModel: taskModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [
-        [
-          [
-            'id',
-            'in',
-            taskIds,
-          ],
-        ],
+        [searchParameters],
         optionalParams,
       ],
     );

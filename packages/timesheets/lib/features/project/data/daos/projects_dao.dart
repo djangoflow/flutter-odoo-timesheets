@@ -53,4 +53,16 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Project>> getProjectsByIds(List<int> ids) =>
       (select(projects)..where((p) => p.id.isIn(ids))).get();
+
+  // Should be in external projects dao if we had one and it's internal id matches any project
+  Future<Project?> getProjectByExternalId(int externalProjectId) async {
+    final externalProject = await (select(externalProjects)
+          ..where((p) => p.externalId.equals(externalProjectId)))
+        .getSingleOrNull();
+    if (externalProject != null && externalProject.internalId != null) {
+      return getProjectById(externalProject.internalId!);
+    } else {
+      return null;
+    }
+  }
 }
