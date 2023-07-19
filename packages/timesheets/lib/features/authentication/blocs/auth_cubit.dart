@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
-
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/utils/utils.dart';
 
 import 'auth_state.dart';
