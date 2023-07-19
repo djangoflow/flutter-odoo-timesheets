@@ -62,113 +62,113 @@ class OdooTaskEditor extends StatelessWidget {
               SizedBox(
                 height: kPadding.h * 2,
               ),
-              RepositoryProvider<OdooProjectRepository>(
-                create: (context) => OdooProjectRepository(
-                  context.read<OdooXmlRpcClient>(),
-                ),
-                child: BlocProvider<OdooProjectListCubit>(
-                  create: (context) => OdooProjectListCubit(
-                    context.read<OdooProjectRepository>(),
-                  )..load(
-                      const OdooProjectListFilter(),
-                    ),
-                  child: BlocBuilder<OdooProjectListCubit,
-                      Data<List<OdooProject>, OdooProjectListFilter>>(
-                    builder: (context, state) {
-                      if (state is Loading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is Empty) {
-                        return const Center(
-                          child: Text('No Projects Found'),
-                        );
-                      }
-                      return AppReactiveDropdown<OdooProject, OdooProject>(
-                        formControlName: projectControlName,
-                        labelText: 'Project',
-                        hintText: 'Select Project',
-                        itemAsString: (project) => project.name,
-                        validationMessages: {
-                          ValidationMessage.required: (_) =>
-                              'Please select project',
-                        },
-                        asyncItems: (searchTerm) async {
-                          if (searchTerm.isNotEmpty) {
-                            final projectListCubit =
-                                context.read<OdooProjectListCubit>();
-                            return await projectListCubit.loader(
-                              state.filter?.copyWith(search: searchTerm),
-                            );
-                          }
+              // RepositoryProvider<OdooProjectRepository>(
+              //   create: (context) => OdooProjectRepository(
+              //     context.read<OdooXmlRpcClient>(),
+              //   ),
+              //   child: BlocProvider<OdooProjectListCubit>(
+              //     create: (context) => OdooProjectListCubit(
+              //       context.read<OdooProjectRepository>(),
+              //     )..load(
+              //         const OdooProjectListFilter(),
+              //       ),
+              //     child: BlocBuilder<OdooProjectListCubit,
+              //         Data<List<OdooProject>, OdooProjectListFilter>>(
+              //       builder: (context, state) {
+              //         if (state is Loading) {
+              //           return const Center(
+              //             child: CircularProgressIndicator(),
+              //           );
+              //         } else if (state is Empty) {
+              //           return const Center(
+              //             child: Text('No Projects Found'),
+              //           );
+              //         }
+              //         return AppReactiveDropdown<OdooProject, OdooProject>(
+              //           formControlName: projectControlName,
+              //           labelText: 'Project',
+              //           hintText: 'Select Project',
+              //           itemAsString: (project) => project.name,
+              //           validationMessages: {
+              //             ValidationMessage.required: (_) =>
+              //                 'Please select project',
+              //           },
+              //           asyncItems: (searchTerm) async {
+              //             if (searchTerm.isNotEmpty) {
+              //               final projectListCubit =
+              //                   context.read<OdooProjectListCubit>();
+              //               return await projectListCubit.loader(
+              //                 state.filter?.copyWith(search: searchTerm),
+              //               );
+              //             }
 
-                          return state.data ?? [];
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: kPadding.h * 2),
-              ReactiveValueListenableBuilder<OdooProject>(
-                formControlName: projectControlName,
-                builder: (context, control, child) {
-                  final project = control.value;
+              //             return state.data ?? [];
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: kPadding.h * 2),
+              // ReactiveValueListenableBuilder<OdooProject>(
+              //   formControlName: projectControlName,
+              //   builder: (context, control, child) {
+              //     final project = control.value;
 
-                  if (project != null) {
-                    return RepositoryProvider(
-                      key: ObjectKey(project),
-                      create: (context) => OdooTaskRepository(
-                        context.read<OdooXmlRpcClient>(),
-                      ),
-                      child: BlocProvider(
-                        create: (context) => OdooTaskListCubit(
-                          context.read<OdooTaskRepository>(),
-                        )..load(
-                            OdooTaskListFilter(projectId: project.id),
-                          ),
-                        child: BlocBuilder<OdooTaskListCubit,
-                            Data<List<OdooTask>, OdooTaskListFilter>>(
-                          builder: (context, state) {
-                            if (state is Loading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (state is Empty) {
-                              return const Center(
-                                child: Text('No Tasks Found'),
-                              );
-                            }
+              //     if (project != null) {
+              //       return RepositoryProvider(
+              //         key: ObjectKey(project),
+              //         create: (context) => OdooTaskRepository(
+              //           context.read<OdooXmlRpcClient>(),
+              //         ),
+              //         child: BlocProvider(
+              //           create: (context) => OdooTaskListCubit(
+              //             context.read<OdooTaskRepository>(),
+              //           )..load(
+              //               OdooTaskListFilter(projectId: project.id),
+              //             ),
+              //           child: BlocBuilder<OdooTaskListCubit,
+              //               Data<List<OdooTask>, OdooTaskListFilter>>(
+              //             builder: (context, state) {
+              //               if (state is Loading) {
+              //                 return const Center(
+              //                   child: CircularProgressIndicator(),
+              //                 );
+              //               } else if (state is Empty) {
+              //                 return const Center(
+              //                   child: Text('No Tasks Found'),
+              //                 );
+              //               }
 
-                            return AppReactiveDropdown<OdooTask, OdooTask>(
-                              itemAsString: (task) => task.name,
-                              labelText: 'Task',
-                              asyncItems: (searchTerm) async {
-                                if (searchTerm.isNotEmpty) {
-                                  final taskListCubit =
-                                      context.read<OdooTaskListCubit>();
-                                  return await taskListCubit.loader(
-                                    state.filter?.copyWith(search: searchTerm),
-                                  );
-                                }
+              //               return AppReactiveDropdown<OdooTask, OdooTask>(
+              //                 itemAsString: (task) => task.name,
+              //                 labelText: 'Task',
+              //                 asyncItems: (searchTerm) async {
+              //                   if (searchTerm.isNotEmpty) {
+              //                     final taskListCubit =
+              //                         context.read<OdooTaskListCubit>();
+              //                     return await taskListCubit.loader(
+              //                       state.filter?.copyWith(search: searchTerm),
+              //                     );
+              //                   }
 
-                                return state.data ?? [];
-                              },
-                              formControlName: taskControlName,
-                              hintText: 'Select task',
-                              validationMessages: {
-                                ValidationMessage.required: (_) =>
-                                    'Please select task',
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  }
-                  return const Offstage();
-                },
-              ),
+              //                   return state.data ?? [];
+              //                 },
+              //                 formControlName: taskControlName,
+              //                 hintText: 'Select task',
+              //                 validationMessages: {
+              //                   ValidationMessage.required: (_) =>
+              //                       'Please select task',
+              //                 },
+              //               );
+              //             },
+              //           ),
+              //         ),
+              //       );
+              //     }
+              //     return const Offstage();
+              //   },
+              // ),
               SizedBox(height: kPadding.h * 2),
               ReactiveTextField(
                 formControlName: descriptionControlName,

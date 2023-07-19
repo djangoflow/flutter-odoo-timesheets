@@ -14,23 +14,23 @@ typedef TasksListState
 class TasksListCubit
     extends ListCubit<TaskWithProjectExternalData, TasksListFilter>
     with CubitMaybeEmit {
-  final TasksRepository tasksRepository;
+  final TaskRepository taskRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   TasksListCubit({
-    required this.tasksRepository,
+    required this.taskRepository,
     required this.odooTimesheetRepository,
   }) : super(
           ListBlocUtil.listLoader<TaskWithProjectExternalData, TasksListFilter>(
-            loader: ([filter]) => tasksRepository.getPaginatedTasksWithProjects(
+            loader: ([filter]) => taskRepository.getPaginatedTasksWithProjects(
                 filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
           ),
         );
 
   Future<void> createTaskWithProject(TasksCompanion tasksCompanion,
       ProjectsCompanion projectsCompanion) async {
-    final taskId = await tasksRepository.createTaskWithProject(
+    final taskId = await taskRepository.createTaskWithProject(
         tasksCompanion, projectsCompanion);
-    final task = await tasksRepository.getTaskWithProjectById(taskId);
+    final task = await taskRepository.getTaskWithProjectById(taskId);
     if (state is Empty) {
       emit(
         Data(
@@ -53,7 +53,7 @@ class TasksListCubit
   // TODO 1: Add a method to sync all tasks with onlineId from Odoo
   Future<void> syncAllTasksWithOnlineIdFromOdoo() async {
     // final taskWithProjectExternalDataList =
-    //     await tasksRepository.getAllTasksWithProjects();
+    //     await taskRepository.getAllTasksWithProjects();
     // for (final task in tasks) {
     //   final onlineId = task.onlineId;
     //   if (onlineId != null) {}
@@ -61,9 +61,9 @@ class TasksListCubit
   }
 
   Future<void> updateTask(Task task) async {
-    await tasksRepository.update(task);
+    await taskRepository.update(task);
     final updatedTaskWithProject =
-        await tasksRepository.getTaskWithProjectById(task.id);
+        await taskRepository.getTaskWithProjectById(task.id);
     emit(
       state.copyWith(
         data: [
@@ -78,7 +78,7 @@ class TasksListCubit
   }
 
   Future<void> deleteTask(Task task) async {
-    await tasksRepository.deleteTask(task);
+    await taskRepository.deleteTask(task);
     emit(
       state.copyWith(
         data: [

@@ -29,7 +29,7 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
 
       return id as int;
     } catch (e) {
-      throw getHandledError(e);
+      throw getHandledException(e);
     }
   }
 
@@ -37,29 +37,25 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
     required int userId,
     required int backendId,
   }) async {
-    try {
-      Map<String, dynamic> filterableFields =
-          buildFilterableFields(['name', 'email']);
+    Map<String, dynamic> filterableFields =
+        buildFilterableFields(['name', 'email']);
 
-      ///Fetch user data
-      List response = await odooCallMethod(
-        odooModel: usersModel,
-        method: OdooApiMethod.read.name,
-        backendId: backendId,
-        parameters: [
-          [
-            userId,
-          ],
-          filterableFields,
+    ///Fetch user data
+    List response = await odooCallMethod(
+      odooModel: usersModel,
+      method: OdooApiMethod.read.name,
+      backendId: backendId,
+      parameters: [
+        [
+          userId,
         ],
-      );
+        filterableFields,
+      ],
+    );
 
-      ///Response is returned as List<Map<String,dynamic>>, using 0th index to get userData
-      Map<String, dynamic> userData = response[0];
+    ///Response is returned as List<Map<String,dynamic>>, using 0th index to get userData
+    Map<String, dynamic> userData = response[0];
 
-      return OdooUser.fromJson(userData);
-    } catch (e) {
-      throw getHandledError(e);
-    }
+    return OdooUser.fromJson(userData);
   }
 }

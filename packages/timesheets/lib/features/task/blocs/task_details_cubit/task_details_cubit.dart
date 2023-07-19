@@ -8,16 +8,16 @@ import 'package:timesheets/features/timesheet/data/repositories/timesheets_repos
 export 'task_details_state.dart';
 
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
-  final TasksRepository tasksRepository;
-  final TimesheetsRepository timesheetsRepository;
+  final TaskRepository taskRepository;
+  final TimesheetRepository timesheetRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
-  final ProjectsRepository projectsRepository;
+  final ProjectRepository projectRepository;
 
   TaskDetailsCubit({
-    required this.tasksRepository,
-    required this.timesheetsRepository,
+    required this.taskRepository,
+    required this.timesheetRepository,
     required this.odooTimesheetRepository,
-    required this.projectsRepository,
+    required this.projectRepository,
   }) : super(
           TaskDetailsState.initial(),
         );
@@ -34,7 +34,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       final taskWithProjectExternalData =
           await _getTaskWithProjectExternalData(taskId);
 
-      final timesheets = await timesheetsRepository.getItemsByTaskId(taskId);
+      final timesheets = await timesheetRepository.getItemsByTaskId(taskId);
       emit(
         TaskDetailsState.loaded(
           taskWithProjectExternalData: taskWithProjectExternalData,
@@ -46,7 +46,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> updateTask(Task task) async {
     await errorWrapper(() async {
-      await tasksRepository.update(task);
+      await taskRepository.update(task);
       final taskWithProjectExternalData =
           await _getTaskWithProjectExternalData(task.id);
 
@@ -61,8 +61,8 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> updateProject(Project project) async {
     await errorWrapper(() async {
-      await projectsRepository.update(project);
-      final updatedProject = await projectsRepository.getItemById(project.id);
+      await projectRepository.update(project);
+      final updatedProject = await projectRepository.getItemById(project.id);
       if (updatedProject == null) {
         throw Exception('Project not found');
       }
@@ -90,7 +90,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       if (project == null) {
         throw Exception('Project not found');
       }
-      await projectsRepository.delete(project);
+      await projectRepository.delete(project);
       emit(
         TaskDetailsState.initial(),
       );
@@ -146,7 +146,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     //   );
     //   if (odooTimesheet != null) {
     //     // TODO create new task if task or project's online has been changed
-    //     await timesheetsRepository.updateTimesheet(
+    //     await timesheetRepository.updateTimesheet(
     //       timesheet.copyWith(
     //         startTime: odooTimesheet.startTime,
     //         endTime: odooTimesheet.endTime,
@@ -171,7 +171,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
     //   await _syncFromOdooTimesheets();
 
-    //   final timesheets = await timesheetsRepository.getTimesheets(
+    //   final timesheets = await timesheetRepository.getTimesheets(
     //     taskWithProjectExternalData.task.id,
     //   );
     //   emit(
@@ -185,13 +185,13 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   /// Syncs a timesheet to Odoo and updates onlineId in the local database
   Future<void> _syncTimesheet(int timesheetId, int backendId) async {
-    // final timesheet = await timesheetsRepository.getTimesheetById(timesheetId);
+    // final timesheet = await timesheetRepository.getTimesheetById(timesheetId);
     // if (timesheet == null) {
     //   throw Exception('Timesheet not found');
     // }
 
     // final taskWithProjectExternalData =
-    //     await tasksRepository.getTaskWithProjectById(timesheet.taskId);
+    //     await taskRepository.getTaskWithProjectById(timesheet.taskId);
     // if (taskWithProjectExternalData == null) {
     //   throw Exception('Task and Project not found');
     // }
@@ -221,7 +221,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     //   ),
     // );
     // // update timesheet with online id to mark as synced
-    // await timesheetsRepository.updateTimesheet(
+    // await timesheetRepository.updateTimesheet(
     //   timesheet.copyWith(
     //     onlineId: Value(timesheetOnlineId),
     //   ),
@@ -252,9 +252,8 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       {required TimesheetsCompanion timesheetsCompanion,
       int? backendId}) async {
     await errorWrapper(() async {
-      final timesheetId =
-          await timesheetsRepository.create(timesheetsCompanion);
-      final timesheet = await timesheetsRepository.getItemById(timesheetId);
+      final timesheetId = await timesheetRepository.create(timesheetsCompanion);
+      final timesheet = await timesheetRepository.getItemById(timesheetId);
       if (timesheet == null) {
         throw Exception('Timesheet not found');
       }
@@ -270,7 +269,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         );
         await _syncTimesheet(timesheetId, backendId);
         final updatedTimesheet =
-            await timesheetsRepository.getItemById(timesheetId);
+            await timesheetRepository.getItemById(timesheetId);
         if (updatedTimesheet == null) {
           throw Exception('Updated Timesheet not found');
         }
@@ -300,7 +299,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       );
       await _syncTimesheet(timesheetId, backendId);
       final updatedTimesheet =
-          await timesheetsRepository.getItemById(timesheetId);
+          await timesheetRepository.getItemById(timesheetId);
       if (updatedTimesheet == null) {
         throw Exception('Updated Timesheet not found');
       }
@@ -319,9 +318,9 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   Future<void> resetTask(Task task) async {
     // TODO Need to create a new timesheet for this task which will be have initial status
     // await errorWrapper(() async {
-    //   await tasksRepository.resetTask(task);
+    //   await taskRepository.resetTask(task);
     //   final taskWithProjectExternalData =
-    //       await tasksRepository.getTaskWithProjectById(task.id);
+    //       await taskRepository.getTaskWithProjectById(task.id);
 
     //   if (taskWithProjectExternalData == null) {
     //     throw Exception('Task not found');
@@ -359,7 +358,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   Future<TaskWithProjectExternalData> _getTaskWithProjectExternalData(
       int taskId) async {
     final taskWithProjectExternalData =
-        await tasksRepository.getTaskWithProjectById(taskId);
+        await taskRepository.getTaskWithProjectById(taskId);
     if (taskWithProjectExternalData == null) {
       throw Exception('Task with id $taskId not found');
     }

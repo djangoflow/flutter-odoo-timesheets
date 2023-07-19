@@ -32,12 +32,12 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
             ),
-            RepositoryProvider<TasksRepository>(
+            RepositoryProvider<TaskRepository>(
               create: (context) =>
-                  TasksRepository(context.read<AppDatabase>().tasksDao),
+                  TaskRepository(context.read<AppDatabase>().tasksDao),
             ),
-            RepositoryProvider<TimesheetsRepository>(
-              create: (context) => TimesheetsRepository(
+            RepositoryProvider<TimesheetRepository>(
+              create: (context) => TimesheetRepository(
                 context.read<AppDatabase>().timesheetsDao,
               ),
             ),
@@ -50,21 +50,33 @@ class TimesheetsAppBuilder extends AppBuilder {
               ),
             ),
             RepositoryProvider<OdooTimesheetRepository>(
-              create: (context) {
-                final odooXmlRpcClient = context.read<OdooXmlRpcClient>();
-                return OdooTimesheetRepository(
-                  odooXmlRpcClient,
-                );
-              },
+              create: (context) => OdooTimesheetRepository(
+                context.read<OdooXmlRpcClient>(),
+              ),
             ),
-            RepositoryProvider<ProjectsRepository>(
-              create: (context) => ProjectsRepository(
+            RepositoryProvider<OdooProjectRepository>(
+              create: (context) => OdooProjectRepository(
+                context.read<OdooXmlRpcClient>(),
+              ),
+            ),
+            RepositoryProvider<OdooTaskRepository>(
+              create: (context) => OdooTaskRepository(
+                context.read<OdooXmlRpcClient>(),
+              ),
+            ),
+            RepositoryProvider<ProjectRepository>(
+              create: (context) => ProjectRepository(
                 context.read<AppDatabase>().projectsDao,
               ),
             ),
             RepositoryProvider<BackendsRepository>(
               create: (context) => BackendsRepository(
                 context.read<AppDatabase>().backendsDao,
+              ),
+            ),
+            RepositoryProvider<TaskRepository>(
+              create: (context) => TaskRepository(
+                context.read<AppDatabase>().tasksDao,
               ),
             ),
           ],
@@ -88,7 +100,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             ),
             BlocProvider<TasksListCubit>(
               create: (context) => TasksListCubit(
-                tasksRepository: context.read<TasksRepository>(),
+                taskRepository: context.read<TaskRepository>(),
                 odooTimesheetRepository:
                     context.read<OdooTimesheetRepository>(),
               )..load(

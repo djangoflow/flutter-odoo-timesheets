@@ -47,7 +47,7 @@ class TaskAddPage extends StatelessWidget {
                         .control(descriptionControlName)
                         .value as String?;
 
-                    await context.read<TasksRepository>().createTaskWithProject(
+                    await context.read<TaskRepository>().createTaskWithProject(
                           TasksCompanion(
                             name: Value(taskName),
                           ),

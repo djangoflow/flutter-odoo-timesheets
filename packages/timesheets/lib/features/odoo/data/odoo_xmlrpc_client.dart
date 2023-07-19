@@ -4,11 +4,11 @@ import 'package:xml_rpc/client_c.dart' as xml_rpc;
 
 class OdooXmlRpcClient {
   Map<int, OdooCredentials> _backendCredentials = {};
-  void updateCredentials({
-    required int backendId,
-    required OdooCredentials odooCredentials,
-  }) {
-    _backendCredentials[backendId] = odooCredentials;
+
+  set backendCrednetials(
+    Map<int, OdooCredentials> backendCredentials,
+  ) {
+    _backendCredentials = backendCredentials;
   }
 
   Future rpcAuthenticate({

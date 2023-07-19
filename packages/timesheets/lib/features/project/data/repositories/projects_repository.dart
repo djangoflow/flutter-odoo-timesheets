@@ -2,10 +2,10 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/task.dart';
 
-class ProjectsRepository extends CrudRepository<Project, ProjectsCompanion> {
+class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
   final ProjectsDao projectsDao;
 
-  const ProjectsRepository(
+  const ProjectRepository(
     this.projectsDao,
   );
 

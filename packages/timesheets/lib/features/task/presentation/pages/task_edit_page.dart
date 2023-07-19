@@ -34,7 +34,7 @@ class TaskEditPage extends StatelessWidget {
               final router = context.router;
               final projectId = project.id;
 
-              await context.read<ProjectsRepository>().delete(project);
+              await context.read<ProjectRepository>().delete(project);
 
               DjangoflowAppSnackbar.showInfo('Task deleted');
               router.pop(true);
@@ -72,7 +72,7 @@ class TaskEditPage extends StatelessWidget {
                         .control(descriptionControlName)
                         .value as String?;
 
-                    // await context.read<TasksRepository>().updateTaskWithProject(
+                    // await context.read<TaskRepository>().updateTaskWithProject(
                     //       task: task.copyWith(
                     //         name: taskName,
                     //         description: Value(description),

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_project.dart';
 
@@ -10,7 +11,8 @@ class OdooProjectRepository extends OdooRpcRepositoryBase {
 
   Future<List<OdooProject>> getProjects(
       {required int backendId, int? limit, int? offset, String? search}) async {
-    Map<String, dynamic> optionalParams = buildFilterableFields([name]);
+    Map<String, dynamic> optionalParams =
+        buildFilterableFields([name, 'task_ids', 'color']);
     if (limit != null && offset != null) {
       optionalParams.addAll({
         offsetKey: offset,
@@ -43,5 +45,20 @@ class OdooProjectRepository extends OdooRpcRepositoryBase {
       projects.add(OdooProject.fromJson(project));
     }
     return projects;
+  }
+
+  Future<void> getModelFields({required int backendId}) async {
+    final response = await odooCallMethod(
+      backendId: backendId,
+      odooModel: projectModel,
+      method: OdooApiMethod.fieldsGet.name,
+      parameters: [
+        [],
+      ],
+    );
+
+    Clipboard.setData(ClipboardData(text: response.toString()));
+
+    print(response);
   }
 }

@@ -69,7 +69,7 @@ class OdooTaskAddPage extends StatelessWidget {
     final odooTask = form.control(taskControlName).value as OdooTask;
     final description = form.control(descriptionControlName).value as String;
 
-    final taskRepository = context.read<TasksRepository>();
+    final taskRepository = context.read<TaskRepository>();
     if (taskWithProjectExternalData != null) {
       //   await taskRepository.updateTaskWithProject(
       //     task: taskWithProjectExternalData!.task.copyWith(

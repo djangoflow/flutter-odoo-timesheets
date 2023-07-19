@@ -16,10 +16,10 @@ class TaskDetailsRouterPage extends AutoRouter with AutoRouteWrapper {
         providers: [
           BlocProvider<TaskDetailsCubit>(
             create: (context) => TaskDetailsCubit(
-              timesheetsRepository: context.read<TimesheetsRepository>(),
+              timesheetRepository: context.read<TimesheetRepository>(),
               odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
-              tasksRepository: context.read<TasksRepository>(),
-              projectsRepository: context.read<ProjectsRepository>(),
+              taskRepository: context.read<TaskRepository>(),
+              projectRepository: context.read<ProjectRepository>(),
             )..loadTaskDetails(taskId),
           ),
         ],

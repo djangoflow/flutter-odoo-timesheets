@@ -9,6 +9,10 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_information_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
+import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
+import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
+import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 @RoutePage()
 class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
@@ -88,6 +92,7 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
                             formControlName: serverUrlControlName,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.url,
+                            autocorrect: false,
                             decoration: const InputDecoration(
                               hintText: 'Server Url',
                               helperText: 'https://www.example.com',
@@ -224,6 +229,7 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
       );
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
+    final syncCubit = context.read<SyncCubit>();
     final email = form.control(emailControlName).value as String;
     final pass = form.control(passControlName).value as String;
     String serverUrl = form.control(serverUrlControlName).value as String;
@@ -232,30 +238,45 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
       serverUrl += '/';
     }
     TextInput.finishAutofillContext();
-    await context.read<AuthCubit>().loginWithOdoo(
+    final backendId = await context.read<AuthCubit>().loginWithOdoo(
           email: email,
           password: pass,
           serverUrl: serverUrl,
           db: db,
         );
+    await syncCubit.syncData(backendId);
   }
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) {
-          final cubit = OdooInformationCubit(
-            OdooInformationRepository(
-              context.read<OdooXmlRpcClient>(),
-            ),
-          );
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) {
+              final cubit = OdooInformationCubit(
+                OdooInformationRepository(
+                  context.read<OdooXmlRpcClient>(),
+                ),
+              );
 
-          final providedServerUrl = serverUrl ??
-              context.read<AuthCubit>().state.lastConnectedOdooServerUrl;
-          if (providedServerUrl != null) {
-            cubit.getDbList(providedServerUrl);
-          }
-          return cubit;
-        },
+              final providedServerUrl = serverUrl ??
+                  context.read<AuthCubit>().state.lastConnectedOdooServerUrl;
+              if (providedServerUrl != null) {
+                cubit.getDbList(providedServerUrl);
+              }
+              return cubit;
+            },
+          ),
+          BlocProvider<SyncCubit>(
+            create: (context) => SyncCubit(
+              odooProjectRepository: context.read<OdooProjectRepository>(),
+              odooTaskRepository: context.read<OdooTaskRepository>(),
+              odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
+              projectRepository: context.read<ProjectRepository>(),
+              taskRepository: context.read<TaskRepository>(),
+              timesheetRepository: context.read<TimesheetRepository>(),
+            ),
+          ),
+        ],
         child: this,
       );
 }

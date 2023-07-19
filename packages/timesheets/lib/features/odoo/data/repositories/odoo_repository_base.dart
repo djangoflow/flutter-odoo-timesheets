@@ -34,18 +34,20 @@ class OdooRpcRepositoryBase {
       );
     } catch (e) {
       debugPrint(e.toString());
-      throw getHandledError(e);
+      throw getHandledException(e);
     }
   }
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
-  OdooRepositoryException getHandledError(error) {
+  OdooRepositoryException getHandledException(error) {
     if (error is xml_rpc.Fault) {
       return OdooRepositoryException.fromCode(error.text);
     } else if ((!kIsWeb && error is SocketException)) {
       return const OdooRepositoryException('Seems like you are offline!');
     } else if (error is ArgumentError || error is FormatException) {
       return OdooRepositoryException.fromCode(error.message);
+    } else if (error is OdooRepositoryException) {
+      return error;
     } else {
       return const OdooRepositoryException();
     }

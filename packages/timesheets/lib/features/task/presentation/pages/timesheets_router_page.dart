@@ -14,9 +14,9 @@ class TimesheetsRouterPage extends AutoRouter with AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider<TimesheetDataCubit>(
         create: (context) => TimesheetDataCubit(
-            context.read<TimesheetsRepository>(),
-            context.read<TasksRepository>(),
-            context.read<ProjectsRepository>())
+            context.read<TimesheetRepository>(),
+            context.read<TaskRepository>(),
+            context.read<ProjectRepository>())
           ..load(
             TimesheetRetrieveFilter(timesheetId: timesheetId),
           ),

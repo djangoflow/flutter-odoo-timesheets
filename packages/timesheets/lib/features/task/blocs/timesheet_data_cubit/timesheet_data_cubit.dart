@@ -14,12 +14,12 @@ typedef TimesheetDataState
 class TimesheetDataCubit
     extends DataCubit<TimesheetWithTaskExternalData?, TimesheetRetrieveFilter>
     with CubitMaybeEmit {
-  final TimesheetsRepository timesheetsRepository;
-  final TasksRepository tasksRepository;
-  final ProjectsRepository projectsRepository;
+  final TimesheetRepository timesheetRepository;
+  final TaskRepository taskRepository;
+  final ProjectRepository projectRepository;
 
   TimesheetDataCubit(
-      this.timesheetsRepository, this.tasksRepository, this.projectsRepository)
+      this.timesheetRepository, this.taskRepository, this.projectRepository)
       : super(
           ListBlocUtil.dataLoader<TimesheetWithTaskExternalData?,
               TimesheetRetrieveFilter>(
@@ -27,7 +27,7 @@ class TimesheetDataCubit
               if (filter == null) {
                 throw ArgumentError.notNull('taskId');
               }
-              final timesheetWithTaskExternalData = timesheetsRepository
+              final timesheetWithTaskExternalData = timesheetRepository
                   .getTimesheetWithTaskExternalDataById(filter.timesheetId);
 
               return timesheetWithTaskExternalData;
@@ -37,15 +37,15 @@ class TimesheetDataCubit
 
   Future<void> updateTimesheet(Timesheet timesheet,
       TaskWithProjectExternalData taskWithProjectExternalData) async {
-    await timesheetsRepository.update(timesheet);
-    await tasksRepository.update(
+    await timesheetRepository.update(timesheet);
+    await taskRepository.update(
       taskWithProjectExternalData.taskWithExternalData.task,
     );
-    await projectsRepository.update(
+    await projectRepository.update(
       taskWithProjectExternalData.projectWithExternalData.project,
     );
 
-    final timesheetWithTaskExternalData = await timesheetsRepository
+    final timesheetWithTaskExternalData = await timesheetRepository
         .getTimesheetWithTaskExternalDataById(timesheet.id);
 
     if (timesheetWithTaskExternalData == null) {
@@ -63,7 +63,7 @@ class TimesheetDataCubit
   }
 
   Future<void> deleteTimesheet(Timesheet timesheet) async {
-    await timesheetsRepository.delete(timesheet);
+    await timesheetRepository.delete(timesheet);
     emit(const Data.empty());
   }
 

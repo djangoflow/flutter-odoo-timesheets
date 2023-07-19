@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
+import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
+import 'package:timesheets/utils/utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -78,56 +83,85 @@ class SettingsPage extends StatelessWidget {
                     const SectionTitle(title: 'Synchronizations'),
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
-                        if (state.odooUser != null) {
-                          return ListTile(
-                            title: const Text('Odoo'),
-                            subtitle: Text(state.odooUser?.email ?? ''),
-                            trailing: Icon(
-                              Icons.chevron_right,
-                              size: kPadding.w * 4,
-                              color: theme.colorScheme.onSurface,
+                        final children = state.connectedBackends
+                            .getBackendsFilteredByType(BackendTypeEnum.odoo)
+                            .map((backend) => ListTile(
+                                  title: const Text('Odoo'),
+                                  subtitle: Text(backend.email ?? ''),
+                                  leading: SyncCubitProvider(
+                                    context: context,
+                                    child: Builder(builder: (context) {
+                                      return CircularProgressBuilder(
+                                        action: (_) async {
+                                          await context
+                                              .read<SyncCubit>()
+                                              .syncData(backend.id);
+                                        },
+                                        builder: (context, action, error) =>
+                                            IconButton(
+                                          icon: const Icon(Icons.sync),
+                                          onPressed: action,
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.chevron_right,
+                                    size: kPadding.w * 4,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                  // Logout
+                                  onTap: () => showCupertinoDialog<bool?>(
+                                    context: context,
+                                    builder: (context) => CupertinoAlertDialog(
+                                      title:
+                                          const Text('Disconnect from Odoo?'),
+                                      content: const Text(
+                                        'You will be logged out from Odoo and lose synchronization.',
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: const Text('Cancel'),
+                                          onPressed: () =>
+                                              context.router.pop(false),
+                                        ),
+                                        CupertinoDialogAction(
+                                          isDestructiveAction: true,
+                                          child: const Text('Disconnect'),
+                                          onPressed: () {
+                                            context.router.pop(true);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ).then((value) async {
+                                    if (value == true) {
+                                      context.read<AuthCubit>().logout(backend);
+                                    }
+                                  }),
+                                ))
+                            .toList();
+
+                        return Column(
+                          children: [
+                            ...children,
+                            const SizedBox(
+                              height: kPadding,
                             ),
-                            // Logout
-                            onTap: () => showCupertinoDialog<bool?>(
-                              context: context,
-                              builder: (context) => CupertinoAlertDialog(
-                                title: const Text('Disconnect from Odoo?'),
-                                content: const Text(
-                                  'You will be logged out from Odoo and lose synchronization.',
-                                ),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: const Text('Cancel'),
-                                    onPressed: () => context.router.pop(false),
-                                  ),
-                                  CupertinoDialogAction(
-                                    isDestructiveAction: true,
-                                    child: const Text('Disconnect'),
-                                    onPressed: () {
-                                      context.router.pop(true);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ).then((value) async {
-                              if (value == true) {
-                                context.read<AuthCubit>().logout();
-                              }
-                            }),
-                          );
-                        }
-                        return ListTile(
-                          title: const Text('Add Odoo account'),
-                          trailing: Icon(
-                            Icons.chevron_right,
-                            size: kPadding.w * 4,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                          onTap: () => context.router.push(
-                            OdooLoginRoute(),
-                          ),
+                          ],
                         );
                       },
+                    ),
+                    ListTile(
+                      title: const Text('Add Odoo account'),
+                      trailing: Icon(
+                        Icons.chevron_right,
+                        size: kPadding.w * 4,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                      onTap: () => context.router.push(
+                        OdooLoginRoute(),
+                      ),
                     ),
                     const SizedBox(
                       height: kPadding,

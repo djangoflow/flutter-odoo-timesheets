@@ -2,11 +2,11 @@ import 'package:timesheets/features/app/app.dart';
 
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
-class TimesheetsRepository
+class TimesheetRepository
     extends CrudRepository<Timesheet, TimesheetsCompanion> {
   final TimesheetsDao timesheetsDao;
 
-  const TimesheetsRepository(this.timesheetsDao);
+  const TimesheetRepository(this.timesheetsDao);
 
   @override
   Future<int> create(TimesheetsCompanion companion) =>

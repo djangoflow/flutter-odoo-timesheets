@@ -50,8 +50,8 @@ class TaskDetailsPage extends StatelessWidget {
               ),
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, authState) {
-                  final user = authState.odooUser;
-                  if (user != null && timesheets.isNotEmpty) {
+                  // final user = authState.odooUser;
+                  if (timesheets.isNotEmpty) {
                     return Column(
                       children: [
                         SizedBox(
@@ -306,7 +306,7 @@ class _TaskDetails extends StatelessWidget {
                       //         );
                       //         if (context.mounted) {
                       //           final latestTask = await taskDetailsCubit
-                      //               .tasksRepository
+                      //               .taskRepository
                       //               .getTaskById(task.id);
                       //           if (latestTask != null && context.mounted) {
                       //             await _syncTask(

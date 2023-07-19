@@ -13,3 +13,4 @@ export 'blocs/odoo_project_list_cubit/odoo_project_list_cubit.dart';
 export 'blocs/odoo_task_list_cubit/odoo_task_list_cubit.dart';
 export 'blocs/odoo_timesheet_list_cubit/odoo_timesheet_list_filter.dart';
 export 'data/models/odoo_timesheet_request.dart';
+export 'data/repositories/odoo_timesheet_repository.dart';

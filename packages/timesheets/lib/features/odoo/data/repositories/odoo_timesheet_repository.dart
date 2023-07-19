@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
@@ -7,7 +8,7 @@ import '../models/odoo_timesheet.dart';
 class OdooTimesheetRepository extends OdooRpcRepositoryBase {
   OdooTimesheetRepository(super.rpcClient);
 
-  Future<List<OdooTimesheet>> getTimesheetList({
+  Future<List<OdooTimesheet>> getOdooTimesheetsByProjectAndTaskId({
     required int backendId,
     required int projectId,
     required int taskId,
@@ -34,7 +35,7 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
     return timesheets;
   }
 
-  Future<OdooTimesheet?> getTimesheetById({
+  Future<OdooTimesheet?> getOdooTimesheetById({
     required int backendId,
     required int timesheetId,
   }) async {
@@ -102,7 +103,7 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
       ],
     );
 
-    return await getTimesheetById(
+    return await getOdooTimesheetById(
       backendId: backendId,
       timesheetId: timesheetRequest.id!,
     );
@@ -142,6 +143,21 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
         ],
       ],
     );
+  }
+
+  Future<void> getModelFields({
+    required int backendId,
+  }) async {
+    final response = await odooCallMethod(
+      backendId: backendId,
+      method: OdooApiMethod.fieldsGet.name,
+      odooModel: timesheetModel,
+      parameters: [
+        [],
+      ],
+    );
+    Clipboard.setData(ClipboardData(text: response.toString()));
+    print(response);
   }
 
   static const _timesheetDefaultParams = [

@@ -8,6 +8,7 @@ import 'package:timesheets/features/external/external.dart';
 
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
+import 'package:timesheets/utils/utils.dart';
 
 import 'auth_state.dart';
 export 'auth_state.dart';
@@ -24,6 +25,10 @@ class AuthCubit extends Cubit<AuthState> {
         ) {
     _backendsSubscription = backendsRepository.watchAllBackends().listen(
       (backends) {
+        odooAuthenticationRepository.rpcClient.backendCrednetials = backends
+            .getBackendsFilteredByType(BackendTypeEnum.odoo)
+            .backendCredentialsMap;
+
         emit(
           state.copyWith(
             connectedBackends: backends,
@@ -52,39 +57,33 @@ class AuthCubit extends Cubit<AuthState> {
     await backendsRepository.delete(backend);
   }
 
-  Future<void> loginWithOdoo({
+  Future<int> loginWithOdoo({
     required String email,
     required String password,
     required String serverUrl,
     required String db,
   }) async {
-    try {
-      final userId = await odooAuthenticationRepository.connect(
-        email: email,
-        password: password,
-        serverUrl: serverUrl,
-        db: db,
-      );
-      emit(
-        state.copyWith(
-          lastConnectedOdooDb: db,
-          lastConnectedOdooServerUrl: serverUrl,
-        ),
-      );
-      await backendsRepository.create(
-        BackendsCompanion(
-          backendType: const Value(BackendTypeEnum.odoo),
-          db: Value(db),
-          email: Value(email),
-          password: Value(password),
-          serverUrl: Value(serverUrl),
-          userId: Value(userId),
-        ),
-      );
-    } on OdooRepositoryException catch (e) {
-      DjangoflowAppSnackbar.showError(e.message);
-    } on Exception catch (e) {
-      DjangoflowAppSnackbar.showError(e.toString());
-    }
+    final userId = await odooAuthenticationRepository.connect(
+      email: email,
+      password: password,
+      serverUrl: serverUrl,
+      db: db,
+    );
+    emit(
+      state.copyWith(
+        lastConnectedOdooDb: db,
+        lastConnectedOdooServerUrl: serverUrl,
+      ),
+    );
+    return await backendsRepository.create(
+      BackendsCompanion(
+        backendType: const Value(BackendTypeEnum.odoo),
+        db: Value(db),
+        email: Value(email),
+        password: Value(password),
+        serverUrl: Value(serverUrl),
+        userId: Value(userId),
+      ),
+    );
   }
 }
