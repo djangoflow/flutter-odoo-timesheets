@@ -66,7 +66,9 @@ class TimesheetsAppBuilder extends AppBuilder {
             ),
             RepositoryProvider<ProjectRepository>(
               create: (context) => ProjectRepository(
-                context.read<AppDatabase>().projectsDao,
+                projectsDao: context.read<AppDatabase>().projectsDao,
+                externalProjectsDao:
+                    context.read<AppDatabase>().externalProjectsDao,
               ),
             ),
             RepositoryProvider<BackendsRepository>(

@@ -35,13 +35,16 @@ class SyncCubit extends Cubit<SyncState> {
       List<OdooProject> odooProjects = await odooProjectRepository.getProjects(
         backendId: backendId,
       );
-
+      await projectRepository.syncWithOdooProjects(
+        backendId: backendId,
+        odooProjects: odooProjects,
+      );
       // await projectRepository.syncProjects(projects);
 
       // Fetch tasks from Odoo and insert/update in the local database
-      final odooProjectIds = odooProjects.map((e) => e.id).toList();
-      List<OdooTask> odooTasks = await odooTaskRepository.getTasksByProjectIds(
-          backendId: backendId, projectIds: odooProjectIds);
+      // final odooProjectIds = odooProjects.map((e) => e.id).toList();
+      // List<OdooTask> odooTasks = await odooTaskRepository.getTasksByProjectIds(
+      //     backendId: backendId, projectIds: odooProjectIds);
 
       // Fetch timesheets from Odoo and insert/update in the local database
 

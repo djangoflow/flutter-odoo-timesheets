@@ -86,12 +86,14 @@ class SettingsPage extends StatelessWidget {
                         final children = state.connectedBackends
                             .getBackendsFilteredByType(BackendTypeEnum.odoo)
                             .map((backend) => ListTile(
+                                  key: ValueKey(backend.id),
                                   title: const Text('Odoo'),
                                   subtitle: Text(backend.email ?? ''),
                                   leading: SyncCubitProvider(
                                     context: context,
-                                    child: Builder(builder: (context) {
-                                      return CircularProgressBuilder(
+                                    child: Builder(
+                                      builder: (context) =>
+                                          CircularProgressBuilder(
                                         action: (_) async {
                                           await context
                                               .read<SyncCubit>()
@@ -102,8 +104,8 @@ class SettingsPage extends StatelessWidget {
                                           icon: const Icon(Icons.sync),
                                           onPressed: action,
                                         ),
-                                      );
-                                    }),
+                                      ),
+                                    ),
                                   ),
                                   trailing: Icon(
                                     Icons.chevron_right,

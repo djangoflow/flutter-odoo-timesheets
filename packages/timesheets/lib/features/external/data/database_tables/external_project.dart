@@ -13,7 +13,7 @@ class ExternalProjects extends Table {
       .references(Backends, #id, onDelete: KeyAction.cascade)
       .nullable()();
 
-  DateTimeColumn get lastSycned => dateTime().nullable()();
+  DateTimeColumn get lastSycned => dateTime().withDefault(currentDateAndTime)();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

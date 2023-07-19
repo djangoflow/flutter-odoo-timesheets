@@ -1,16 +1,30 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/project/data/database_tables/project.dart';
 
 part 'projects_dao.g.dart';
 
-@DriftAccessor(tables: [Projects])
+@DriftAccessor(tables: [Projects, ExternalProjects])
 class ProjectsDao extends DatabaseAccessor<AppDatabase>
     with _$ProjectsDaoMixin {
   ProjectsDao(AppDatabase db) : super(db);
 
   Future<int> createProject(ProjectsCompanion projectsCompanion) =>
       into(projects).insert(projectsCompanion);
+
+  Future<void> createProjectWithExternal(
+      {required ProjectsCompanion projectsCompanion,
+      required ExternalProjectsCompanion externalProjectsCompanion}) async {
+    await transaction(() async {
+      final id = await createProject(projectsCompanion);
+      await into(externalProjects).insert(
+        externalProjectsCompanion.copyWith(
+          internalId: Value(id),
+        ),
+      );
+    });
+  }
 
   Future<Project?> getProjectById(int projectId) =>
       (select(projects)..where((p) => p.id.equals(projectId)))
@@ -26,4 +40,17 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> deleteProject(Project project) =>
       delete(projects).delete(project);
+
+  Future<void> batchUpdateProjects(List<Project> projects) async {
+    await batch((batch) {
+      batch.insertAll(
+        this.projects,
+        projects,
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+  }
+
+  Future<List<Project>> getProjectsByIds(List<int> ids) =>
+      (select(projects)..where((p) => p.id.isIn(ids))).get();
 }

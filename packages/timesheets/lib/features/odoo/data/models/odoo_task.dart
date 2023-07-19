@@ -40,6 +40,7 @@ class OdooTask with _$OdooTask {
       name: 'timesheet_ids',
     )
     List<int>? timesheetIds,
+    bool? active,
   }) = _OdooTask;
 
   factory OdooTask.fromJson(Map<String, dynamic> json) =>

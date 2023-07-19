@@ -1,13 +1,18 @@
+import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/odoo/data/models/odoo_project.dart';
 import 'package:timesheets/features/project/project.dart';
-import 'package:timesheets/features/task/task.dart';
+import 'package:collection/collection.dart';
 
 class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
   final ProjectsDao projectsDao;
+  final ExternalProjectsDao externalProjectsDao;
 
-  const ProjectRepository(
-    this.projectsDao,
-  );
+  const ProjectRepository({
+    required this.projectsDao,
+    required this.externalProjectsDao,
+  });
 
   @override
   Future<int> create(ProjectsCompanion companion) =>
@@ -32,4 +37,67 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
           updatedAt: DateTime.now(),
         ),
       );
+
+  Future<void> syncWithOdooProjects(
+      {required int backendId, required List<OdooProject> odooProjects}) async {
+    final odooProjectIds = odooProjects.map((e) => e.id).toList();
+    final externalProjects =
+        await externalProjectsDao.getExternalProjectsByIdsAndBackendId(
+      backendId: backendId,
+      externalIds: odooProjectIds,
+    );
+    final internalProjectIds =
+        externalProjects.map((e) => e.internalId).whereType<int>().toList();
+    final internalProjects = await projectsDao.getProjectsByIds(
+      internalProjectIds,
+    );
+    final updatableProjects = <Project>[];
+    final insertableProjectCompanions = <int, ProjectsCompanion>{};
+
+    for (final odooProject in odooProjects) {
+      final externalProject = externalProjects.firstWhereOrNull(
+        (e) => e.externalId == odooProject.id,
+      );
+
+      if (externalProject != null) {
+        final internalProject = internalProjects.firstWhereOrNull(
+          (e) => e.id == externalProject.internalId,
+        );
+        if (internalProject != null) {
+          updatableProjects.add(
+            internalProject.copyWith(
+              active: Value(odooProject.active),
+              color: Value(odooProject.color),
+              isFavorite: Value(odooProject.isFavorite),
+              name: Value(odooProject.name),
+              taskCount: Value(odooProject.taskCount),
+            ),
+          );
+        }
+      } else {
+        insertableProjectCompanions[odooProject.id] = ProjectsCompanion(
+          active: Value(odooProject.active),
+          color: Value(odooProject.color),
+          isFavorite: Value(odooProject.isFavorite),
+          name: Value(odooProject.name),
+          taskCount: Value(odooProject.taskCount),
+        );
+      }
+    }
+
+    await projectsDao.batchUpdateProjects(updatableProjects);
+    for (final entry in insertableProjectCompanions.entries) {
+      final externalProjectComapanion = ExternalProjectsCompanion(
+        backendId: Value(backendId),
+        externalId: Value(entry.key),
+      );
+      await projectsDao.createProjectWithExternal(
+        projectsCompanion: entry.value,
+        externalProjectsCompanion: externalProjectComapanion,
+      );
+    }
+
+    print('Updated ${updatableProjects.length} projects');
+    print('Inserted ${insertableProjectCompanions.length} projects');
+  }
 }

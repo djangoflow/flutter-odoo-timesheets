@@ -14,6 +14,7 @@ class OdooProject with _$OdooProject {
     int? color,
     @JsonKey(name: 'is_favorite') bool? isFavorite,
     @JsonKey(name: 'task_count') int? taskCount,
+    bool? active,
   }) = _OdooProject;
 
   factory OdooProject.fromJson(Map<String, dynamic> json) =>

@@ -69,13 +69,8 @@ class AuthCubit extends Cubit<AuthState> {
       serverUrl: serverUrl,
       db: db,
     );
-    emit(
-      state.copyWith(
-        lastConnectedOdooDb: db,
-        lastConnectedOdooServerUrl: serverUrl,
-      ),
-    );
-    return await backendsRepository.create(
+
+    final backendId = await backendsRepository.create(
       BackendsCompanion(
         backendType: const Value(BackendTypeEnum.odoo),
         db: Value(db),
@@ -85,5 +80,22 @@ class AuthCubit extends Cubit<AuthState> {
         userId: Value(userId),
       ),
     );
+
+    final backend = await backendsRepository.getItemById(backendId);
+    if (backend == null) {
+      throw Exception('Backend not found');
+    }
+    emit(
+      state.copyWith(
+        connectedBackends: [
+          backend,
+          ...state.connectedBackends,
+        ],
+        lastConnectedOdooDb: db,
+        lastConnectedOdooServerUrl: serverUrl,
+      ),
+    );
+
+    return backendId;
   }
 }

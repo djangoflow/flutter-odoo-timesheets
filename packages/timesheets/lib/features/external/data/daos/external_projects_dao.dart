@@ -29,4 +29,11 @@ class ExternalProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> deleteExternalProject(ExternalProject externalProject) =>
       delete(externalProjects).delete(externalProject);
+
+  Future<List<ExternalProject>> getExternalProjectsByIdsAndBackendId(
+          {required int backendId, required List<int> externalIds}) =>
+      (select(externalProjects)
+            ..where((p) => p.backendId.equals(backendId))
+            ..where((p) => p.externalId.isIn(externalIds)))
+          .get();
 }
