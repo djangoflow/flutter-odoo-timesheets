@@ -45,17 +45,3 @@ class OdooTask with _$OdooTask {
   factory OdooTask.fromJson(Map<String, dynamic> json) =>
       _$OdooTaskFromJson(json);
 }
-
-
-//  IntColumn get stageId => integer().nullable()();
-//   TextColumn get name => text().nullable()();
-//   IntColumn get priority => integer().nullable()();
-//   DateTimeColumn get dateStart => dateTime().nullable()();
-//   DateTimeColumn get dateEnd => dateTime().nullable()();
-//   DateTimeColumn get dateDeadline => dateTime().nullable()();
-//   BoolColumn get active => boolean().nullable()();
-
-//   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-//   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
-
-

@@ -156,18 +156,36 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
         [],
       ],
     );
-    Clipboard.setData(ClipboardData(text: response.toString()));
-    print(response);
+    // Clipboard.setData(ClipboardData(text: response.toString()));
+    debugPrint(response);
   }
 
   static const _timesheetDefaultParams = [
+    'id',
     'name',
-    'unit_amount',
     'project_id',
     'task_id',
-    'user_id',
     'date_time',
     'date_time_end',
-    'id',
+    'unit_amount',
   ];
 }
+
+
+//  String? name,
+//     required int id,
+//     @JsonKey(name: 'project_id') required List<Object> project,
+//     @JsonKey(name: 'task_id') required List<Object> task,
+//     @JsonKey(
+//       name: 'date_time',
+//       fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
+//       toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+//     )
+//     DateTime? startTime,
+//     @JsonKey(
+//       name: 'date_time_end',
+//       fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
+//       toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+//     )
+//     DateTime? endTime,
+//     @JsonKey(name: 'unit_amount') required double unitAmount,

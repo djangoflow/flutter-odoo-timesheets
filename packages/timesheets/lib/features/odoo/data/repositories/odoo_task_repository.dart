@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
@@ -13,7 +13,8 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     int? offset,
     String? search,
   }) async {
-    Map<String, dynamic> optionalParams = buildFilterableFields([name]);
+    Map<String, dynamic> optionalParams =
+        buildFilterableFields(_taskDefaultFields);
     if (limit != null && offset != null) {
       optionalParams.addAll({
         offsetKey: offset,
@@ -63,11 +64,8 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     int? offset,
     String? search,
   }) async {
-    Map<String, dynamic> optionalParams = buildFilterableFields([
-      name,
-      'project_id',
-      'date_start',
-    ]);
+    Map<String, dynamic> optionalParams =
+        buildFilterableFields(_taskDefaultFields);
     if (limit != null && offset != null) {
       optionalParams.addAll({
         offsetKey: offset,
@@ -109,7 +107,35 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     return tasks;
   }
 
-  Future<void> getTasksByTaskIds(List<int> taskIds) async {}
+  Future<List<OdooTask>> getTasksByTaskIds({
+    required int backendId,
+    required List<int> taskIds,
+  }) async {
+    Map<String, dynamic> optionalParams =
+        buildFilterableFields(_taskDefaultFields);
+
+    var response = await odooCallMethod(
+      backendId: backendId,
+      odooModel: taskModel,
+      method: OdooApiMethod.searchRead.name,
+      parameters: [
+        [
+          [
+            'id',
+            'in',
+            taskIds,
+          ],
+        ],
+        optionalParams,
+      ],
+    );
+
+    final tasks = <OdooTask>[];
+    for (final task in response) {
+      tasks.add(OdooTask.fromJson(task));
+    }
+    return tasks;
+  }
 
   /// Get available fields for [taskModel]
   Future<void> getModelFields({required int backendId}) async {
@@ -122,7 +148,19 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
       ],
     );
 
-    Clipboard.setData(ClipboardData(text: response.toString()));
-    print(response);
+    // Clipboard.setData(ClipboardData(text: response.toString()));
+    debugPrint(response.toString());
   }
+
+  static const _taskDefaultFields = [
+    'id',
+    'name',
+    'project_id',
+    'date_start',
+    'date_end',
+    'date_deadline',
+    'priority',
+    'color',
+    'timesheet_ids',
+  ];
 }
