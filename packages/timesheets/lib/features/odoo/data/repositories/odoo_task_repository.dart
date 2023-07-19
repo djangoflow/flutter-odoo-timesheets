@@ -5,18 +5,18 @@ import 'package:timesheets/features/odoo/odoo.dart';
 class OdooTaskRepository extends OdooRpcRepositoryBase {
   OdooTaskRepository(super.rpcClient);
 
-  Future<List<OdooTask>> getTasks([OdooTaskListFilter? filter]) async {
-    int? projectId = filter?.projectId;
-
-    if (projectId == null) {
-      throw const OdooRepositoryException('Must provide a non-null projectId');
-    }
-
+  Future<List<OdooTask>> getTasks({
+    required int backendId,
+    required int projectId,
+    int? limit,
+    int? offset,
+    String? search,
+  }) async {
     Map<String, dynamic> optionalParams = buildFilterableFields([name]);
-    if (filter != null) {
+    if (limit != null && offset != null) {
       optionalParams.addAll({
-        offset: filter.offset,
-        limit: filter.limit,
+        offsetKey: offset,
+        limitKey: limit,
       });
     }
 
@@ -27,17 +27,18 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
         projectId,
       ],
     ];
-    if (filter != null && filter.search != null) {
+    if (search != null) {
       searchParameters.add(
         [
           name,
           caseInsensitiveComparison,
-          '${filter.search}%',
+          '$search%',
         ],
       );
     }
 
     var response = await odooCallMethod(
+      backendId: backendId,
       odooModel: taskModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [

@@ -8,7 +8,7 @@ class Backends extends Table {
   // fields for odoo
   TextColumn get serverUrl => text().nullable()();
   TextColumn get db => text().nullable()();
-  TextColumn get userId => text().nullable()();
+  IntColumn get userId => integer().nullable()();
   TextColumn get name => text().nullable()();
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();

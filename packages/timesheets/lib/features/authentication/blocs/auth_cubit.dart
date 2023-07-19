@@ -1,60 +1,55 @@
-import 'package:djangoflow_app/djangoflow_app.dart';
+import 'dart:async';
 
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:djangoflow_app/djangoflow_app.dart';
+import 'package:drift/drift.dart';
+import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
+
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'auth_state.dart';
 export 'auth_state.dart';
 
-class AuthCubit extends HydratedCubit<AuthState> {
-  static AuthCubit get instance => _instance;
-  static final AuthCubit _instance = AuthCubit._internal();
-  OdooAuthenticationRepository? _odooAuthenticationRepository;
-  // TODO need to use local db to retrieve and save user credentials.
-  // It should hold list of backends and credentials for each backend.
-
-  AuthCubit._internal() : super(const AuthState());
-
-  void initialize(OdooAuthenticationRepository odooAuthenticationRepository) {
-    if (_odooAuthenticationRepository != null) {
-      throw Exception('Already initialized');
-    }
-
-    _odooAuthenticationRepository = odooAuthenticationRepository;
+class AuthCubit extends Cubit<AuthState> {
+  final OdooAuthenticationRepository odooAuthenticationRepository;
+  final BackendsRepository backendsRepository;
+  StreamSubscription? _backendsSubscription;
+  AuthCubit({
+    required this.odooAuthenticationRepository,
+    required this.backendsRepository,
+  }) : super(
+          const AuthState(),
+        ) {
+    _backendsSubscription = backendsRepository.watchAllBackends().listen(
+      (backends) {
+        emit(
+          state.copyWith(
+            connectedBackends: backends,
+          ),
+        );
+      },
+    );
   }
 
   @override
-  AuthState? fromJson(Map<String, dynamic> json) => AuthState.fromJson(json);
+  Future<void> close() {
+    _backendsSubscription?.cancel();
+    return super.close();
+  }
 
-  void _odooLogin(
-    OdooUser user,
-    String password,
-    String serverUrl,
-    String db,
-  ) =>
-      emit(
-        state.copyWith(
-          odooUser: user,
-          odooCredentials: OdooCredentials(
-            password: password,
-            serverUrl: serverUrl,
-            db: db,
-            id: user.id,
-          ),
-        ),
-      );
-
-  void logout() {
+  Future<void> loadBackends() async {
+    final backends = await backendsRepository.getItems();
     emit(
       state.copyWith(
-        odooUser: null,
-        odooCredentials: state.odooCredentials?.copyWith(
-          id: null,
-          password: null,
-        ),
+        connectedBackends: backends,
       ),
     );
+  }
+
+  Future<void> logout(Backend backend) async {
+    await backendsRepository.delete(backend);
   }
 
   Future<void> loginWithOdoo({
@@ -64,27 +59,32 @@ class AuthCubit extends HydratedCubit<AuthState> {
     required String db,
   }) async {
     try {
-      if (_odooAuthenticationRepository == null) {
-        throw Exception('AuthCubit not initialized');
-      }
-      final user = await _odooAuthenticationRepository?.connect(
+      final userId = await odooAuthenticationRepository.connect(
         email: email,
         password: password,
         serverUrl: serverUrl,
         db: db,
       );
-      if (user != null) {
-        _odooLogin(user, password, serverUrl, db);
-      }
+      emit(
+        state.copyWith(
+          lastConnectedOdooDb: db,
+          lastConnectedOdooServerUrl: serverUrl,
+        ),
+      );
+      await backendsRepository.create(
+        BackendsCompanion(
+          backendType: const Value(BackendTypeEnum.odoo),
+          db: Value(db),
+          email: Value(email),
+          password: Value(password),
+          serverUrl: Value(serverUrl),
+          userId: Value(userId),
+        ),
+      );
     } on OdooRepositoryException catch (e) {
       DjangoflowAppSnackbar.showError(e.message);
     } on Exception catch (e) {
       DjangoflowAppSnackbar.showError(e.toString());
     }
   }
-
-  bool get isAuthenticated => state.odooUser != null;
-
-  @override
-  Map<String, dynamic>? toJson(AuthState state) => state.toJson();
 }

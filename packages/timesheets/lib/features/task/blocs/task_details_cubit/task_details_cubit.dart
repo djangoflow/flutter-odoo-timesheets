@@ -1,14 +1,9 @@
-import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:collection/collection.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
-import 'package:timesheets/utils/utils.dart';
 
 export 'task_details_state.dart';
 

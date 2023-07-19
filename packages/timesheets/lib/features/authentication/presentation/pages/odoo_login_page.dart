@@ -49,14 +49,14 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
             ],
             asyncValidatorsDebounceTime: 500,
             value: serverUrl ??
-                context.read<AuthCubit>().state.odooCredentials?.serverUrl ??
+                context.read<AuthCubit>().state.lastConnectedOdooServerUrl ??
                 'https://',
           ),
           dbControlName: FormControl<String>(
             validators: [
               Validators.required,
             ],
-            value: db ?? context.read<AuthCubit>().state.odooCredentials?.db,
+            value: db ?? context.read<AuthCubit>().state.lastConnectedOdooDb,
           ),
         },
       );
@@ -250,7 +250,7 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
           );
 
           final providedServerUrl = serverUrl ??
-              context.read<AuthCubit>().state.odooCredentials?.serverUrl;
+              context.read<AuthCubit>().state.lastConnectedOdooServerUrl;
           if (providedServerUrl != null) {
             cubit.getDbList(providedServerUrl);
           }

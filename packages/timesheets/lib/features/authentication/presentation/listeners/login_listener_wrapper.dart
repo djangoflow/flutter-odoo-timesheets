@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'login_listener.dart';
@@ -11,10 +12,11 @@ class LoginListenerWrapper extends StatefulWidget {
     this.onLogin,
     this.onLogout,
     required this.child,
-    required this.initialUser,
+    required this.initialConnectedBackends,
   });
-  final OdooUser? initialUser;
-  final void Function(BuildContext context, OdooUser user)? onLogin;
+  final List<Backend>? initialConnectedBackends;
+  final void Function(BuildContext context, List<Backend> connectedBackends)?
+      onLogin;
   final void Function(BuildContext context)? onLogout;
   final Widget child;
   @override
@@ -25,8 +27,8 @@ class _LoginListenerWrapperState extends State<LoginListenerWrapper> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialUser != null) {
-      widget.onLogin?.call(context, widget.initialUser!);
+    if (widget.initialConnectedBackends != null) {
+      widget.onLogin?.call(context, widget.initialConnectedBackends!);
     }
   }
 

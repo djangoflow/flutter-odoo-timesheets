@@ -1,7 +1,7 @@
-export 'data/database_models/backend.dart';
-export 'data/database_models/external_project.dart';
-export 'data/database_models/external_task.dart';
-export 'data/database_models/external_timesheet.dart';
+export 'data/database_tables/backend.dart';
+export 'data/database_tables/external_project.dart';
+export 'data/database_tables/external_task.dart';
+export 'data/database_tables/external_timesheet.dart';
 export 'data/daos/backends_dao.dart';
 export 'data/backend_type_enum.dart';
 export 'data/daos/external_projects_dao.dart';

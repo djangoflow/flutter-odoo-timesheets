@@ -45,7 +45,7 @@ class AppRouter extends $AppRouter {
                 AutoRoute(
                   path: 'add-odoo',
                   page: OdooTaskAddRoute.page,
-                  guards: [AuthGuard()],
+                  // guards: [AuthGuard()],
                 ),
                 AutoRoute(
                   path: ':id',

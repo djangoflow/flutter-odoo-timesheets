@@ -7,10 +7,10 @@ part 'odoo_credentials.g.dart';
 @freezed
 class OdooCredentials with _$OdooCredentials {
   const factory OdooCredentials({
-    int? id,
-    String? password,
-    String? serverUrl,
-    String? db,
+    required int userId,
+    required String password,
+    required String serverUrl,
+    required String db,
   }) = _OdooCredentials;
 
   factory OdooCredentials.fromJson(Map<String, dynamic> json) =>

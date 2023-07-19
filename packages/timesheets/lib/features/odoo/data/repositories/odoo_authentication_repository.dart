@@ -6,7 +6,7 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
   OdooAuthenticationRepository(super.rpcClient);
 
   /// Sends auth request to odoo xml_rpc and fetch user data and returns [User] on success
-  Future<OdooUser?> connect({
+  Future<int> connect({
     required String email,
     required String password,
     required String serverUrl,
@@ -27,13 +27,17 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
         throw OdooRepositoryException.fromCode('invalid_cred');
       }
 
-      rpcClient.updateCredentials(
-        password: password,
-        id: id,
-        baseUrl: serverUrl,
-        db: db,
-      );
+      return id as int;
+    } catch (e) {
+      throw getHandledError(e);
+    }
+  }
 
+  Future<OdooUser?> getUserData({
+    required int userId,
+    required int backendId,
+  }) async {
+    try {
       Map<String, dynamic> filterableFields =
           buildFilterableFields(['name', 'email']);
 
@@ -41,9 +45,10 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
       List response = await odooCallMethod(
         odooModel: usersModel,
         method: OdooApiMethod.read.name,
+        backendId: backendId,
         parameters: [
           [
-            id,
+            userId,
           ],
           filterableFields,
         ],
@@ -54,8 +59,7 @@ class OdooAuthenticationRepository extends OdooRpcRepositoryBase {
 
       return OdooUser.fromJson(userData);
     } catch (e) {
-      handleError(e);
-      return null;
+      throw getHandledError(e);
     }
   }
 }

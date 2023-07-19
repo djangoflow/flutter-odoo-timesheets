@@ -29,4 +29,6 @@ class BackendsRepository extends CrudRepository<Backend, BackendsCompanion> {
           updatedAt: DateTime.now(),
         ),
       );
+
+  Stream<List<Backend>> watchAllBackends() => backendsDao.watchAllBackends();
 }

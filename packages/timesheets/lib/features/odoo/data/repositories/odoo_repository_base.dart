@@ -19,6 +19,7 @@ class OdooRpcRepositoryBase {
     required String odooModel,
     required String method,
     required List parameters,
+    required int backendId,
   }) async {
     try {
       final rpcParams = [
@@ -29,23 +30,24 @@ class OdooRpcRepositoryBase {
 
       return await rpcClient.rpcCallMethod(
         params: rpcParams,
+        backendId: backendId,
       );
     } catch (e) {
       debugPrint(e.toString());
-      handleError(e);
+      throw getHandledError(e);
     }
   }
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
-  handleError(error) {
+  OdooRepositoryException getHandledError(error) {
     if (error is xml_rpc.Fault) {
-      throw OdooRepositoryException.fromCode(error.text);
+      return OdooRepositoryException.fromCode(error.text);
     } else if ((!kIsWeb && error is SocketException)) {
-      throw const OdooRepositoryException('Seems like you are offline!');
+      return const OdooRepositoryException('Seems like you are offline!');
     } else if (error is ArgumentError || error is FormatException) {
-      throw OdooRepositoryException.fromCode(error.message);
+      return OdooRepositoryException.fromCode(error.message);
     } else {
-      throw const OdooRepositoryException();
+      return const OdooRepositoryException();
     }
   }
 

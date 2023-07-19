@@ -1,22 +1,14 @@
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:xml_rpc/client_c.dart' as xml_rpc;
 
 class OdooXmlRpcClient {
-  int? _id;
-  String? _password;
-  String? _baseUrl;
-  String? _db;
-
+  Map<int, OdooCredentials> _backendCredentials = {};
   void updateCredentials({
-    int? id,
-    String? password,
-    String? baseUrl,
-    String? db,
+    required int backendId,
+    required OdooCredentials odooCredentials,
   }) {
-    _id = id;
-    _password = password;
-    _baseUrl = baseUrl;
-    _db = db;
+    _backendCredentials[backendId] = odooCredentials;
   }
 
   Future rpcAuthenticate({
@@ -38,13 +30,21 @@ class OdooXmlRpcClient {
   // TODO : Add a way to fetch credentials from db using backendId
   Future rpcCallMethod({
     required List params,
+
+    /// Backend ID of odoo type backend that is making the request from
+    required int backendId,
   }) async {
-    if (_id == null || _password == null || _baseUrl == null || _db == null) {
+    final odooCredentials = _backendCredentials[backendId];
+    if (odooCredentials == null) {
       throw Exception('Credentials not set');
     } else {
-      Uri uri = Uri.parse('$_baseUrl$objectEndpoint');
+      Uri uri = Uri.parse('${odooCredentials.serverUrl}$objectEndpoint');
       try {
-        final defaultParams = [_db, _id, _password];
+        final defaultParams = [
+          odooCredentials.db,
+          odooCredentials.userId,
+          odooCredentials.password
+        ];
 
         final response =
             await xml_rpc.call(uri, rpcFunction, [...defaultParams, ...params]);

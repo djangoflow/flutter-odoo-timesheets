@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
@@ -61,6 +62,11 @@ class TimesheetsAppBuilder extends AppBuilder {
                 context.read<AppDatabase>().projectsDao,
               ),
             ),
+            RepositoryProvider<BackendsRepository>(
+              create: (context) => BackendsRepository(
+                context.read<AppDatabase>().backendsDao,
+              ),
+            ),
           ],
           providers: [
             BlocProvider<AppCubit>(
@@ -74,10 +80,11 @@ class TimesheetsAppBuilder extends AppBuilder {
               lazy: false,
             ),
             BlocProvider<AuthCubit>(
-              create: (context) => AuthCubit.instance
-                ..initialize(
-                  context.read<OdooAuthenticationRepository>(),
-                ),
+              create: (context) => AuthCubit(
+                odooAuthenticationRepository:
+                    context.read<OdooAuthenticationRepository>(),
+                backendsRepository: context.read<BackendsRepository>(),
+              ),
             ),
             BlocProvider<TasksListCubit>(
               create: (context) => TasksListCubit(
@@ -90,23 +97,9 @@ class TimesheetsAppBuilder extends AppBuilder {
             )
           ],
           builder: (context) => LoginListenerWrapper(
-            initialUser: context.read<AuthCubit>().state.odooUser,
-            onLogin: (context, user) {
-              final authCubit = context.read<AuthCubit>();
-              final authState = authCubit.state;
-              final odooCredentials = authState.odooCredentials;
-
-              if (odooCredentials?.password == null) {
-                authCubit.logout();
-              } else {
-                context.read<OdooXmlRpcClient>().updateCredentials(
-                      password: odooCredentials?.password,
-                      id: user.id,
-                      baseUrl: odooCredentials?.serverUrl,
-                      db: odooCredentials?.db,
-                    );
-              }
-            },
+            initialConnectedBackends:
+                context.read<AuthCubit>().state.connectedBackends,
+            onLogin: (context, user) {},
             child: AppCubitConsumer(
               listenWhen: (previous, current) =>
                   previous.environment != current.environment,

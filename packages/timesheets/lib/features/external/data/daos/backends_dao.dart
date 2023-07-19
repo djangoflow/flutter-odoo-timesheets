@@ -27,4 +27,6 @@ class BackendsDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> deleteBackend(Backend backend) =>
       delete(backends).delete(backend);
+
+  Stream<List<Backend>> watchAllBackends() => select(backends).watch();
 }

@@ -1,5 +1,4 @@
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/odoo/blocs/odoo_project_list_cubit/odoo_project_list_cubit.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_project.dart';
 
 import '../odoo_api_method.dart';
@@ -9,26 +8,28 @@ import 'odoo_repository_base.dart';
 class OdooProjectRepository extends OdooRpcRepositoryBase {
   OdooProjectRepository(super.rpcClient);
 
-  Future<List<OdooProject>> getProjects([OdooProjectListFilter? filter]) async {
+  Future<List<OdooProject>> getProjects(
+      {required int backendId, int? limit, int? offset, String? search}) async {
     Map<String, dynamic> optionalParams = buildFilterableFields([name]);
-    if (filter != null) {
+    if (limit != null && offset != null) {
       optionalParams.addAll({
-        offset: filter.offset,
-        limit: filter.limit,
+        offsetKey: offset,
+        limitKey: limit,
       });
     }
     final searchParameters = [];
-    if (filter != null && filter.search != null) {
+    if (search != null) {
       searchParameters.add(
         [
           name,
           caseInsensitiveComparison,
-          '${filter.search}%',
+          '$search%',
         ],
       );
     }
 
     var response = await odooCallMethod(
+      backendId: backendId,
       odooModel: projectModel,
       method: OdooApiMethod.searchRead.name,
       parameters: [

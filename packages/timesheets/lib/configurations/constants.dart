@@ -33,8 +33,8 @@ const usersModel = 'res.users';
 const timesheetModel = 'account.analytic.line';
 
 //Odoo fields
-const offset = 'offset';
-const limit = 'limit';
+const offsetKey = 'offset';
+const limitKey = 'limit';
 const fields = 'fields';
 
 // Odoo model fields
