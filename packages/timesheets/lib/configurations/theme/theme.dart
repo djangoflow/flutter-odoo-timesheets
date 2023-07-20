@@ -100,6 +100,9 @@ class AppTheme {
           vertical: kPadding.h * 2,
         ),
       ),
+      tabBarTheme: theme.tabBarTheme.copyWith(
+        labelStyle: textTheme.labelLarge,
+      ),
     );
   }
 }

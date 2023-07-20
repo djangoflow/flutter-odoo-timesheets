@@ -5,21 +5,22 @@ part 'tasks_list_filter.freezed.dart';
 part 'tasks_list_filter.g.dart';
 
 @freezed
-class TasksListFilter with _$TasksListFilter implements OffsetLimitFilter {
-  static const kPageSize = 25;
-  const TasksListFilter._();
+class TaskListFilter with _$TaskListFilter implements OffsetLimitFilter {
+  static const kPageSize = 50;
+  const TaskListFilter._();
 
   @Implements<OffsetLimitFilter>()
-  const factory TasksListFilter({
-    @Default(25) int limit,
+  const factory TaskListFilter({
+    @Default(50) int limit,
     @Default(0) int offset,
-  }) = _TasksListFilter;
+    int? projectId,
+  }) = _TaskListFilter;
 
-  factory TasksListFilter.fromJson(
+  factory TaskListFilter.fromJson(
     Map<String, dynamic> map,
   ) =>
-      _$TasksListFilterFromJson(map);
+      _$TaskListFilterFromJson(map);
 
   @override
-  TasksListFilter copyWithOffset(int offset) => copyWith(offset: offset);
+  TaskListFilter copyWithOffset(int offset) => copyWith(offset: offset);
 }

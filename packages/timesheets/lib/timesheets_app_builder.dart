@@ -114,13 +114,13 @@ class TimesheetsAppBuilder extends AppBuilder {
                 backendRepository: context.read<BackendRepository>(),
               ),
             ),
-            BlocProvider<TasksListCubit>(
-              create: (context) => TasksListCubit(
+            BlocProvider<TaskListCubit>(
+              create: (context) => TaskListCubit(
                 taskRepository: context.read<TaskRepository>(),
                 odooTimesheetRepository:
                     context.read<OdooTimesheetRepository>(),
               )..load(
-                  const TasksListFilter(),
+                  const TaskListFilter(),
                 ),
             )
           ],

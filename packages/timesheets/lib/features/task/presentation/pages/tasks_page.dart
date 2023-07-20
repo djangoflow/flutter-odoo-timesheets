@@ -25,8 +25,8 @@ class _TasksPageState extends State<TasksPage>
 
   @override
   void didPopNext() {
-    context.read<TasksListCubit>().load(
-          const TasksListFilter(),
+    context.read<TaskListCubit>().load(
+          const TaskListFilter(),
         );
   }
 
@@ -57,10 +57,10 @@ class _TasksPageState extends State<TasksPage>
         child: Padding(
           padding: EdgeInsets.only(top: kPadding.h * 3),
           child: RefreshIndicator(
-            onRefresh: () => context.read<TasksListCubit>().load(
-                  const TasksListFilter(),
+            onRefresh: () => context.read<TaskListCubit>().load(
+                  const TaskListFilter(),
                 ),
-            child: BlocBuilder<TasksListCubit, TasksListState>(
+            child: BlocBuilder<TaskListCubit, TaskListState>(
               builder: (context, state) => state.map(
                 (value) => _isPageVisible == null
                     ? const SizedBox()

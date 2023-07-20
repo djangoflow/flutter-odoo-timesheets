@@ -8,21 +8,23 @@ import 'package:timesheets/utils/utils.dart';
 import 'tasks_list_filter.dart';
 export 'tasks_list_filter.dart';
 
-typedef TasksListState
-    = Data<List<TaskWithProjectExternalData>, TasksListFilter>;
+typedef TaskListState = Data<List<TaskWithProjectExternalData>, TaskListFilter>;
 
-class TasksListCubit
-    extends ListCubit<TaskWithProjectExternalData, TasksListFilter>
+class TaskListCubit
+    extends ListCubit<TaskWithProjectExternalData, TaskListFilter>
     with CubitMaybeEmit {
   final TaskRepository taskRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
-  TasksListCubit({
+  TaskListCubit({
     required this.taskRepository,
     required this.odooTimesheetRepository,
   }) : super(
-          ListBlocUtil.listLoader<TaskWithProjectExternalData, TasksListFilter>(
+          ListBlocUtil.listLoader<TaskWithProjectExternalData, TaskListFilter>(
             loader: ([filter]) => taskRepository.getPaginatedTasksWithProjects(
-                filter?.limit ?? TasksListFilter.kPageSize, filter?.offset),
+              filter?.limit ?? TaskListFilter.kPageSize,
+              filter?.offset,
+              filter?.projectId,
+            ),
           ),
         );
 

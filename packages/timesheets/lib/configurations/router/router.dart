@@ -94,7 +94,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),
-
+        AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
         // Or redirect to home
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];

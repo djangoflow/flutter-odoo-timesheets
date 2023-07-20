@@ -30,29 +30,34 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
       );
 
   Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
-          int limit, int? offset) =>
-      (select(tasks)
-            // should be ordered by createdAt and onlineIds
-            ..orderBy([
-              (t) =>
-                  OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
-            ])
-            ..limit(limit, offset: offset))
-          .join([
-            leftOuterJoin(
-                externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
-            leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
-            leftOuterJoin(externalProjects,
-                projects.id.equalsExp(externalProjects.internalId)),
-          ])
-          .get()
-          .then(
-            (rows) => rows
-                .map(
-                  (row) => _rowTaskWithProjectExternalData(row),
-                )
-                .toList(),
-          );
+      {required int limit, int? offset, int? projectId}) {
+    final query = select(tasks)
+      // should be ordered by createdAt and onlineIds
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+      ])
+      ..limit(limit, offset: offset);
+    if (projectId != null) {
+      query.where((t) => t.projectId.equals(projectId));
+    }
+
+    return (query)
+        .join([
+          leftOuterJoin(
+              externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+          leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+          leftOuterJoin(externalProjects,
+              projects.id.equalsExp(externalProjects.internalId)),
+        ])
+        .get()
+        .then(
+          (rows) => rows
+              .map(
+                (row) => _rowTaskWithProjectExternalData(row),
+              )
+              .toList(),
+        );
+  }
 
   Future<List<TaskWithProjectExternalData>> getAllTasksWithProjects() =>
       (select(tasks)

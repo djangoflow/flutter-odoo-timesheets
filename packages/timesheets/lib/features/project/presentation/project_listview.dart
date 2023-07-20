@@ -26,10 +26,13 @@ class ProjectListView extends StatelessWidget {
         itemBuilder: (context, state, index, item) => ListTile(
           title: Text(item.name ?? ''),
           subtitle: Text('${item.taskCount ?? 0} Tasks'),
-          onTap: () {},
+          onTap: () {
+            context.router.push(ProjectDetailsRoute(projectId: item.id));
+          },
         ),
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
+          controller: controller,
           padding: EdgeInsets.all(
             kPadding.h * 2,
           ),

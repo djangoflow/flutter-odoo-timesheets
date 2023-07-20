@@ -30,8 +30,15 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
   Future<List<Task>> getItems() => tasksDao.getAllTasks();
 
   Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
-          int limit, int? offset) =>
-      tasksDao.getPaginatedTasksWithProjects(limit, offset);
+    int limit,
+    int? offset,
+    int? projectId,
+  ) =>
+      tasksDao.getPaginatedTasksWithProjects(
+        limit: limit,
+        offset: offset,
+        projectId: projectId,
+      );
 
   Future<List<TaskWithProjectExternalData>> getAllTasksWithProjects() =>
       tasksDao.getAllTasksWithProjects();
