@@ -26,12 +26,12 @@ class AppRouter extends $AppRouter {
           path: '/login',
         ),
         AutoRoute(
-          page: HomeRouter.page,
+          page: HomeTabRouter.page,
           path: '/',
           children: [
             AutoRoute(
               page: TasksRouter.page,
-              path: 'tasks',
+              path: 'timers',
               initial: true,
               children: [
                 AutoRoute(
@@ -77,6 +77,7 @@ class AppRouter extends $AppRouter {
                 ),
               ],
             ),
+            AutoRoute(page: ProjectsRoute.page, path: 'projects'),
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),

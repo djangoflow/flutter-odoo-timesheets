@@ -54,105 +54,72 @@ class _TasksPageState extends State<TasksPage>
             _isPageVisible?.value = true;
           }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Tasks'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  context.router.push(const SettingsRoute());
-                },
-                icon: Icon(
-                  Icons.settings_outlined,
-                  size: kPadding.r * 4,
+        child: Padding(
+          padding: EdgeInsets.only(top: kPadding.h * 3),
+          child: RefreshIndicator(
+            onRefresh: () => context.read<TasksListCubit>().load(
+                  const TasksListFilter(),
                 ),
-              )
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kPadding.r),
-            ),
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            child: Icon(
-              Icons.add,
-              size: kPadding.r * 4,
-            ),
-            onPressed: () async {
-              context.router.push(const TaskAddRoute());
-            },
-          ),
-          body: Padding(
-            padding: EdgeInsets.only(top: kPadding.h * 3),
-            child: RefreshIndicator(
-              onRefresh: () => context.read<TasksListCubit>().load(
-                    const TasksListFilter(),
-                  ),
-              child: BlocBuilder<TasksListCubit, TasksListState>(
-                builder: (context, state) => state.map(
-                  (value) => _isPageVisible == null
-                      ? const SizedBox()
-                      : ValueListenableBuilder<bool>(
-                          valueListenable: _isPageVisible!,
-                          builder: (context, isVisible, child) => !isVisible
-                              ? const SizedBox()
-                              : ListView.separated(
-                                  itemCount: value.data?.length ?? 0,
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(
-                                    height: kPadding.h,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    final taskWithProjectExternalData =
-                                        value.data![index];
-                                    final task = taskWithProjectExternalData
-                                        .taskWithExternalData.task;
-                                    // final elapsedTime = task.elapsedTime;
-
-                                    return TaskListTile(
-                                      key: ValueKey(task.id),
-                                      title: Text(task.name ?? ''),
-                                      subtitle: Text(
-                                        // Should be timesheet description
-                                        '',
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      // elapsedTime: elapsedTime,
-                                      // initialTimerStatus: TimesheetStatusEnum
-                                      //     .values[task.status],
-                                      onTap: () {
-                                        context.router.push(
-                                          TaskDetailsRouter(
-                                            taskId: task.id,
-                                            children: const [
-                                              TaskDetailsRoute()
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      onTimerResume: (context) {
-                                        // context.read<TimerCubit>().elapsedTime =
-                                        //     Duration(
-                                        //   seconds: elapsedTime,
-                                        // );
-                                      },
-                                      onTimerStateChange: (timerState,
-                                          tickDurationInSeconds) async {
-                                        // Need to update timesheet
-                                      },
-                                    );
-                                  },
+            child: BlocBuilder<TasksListCubit, TasksListState>(
+              builder: (context, state) => state.map(
+                (value) => _isPageVisible == null
+                    ? const SizedBox()
+                    : ValueListenableBuilder<bool>(
+                        valueListenable: _isPageVisible!,
+                        builder: (context, isVisible, child) => !isVisible
+                            ? const SizedBox()
+                            : ListView.separated(
+                                itemCount: value.data?.length ?? 0,
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: kPadding.h,
                                 ),
-                        ),
-                  loading: (_) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  empty: (_) => const TasksPlaceHolder(),
-                  error: (_) => const Center(
-                    child: Text('Error occurred!'),
-                  ),
+                                itemBuilder: (context, index) {
+                                  final taskWithProjectExternalData =
+                                      value.data![index];
+                                  final task = taskWithProjectExternalData
+                                      .taskWithExternalData.task;
+                                  // final elapsedTime = task.elapsedTime;
+
+                                  return TaskListTile(
+                                    key: ValueKey(task.id),
+                                    title: Text(task.name ?? ''),
+                                    subtitle: Text(
+                                      // Should be timesheet description
+                                      '',
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    // elapsedTime: elapsedTime,
+                                    // initialTimerStatus: TimesheetStatusEnum
+                                    //     .values[task.status],
+                                    onTap: () {
+                                      context.router.push(
+                                        TaskDetailsRouter(
+                                          taskId: task.id,
+                                          children: const [TaskDetailsRoute()],
+                                        ),
+                                      );
+                                    },
+                                    onTimerResume: (context) {
+                                      // context.read<TimerCubit>().elapsedTime =
+                                      //     Duration(
+                                      //   seconds: elapsedTime,
+                                      // );
+                                    },
+                                    onTimerStateChange: (timerState,
+                                        tickDurationInSeconds) async {
+                                      // Need to update timesheet
+                                    },
+                                  );
+                                },
+                              ),
+                      ),
+                loading: (_) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                empty: (_) => const TasksPlaceHolder(),
+                error: (_) => const Center(
+                  child: Text('Error occurred!'),
                 ),
               ),
             ),

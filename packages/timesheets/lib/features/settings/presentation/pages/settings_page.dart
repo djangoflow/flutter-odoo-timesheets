@@ -26,205 +26,190 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final schemeColors = theme.colorScheme;
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leadingWidth: kPadding * 9,
-        leading: const Row(
+    return SafeArea(
+      bottom: true,
+      child: Center(
+        child: Column(
           children: [
-            SizedBox(width: kPadding * 2),
-            AutoLeadingButton(),
-          ],
-        ),
-        title: const Text('Settings'),
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kPadding * 2,
-                    vertical: kPadding * 2,
-                  ),
-                  children: [
-                    const SectionTitle(title: 'Theme'),
-                    ListTile(
-                      title: const Text('Dark theme'),
-                      trailing: BlocBuilder<AppCubit, AppState>(
-                        builder: (context, state) => Switch(
-                          trackColor: MaterialStateProperty.all(
-                            schemeColors.onSurfaceVariant.withOpacity(0.2),
-                          ),
-                          thumbColor: MaterialStateProperty.all(
-                            schemeColors.primary,
-                          ),
-                          thumbIcon: MaterialStateProperty.all(
-                            Icon(
-                              state.themeMode == ThemeMode.dark
-                                  ? CupertinoIcons.moon_fill
-                                  : CupertinoIcons.sun_min_fill,
-                              color: schemeColors.onPrimary,
-                            ),
-                          ),
-                          value: state.themeMode == ThemeMode.dark,
-                          onChanged: (value) {
-                            final isDarkTheme =
-                                state.themeMode == ThemeMode.dark;
-                            AppCubit.instance.updateThemeMode(
-                                isDarkTheme ? ThemeMode.light : ThemeMode.dark);
-                          },
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kPadding * 2,
+                  vertical: kPadding * 2,
+                ),
+                children: [
+                  const SectionTitle(title: 'Theme'),
+                  ListTile(
+                    title: const Text('Dark theme'),
+                    trailing: BlocBuilder<AppCubit, AppState>(
+                      builder: (context, state) => Switch(
+                        trackColor: MaterialStateProperty.all(
+                          schemeColors.onSurfaceVariant.withOpacity(0.2),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: kPadding,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.router.pushNativeRoute(MaterialPageRoute(
-                            builder: (context) =>
-                                DriftDbViewer(context.read<AppDatabase>())));
-                      },
-                      child: const Text('Check DB'),
-                    ),
-                    const SectionTitle(title: 'Synchronizations'),
-                    SyncCubitProvider(
-                      child: BlocBuilder<AuthCubit, AuthState>(
-                        builder: (context, state) {
-                          final children = state.connectedBackends
-                              .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                              .map((backend) => ListTile(
-                                    key: ValueKey(backend.id),
-                                    title: const Text('Odoo'),
-                                    subtitle: Text(backend.email ?? ''),
-                                    leading: Builder(
-                                      builder: (context) =>
-                                          CircularProgressBuilder(
-                                        action: (_) async {
-                                          await context
-                                              .read<SyncCubit>()
-                                              .syncData(backend.id);
-                                        },
-                                        builder: (context, action, error) =>
-                                            IconButton(
-                                          icon: const Icon(Icons.sync),
-                                          onPressed: action,
-                                        ),
-                                      ),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.chevron_right,
-                                      size: kPadding.w * 4,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                    // Logout
-                                    onTap: () => showCupertinoDialog<bool?>(
-                                      context: context,
-                                      builder: (context) =>
-                                          CupertinoAlertDialog(
-                                        title:
-                                            const Text('Disconnect from Odoo?'),
-                                        content: const Text(
-                                          'You will be logged out from Odoo and lose synchronization.',
-                                        ),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            child: const Text('Cancel'),
-                                            onPressed: () =>
-                                                context.router.pop(false),
-                                          ),
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
-                                            child: const Text('Disconnect'),
-                                            onPressed: () {
-                                              context.router.pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ).then((value) async {
-                                      if (value == true) {
-                                        await context
-                                            .read<SyncCubit>()
-                                            .removeData(backend.id);
-                                        await context
-                                            .read<AuthCubit>()
-                                            .logout(backend);
-                                      }
-                                    }),
-                                  ))
-                              .toList();
-
-                          return Column(
-                            children: [
-                              ...children,
-                              const SizedBox(
-                                height: kPadding,
-                              ),
-                            ],
-                          );
+                        thumbColor: MaterialStateProperty.all(
+                          schemeColors.primary,
+                        ),
+                        thumbIcon: MaterialStateProperty.all(
+                          Icon(
+                            state.themeMode == ThemeMode.dark
+                                ? CupertinoIcons.moon_fill
+                                : CupertinoIcons.sun_min_fill,
+                            color: schemeColors.onPrimary,
+                          ),
+                        ),
+                        value: state.themeMode == ThemeMode.dark,
+                        onChanged: (value) {
+                          final isDarkTheme = state.themeMode == ThemeMode.dark;
+                          AppCubit.instance.updateThemeMode(
+                              isDarkTheme ? ThemeMode.light : ThemeMode.dark);
                         },
                       ),
                     ),
-                    ListTile(
-                      title: const Text('Add Odoo account'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      onTap: () => context.router.push(
-                        OdooLoginRoute(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: kPadding,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Card(
-                  elevation: kPadding / 8,
-                  margin: const EdgeInsets.all(kPadding * 2),
-                  color: schemeColors.surface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(kPadding),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(kPadding * 2),
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Made with ♥ by ',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: schemeColors.onSurfaceVariant,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Apexive',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: schemeColors.onSurface,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => launchUrlString(
-                                      apexiveUrl,
+                  const SizedBox(
+                    height: kPadding,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.router.pushNativeRoute(MaterialPageRoute(
+                          builder: (context) =>
+                              DriftDbViewer(context.read<AppDatabase>())));
+                    },
+                    child: const Text('Check DB'),
+                  ),
+                  const SectionTitle(title: 'Synchronizations'),
+                  SyncCubitProvider(
+                    child: BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        final children = state.connectedBackends
+                            .getBackendsFilteredByType(BackendTypeEnum.odoo)
+                            .map((backend) => ListTile(
+                                  key: ValueKey(backend.id),
+                                  title: const Text('Odoo'),
+                                  subtitle: Text(backend.email ?? ''),
+                                  leading: Builder(
+                                    builder: (context) =>
+                                        CircularProgressBuilder(
+                                      action: (_) async {
+                                        await context
+                                            .read<SyncCubit>()
+                                            .syncData(backend.id);
+                                      },
+                                      builder: (context, action, error) =>
+                                          IconButton(
+                                        icon: const Icon(Icons.sync),
+                                        onPressed: action,
+                                      ),
                                     ),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.chevron_right,
+                                    size: kPadding.w * 4,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                  // Logout
+                                  onTap: () => showCupertinoDialog<bool?>(
+                                    context: context,
+                                    builder: (context) => CupertinoAlertDialog(
+                                      title:
+                                          const Text('Disconnect from Odoo?'),
+                                      content: const Text(
+                                        'You will be logged out from Odoo and lose synchronization.',
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: const Text('Cancel'),
+                                          onPressed: () =>
+                                              context.router.pop(false),
+                                        ),
+                                        CupertinoDialogAction(
+                                          isDestructiveAction: true,
+                                          child: const Text('Disconnect'),
+                                          onPressed: () {
+                                            context.router.pop(true);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ).then((value) async {
+                                    if (value == true) {
+                                      await context
+                                          .read<SyncCubit>()
+                                          .removeData(backend.id);
+                                      await context
+                                          .read<AuthCubit>()
+                                          .logout(backend);
+                                    }
+                                  }),
+                                ))
+                            .toList();
+
+                        return Column(
+                          children: [
+                            ...children,
+                            const SizedBox(
+                              height: kPadding,
                             ),
                           ],
+                        );
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Add Odoo account'),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      size: kPadding.w * 4,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    onTap: () => context.router.push(
+                      OdooLoginRoute(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: kPadding,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                elevation: kPadding / 8,
+                margin: const EdgeInsets.all(kPadding * 2),
+                color: schemeColors.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(kPadding),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(kPadding * 2),
+                  child: Center(
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Made with ♥ by ',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: schemeColors.onSurfaceVariant,
                         ),
+                        children: [
+                          TextSpan(
+                            text: 'Apexive',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: schemeColors.onSurface,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => launchUrlString(
+                                    apexiveUrl,
+                                  ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

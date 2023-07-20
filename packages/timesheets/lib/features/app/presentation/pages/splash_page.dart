@@ -20,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(_kDuration).then((value) {
-        context.router.replace(const HomeRouter());
+        context.router.replace(const HomeTabRouter());
       });
     });
   }
