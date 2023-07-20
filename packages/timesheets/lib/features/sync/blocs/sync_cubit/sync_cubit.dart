@@ -5,6 +5,7 @@ import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
+import 'package:timesheets/utils/extensions/odoo_task_extensions.dart';
 
 import 'sync_state.dart';
 
@@ -56,12 +57,13 @@ class SyncCubit extends Cubit<SyncState> {
       final odooTasksWithInternalProjects = <OdooTask, Project>{};
 
       for (final odooTask in odooTasks) {
-        final project = await projectRepository.getProjectByExternalId(
-          odooTask.id,
-        );
-
-        if (project != null) {
-          odooTasksWithInternalProjects[odooTask] = project;
+        if (odooTask.projectId != null) {
+          final project = await projectRepository.getProjectByExternalId(
+            odooTask.projectId!,
+          );
+          if (project != null) {
+            odooTasksWithInternalProjects[odooTask] = project;
+          }
         }
       }
 

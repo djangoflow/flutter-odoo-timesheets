@@ -54,8 +54,9 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
         ),
       );
 
-  Future<void> syncWithOdooTasks(
-      {required Map<OdooTask, Project> odooTasksWithProjectsMap}) async {
+  Future<void> syncWithOdooTasks({
+    required Map<OdooTask, Project> odooTasksWithProjectsMap,
+  }) async {
     final odooTasks = odooTasksWithProjectsMap.keys.toList();
     final odooTaskIds = odooTasks.map((e) => e.id).toList();
     final externalTasks = await externalTasksDao.getExternalTasksByIds(

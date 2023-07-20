@@ -5,3 +5,4 @@ export 'list_bloc_util.dart';
 export 'extensions/task_extensions.dart';
 export 'extensions/timesheet_extensions.dart';
 export 'extensions/backends_extensions.dart';
+export 'extensions/odoo_task_extensions.dart';
