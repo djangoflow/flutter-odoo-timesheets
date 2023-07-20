@@ -38,4 +38,8 @@ class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
               (t) => t.externalId.isIn(externalTaskIds),
             ))
           .get();
+
+  Future<ExternalTask?> getExternalTaskByExternalId(int externalId) =>
+      (select(externalTasks)..where((t) => t.externalId.equals(externalId)))
+          .getSingleOrNull();
 }

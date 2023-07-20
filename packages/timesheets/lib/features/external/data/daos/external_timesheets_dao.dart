@@ -32,4 +32,12 @@ class ExternalTimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> deleteExternalTimesheet(ExternalTimesheet externalTimesheet) =>
       delete(externalTimesheets).delete(externalTimesheet);
+
+  Future<List<ExternalTimesheet>> getExternalTimesheetsByIds(
+          List<int> externalTimesheetIds) =>
+      (select(externalTimesheets)
+            ..where(
+              (t) => t.externalId.isIn(externalTimesheetIds),
+            ))
+          .get();
 }

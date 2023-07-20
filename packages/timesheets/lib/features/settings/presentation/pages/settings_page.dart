@@ -1,3 +1,4 @@
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
@@ -79,6 +81,14 @@ class SettingsPage extends StatelessWidget {
                     ),
                     const SizedBox(
                       height: kPadding,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.router.pushNativeRoute(MaterialPageRoute(
+                            builder: (context) =>
+                                DriftDbViewer(context.read<AppDatabase>())));
+                      },
+                      child: const Text('Check DB'),
                     ),
                     const SectionTitle(title: 'Synchronizations'),
                     BlocBuilder<AuthCubit, AuthState>(

@@ -1,12 +1,19 @@
+import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 class TimesheetRepository
     extends CrudRepository<Timesheet, TimesheetsCompanion> {
   final TimesheetsDao timesheetsDao;
-
-  const TimesheetRepository(this.timesheetsDao);
+  final ExternalTimesheetsDao externalTimesheetsDao;
+  const TimesheetRepository({
+    required this.timesheetsDao,
+    required this.externalTimesheetsDao,
+  });
 
   @override
   Future<int> create(TimesheetsCompanion companion) =>
@@ -34,6 +41,70 @@ class TimesheetRepository
           int timesheetId) =>
       timesheetsDao.getTimesheetWithTaskProjectDataById(timesheetId);
 
-  Future<List<Timesheet>> getItemsByTaskId(int taskId) =>
-      timesheetsDao.getTimesheetsByTaskId(taskId);
+  Future<List<Timesheet>> getItemsByTaskId(int timesheetId) =>
+      timesheetsDao.getTimesheetsByTaskId(timesheetId);
+
+  Future<void> syncWithOdooTimesheets({
+    required Map<OdooTimesheet, Task> odooTimesheetsWithTasksMap,
+  }) async {
+    final odooTimesheets = odooTimesheetsWithTasksMap.keys.toList();
+    final odooTimesheetsIds = odooTimesheets.map((e) => e.id).toList();
+    final externalTimesheets =
+        await externalTimesheetsDao.getExternalTimesheetsByIds(
+      odooTimesheetsIds,
+    );
+    final internalTimesheetIds =
+        externalTimesheets.map((e) => e.internalId).whereType<int>().toList();
+    final internalTimesheets = await timesheetsDao.getTimesheetsByIds(
+      internalTimesheetIds,
+    );
+    final updatableTimesheets = <Timesheet>[];
+    final insertableTimesheetCompanions = <int, TimesheetsCompanion>{};
+
+    for (final odooTimesheet in odooTimesheets) {
+      final externalTimesheet = externalTimesheets.firstWhereOrNull(
+        (e) => e.externalId == odooTimesheet.id,
+      );
+
+      if (externalTimesheet != null) {
+        final internalTimesheet = internalTimesheets.firstWhereOrNull(
+          (e) => e.id == externalTimesheet.internalId,
+        );
+        if (internalTimesheet != null) {
+          updatableTimesheets.add(
+            internalTimesheet.copyWith(
+              endTime: Value(odooTimesheet.endTime),
+              name: Value(odooTimesheet.name),
+              startTime: Value(odooTimesheet.startTime),
+              unitAmount: Value(odooTimesheet.unitAmount),
+            ),
+          );
+        }
+      } else {
+        insertableTimesheetCompanions[odooTimesheet.id] = TimesheetsCompanion(
+          endTime: Value(odooTimesheet.endTime),
+          name: Value(odooTimesheet.name),
+          startTime: Value(odooTimesheet.startTime),
+          unitAmount: Value(odooTimesheet.unitAmount),
+          taskId: Value(odooTimesheetsWithTasksMap[odooTimesheet]?.id),
+          projectId:
+              Value(odooTimesheetsWithTasksMap[odooTimesheet]?.projectId),
+        );
+      }
+    }
+
+    await timesheetsDao.batchUpdateTimesheets(updatableTimesheets);
+    for (final entry in insertableTimesheetCompanions.entries) {
+      final externalProjectComapanion = ExternalTimesheetsCompanion(
+        externalId: Value(entry.key),
+      );
+      await timesheetsDao.createTimesheetWithExternal(
+        timesheetsCompanion: entry.value,
+        externalTimesheetsCompanion: externalProjectComapanion,
+      );
+    }
+
+    print('Updated ${updatableTimesheets.length} Timesheets');
+    print('Inserted ${insertableTimesheetCompanions.length} Timesheets');
+  }
 }

@@ -6,3 +6,4 @@ export 'extensions/task_extensions.dart';
 export 'extensions/timesheet_extensions.dart';
 export 'extensions/backends_extensions.dart';
 export 'extensions/odoo_task_extensions.dart';
+export 'extensions/odoo_timesheet_extensions.dart';

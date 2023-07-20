@@ -40,7 +40,9 @@ class TimesheetsAppBuilder extends AppBuilder {
             ),
             RepositoryProvider<TimesheetRepository>(
               create: (context) => TimesheetRepository(
-                context.read<AppDatabase>().timesheetsDao,
+                timesheetsDao: context.read<AppDatabase>().timesheetsDao,
+                externalTimesheetsDao:
+                    context.read<AppDatabase>().externalTimesheetsDao,
               ),
             ),
             RepositoryProvider<OdooXmlRpcClient>(

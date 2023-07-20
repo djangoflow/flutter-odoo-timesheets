@@ -22,7 +22,8 @@ class Timesheets extends Table {
   RealColumn get unitAmount => real().nullable()();
 
   /// Indicates the current status of the timesheet
-  IntColumn get currentStatus => intEnum<TimesheetStatusEnum>().nullable()();
+  IntColumn get currentStatus => intEnum<TimesheetStatusEnum>()
+      .clientDefault(() => TimesheetStatusEnum.initial.index)();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

@@ -5,7 +5,7 @@ import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
-import 'package:timesheets/utils/extensions/odoo_task_extensions.dart';
+import 'package:timesheets/utils/utils.dart';
 
 import 'sync_state.dart';
 
@@ -69,6 +69,40 @@ class SyncCubit extends Cubit<SyncState> {
 
       await taskRepository.syncWithOdooTasks(
         odooTasksWithProjectsMap: odooTasksWithInternalProjects,
+      );
+
+      // Timesheets syncing...
+      final timesheetIds = <int>[];
+      for (final odooTask in odooTasks) {
+        timesheetIds.addAll(odooTask.timesheetIds ?? <int>[]);
+      }
+      print('Total odoo timesheets ${timesheetIds.length}');
+      final odooTimesheets =
+          await odooTimesheetRepository.getOdooTimesheetsByIds(
+        backendId: backendId,
+        timesheetIds: timesheetIds,
+      );
+
+      print('Total downloaded odoo timesheets ${odooTimesheets.length}');
+
+      final odooTimesheetsWithInternalTasks = <OdooTimesheet, Task>{};
+
+      for (final odooTimesheet in odooTimesheets) {
+        if (odooTimesheet.taskId != null) {
+          final task = await taskRepository.getTaskByExternalId(
+            odooTimesheet.taskId!,
+          );
+          if (task != null) {
+            odooTimesheetsWithInternalTasks[odooTimesheet] = task;
+          } else {
+            print(
+                'Task not found for timesheet ${odooTimesheet.id} with external id ${odooTimesheet.taskId} ');
+          }
+        }
+      }
+
+      await timesheetRepository.syncWithOdooTimesheets(
+        odooTimesheetsWithTasksMap: odooTimesheetsWithInternalTasks,
       );
 
       // final odooProjectIds = odooProjects.map((e) => e.id).toList();

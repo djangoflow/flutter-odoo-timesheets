@@ -151,4 +151,27 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Timesheet>> getTimesheetsByTaskId(int taskId) =>
       (select(timesheets)..where((t) => t.taskId.equals(taskId))).get();
+
+  Future<List<Timesheet>> getTimesheetsByIds(List<int> ids) =>
+      (select(timesheets)..where((t) => t.id.isIn(ids))).get();
+
+  Future<void> batchUpdateTimesheets(List<Timesheet> timesheets) async {
+    await batch((batch) {
+      batch.insertAll(
+        this.timesheets,
+        timesheets,
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+  }
+
+  Future<void> createTimesheetWithExternal(
+      {required TimesheetsCompanion timesheetsCompanion,
+      required ExternalTimesheetsCompanion externalTimesheetsCompanion}) async {
+    await transaction(() async {
+      final timesheetId = await createTimesheet(timesheetsCompanion);
+      await into(externalTimesheets).insert(
+          externalTimesheetsCompanion.copyWith(internalId: Value(timesheetId)));
+    });
+  }
 }

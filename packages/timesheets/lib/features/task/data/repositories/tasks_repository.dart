@@ -118,4 +118,15 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
     print('Updated ${updatableTasks.length} Tasks');
     print('Inserted ${insertableTaskCompanions.length} Tasks');
   }
+
+  Future<Task?> getTaskByExternalId(int externalTaskId) async {
+    final externalTask =
+        await externalTasksDao.getExternalTaskByExternalId(externalTaskId);
+    if (externalTask != null && externalTask.internalId != null) {
+      return tasksDao.getTaskById(externalTask.internalId!);
+    } else {
+      print('Task with external id $externalTaskId not found');
+    }
+    return null;
+  }
 }
