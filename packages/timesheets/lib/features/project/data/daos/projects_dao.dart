@@ -32,8 +32,42 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Project>> getAllProjects() => select(projects).get();
 
-  Future<List<Project>> getPaginatedProjects(int limit, int? offset) =>
-      (select(projects)..limit(limit, offset: offset)).get();
+  Future<List<Project>> getPaginatedProjects({
+    int? limit,
+    int? offset,
+    bool? isLocal,
+  }) async {
+    final query = select(projects);
+
+    if (limit != null && offset != null) {
+      query.limit(limit, offset: offset);
+    }
+
+    query.orderBy([
+      (p) => OrderingTerm(expression: p.updatedAt, mode: OrderingMode.desc),
+      (p) => OrderingTerm(expression: p.name, mode: OrderingMode.asc),
+    ]);
+
+    if (isLocal == true) {
+      // make sure that none of the externalProjects have internalId as the project's ids
+      query.where((projects) {
+        final subquery = selectOnly(externalProjects)
+          ..addColumns([externalProjects.internalId]);
+        return notExistsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(projects.id)));
+      });
+    } else if (isLocal == false) {
+      // fetch only projects that have externalProjects
+      query.where((projects) {
+        final subquery = selectOnly(externalProjects)
+          ..addColumns([externalProjects.internalId]);
+        return existsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(projects.id)));
+      });
+    }
+
+    return await query.get();
+  }
 
   Future<void> updateProject(Project project) =>
       update(projects).replace(project);

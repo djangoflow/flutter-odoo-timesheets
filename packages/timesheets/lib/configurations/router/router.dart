@@ -77,7 +77,20 @@ class AppRouter extends $AppRouter {
                 ),
               ],
             ),
-            AutoRoute(page: ProjectsRoute.page, path: 'projects'),
+            AutoRoute(
+              page: ProjectsRoute.page,
+              path: 'projects',
+              children: [
+                AutoRoute(
+                  page: SyncedProjectsRoute.page,
+                  path: 'synced',
+                ),
+                AutoRoute(
+                  page: LocalProjectsRoute.page,
+                  path: 'local',
+                ),
+              ],
+            ),
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),
