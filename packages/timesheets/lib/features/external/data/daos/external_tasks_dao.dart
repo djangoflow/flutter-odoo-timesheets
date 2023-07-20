@@ -32,10 +32,10 @@ class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
       delete(externalTasks).delete(externalTask);
 
   /// Get all [ExternalTask] by externalTaskIds
-  Future<List<ExternalTask>> getExternalTasksByIds(List<int> externalIds) =>
+  Future<List<ExternalTask>> getExternalTasksByIds(List<int> externalTaskIds) =>
       (select(externalTasks)
             ..where(
-              (t) => t.externalId.isIn(externalIds),
+              (t) => t.externalId.isIn(externalTaskIds),
             ))
           .get();
 }
