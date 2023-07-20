@@ -5,6 +5,9 @@ import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
+import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
+import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 import 'package:timesheets/utils/utils.dart';
 
 import 'auth_state.dart';
@@ -12,15 +15,16 @@ export 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final OdooAuthenticationRepository odooAuthenticationRepository;
-  final BackendsRepository backendsRepository;
+  final BackendRepository backendRepository;
+
   StreamSubscription? _backendsSubscription;
   AuthCubit({
     required this.odooAuthenticationRepository,
-    required this.backendsRepository,
+    required this.backendRepository,
   }) : super(
           const AuthState(),
         ) {
-    _backendsSubscription = backendsRepository.watchAllBackends().listen(
+    _backendsSubscription = backendRepository.watchAllBackends().listen(
       (backends) {
         odooAuthenticationRepository.rpcClient.backendCrednetials = backends
             .getBackendsFilteredByType(BackendTypeEnum.odoo)
@@ -42,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> loadBackends() async {
-    final backends = await backendsRepository.getItems();
+    final backends = await backendRepository.getItems();
     emit(
       state.copyWith(
         connectedBackends: backends,
@@ -51,7 +55,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> logout(Backend backend) async {
-    await backendsRepository.delete(backend);
+    await backendRepository.delete(backend);
   }
 
   Future<int> loginWithOdoo({
@@ -67,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
       db: db,
     );
 
-    final backendId = await backendsRepository.create(
+    final backendId = await backendRepository.create(
       BackendsCompanion(
         backendType: const Value(BackendTypeEnum.odoo),
         db: Value(db),
@@ -78,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
       ),
     );
 
-    final backend = await backendsRepository.getItemById(backendId);
+    final backend = await backendRepository.getItemById(backendId);
     if (backend == null) {
       throw Exception('Backend not found');
     }

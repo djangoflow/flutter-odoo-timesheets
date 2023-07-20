@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_project.dart';
@@ -97,10 +98,13 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
       );
     }
 
-    print('Updated ${updatableProjects.length} projects');
-    print('Inserted ${insertableProjectCompanions.length} projects');
+    debugPrint('Updated ${updatableProjects.length} projects');
+    debugPrint('Inserted ${insertableProjectCompanions.length} projects');
   }
 
   Future<Project?> getProjectByExternalId(int externalProjectId) =>
       projectsDao.getProjectByExternalId(externalProjectId);
+
+  Future<List<Project>> getProjectsByIds(List<int> ids) =>
+      projectsDao.getProjectsByIds(ids);
 }

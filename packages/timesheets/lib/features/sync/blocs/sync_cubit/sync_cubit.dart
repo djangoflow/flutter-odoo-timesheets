@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
@@ -18,6 +20,10 @@ class SyncCubit extends Cubit<SyncState> {
   final OdooTaskRepository odooTaskRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final OdooProjectRepository odooProjectRepository;
+  final BackendRepository backendRepository;
+  final ExternalProjectRepository externalProjectRepository;
+  final ExternalTaskRepository externalTaskRepository;
+  final ExternalTimesheetRepository externalTimesheetRepository;
 
   SyncCubit({
     required this.projectRepository,
@@ -26,6 +32,10 @@ class SyncCubit extends Cubit<SyncState> {
     required this.odooTaskRepository,
     required this.odooTimesheetRepository,
     required this.odooProjectRepository,
+    required this.backendRepository,
+    required this.externalProjectRepository,
+    required this.externalTaskRepository,
+    required this.externalTimesheetRepository,
   }) : super(const SyncState.initial());
 
   // Handle the SyncData event
@@ -76,14 +86,14 @@ class SyncCubit extends Cubit<SyncState> {
       for (final odooTask in odooTasks) {
         timesheetIds.addAll(odooTask.timesheetIds ?? <int>[]);
       }
-      print('Total odoo timesheets ${timesheetIds.length}');
+      debugPrint('Total odoo timesheets ${timesheetIds.length}');
       final odooTimesheets =
           await odooTimesheetRepository.getOdooTimesheetsByIds(
         backendId: backendId,
         timesheetIds: timesheetIds,
       );
 
-      print('Total downloaded odoo timesheets ${odooTimesheets.length}');
+      debugPrint('Total downloaded odoo timesheets ${odooTimesheets.length}');
 
       final odooTimesheetsWithInternalTasks = <OdooTimesheet, Task>{};
 
@@ -95,7 +105,7 @@ class SyncCubit extends Cubit<SyncState> {
           if (task != null) {
             odooTimesheetsWithInternalTasks[odooTimesheet] = task;
           } else {
-            print(
+            debugPrint(
                 'Task not found for timesheet ${odooTimesheet.id} with external id ${odooTimesheet.taskId} ');
           }
         }
@@ -116,5 +126,40 @@ class SyncCubit extends Cubit<SyncState> {
       emit(const SyncState.failure());
       rethrow;
     }
+  }
+
+  Future<void> removeData(int backendId) async {
+    final externalProjects = await externalProjectRepository
+        .getExternalProjectsByBackendId(backendId);
+    final internalProjectIds =
+        externalProjects.map((e) => e.internalId).whereType<int>().toList();
+
+    final tasks = await taskRepository.getTasksByProjectIds(internalProjectIds);
+    final taskIds = tasks.map((e) => e.id).toList();
+    final externalTasks =
+        await externalTaskRepository.getExternalTasksByInternalIds(taskIds);
+    final timesheets =
+        await timesheetRepository.getTimesheetsByTaskIds(taskIds);
+    final timesheetIds = timesheets.map((e) => e.id).toList();
+
+    final externalTimesheets = await externalTimesheetRepository
+        .getExternalTimesheetsByInternalIds(timesheetIds);
+    final deletableExternalTaskIds = externalTasks
+        .where((e) => e.externalId != null)
+        .map((e) => e.id)
+        .toList();
+
+    final deletableExternalTimesheetIds = externalTimesheets
+        .where((e) => e.externalId != null)
+        .map((e) => e.id)
+        .toList();
+    await externalTaskRepository
+        .batchDeleteExternalTasksByIds(deletableExternalTaskIds);
+
+    await externalTimesheetRepository
+        .batchDeleteExternalTimesheetsByIds(deletableExternalTimesheetIds);
+
+    debugPrint(
+        'Deleted ${deletableExternalTaskIds.length} ExternalTasks, ${deletableExternalTimesheetIds.length} ExternalTimesheets');
   }
 }

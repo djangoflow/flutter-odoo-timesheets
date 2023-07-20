@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:timesheets/features/external/external.dart';
@@ -43,39 +44,21 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  // @override
-  // MigrationStrategy get migration => MigrationStrategy(
-  //       onCreate: (m) async {
-  //         await m.createAll();
-  //         await customStatement('PRAGMA foreign_keys = ON');
-  //       },
-  //       onUpgrade: stepByStep(
-  //         from1To2: (m, schema) async {
-  //           await customStatement('PRAGMA foreign_keys = OFF');
-  //           // add new default constraint to onDelete cascade to tasks, timesheet_backends, timesheets
-  //           transaction(() async {
-  //             await m.alterTable(TableMigration(schema.tasks));
-  //             await m.alterTable(TableMigration(schema.taskBackends));
-  //             await m.alterTable(TableMigration(schema.timesheets));
-  //           });
-  //         },
-  //       ),
-  //       beforeOpen: (details) async {
-  //         await customStatement('PRAGMA foreign_keys = ON');
-  //         await transaction(() async {
-  //           final value = await into(backends).insert(
-  //             BackendsCompanion(
-  //               id: const Value(hardcodedBackendId),
-  //               name: const Value('Odoo'),
-  //               description: const Value('Odoo backend'),
-  //               backendType: Value(BackendType.odoo.index),
-  //             ),
-  //             mode: InsertMode.insertOrReplace,
-  //           );
-  //           debugPrint('inserted backend $value');
-  //         });
-  //       },
-  //     );
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          await customStatement('PRAGMA foreign_keys = OFF');
+          if (kDebugMode) {
+            final wrongForeignKeys =
+                await customSelect('PRAGMA foreign_key_check').get();
+            assert(wrongForeignKeys.isEmpty,
+                '${wrongForeignKeys.map((e) => e.data)}');
+          }
+        },
+        beforeOpen: (details) async {
+          await customStatement('PRAGMA foreign_keys = ON');
+        },
+      );
 }
 
 // the LazyDatabase util lets us find the right location for the file async.

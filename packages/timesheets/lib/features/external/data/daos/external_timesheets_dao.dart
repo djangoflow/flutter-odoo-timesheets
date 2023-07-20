@@ -40,4 +40,13 @@ class ExternalTimesheetsDao extends DatabaseAccessor<AppDatabase>
               (t) => t.externalId.isIn(externalTimesheetIds),
             ))
           .get();
+  // TODO maybe all the list methods can be merged into one, need to attemp to do so
+  Future<List<ExternalTimesheet>> getExternalTimesheetsByInternalIds(
+          List<int> internalIds) =>
+      (select(externalTimesheets)..where((t) => t.internalId.isIn(internalIds)))
+          .get();
+
+  Future<void> batchDeleteExternalTimesheets(List<int> ids) => batch((batch) {
+        batch.deleteWhere(externalTimesheets, (t) => t.id.isIn(ids));
+      });
 }

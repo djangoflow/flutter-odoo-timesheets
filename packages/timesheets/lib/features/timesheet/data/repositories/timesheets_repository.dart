@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/models/odoo_timesheet.dart';
@@ -104,7 +105,10 @@ class TimesheetRepository
       );
     }
 
-    print('Updated ${updatableTimesheets.length} Timesheets');
-    print('Inserted ${insertableTimesheetCompanions.length} Timesheets');
+    debugPrint('Updated ${updatableTimesheets.length} Timesheets');
+    debugPrint('Inserted ${insertableTimesheetCompanions.length} Timesheets');
   }
+
+  Future<List<Timesheet>> getTimesheetsByTaskIds(List<int> taskIds) =>
+      timesheetsDao.getTimesheetsByTaskIds(taskIds);
 }

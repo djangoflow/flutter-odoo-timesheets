@@ -31,4 +31,11 @@ class ExternalTimesheetRepository
   @override
   Future<void> update(ExternalTimesheet entity) => externalTimesheetsDao
       .updateExternalTimesheet(entity.copyWith(updatedAt: DateTime.now()));
+
+  Future<List<ExternalTimesheet>> getExternalTimesheetsByInternalIds(
+          List<int> internalIds) =>
+      externalTimesheetsDao.getExternalTimesheetsByInternalIds(internalIds);
+
+  Future<void> batchDeleteExternalTimesheetsByIds(List<int> ids) =>
+      externalTimesheetsDao.batchDeleteExternalTimesheets(ids);
 }

@@ -75,9 +75,24 @@ class TimesheetsAppBuilder extends AppBuilder {
                     context.read<AppDatabase>().externalProjectsDao,
               ),
             ),
-            RepositoryProvider<BackendsRepository>(
-              create: (context) => BackendsRepository(
+            RepositoryProvider<BackendRepository>(
+              create: (context) => BackendRepository(
                 context.read<AppDatabase>().backendsDao,
+              ),
+            ),
+            RepositoryProvider<ExternalProjectRepository>(
+              create: (context) => ExternalProjectRepository(
+                context.read<AppDatabase>().externalProjectsDao,
+              ),
+            ),
+            RepositoryProvider<ExternalTaskRepository>(
+              create: (context) => ExternalTaskRepository(
+                context.read<AppDatabase>().externalTasksDao,
+              ),
+            ),
+            RepositoryProvider<ExternalTimesheetRepository>(
+              create: (context) => ExternalTimesheetRepository(
+                context.read<AppDatabase>().externalTimesheetsDao,
               ),
             ),
           ],
@@ -96,7 +111,7 @@ class TimesheetsAppBuilder extends AppBuilder {
               create: (context) => AuthCubit(
                 odooAuthenticationRepository:
                     context.read<OdooAuthenticationRepository>(),
-                backendsRepository: context.read<BackendsRepository>(),
+                backendRepository: context.read<BackendRepository>(),
               ),
             ),
             BlocProvider<TasksListCubit>(

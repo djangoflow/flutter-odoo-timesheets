@@ -1,10 +1,10 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 
-class BackendsRepository extends CrudRepository<Backend, BackendsCompanion> {
+class BackendRepository extends CrudRepository<Backend, BackendsCompanion> {
   final BackendsDao backendsDao;
 
-  const BackendsRepository(this.backendsDao);
+  const BackendRepository(this.backendsDao);
 
   @override
   Future<int> create(BackendsCompanion companion) =>

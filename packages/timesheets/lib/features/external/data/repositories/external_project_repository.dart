@@ -1,11 +1,11 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 
-class ExternalProjectsRepository
+class ExternalProjectRepository
     extends CrudRepository<ExternalProject, ExternalProjectsCompanion> {
   final ExternalProjectsDao externalProjectsDao;
 
-  ExternalProjectsRepository(this.externalProjectsDao);
+  ExternalProjectRepository(this.externalProjectsDao);
 
   @override
   Future<int> create(ExternalProjectsCompanion companion) =>
@@ -31,4 +31,7 @@ class ExternalProjectsRepository
   @override
   Future<void> update(ExternalProject entity) => externalProjectsDao
       .updateExternalProject(entity.copyWith(updatedAt: DateTime.now()));
+
+  Future<List<ExternalProject>> getExternalProjectsByBackendId(int backendId) =>
+      externalProjectsDao.getExternalProjectsByBackendId(backendId);
 }

@@ -111,7 +111,6 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     required int backendId,
     required List<int> taskIds,
   }) async {
-    print(taskIds);
     Map<String, dynamic> optionalParams =
         buildFilterableFields(_taskDefaultFields);
 

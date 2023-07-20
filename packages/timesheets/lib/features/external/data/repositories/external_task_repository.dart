@@ -1,11 +1,11 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 
-class ExternalTasksRepository
+class ExternalTaskRepository
     extends CrudRepository<ExternalTask, ExternalTasksCompanion> {
   final ExternalTasksDao externalTasksDao;
 
-  const ExternalTasksRepository(this.externalTasksDao);
+  const ExternalTaskRepository(this.externalTasksDao);
 
   @override
   Future<int> create(ExternalTasksCompanion companion) =>
@@ -35,4 +35,11 @@ class ExternalTasksRepository
           updatedAt: DateTime.now(),
         ),
       );
+
+  Future<List<ExternalTask>> getExternalTasksByInternalIds(
+          List<int> internalTaskIds) =>
+      externalTasksDao.getExternalTasksByInternalIds(internalTaskIds);
+
+  Future<void> batchDeleteExternalTasksByIds(List<int> ids) =>
+      externalTasksDao.batchDeleteExternalTasksByIds(ids);
 }

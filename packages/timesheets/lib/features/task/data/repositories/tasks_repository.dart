@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
@@ -115,8 +116,8 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
       );
     }
 
-    print('Updated ${updatableTasks.length} Tasks');
-    print('Inserted ${insertableTaskCompanions.length} Tasks');
+    debugPrint('Updated ${updatableTasks.length} Tasks');
+    debugPrint('Inserted ${insertableTaskCompanions.length} Tasks');
   }
 
   Future<Task?> getTaskByExternalId(int externalTaskId) async {
@@ -125,8 +126,11 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
     if (externalTask != null && externalTask.internalId != null) {
       return tasksDao.getTaskById(externalTask.internalId!);
     } else {
-      print('Task with external id $externalTaskId not found');
+      debugPrint('Task with external id $externalTaskId not found');
     }
     return null;
   }
+
+  Future<List<Task>> getTasksByProjectIds(List<int> projectIds) =>
+      tasksDao.getTasksByProjectIds(projectIds);
 }

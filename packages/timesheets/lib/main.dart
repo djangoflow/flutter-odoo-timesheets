@@ -20,7 +20,6 @@ Future<void> main() async {
         errorMessage = exception.message ?? 'Something went wrong!';
       } else if (exception is OdooRepositoryException) {
         errorMessage = exception.message;
-        print('Error Message : $errorMessage');
       }
       DjangoflowAppSnackbar.showError(errorMessage);
     },

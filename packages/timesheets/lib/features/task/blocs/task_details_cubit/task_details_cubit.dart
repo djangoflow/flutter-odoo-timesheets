@@ -340,7 +340,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       await callback.call();
     } catch (e) {
       handleError(e);
-      print('rethrowing');
       rethrow;
     }
   }

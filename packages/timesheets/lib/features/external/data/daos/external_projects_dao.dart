@@ -39,4 +39,8 @@ class ExternalProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<ExternalProject>> getExternalProjectsByIds(List<int> ids) =>
       (select(externalProjects)..where((p) => p.id.isIn(ids))).get();
+
+  Future<List<ExternalProject>> getExternalProjectsByBackendId(int backendId) =>
+      (select(externalProjects)..where((p) => p.backendId.equals(backendId)))
+          .get();
 }

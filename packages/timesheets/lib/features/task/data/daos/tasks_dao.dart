@@ -166,4 +166,11 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
       );
     });
   }
+
+  Future<List<Task>> getTasksByProjectIds(List<int> projectIds) =>
+      (select(tasks)
+            ..where(
+              (t) => t.projectId.isIn(projectIds),
+            ))
+          .get();
 }

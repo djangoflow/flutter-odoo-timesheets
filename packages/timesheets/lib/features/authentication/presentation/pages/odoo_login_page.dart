@@ -11,6 +11,7 @@ import 'package:timesheets/features/odoo/data/repositories/odoo_information_repo
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
+import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
@@ -266,16 +267,7 @@ class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
               return cubit;
             },
           ),
-          BlocProvider<SyncCubit>(
-            create: (context) => SyncCubit(
-              odooProjectRepository: context.read<OdooProjectRepository>(),
-              odooTaskRepository: context.read<OdooTaskRepository>(),
-              odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
-              projectRepository: context.read<ProjectRepository>(),
-              taskRepository: context.read<TaskRepository>(),
-              timesheetRepository: context.read<TimesheetRepository>(),
-            ),
-          ),
+          SyncCubitProvider(),
         ],
         child: this,
       );

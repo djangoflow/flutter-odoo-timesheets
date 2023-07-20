@@ -174,4 +174,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
           externalTimesheetsCompanion.copyWith(internalId: Value(timesheetId)));
     });
   }
+
+  Future<List<Timesheet>> getTimesheetsByTaskIds(List<int> taskIds) =>
+      (select(timesheets)..where((t) => t.taskId.isIn(taskIds))).get();
 }
