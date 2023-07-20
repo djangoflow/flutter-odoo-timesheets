@@ -31,6 +31,7 @@ class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
   Future<int> deleteExternalTask(ExternalTask externalTask) =>
       delete(externalTasks).delete(externalTask);
 
+  /// Get all [ExternalTask] by externalTaskIds
   Future<List<ExternalTask>> getExternalTasksByIds(List<int> externalIds) =>
       (select(externalTasks)
             ..where(
