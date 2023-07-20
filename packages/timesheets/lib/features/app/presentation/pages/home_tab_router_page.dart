@@ -1,6 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
@@ -17,7 +18,9 @@ class HomeTabRouterPage extends StatelessWidget {
           actions: [
             if (tabsRouter.activeIndex == 0)
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.router.push(OdooTaskAddRoute());
+                },
                 icon: const Icon(CupertinoIcons.add),
                 iconSize: kPadding.h * 4,
               )
