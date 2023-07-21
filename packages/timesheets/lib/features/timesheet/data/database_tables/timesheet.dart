@@ -21,9 +21,13 @@ class Timesheets extends Table {
   DateTimeColumn get endTime => dateTime().nullable()();
   RealColumn get unitAmount => real().nullable()();
 
-  /// Indicates the current status of the timesheet
+  /// [FOR LOCALLY USE ONLY] Indicates the current status of the timesheet
   IntColumn get currentStatus => intEnum<TimesheetStatusEnum>()
       .clientDefault(() => TimesheetStatusEnum.initial.index)();
+
+  /// [FOR LOCALLY USE ONLY] To keep track of the last time the timesheet was ticked
+  /// for total spent time calculation
+  DateTimeColumn get lastTicked => dateTime().nullable()();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
