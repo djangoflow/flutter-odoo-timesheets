@@ -24,6 +24,7 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
               offset: filter?.offset,
               isLocal: filter?.isLocal,
               taskId: filter?.taskId,
+              isEndDateNull: filter?.isEndDateNull,
             ),
           ),
         );

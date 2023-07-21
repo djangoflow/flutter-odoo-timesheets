@@ -125,11 +125,18 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     int? offset,
     bool? isLocal,
     int? taskId,
+    bool? isEndDateNull,
   }) async {
     final query = select(timesheets);
 
     if (taskId != null) {
       query.where((timesheets) => timesheets.taskId.equals(taskId));
+    }
+
+    if (isEndDateNull == true) {
+      query.where((timesheets) => timesheets.endTime.isNull());
+    } else if (isEndDateNull == false) {
+      query.where((timesheets) => timesheets.endTime.isNotNull());
     }
 
     if (limit != null && offset != null) {

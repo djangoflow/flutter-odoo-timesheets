@@ -12,6 +12,7 @@ class SyncedTimesheetsPage extends StatelessWidget {
         timesheetWithTaskExternalListFilter:
             TimesheetWithTaskExternalListFilter(
           isLocal: false,
+          isEndDateNull: true,
         ),
       );
 }

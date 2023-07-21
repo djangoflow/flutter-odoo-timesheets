@@ -113,12 +113,18 @@ class TimesheetRepository
       timesheetsDao.getTimesheetsByTaskIds(taskIds);
 
   Future<List<TimesheetWithTaskExternalData>>
-      getPaginatedTimesheetWithTaskProjectData(
-              {int? offset, int? limit, bool? isLocal, int? taskId}) =>
+      getPaginatedTimesheetWithTaskProjectData({
+    int? offset,
+    int? limit,
+    bool? isLocal,
+    int? taskId,
+    bool? isEndDateNull,
+  }) =>
           timesheetsDao.getPaginatedTimesheetWithTaskProjectData(
             limit: limit,
             offset: offset,
             isLocal: isLocal,
             taskId: taskId,
+            isEndDateNull: isEndDateNull,
           );
 }

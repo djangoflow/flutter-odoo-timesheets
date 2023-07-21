@@ -16,6 +16,7 @@ class TimesheetWithTaskExternalListFilter
     @Default(0) int offset,
     @Default(false) bool isLocal,
     int? taskId,
+    bool? isEndDateNull,
   }) = _TimesheetWithTaskExternalListFilter;
 
   factory TimesheetWithTaskExternalListFilter.fromJson(

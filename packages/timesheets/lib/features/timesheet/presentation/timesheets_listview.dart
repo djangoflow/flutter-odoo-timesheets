@@ -24,19 +24,26 @@ class TimesheetListView extends StatelessWidget {
         emptyBuilder: (context, state) => const Center(
           child: Text('No timesheets found'),
         ),
+        withRefreshIndicator: true,
         loadingBuilder: (context, state) => const Center(
           child: CircularProgressIndicator(),
         ),
-        itemBuilder: (context, state, index, item) => TaskListTile(
-          title: Text(item.timesheetExternalData.timesheet.name ?? ''),
-          subtitle: Text(item.taskWithProjectExternalData
-                  .projectWithExternalData.project.name ??
-              ''),
-          initialTimerStatus:
-              item.timesheetExternalData.timesheet.currentStatus,
-          onTimerStateChange: (context, timerState, tickInterval) async {},
-          onTimerResume: (context) {},
-        ),
+        itemBuilder: (context, state, index, item) {
+          final timesheet = item.timesheetExternalData.timesheet;
+          final project =
+              item.taskWithProjectExternalData.projectWithExternalData.project;
+
+          return TaskListTile(
+            key: ValueKey(timesheet.id),
+            title: Text(timesheet.name ?? ''),
+            subtitle: Text(project.name ?? ''),
+            elapsedTime: ((timesheet.unitAmount ?? 0) * 3600).toInt(),
+            initialTimerStatus:
+                item.timesheetExternalData.timesheet.currentStatus,
+            onTimerStateChange: (context, timerState, tickInterval) async {},
+            onTimerResume: (context) {},
+          );
+        },
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
           padding: EdgeInsets.all(
