@@ -106,7 +106,7 @@ class _TasksPageState extends State<TasksPage>
                                       //   seconds: elapsedTime,
                                       // );
                                     },
-                                    onTimerStateChange: (timerState,
+                                    onTimerStateChange: (context, timerState,
                                         tickDurationInSeconds) async {
                                       // Need to update timesheet
                                     },

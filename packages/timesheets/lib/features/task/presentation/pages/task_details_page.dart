@@ -245,7 +245,7 @@ class _TaskDetails extends StatelessWidget {
                       // );
                     },
                     onTimerStateChange:
-                        (timerState, tickDurationInSeconds) async {
+                        (context, timerState, tickDurationInSeconds) async {
                       // final router = context.router;
                       // final taskDetailsCubit = context.read<TaskDetailsCubit>();
 

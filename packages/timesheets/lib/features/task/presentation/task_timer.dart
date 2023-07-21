@@ -36,7 +36,8 @@ abstract class _TaskTimer extends StatefulWidget {
   final TimesheetStatusEnum? initialTimerStatus;
 
   /// onTimerStateChange is used to notify the parent widget about the timer state change.
-  final void Function(TimerState timerState, int tickInterval)?
+  final void Function(
+          BuildContext context, TimerState timerState, int tickInterval)?
       onTimerStateChange;
 
   /// padding is used to set the padding of the timer widget.
@@ -113,7 +114,8 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
                         prev.duration != current.duration ||
                         prev.status != current.status,
                     listener: (context, state) => widget.onTimerStateChange
-                        ?.call(state, _timerCubit.tickDuration.inSeconds),
+                        ?.call(
+                            context, state, _timerCubit.tickDuration.inSeconds),
                     child: TimerBlocBuilder(
                       builder: (context, state) => widget.builder(
                         context,

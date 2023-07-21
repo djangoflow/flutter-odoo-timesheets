@@ -51,37 +51,8 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     ])
       ..where(timesheets.id.equals(timesheetId));
 
-    final result = await query.map((row) {
-      final timesheet = row.readTable(timesheets);
-      final externalTimesheet = row.readTableOrNull(externalTimesheets);
-      final task = row.readTable(tasks);
-      final externalTask = row.readTableOrNull(externalTasks);
-      final project = row.readTable(projects);
-      final externalProject = row.readTableOrNull(externalProjects);
-
-      final timesheetExternalData = TimesheetExternalData(
-        timesheet: timesheet,
-        externalTimesheet: externalTimesheet,
-      );
-
-      final taskWithProjectExternalData = TaskWithExternalData(
-        task: task,
-        externalTask: externalTask,
-      );
-
-      final projectWithExternalData = ProjectWithExternalData(
-        project: project,
-        externalProject: externalProject,
-      );
-
-      return TimesheetWithTaskExternalData(
-        timesheetExternalData: timesheetExternalData,
-        taskWithProjectExternalData: TaskWithProjectExternalData(
-          taskWithExternalData: taskWithProjectExternalData,
-          projectWithExternalData: projectWithExternalData,
-        ),
-      );
-    }).getSingleOrNull();
+    final result =
+        await query.map(_rowToTimesheetWithTaskExternalData).getSingleOrNull();
 
     return result;
   }
@@ -114,37 +85,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
       query.where(timesheets.endTime.isNull());
     }
 
-    final result = await query.map((row) {
-      final timesheet = row.readTable(timesheets);
-      final externalTimesheet = row.readTableOrNull(externalTimesheets);
-      final task = row.readTable(tasks);
-      final externalTask = row.readTableOrNull(externalTasks);
-      final project = row.readTable(projects);
-      final externalProject = row.readTableOrNull(externalProjects);
-
-      final timesheetExternalData = TimesheetExternalData(
-        timesheet: timesheet,
-        externalTimesheet: externalTimesheet,
-      );
-
-      final taskWithProjectExternalData = TaskWithExternalData(
-        task: task,
-        externalTask: externalTask,
-      );
-
-      final projectWithExternalData = ProjectWithExternalData(
-        project: project,
-        externalProject: externalProject,
-      );
-
-      return TimesheetWithTaskExternalData(
-        timesheetExternalData: timesheetExternalData,
-        taskWithProjectExternalData: TaskWithProjectExternalData(
-          taskWithExternalData: taskWithProjectExternalData,
-          projectWithExternalData: projectWithExternalData,
-        ),
-      );
-    }).get();
+    final result = await query.map(_rowToTimesheetWithTaskExternalData).get();
 
     return result;
   }
@@ -177,4 +118,92 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Timesheet>> getTimesheetsByTaskIds(List<int> taskIds) =>
       (select(timesheets)..where((t) => t.taskId.isIn(taskIds))).get();
+
+  Future<List<TimesheetWithTaskExternalData>>
+      getPaginatedTimesheetWithTaskProjectData({
+    int? limit,
+    int? offset,
+    bool? isLocal,
+    int? taskId,
+  }) async {
+    final query = select(timesheets);
+
+    if (taskId != null) {
+      query.where((timesheets) => timesheets.taskId.equals(taskId));
+    }
+
+    if (limit != null && offset != null) {
+      query.limit(limit, offset: offset);
+    }
+
+    if (isLocal == true) {
+      // make sure that none of the externalProjects have internalId as the project's ids
+      query.where((timesheets) {
+        final subquery = selectOnly(externalTimesheets)
+          ..addColumns([externalTimesheets.internalId]);
+        return notExistsQuery(subquery
+          ..where(externalTimesheets.internalId.equalsExp(projects.id)));
+      });
+    } else if (isLocal == false) {
+      // fetch only projects that have externalProjects
+      query.where((timesheets) {
+        final subquery = selectOnly(externalTimesheets)
+          ..addColumns([externalTimesheets.internalId]);
+        return existsQuery(subquery
+          ..where(externalTimesheets.internalId.equalsExp(projects.id)));
+      });
+    }
+
+    final result = await (query.join(
+      [
+        leftOuterJoin(externalTimesheets,
+            timesheets.id.equalsExp(externalTimesheets.internalId)),
+        leftOuterJoin(tasks, tasks.id.equalsExp(timesheets.taskId)),
+        leftOuterJoin(
+            externalTasks, tasks.id.equalsExp(externalTasks.internalId)),
+        leftOuterJoin(projects, tasks.projectId.equalsExp(projects.id)),
+        leftOuterJoin(externalProjects,
+            projects.id.equalsExp(externalProjects.internalId)),
+      ],
+    ))
+        .map(
+          (p0) => _rowToTimesheetWithTaskExternalData(p0),
+        )
+        .get();
+
+    return result;
+  }
+
+  TimesheetWithTaskExternalData _rowToTimesheetWithTaskExternalData(
+      TypedResult row) {
+    final timesheet = row.readTable(timesheets);
+    final externalTimesheet = row.readTableOrNull(externalTimesheets);
+    final task = row.readTable(tasks);
+    final externalTask = row.readTableOrNull(externalTasks);
+    final project = row.readTable(projects);
+    final externalProject = row.readTableOrNull(externalProjects);
+
+    final timesheetExternalData = TimesheetExternalData(
+      timesheet: timesheet,
+      externalTimesheet: externalTimesheet,
+    );
+
+    final taskWithProjectExternalData = TaskWithExternalData(
+      task: task,
+      externalTask: externalTask,
+    );
+
+    final projectWithExternalData = ProjectWithExternalData(
+      project: project,
+      externalProject: externalProject,
+    );
+
+    return TimesheetWithTaskExternalData(
+      timesheetExternalData: timesheetExternalData,
+      taskWithProjectExternalData: TaskWithProjectExternalData(
+        taskWithExternalData: taskWithProjectExternalData,
+        projectWithExternalData: projectWithExternalData,
+      ),
+    );
+  }
 }

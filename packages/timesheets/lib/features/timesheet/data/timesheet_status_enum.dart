@@ -5,5 +5,4 @@ enum TimesheetStatusEnum {
   pausedByForce,
   paused,
   stopped,
-  submitted,
 }

@@ -28,7 +28,7 @@ class HomeTabRouterPage extends StatelessWidget {
           centerTitle: false,
         ),
         routes: const [
-          TasksRoute(),
+          TimesheetsRoute(),
           ProjectsRoute(),
           SettingsRoute(),
         ],

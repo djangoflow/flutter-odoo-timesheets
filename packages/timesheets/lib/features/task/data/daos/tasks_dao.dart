@@ -53,7 +53,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         .then(
           (rows) => rows
               .map(
-                (row) => _rowTaskWithProjectExternalData(row),
+                (row) => _rowToTaskWithProjectExternalData(row),
               )
               .toList(),
         );
@@ -77,7 +77,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
           .then(
             (rows) => rows
                 .map(
-                  (row) => _rowTaskWithProjectExternalData(row),
+                  (row) => _rowToTaskWithProjectExternalData(row),
                 )
                 .toList(),
           );
@@ -102,7 +102,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
               if (row == null) {
                 return null;
               } else {
-                return _rowTaskWithProjectExternalData(row);
+                return _rowToTaskWithProjectExternalData(row);
               }
             },
           );
@@ -125,28 +125,6 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
           (t) => t.id.isIn(taskIds),
         ))
       .get();
-
-  TaskWithProjectExternalData _rowTaskWithProjectExternalData(TypedResult row) {
-    final task = row.readTable(tasks);
-    final externalTask = row.readTableOrNull(externalTasks);
-    final project = row.readTable(projects);
-    final externalProject = row.readTableOrNull(externalProjects);
-
-    final taskWithExternalData = TaskWithExternalData(
-      task: task,
-      externalTask: externalTask,
-    );
-
-    final projectWithExternalData = ProjectWithExternalData(
-      project: project,
-      externalProject: externalProject,
-    );
-
-    return TaskWithProjectExternalData(
-      taskWithExternalData: taskWithExternalData,
-      projectWithExternalData: projectWithExternalData,
-    );
-  }
 
   Future<void> batchUpdateTasks(List<Task> tasks) async {
     await batch((batch) {
@@ -178,4 +156,27 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
               (t) => t.projectId.isIn(projectIds),
             ))
           .get();
+
+  TaskWithProjectExternalData _rowToTaskWithProjectExternalData(
+      TypedResult row) {
+    final task = row.readTable(tasks);
+    final externalTask = row.readTableOrNull(externalTasks);
+    final project = row.readTable(projects);
+    final externalProject = row.readTableOrNull(externalProjects);
+
+    final taskWithExternalData = TaskWithExternalData(
+      task: task,
+      externalTask: externalTask,
+    );
+
+    final projectWithExternalData = ProjectWithExternalData(
+      project: project,
+      externalProject: externalProject,
+    );
+
+    return TaskWithProjectExternalData(
+      taskWithExternalData: taskWithExternalData,
+      projectWithExternalData: projectWithExternalData,
+    );
+  }
 }

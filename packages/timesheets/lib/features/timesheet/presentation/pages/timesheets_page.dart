@@ -6,7 +6,27 @@ class TimesheetsPage extends StatelessWidget {
   const TimesheetsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+  Widget build(BuildContext context) => AutoTabsRouter.tabBar(
+        routes: const [
+          SyncedTimesheetsRoute(),
+          LocalTimesheetsRoute(),
+        ],
+        builder: (context, child, tabController) => Column(
+          children: [
+            Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: TabBar(
+                controller: tabController,
+                tabs: const [
+                  Tab(text: 'Synced'),
+                  Tab(text: 'Local'),
+                ],
+              ),
+            ),
+            Expanded(
+              child: child,
+            ),
+          ],
+        ),
+      );
 }

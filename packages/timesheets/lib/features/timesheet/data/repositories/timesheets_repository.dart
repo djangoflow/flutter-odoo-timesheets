@@ -111,4 +111,14 @@ class TimesheetRepository
 
   Future<List<Timesheet>> getTimesheetsByTaskIds(List<int> taskIds) =>
       timesheetsDao.getTimesheetsByTaskIds(taskIds);
+
+  Future<List<TimesheetWithTaskExternalData>>
+      getPaginatedTimesheetWithTaskProjectData(
+              {int? offset, int? limit, bool? isLocal, int? taskId}) =>
+          timesheetsDao.getPaginatedTimesheetWithTaskProjectData(
+            limit: limit,
+            offset: offset,
+            isLocal: isLocal,
+            taskId: taskId,
+          );
 }

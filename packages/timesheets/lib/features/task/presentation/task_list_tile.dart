@@ -25,7 +25,9 @@ class TaskListTile extends StatelessWidget {
   final int? elapsedTime;
   final TimesheetStatusEnum? initialTimerStatus;
   final VoidCallback? onTap;
-  final void Function(TimerState, int)? onTimerStateChange;
+  final void Function(
+          BuildContext context, TimerState timerState, int tickInterval)?
+      onTimerStateChange;
   final void Function(BuildContext context)? onTimerResume;
 
   factory TaskListTile.placeholder({

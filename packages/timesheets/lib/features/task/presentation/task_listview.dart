@@ -57,7 +57,8 @@ class TaskListView extends StatelessWidget {
               //   seconds: elapsedTime,
               // );
             },
-            onTimerStateChange: (timerState, tickDurationInSeconds) async {
+            onTimerStateChange:
+                (context, timerState, tickDurationInSeconds) async {
               // Need to update timesheet
             },
           );

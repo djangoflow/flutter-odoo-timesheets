@@ -30,50 +30,18 @@ class AppRouter extends $AppRouter {
           path: '/',
           children: [
             AutoRoute(
-              page: TasksRouter.page,
-              path: 'timers',
+              page: TimesheetsRoute.page,
+              path: 'timesheets',
               initial: true,
               children: [
                 AutoRoute(
-                  path: '',
-                  page: TasksRoute.page,
+                  path: 'synced',
+                  page: SyncedTimesheetsRoute.page,
+                  initial: true,
                 ),
                 AutoRoute(
-                  path: 'add',
-                  page: TaskAddRoute.page,
-                ),
-                AutoRoute(
-                  path: 'add-odoo',
-                  page: OdooTaskAddRoute.page,
-                  // guards: [AuthGuard()],
-                ),
-                AutoRoute(
-                  path: ':id',
-                  page: TaskDetailsRouter.page,
-                  children: [
-                    AutoRoute(
-                      path: '',
-                      page: TaskDetailsRoute.page,
-                    ),
-                    AutoRoute(
-                      path: 'edit',
-                      page: TaskEditRoute.page,
-                    ),
-                    AutoRoute(
-                      path: 'timesheets/:timesheetId',
-                      page: TimesheetsRouter.page,
-                      children: [
-                        AutoRoute(
-                          path: '',
-                          page: TimesheetDetailsRoute.page,
-                        ),
-                        AutoRoute(
-                          path: 'edit',
-                          page: TimesheetEditRoute.page,
-                        ),
-                      ],
-                    ),
-                  ],
+                  path: 'local',
+                  page: LocalTimesheetsRoute.page,
                 ),
               ],
             ),
@@ -84,6 +52,7 @@ class AppRouter extends $AppRouter {
                 AutoRoute(
                   page: SyncedProjectsRoute.page,
                   path: 'synced',
+                  initial: true,
                 ),
                 AutoRoute(
                   page: LocalProjectsRoute.page,
@@ -95,6 +64,53 @@ class AppRouter extends $AppRouter {
           ],
         ),
         AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
+        AutoRoute(
+          page: TasksRouter.page,
+          path: '/tasks',
+          children: [
+            AutoRoute(
+              path: '',
+              page: TasksRoute.page,
+            ),
+            AutoRoute(
+              path: 'add',
+              page: TaskAddRoute.page,
+            ),
+            AutoRoute(
+              path: 'add-odoo',
+              page: OdooTaskAddRoute.page,
+              // guards: [AuthGuard()],
+            ),
+            AutoRoute(
+              path: ':id',
+              page: TaskDetailsRouter.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  page: TaskDetailsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'edit',
+                  page: TaskEditRoute.page,
+                ),
+                AutoRoute(
+                  path: 'timesheets/:timesheetId',
+                  page: TimesheetsRouter.page,
+                  children: [
+                    AutoRoute(
+                      path: '',
+                      page: TimesheetDetailsRoute.page,
+                    ),
+                    AutoRoute(
+                      path: 'edit',
+                      page: TimesheetEditRoute.page,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
         // Or redirect to home
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];
