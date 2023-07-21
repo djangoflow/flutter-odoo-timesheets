@@ -24,7 +24,23 @@ class ProjectListView extends StatelessWidget {
           child: CircularProgressIndicator(),
         ),
         itemBuilder: (context, state, index, item) => ListTile(
-          title: Text(item.name ?? ''),
+          title: Row(
+            children: [
+              Text(
+                item.name ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(
+                width: kPadding.w,
+              ),
+              if (item.isFavorite == true)
+                const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+            ],
+          ),
           subtitle: Text('${item.taskCount ?? 0} Tasks'),
           onTap: () {
             context.router.push(ProjectDetailsRoute(projectId: item.id));
