@@ -59,30 +59,26 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
   }
 
   // Need to implement this method
-  Future<void> updateTimesheetWithTaskAndProject(
-      TimesheetsCompanion timesheetsCompanion,
-      TasksCompanion tasksCompanion,
-      ProjectsCompanion projectsCompanion) async {
-    // await timesheetRepository.updateTimesheetWithTaskAndProject(
-    //     timesheetsCompanion, tasksCompanion, projectsCompanion);
-    // final timesheet = await timesheetRepository
-    //     .getTimesheetWithTaskAndProjectById(timesheetsCompanion.id.value);
-    // if (state is Empty) {
-    //   emit(
-    //     Data(
-    //       data: [timesheet!],
-    //       filter: state.filter,
-    //     ),
-    //   );
-    // } else {
-    //   emit(
-    //     state.copyWith(
-    //       data: [
-    //         timesheet!,
-    //         ...state.data!,
-    //       ],
-    //     ),
-    //   );
-    // }
+  Future<void> updateTimesheet(Timesheet timesheet) async {
+    await timesheetRepository.update(timesheet);
+    final updatedTimesheet =
+        await timesheetRepository.getItemById(timesheet.id);
+    if (updatedTimesheet != null) {
+      emit(
+        state.copyWith(
+          data: state.data!
+              .map((e) => e.timesheetExternalData.timesheet.id == timesheet.id
+                  ? e.copyWith(
+                      timesheetExternalData: e.timesheetExternalData.copyWith(
+                        timesheet: updatedTimesheet,
+                      ),
+                    )
+                  : e)
+              .toList(),
+        ),
+      );
+    } else {
+      throw Exception('Timesheet not found with id ${timesheet.id}');
+    }
   }
 }

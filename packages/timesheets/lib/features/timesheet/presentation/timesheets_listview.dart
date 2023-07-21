@@ -1,13 +1,17 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/presentation/task_list_tile.dart';
+import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/features/timesheet/blocs/timesheet_with_task_external_list_cubit/timesheet_with_task_external_list_cubit.dart';
 import 'package:timesheets/features/timesheet/blocs/timesheet_with_task_external_list_cubit/timesheet_with_task_external_list_filter.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/utils/utils.dart';
 
 class TimesheetListView extends StatelessWidget {
   const TimesheetListView(
@@ -32,16 +36,44 @@ class TimesheetListView extends StatelessWidget {
           final timesheet = item.timesheetExternalData.timesheet;
           final project =
               item.taskWithProjectExternalData.projectWithExternalData.project;
+          final elapsedTime = timesheet.elapsedTime;
 
           return TaskListTile(
             key: ValueKey(timesheet.id),
             title: Text(timesheet.name ?? ''),
             subtitle: Text(project.name ?? ''),
-            elapsedTime: ((timesheet.unitAmount ?? 0) * 3600).toInt(),
+            elapsedTime: elapsedTime,
             initialTimerStatus:
                 item.timesheetExternalData.timesheet.currentStatus,
-            onTimerStateChange: (context, timerState, tickInterval) async {},
-            onTimerResume: (context) {},
+            onTimerStateChange: (context, timerState, tickInterval) async {
+              final timesheetWithTaskExternalListCubit =
+                  context.read<TimesheetWithTaskExternalListCubit>();
+              final isRunning =
+                  timerState.status == TimesheetStatusEnum.running;
+              final updatableSeconds = (isRunning ? tickInterval : 0);
+              final startTimeValue = (isRunning && timesheet.startTime == null)
+                  ? DateTime.now()
+                  : timesheet.startTime;
+
+              final lastTickedValue =
+                  isRunning ? DateTime.now() : timesheet.lastTicked;
+              Timesheet updatableTimesheet = timesheet.copyWith(
+                unitAmount:
+                    Value((elapsedTime + updatableSeconds).toUnitAmount()),
+                currentStatus: timerState.status,
+                startTime: Value(startTimeValue),
+                lastTicked: Value(lastTickedValue),
+              );
+              await timesheetWithTaskExternalListCubit.updateTimesheet(
+                updatableTimesheet,
+              );
+            },
+            onTimerResume: (context) {
+              final currentlyElapsedTime = timesheet.elapsedTime;
+              context.read<TimerCubit>().elapsedTime = Duration(
+                seconds: currentlyElapsedTime,
+              );
+            },
           );
         },
         builder: (context, controller, itemBuilder, itemCount) =>
