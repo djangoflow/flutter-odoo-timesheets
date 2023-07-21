@@ -74,6 +74,19 @@ class TimesheetListView extends StatelessWidget {
                 seconds: currentlyElapsedTime,
               );
             },
+            onTap: () {
+              if (timesheet.taskId != null) {
+                context.router.push(
+                  TasksRouter(
+                    children: [
+                      TaskDetailsRouter(taskId: timesheet.taskId!),
+                    ],
+                  ),
+                );
+              } else {
+                throw Exception('Task id is null');
+              }
+            },
           );
         },
         builder: (context, controller, itemBuilder, itemCount) =>

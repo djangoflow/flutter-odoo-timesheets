@@ -4,6 +4,7 @@ import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_reposi
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 export 'task_details_state.dart';
 
@@ -12,12 +13,13 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TimesheetRepository timesheetRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final ProjectRepository projectRepository;
-
+  final int taskId;
   TaskDetailsCubit({
     required this.taskRepository,
     required this.timesheetRepository,
     required this.odooTimesheetRepository,
     required this.projectRepository,
+    required this.taskId,
   }) : super(
           TaskDetailsState.initial(),
         );
@@ -28,17 +30,30 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     handleError(error);
   }
 
-  Future<void> loadTaskDetails(int taskId) async {
+  Future<void> loadTaskDetails({bool showLoading = true}) async {
     await errorWrapper(() async {
-      emit(TaskDetailsState.loading());
+      if (showLoading) {
+        emit(TaskDetailsState.loading());
+      }
+
       final taskWithProjectExternalData =
           await _getTaskWithProjectExternalData(taskId);
 
-      final timesheets = await timesheetRepository.getItemsByTaskId(taskId);
+      final timesheets =
+          await timesheetRepository.getPaginatedTimesheetExternalData(
+        taskId: taskId,
+        isEndDateNull: false,
+      );
+      final activeTimesheets =
+          await timesheetRepository.getPaginatedTimesheetExternalData(
+        taskId: taskId,
+        isEndDateNull: true,
+      );
       emit(
         TaskDetailsState.loaded(
           taskWithProjectExternalData: taskWithProjectExternalData,
           timesheets: timesheets,
+          activeTimesheets: activeTimesheets,
         ),
       );
     });
@@ -54,6 +69,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         TaskDetailsState.loaded(
           taskWithProjectExternalData: taskWithProjectExternalData,
           timesheets: state.timesheets,
+          activeTimesheets: state.activeTimesheets,
         ),
       );
     });
@@ -77,8 +93,34 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
             ),
           ),
           timesheets: state.timesheets,
+          activeTimesheets: state.activeTimesheets,
         ),
       );
+    });
+  }
+
+  Future<void> updateTimesheet(Timesheet timesheet) async {
+    await errorWrapper(() async {
+      if (timesheet.endTime != null) {
+        throw Exception('Timesheet has already ended');
+      }
+      await timesheetRepository.update(timesheet);
+      final updatedTimesheetWithExternalData =
+          await timesheetRepository.getTimesheetExternalDataById(timesheet.id);
+      if (updatedTimesheetWithExternalData == null) {
+        throw Exception('Timesheet not found');
+      }
+
+      emit(state.copyWith(
+        timesheets: [
+          for (final timesheetExternalData in state.timesheets)
+            if (timesheetExternalData.timesheet.id ==
+                updatedTimesheetWithExternalData.timesheet.id)
+              updatedTimesheetWithExternalData
+            else
+              timesheetExternalData,
+        ],
+      ));
     });
   }
 
@@ -248,69 +290,29 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     // }
   }
 
-  Future<void> createTimesheet(
-      {required TimesheetsCompanion timesheetsCompanion,
-      int? backendId}) async {
-    await errorWrapper(() async {
-      final timesheetId = await timesheetRepository.create(timesheetsCompanion);
-      final timesheet = await timesheetRepository.getItemById(timesheetId);
-      if (timesheet == null) {
-        throw Exception('Timesheet not found');
-      }
-      emit(TaskDetailsState.loaded(
-          taskWithProjectExternalData: state.taskWithProjectExternalData!,
-          timesheets: [timesheet, ...state.timesheets]));
-      if (backendId != null) {
-        emit(
-          TaskDetailsState.syncing(
-            taskWithProjectExternalData: state.taskWithProjectExternalData!,
-            timesheets: state.timesheets,
-          ),
-        );
-        await _syncTimesheet(timesheetId, backendId);
-        final updatedTimesheet =
-            await timesheetRepository.getItemById(timesheetId);
-        if (updatedTimesheet == null) {
-          throw Exception('Updated Timesheet not found');
-        }
-        emit(
-          TaskDetailsState.loaded(
-            taskWithProjectExternalData: state.taskWithProjectExternalData!,
-            timesheets: [
-              for (final timesheet in state.timesheets)
-                if (timesheet.id == timesheetId)
-                  updatedTimesheet
-                else
-                  timesheet,
-            ],
-          ),
-        );
-      }
-    });
-  }
-
   Future<void> syncTimesheet(int timesheetId, int backendId) async {
     await errorWrapper(() async {
       emit(
         TaskDetailsState.syncing(
           taskWithProjectExternalData: state.taskWithProjectExternalData!,
           timesheets: state.timesheets,
+          activeTimesheets: state.activeTimesheets,
         ),
       );
       await _syncTimesheet(timesheetId, backendId);
-      final updatedTimesheet =
-          await timesheetRepository.getItemById(timesheetId);
-      if (updatedTimesheet == null) {
+      final updatedTimesheetWithExternal =
+          await timesheetRepository.getTimesheetExternalDataById(timesheetId);
+
+      if (updatedTimesheetWithExternal == null) {
         throw Exception('Updated Timesheet not found');
       }
-      emit(
-        TaskDetailsState.loaded(
-          taskWithProjectExternalData: state.taskWithProjectExternalData!,
-          timesheets: [
-            for (final timesheet in state.timesheets)
-              if (timesheet.id == timesheetId) updatedTimesheet else timesheet,
-          ],
-        ),
+      final taskId = updatedTimesheetWithExternal.timesheet.taskId;
+      if (taskId == null) {
+        throw Exception('Task not found');
+      }
+
+      await loadTaskDetails(
+        showLoading: false,
       );
     });
   }
@@ -349,6 +351,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       TaskDetailsState.error(
         taskWithProjectExternalData: state.taskWithProjectExternalData,
         timesheets: state.timesheets,
+        activeTimesheets: state.activeTimesheets,
         error: error,
       ),
     );

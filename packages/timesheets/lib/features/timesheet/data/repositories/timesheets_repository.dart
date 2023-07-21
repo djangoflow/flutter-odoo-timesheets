@@ -26,6 +26,9 @@ class TimesheetRepository
   @override
   Future<Timesheet?> getItemById(int id) => timesheetsDao.getTimesheetById(id);
 
+  Future<TimesheetExternalData?> getTimesheetExternalDataById(int id) =>
+      timesheetsDao.getTimesheetExternalDataById(id);
+
   @override
   Future<List<Timesheet>> getItems() => timesheetsDao.getAllTimesheets();
 
@@ -127,4 +130,17 @@ class TimesheetRepository
             taskId: taskId,
             isEndDateNull: isEndDateNull,
           );
+
+  Future<List<TimesheetExternalData>> getPaginatedTimesheetExternalData({
+    int? limit,
+    int? offset,
+    int? taskId,
+    bool? isEndDateNull,
+  }) =>
+      timesheetsDao.getPaginatedTimesheetExternalData(
+        limit: limit,
+        offset: offset,
+        taskId: taskId,
+        isEndDateNull: isEndDateNull,
+      );
 }

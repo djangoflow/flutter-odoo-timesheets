@@ -213,4 +213,64 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
       ),
     );
   }
+
+  Future<List<TimesheetExternalData>> getPaginatedTimesheetExternalData(
+      {int? limit, int? offset, int? taskId, bool? isEndDateNull}) async {
+    final query = select(timesheets)
+      ..orderBy([
+        (t) => OrderingTerm.desc(
+              t.createdAt,
+            ),
+      ]);
+    if (taskId != null) {
+      query.where((timesheets) => timesheets.taskId.equals(taskId));
+    }
+
+    if (limit != null && offset != null) {
+      query.limit(limit, offset: offset);
+    }
+
+    if (isEndDateNull == true) {
+      query.where((timesheets) => timesheets.endTime.isNull());
+    } else if (isEndDateNull == false) {
+      query.where((timesheets) => timesheets.endTime.isNotNull());
+    }
+
+    final result = await (query.join(
+      [
+        leftOuterJoin(externalTimesheets,
+            timesheets.id.equalsExp(externalTimesheets.internalId)),
+      ],
+    )).map(
+      (row) {
+        final timesheet = row.readTable(timesheets);
+        final externalTimesheet = row.readTableOrNull(externalTimesheets);
+
+        return TimesheetExternalData(
+          timesheet: timesheet,
+          externalTimesheet: externalTimesheet,
+        );
+      },
+    ).get();
+
+    return result;
+  }
+
+  Future<TimesheetExternalData?> getTimesheetExternalDataById(int id) =>
+      (select(timesheets)..where((t) => t.id.equals(id))).join(
+        [
+          leftOuterJoin(externalTimesheets,
+              timesheets.id.equalsExp(externalTimesheets.internalId)),
+        ],
+      ).map(
+        (row) {
+          final timesheet = row.readTable(timesheets);
+          final externalTimesheet = row.readTableOrNull(externalTimesheets);
+
+          return TimesheetExternalData(
+            timesheet: timesheet,
+            externalTimesheet: externalTimesheet,
+          );
+        },
+      ).getSingleOrNull();
 }
