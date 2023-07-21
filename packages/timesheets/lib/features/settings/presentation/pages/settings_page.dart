@@ -85,7 +85,23 @@ class SettingsPage extends StatelessWidget {
                             .getBackendsFilteredByType(BackendTypeEnum.odoo)
                             .map((backend) => ListTile(
                                   key: ValueKey(backend.id),
-                                  title: const Text('Odoo'),
+                                  title: RichText(
+                                    text: TextSpan(
+                                      text: 'Odoo',
+                                      style: theme.listTileTheme.titleTextStyle,
+                                      children: [
+                                        if (backend.serverUrl != null)
+                                          TextSpan(
+                                            text: ' (${backend.serverUrl})',
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                              color: theme
+                                                  .colorScheme.onSurfaceVariant,
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                  ),
                                   subtitle: Text(backend.email ?? ''),
                                   leading: Builder(
                                     builder: (context) =>
