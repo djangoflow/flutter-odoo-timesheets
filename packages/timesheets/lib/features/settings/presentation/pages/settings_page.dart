@@ -227,26 +227,39 @@ class SettingsPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(kPadding * 2),
                   child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Made with ♥ by ',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: schemeColors.onSurfaceVariant,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Apexive',
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Made with ♥ by ',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: schemeColors.onSurface,
-                              decoration: TextDecoration.underline,
+                              color: schemeColors.onSurfaceVariant,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => launchUrlString(
-                                    apexiveUrl,
-                                  ),
+                            children: [
+                              TextSpan(
+                                text: 'Apexive',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: schemeColors.onSurface,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => launchUrlString(
+                                        apexiveUrl,
+                                      ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        if (AppCubit.packageInfo != null)
+                          Text(
+                            '${AppCubit.packageInfo?.version}('
+                            '${AppCubit.packageInfo?.buildNumber})',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: schemeColors.onSurfaceVariant,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
