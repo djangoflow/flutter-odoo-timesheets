@@ -12,7 +12,8 @@ class ProjectListFilter with _$ProjectListFilter implements OffsetLimitFilter {
   const factory ProjectListFilter({
     @Default(50) int limit,
     @Default(0) int offset,
-    @Default(false) bool isLocal,
+    bool? isLocal,
+    String? search,
   }) = _ProjectListFilter;
 
   factory ProjectListFilter.fromJson(

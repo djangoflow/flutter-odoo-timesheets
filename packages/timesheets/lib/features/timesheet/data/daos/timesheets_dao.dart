@@ -149,7 +149,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
         final subquery = selectOnly(externalTimesheets)
           ..addColumns([externalTimesheets.internalId]);
         return notExistsQuery(subquery
-          ..where(externalTimesheets.internalId.equalsExp(projects.id)));
+          ..where(externalTimesheets.internalId.equalsExp(timesheets.id)));
       });
     } else if (isLocal == false) {
       // fetch only projects that have externalProjects
@@ -157,7 +157,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
         final subquery = selectOnly(externalTimesheets)
           ..addColumns([externalTimesheets.internalId]);
         return existsQuery(subquery
-          ..where(externalTimesheets.internalId.equalsExp(projects.id)));
+          ..where(externalTimesheets.internalId.equalsExp(timesheets.id)));
       });
     }
 

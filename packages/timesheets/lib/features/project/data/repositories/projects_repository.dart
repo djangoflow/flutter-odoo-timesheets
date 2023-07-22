@@ -29,10 +29,18 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
   Future<List<Project>> getItems() => projectsDao.getAllProjects();
 
   @override
-  Future<List<Project>> getPaginatedItems(
-          {int? offset, int? limit, bool? isLocal}) =>
+  Future<List<Project>> getPaginatedItems({
+    int? offset,
+    int? limit,
+    bool? isLocal,
+    String? search,
+  }) =>
       projectsDao.getPaginatedProjects(
-          limit: limit, offset: offset, isLocal: isLocal);
+        limit: limit,
+        offset: offset,
+        isLocal: isLocal,
+        search: search,
+      );
 
   @override
   Future<void> update(Project entity) => projectsDao.updateProject(

@@ -65,21 +65,19 @@ class AppRouter extends $AppRouter {
         ),
         AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
         AutoRoute(
+          page: TimesheetRouter.page,
+          path: '/timesheets',
+          children: [
+            AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
+          ],
+        ),
+        AutoRoute(
           page: TasksRouter.page,
           path: '/tasks',
           children: [
             AutoRoute(
               path: '',
               page: TasksRoute.page,
-            ),
-            AutoRoute(
-              path: 'add',
-              page: TaskAddRoute.page,
-            ),
-            AutoRoute(
-              path: 'add-odoo',
-              page: OdooTaskAddRoute.page,
-              // guards: [AuthGuard()],
             ),
             AutoRoute(
               path: ':id',
@@ -89,10 +87,10 @@ class AppRouter extends $AppRouter {
                   path: '',
                   page: TaskDetailsRoute.page,
                 ),
-                AutoRoute(
-                  path: 'edit',
-                  page: TaskEditRoute.page,
-                ),
+                // AutoRoute(
+                //   path: 'edit',
+                //   page: TaskEditRoute.page,
+                // ),
                 AutoRoute(
                   path: 'timesheets/:timesheetId',
                   page: TimesheetsRouter.page,

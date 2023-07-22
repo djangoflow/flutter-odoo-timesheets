@@ -29,14 +29,21 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         },
       );
 
-  Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects(
-      {required int limit, int? offset, int? projectId}) {
+  Future<List<TaskWithProjectExternalData>> getPaginatedTasksWithProjects({
+    required int limit,
+    int? offset,
+    int? projectId,
+    String? search,
+  }) {
     final query = select(tasks)
       // should be ordered by createdAt and onlineIds
       ..orderBy([
         (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
       ])
       ..limit(limit, offset: offset);
+    if (search != null) {
+      query.where((t) => t.name.contains(search));
+    }
     if (projectId != null) {
       query.where((t) => t.projectId.equals(projectId));
     }

@@ -24,9 +24,15 @@ class TaskListCubit
               filter?.limit ?? TaskListFilter.kPageSize,
               filter?.offset,
               filter?.projectId,
+              filter?.search,
             ),
           ),
         );
+
+  Future<Task?> createTask(TasksCompanion tasksCompanion) async {
+    final taskId = await taskRepository.create(tasksCompanion);
+    return await taskRepository.getItemById(taskId);
+  }
 
   Future<void> createTaskWithProject(TasksCompanion tasksCompanion,
       ProjectsCompanion projectsCompanion) async {

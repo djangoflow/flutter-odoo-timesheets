@@ -199,22 +199,23 @@ class TaskDetailsPage extends StatelessWidget {
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),
               actions: [
-                if (taskWithProjectExternalData != null)
-                  // &&
-                  //     taskWithProjectExternalData.task.onlineId == null)
+                if (taskWithProjectExternalData != null &&
+                    taskWithProjectExternalData
+                            .taskWithExternalData.externalTask ==
+                        null)
                   IconButton(
                     onPressed: () {
-                      context.router
-                          .push(
-                        TaskEditRoute(
-                            taskWithProjectExternalData:
-                                taskWithProjectExternalData),
-                      )
-                          .then((value) {
-                        if (value != null && value == true) {
-                          context.router.pop(true);
-                        }
-                      });
+                      // context.router
+                      //     .push(
+                      //   TaskEditRoute(
+                      //       taskWithProjectExternalData:
+                      //           taskWithProjectExternalData),
+                      // )
+                      //     .then((value) {
+                      //   if (value != null && value == true) {
+                      //     context.router.pop(true);
+                      //   }
+                      // });
                     },
                     icon: const Icon(Icons.edit),
                   )

@@ -23,7 +23,7 @@ class TimesheetsPage extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
+            Flexible(
               child: child,
             ),
           ],

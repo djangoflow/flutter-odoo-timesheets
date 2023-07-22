@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 import 'task_list_tile.dart';
 
@@ -40,7 +41,13 @@ class TasksPlaceHolder extends StatelessWidget {
                         foregroundColor: theme.colorScheme.primary,
                       ),
                       onPressed: () {
-                        context.router.push(const TaskAddRoute());
+                        context.router.push(
+                          TasksRouter(
+                            children: [
+                              TimesheetAddRoute(),
+                            ],
+                          ),
+                        );
                       },
                       child: const Text('Add new task'),
                     ),

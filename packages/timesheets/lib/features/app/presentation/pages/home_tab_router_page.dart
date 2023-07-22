@@ -19,7 +19,13 @@ class HomeTabRouterPage extends StatelessWidget {
             if (tabsRouter.activeIndex == 0)
               IconButton(
                 onPressed: () {
-                  context.router.push(OdooTaskAddRoute());
+                  context.router.push(
+                    TimesheetRouter(
+                      children: [
+                        TimesheetAddRoute(),
+                      ],
+                    ),
+                  );
                 },
                 icon: const Icon(CupertinoIcons.add),
                 iconSize: kPadding.h * 4,

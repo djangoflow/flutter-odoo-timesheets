@@ -14,6 +14,7 @@ class TaskListFilter with _$TaskListFilter implements OffsetLimitFilter {
     @Default(50) int limit,
     @Default(0) int offset,
     int? projectId,
+    String? search,
   }) = _TaskListFilter;
 
   factory TaskListFilter.fromJson(

@@ -33,11 +33,13 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
     int limit,
     int? offset,
     int? projectId,
+    String? search,
   ) =>
       tasksDao.getPaginatedTasksWithProjects(
         limit: limit,
         offset: offset,
         projectId: projectId,
+        search: search,
       );
 
   Future<List<TaskWithProjectExternalData>> getAllTasksWithProjects() =>

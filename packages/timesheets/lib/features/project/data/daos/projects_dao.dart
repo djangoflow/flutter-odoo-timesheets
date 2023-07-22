@@ -36,11 +36,15 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
     int? limit,
     int? offset,
     bool? isLocal,
+    String? search,
   }) async {
     final query = select(projects);
 
     if (limit != null && offset != null) {
       query.limit(limit, offset: offset);
+    }
+    if (search != null && search.isNotEmpty) {
+      query.where((p) => p.name.contains(search));
     }
 
     query.orderBy([

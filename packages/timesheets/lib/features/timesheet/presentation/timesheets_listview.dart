@@ -91,6 +91,7 @@ class TimesheetListView extends StatelessWidget {
         },
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
+          shrinkWrap: false,
           padding: EdgeInsets.all(
             kPadding.h * 2,
           ),
