@@ -39,7 +39,7 @@ class AppTheme {
       inputDecoratorIsFilled: false,
       fabSchemeColor: SchemeColor.primary,
       chipSchemeColor: SchemeColor.primary,
-      cardElevation: 3,
+      cardElevation: 1,
       cardRadius: kPadding.r * 2,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
     );
@@ -103,6 +103,7 @@ class AppTheme {
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
       ),
+      cardColor: theme.colorScheme.primaryContainer,
     );
   }
 }

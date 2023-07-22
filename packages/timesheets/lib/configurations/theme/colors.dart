@@ -64,7 +64,7 @@ class AppColors {
   // Dark theme colors
   static const Color darkThemePrimary = Color(0xffffffff);
   static const Color darkThemeOnPrimary = Color(0xff000000);
-  static const Color darkThemePrimaryContainer = Color(0xff141414);
+  static const Color darkThemePrimaryContainer = Color(0xff0C1D4D);
   static const Color darkThemeOnPrimaryContainer = Color(0xffffffff);
   static const Color darkThemeSecondary = Color(0xff00007a);
   static const Color darkThemeOnSecondary = Color(0xffffffff);
@@ -78,13 +78,13 @@ class AppColors {
   static const Color darkThemeOnError = Color(0xffffffff);
   static const Color darkThemeErrorContainer = Color(0xff3d0000);
   static const Color darkThemeOnErrorContainer = Color(0xffffffff);
-  static const Color darkThemeSurface = Color(0xff000000);
+  static const Color darkThemeSurface = Color(0xff040A1A);
   static const Color darkThemeOnSurface = Color(0xffffffff);
   static const Color darkThemeSurfaceVariant = Color(0xff141414);
   static const Color darkThemeOnSurfaceVariant = Color(0xff7a7a7a);
   static const Color darkThemeOutline = Color(0xff292929);
   static const Color darkThemeOutlinevariant = Color(0xff3d3d3d);
-  static const Color darkThemeBackground = Color(0xff000000);
+  static const Color darkThemeBackground = Color(0xff040A1A);
   static const Color darkThemeOnBackground = Color(0xffffffff);
 
   // Light theme colors
