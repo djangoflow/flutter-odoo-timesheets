@@ -2,10 +2,11 @@ import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/project/data/database_tables/project.dart';
+import 'package:timesheets/features/task/task.dart';
 
 part 'projects_dao.g.dart';
 
-@DriftAccessor(tables: [Projects, ExternalProjects])
+@DriftAccessor(tables: [Projects, ExternalProjects, Tasks])
 class ProjectsDao extends DatabaseAccessor<AppDatabase>
     with _$ProjectsDaoMixin {
   ProjectsDao(AppDatabase db) : super(db);
@@ -71,7 +72,35 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
       });
     }
 
-    return await query.get();
+    final projectsList = await query.get();
+
+    // Calculate the number of tasks for each project and update them project's taskCount property and return updated projects
+    final projectsWithTaskCount = await Future.wait(
+      projectsList.map(
+        (project) => _getTasksCountForProject(project).then(
+          (taskCount) async {
+            await update(projects).replace(
+              project.copyWith(
+                taskCount: Value(taskCount),
+              ),
+            );
+            return project.copyWith(
+              taskCount: Value(taskCount),
+            );
+          },
+        ),
+      ),
+    );
+
+    return projectsWithTaskCount;
+  }
+
+  Future<int> _getTasksCountForProject(Project project) async {
+    final tasksCount = await (select(tasks)
+          ..where((t) => t.projectId.equals(project.id)))
+        .get()
+        .then((tasks) => tasks.length);
+    return tasksCount;
   }
 
   Future<void> updateProject(Project project) =>
