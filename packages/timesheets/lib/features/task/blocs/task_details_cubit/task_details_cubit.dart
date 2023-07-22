@@ -208,7 +208,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     });
   }
 
-  Future<void> _syncLocalTimesheetsToOdoo() async {
+  Future<void> _syncLocalTimesheetsToOdoo(int backendId) async {
     // find out the external id of the project
     final taskWithProjectExternalData = state.taskWithProjectExternalData;
     if (taskWithProjectExternalData == null) {
@@ -231,67 +231,43 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     if (externalTask == null || externalTaskId == null) {
       throw Exception('Task is not synced with any backends');
     }
-  }
 
-  Future<void> _syncFromOdooTimesheets() async {
-    // final taskWithProjectExternalData = state.taskWithProjectExternalData;
-    // if (taskWithProjectExternalData == null) {
-    //   throw Exception('Task or Project not found');
-    // }
-    // final task = taskWithProjectExternalData.task;
-    // final project = taskWithProjectExternalData.project;
+    final localTimesheetsWithExternalData = state.timesheets
+        .where((element) => element.externalTimesheet == null)
+        .toList();
 
-    // final alreadySyncedTimesheets = state.timesheets
-    //     .where((timesheet) => timesheet.onlineId != null)
-    //     .toList();
-    // final odooTimesheetIds =
-    //     alreadySyncedTimesheets.map((e) => e.onlineId as int).toList();
-
-    // final odooTimesheets =
-    //     await odooTimesheetRepository.getOdooTimesheetsByIds(odooTimesheetIds);
-
-    // // match alreadySycnedTimesheets with odooTimesheets and update the objects in alreadySycnedTimesheets from the odooTimesheets
-    // for (final timesheet in alreadySyncedTimesheets) {
-    //   final odooTimesheet = odooTimesheets.firstWhereOrNull(
-    //     (odooTimesheet) => odooTimesheet.id == timesheet.onlineId,
-    //   );
-    //   if (odooTimesheet != null) {
-    //     // TODO create new task if task or project's online has been changed
-    //     await timesheetRepository.updateTimesheet(
-    //       timesheet.copyWith(
-    //         startTime: odooTimesheet.startTime,
-    //         endTime: odooTimesheet.endTime,
-    //         totalSpentSeconds: (odooTimesheet.unitAmount * 3600).toInt(),
-    //       ),
-    //     );
-    //   }
-    // }
+    // create timesheets on Odoo
+    for (final timesheetWithExternalData in localTimesheetsWithExternalData) {
+      await _syncTimesheet(timesheetWithExternalData.timesheet.id, backendId);
+    }
   }
 
   Future<void> syncAllTimesheets(int backendId) async {
-    // await errorWrapper(() async {
-    //   final taskWithProjectExternalData = state.taskWithProjectExternalData;
-    //   if (taskWithProjectExternalData == null) {
-    //     throw Exception('Task or Project not found');
-    //   }
-    //   emit(TaskDetailsState.syncing(
-    //     taskWithProjectExternalData: state.taskWithProjectExternalData!,
-    //     timesheets: state.timesheets,
-    //   ));
-    //   await _syncLocalTimesheetsToOdoo(backendId);
+    await errorWrapper(() async {
+      final taskWithProjectExternalData = state.taskWithProjectExternalData;
+      if (taskWithProjectExternalData == null) {
+        throw Exception('Task or Project not found');
+      }
+      emit(TaskDetailsState.syncing(
+        taskWithProjectExternalData: state.taskWithProjectExternalData!,
+        timesheets: state.timesheets,
+        activeTimesheets: state.activeTimesheets,
+      ));
+      await _syncLocalTimesheetsToOdoo(backendId);
 
-    //   await _syncFromOdooTimesheets();
-
-    //   final timesheets = await timesheetRepository.getTimesheets(
-    //     taskWithProjectExternalData.task.id,
-    //   );
-    //   emit(
-    //     TaskDetailsState.loaded(
-    //       taskWithProjectExternalData: taskWithProjectExternalData,
-    //       timesheets: timesheets,
-    //     ),
-    //   );
-    // });
+      final timesheets =
+          await timesheetRepository.getPaginatedTimesheetExternalData(
+        taskId: taskId,
+        isEndDateNull: false,
+      );
+      emit(
+        TaskDetailsState.loaded(
+          taskWithProjectExternalData: taskWithProjectExternalData,
+          timesheets: timesheets,
+          activeTimesheets: state.activeTimesheets,
+        ),
+      );
+    });
   }
 
   /// Syncs a timesheet to Odoo and updates onlineId in the local database

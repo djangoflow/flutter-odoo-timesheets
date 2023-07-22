@@ -48,162 +48,232 @@ class TaskDetailsPage extends StatelessWidget {
             );
           }
 
-          body = ListView(
-            children: [
-              if (project?.name != null)
+          body = RefreshIndicator(
+            onRefresh: () async {
+              await context.read<TaskDetailsCubit>().loadTaskDetails();
+            },
+            child: ListView(
+              children: [
+                if (project?.name != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kPadding.w * 2,
+                      vertical: kPadding.h,
+                    ),
+                    child: _ProjectLabel(title: project!.name!),
+                  ),
+                if (task?.name != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kPadding.w * 2,
+                      vertical: kPadding.h,
+                    ),
+                    child: _TaskLabel(title: task!.name!),
+                  ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: kPadding.w * 2,
                     vertical: kPadding.h,
                   ),
-                  child: _ProjectLabel(title: project!.name!),
-                ),
-              if (task?.name != null)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: kPadding.w * 2,
-                    vertical: kPadding.h,
+                  child: Text(
+                    'Active timesheets',
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  child: _TaskLabel(title: task!.name!),
                 ),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final timesheetWithExternalData = activeTimesheets[index];
-                  return _ActiveTimesheetDetails(
-                    key: ValueKey(timesheetWithExternalData.timesheet.id),
-                    activeTimesheetExternalData: timesheetWithExternalData,
-                    isSyncing: state.isSyncing,
-                    backendId: externalProject?.backendId,
-                    taskWithProjectExternalData: taskWithProjectExternalData!,
-                  );
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                  height: kPadding.h,
-                ),
-                itemCount: activeTimesheets.length,
-              ),
-              SizedBox(
-                height: kPadding.h,
-              ),
-              BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, authState) {
-                  // final user = authState.odooUser;
-                  if (timesheets.isNotEmpty &&
-                      externalProject?.backendId != null) {
-                    return Column(
+                if (activeTimesheets.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: kPadding.w * 2,
+                    ),
+                    child: Column(
                       children: [
-                        SizedBox(
-                          height: kPadding.h * 2,
+                        const Text(
+                          'No active timesheets, create one to start working!',
                         ),
                         SizedBox(
-                          width: double.infinity,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: kPadding.h * 2,
-                            ),
-                            child: Stack(
-                              children: [
-                                if (!state.isSyncing)
-                                  LinearProgressBuilder(
-                                    action: (_) async {
-                                      final taskDetailsCubit =
-                                          context.read<TaskDetailsCubit>();
-
-                                      await taskDetailsCubit.syncAllTimesheets(
-                                        externalProject!.backendId!,
-                                      );
-                                    },
-                                    onSuccess: () =>
-                                        AppDialog.showSuccessDialog(
-                                      context: context,
-                                      title: 'Success',
-                                      content:
-                                          'Timesheets synced successfully, cheers!',
-                                    ),
-                                    builder: (context, action, error) =>
-                                        SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton.icon(
-                                        icon: const Icon(
-                                            CupertinoIcons.arrow_2_circlepath),
-                                        onPressed: action,
-                                        label: const Text(
-                                            'Sync timesheets with Odoo'),
-                                      ),
-                                    ),
-                                  ),
-                                if (state.isSyncing)
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Skeletonizer(
-                                      enabled: true,
-                                      child: ElevatedButton.icon(
-                                        onPressed: null,
-                                        label: const Skeleton.keep(
-                                          child: Text(
-                                            'Syncing',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          CupertinoIcons.arrow_2_circlepath,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (state.isSyncing)
-                                  Positioned(
-                                    top: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Lottie.asset(
-                                            Assets.animationSyncing,
-                                            height: kPadding * 3,
-                                            width: kPadding * 3,
-                                            repeat: true,
-                                          ),
-                                          SizedBox(
-                                            width: kPadding.w,
-                                          ),
-                                          Text(
-                                            'Syncing...',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                              ],
-                            ),
-                          ),
+                          height: kPadding.h,
                         ),
-                        SizedBox(
-                          height: kPadding.h * 3,
+                        OutlinedButton(
+                          onPressed: () async {
+                            final taskDetailsCubit =
+                                context.read<TaskDetailsCubit>();
+                            final result = await context.router.push(
+                              TimesheetRouter(children: [
+                                TimesheetAddRoute(
+                                  disableProjectTaskSelection: true,
+                                  taskWithProjectExternalData:
+                                      taskWithProjectExternalData,
+                                ),
+                              ]),
+                            );
+                            if (result != null && result is bool && result) {
+                              await taskDetailsCubit.loadTaskDetails();
+                            }
+                          },
+                          child: const Text('Start working'),
                         ),
                       ],
-                    );
-                  }
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final timesheetWithExternalData = activeTimesheets[index];
+                      return _ActiveTimesheetDetails(
+                        key: ValueKey(timesheetWithExternalData.timesheet.id),
+                        activeTimesheetExternalData: timesheetWithExternalData,
+                        isSyncing: state.isSyncing,
+                        backendId: externalProject?.backendId,
+                        taskWithProjectExternalData:
+                            taskWithProjectExternalData!,
+                      );
+                    },
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: kPadding.h,
+                    ),
+                    itemCount: activeTimesheets.length,
+                  ),
+                SizedBox(
+                  height: kPadding.h,
+                ),
+                BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, authState) {
+                    if (timesheets.isNotEmpty &&
+                        externalProject?.backendId != null &&
+                        timesheets.any(
+                          (element) => element.externalTimesheet == null,
+                        )) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: kPadding.h * 2,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: kPadding.h * 2,
+                              ),
+                              child: Stack(
+                                children: [
+                                  if (!state.isSyncing)
+                                    LinearProgressBuilder(
+                                      action: (_) async {
+                                        final taskDetailsCubit =
+                                            context.read<TaskDetailsCubit>();
 
-                  return const SizedBox();
-                },
-              ),
-              _TimesheetListView(
-                key: ValueKey(timesheets),
-                timesheets: timesheets,
-              ),
-            ],
+                                        await taskDetailsCubit
+                                            .syncAllTimesheets(
+                                          externalProject!.backendId!,
+                                        );
+                                      },
+                                      onSuccess: () =>
+                                          AppDialog.showSuccessDialog(
+                                        context: context,
+                                        title: 'Success',
+                                        content:
+                                            'Timesheets synced successfully, cheers!',
+                                      ),
+                                      builder: (context, action, error) =>
+                                          SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton.icon(
+                                          icon: const Icon(CupertinoIcons
+                                              .arrow_2_circlepath),
+                                          onPressed: action,
+                                          label: const Text(
+                                              'Sync timesheets with Odoo'),
+                                        ),
+                                      ),
+                                    ),
+                                  if (state.isSyncing)
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: Skeletonizer(
+                                        enabled: true,
+                                        child: ElevatedButton.icon(
+                                          onPressed: null,
+                                          label: const Skeleton.keep(
+                                            child: Text(
+                                              'Syncing',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          icon: const Icon(
+                                            CupertinoIcons.arrow_2_circlepath,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (state.isSyncing)
+                                    Positioned(
+                                      top: 0,
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Lottie.asset(
+                                              Assets.animationSyncing,
+                                              height: kPadding * 3,
+                                              width: kPadding * 3,
+                                              repeat: true,
+                                            ),
+                                            SizedBox(
+                                              width: kPadding.w,
+                                            ),
+                                            Text(
+                                              'Syncing...',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: kPadding.h,
+                          ),
+                        ],
+                      );
+                    }
+
+                    return const SizedBox();
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: kPadding.w * 2,
+                    vertical: kPadding.h,
+                  ),
+                  child: Text(
+                    'Completed timesheets',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                if (timesheets.isEmpty)
+                  const EmptyPlaceholder(
+                    message: 'Completed timesheets will appear here!',
+                  )
+                else
+                  _TimesheetListView(
+                    key: ValueKey(timesheets),
+                    timesheets: timesheets,
+                  ),
+              ],
+            ),
           );
 
           return Scaffold(

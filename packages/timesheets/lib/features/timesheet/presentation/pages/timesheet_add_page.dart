@@ -36,6 +36,8 @@ class TimesheetAddPage extends StatelessWidget {
         body: TimesheetWithTaskEditor(
           showOnlySyncedTaskAndProjects: false,
           disableProjectTaskSelection: disableProjectTaskSelection,
+          project: taskWithProjectExternalData?.projectWithExternalData.project,
+          task: taskWithProjectExternalData?.taskWithExternalData.task,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),

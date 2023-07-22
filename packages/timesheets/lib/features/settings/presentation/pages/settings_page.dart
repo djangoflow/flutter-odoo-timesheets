@@ -105,21 +105,22 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                   ),
                                   subtitle: Text(backend.email ?? ''),
-                                  leading: Builder(
-                                    builder: (context) =>
-                                        CircularProgressBuilder(
-                                      action: (_) async {
-                                        await context
-                                            .read<SyncCubit>()
-                                            .syncData(backend.id);
-                                      },
-                                      builder: (context, action, error) =>
-                                          IconButton(
-                                        icon: const Icon(Icons.sync),
-                                        onPressed: action,
-                                      ),
-                                    ),
-                                  ),
+                                  // TODO Enable later with proper testing
+                                  // leading: Builder(
+                                  //   builder: (context) =>
+                                  //       CircularProgressBuilder(
+                                  //     action: (_) async {
+                                  //       await context
+                                  //           .read<SyncCubit>()
+                                  //           .syncData(backend.id);
+                                  //     },
+                                  //     builder: (context, action, error) =>
+                                  //         IconButton(
+                                  //       icon: const Icon(Icons.sync),
+                                  //       onPressed: action,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   trailing: Icon(
                                     Icons.chevron_right,
                                     size: kPadding.w * 4,

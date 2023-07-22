@@ -18,8 +18,8 @@ class ProjectListView extends StatelessWidget {
         create: (context) => ProjectListCubit(context.read<ProjectRepository>())
           ..load(projectListFilter),
         withRefreshIndicator: true,
-        emptyBuilder: (context, state) => const Center(
-          child: Text('No projects'),
+        emptyBuilder: (context, state) => const EmptyPlaceholder(
+          message: 'No projects found',
         ),
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, item) => ListTile(
