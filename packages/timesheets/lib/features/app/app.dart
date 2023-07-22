@@ -8,3 +8,4 @@ export 'presentation/scrollable_column.dart';
 export 'presentation/app_reactive_dropdown.dart';
 export 'presentation/app_dialog.dart';
 export 'data/repositories/crud_repository.dart';
+export 'presentation/app_visibility_builder.dart';

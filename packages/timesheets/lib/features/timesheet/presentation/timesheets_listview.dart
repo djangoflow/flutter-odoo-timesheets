@@ -92,6 +92,7 @@ class TimesheetListView extends StatelessWidget {
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
           shrinkWrap: false,
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.all(
             kPadding.h * 2,
           ),

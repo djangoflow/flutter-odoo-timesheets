@@ -48,6 +48,7 @@ class ProjectListView extends StatelessWidget {
         ),
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: controller,
           padding: EdgeInsets.all(
             kPadding.h * 2,

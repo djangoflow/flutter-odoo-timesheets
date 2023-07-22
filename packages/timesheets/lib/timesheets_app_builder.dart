@@ -13,6 +13,7 @@ import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'configurations/router/route_observer.dart';
 import 'features/app/app.dart';
@@ -27,6 +28,10 @@ class TimesheetsAppBuilder extends AppBuilder {
     required AppLinksRepository appLinksRepository,
     final String? initialDeepLink,
   }) : super(
+          onInitState: (context) {
+            VisibilityDetectorController.instance.updateInterval =
+                animationDurationShort;
+          },
           repositoryProviders: [
             RepositoryProvider<AppDatabase>(create: (_) => AppDatabase()),
             RepositoryProvider<AppLinksRepository>.value(

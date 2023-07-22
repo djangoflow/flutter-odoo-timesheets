@@ -66,19 +66,23 @@ class TaskDetailsPage extends StatelessWidget {
                   ),
                   child: _TaskLabel(title: task!.name!),
                 ),
-              Column(
-                children: activeTimesheets
-                    .map(
-                      (e) => _ActiveTimesheetDetails(
-                        key: ValueKey(e.timesheet.id),
-                        activeTimesheetExternalData: e,
-                        isSyncing: state.isSyncing,
-                        backendId: externalProject?.backendId,
-                        taskWithProjectExternalData:
-                            taskWithProjectExternalData!,
-                      ),
-                    )
-                    .toList(),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final timesheetWithExternalData = activeTimesheets[index];
+                  return _ActiveTimesheetDetails(
+                    key: ValueKey(timesheetWithExternalData.timesheet.id),
+                    activeTimesheetExternalData: timesheetWithExternalData,
+                    isSyncing: state.isSyncing,
+                    backendId: externalProject?.backendId,
+                    taskWithProjectExternalData: taskWithProjectExternalData!,
+                  );
+                },
+                separatorBuilder: (context, index) => SizedBox(
+                  height: kPadding.h,
+                ),
+                itemCount: activeTimesheets.length,
               ),
               SizedBox(
                 height: kPadding.h,
@@ -253,186 +257,182 @@ class _ActiveTimesheetDetails extends StatelessWidget {
     final timesheet = activeTimesheetExternalData.timesheet;
     final elapsedTime = timesheet.elapsedTime;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: kPadding.h),
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: kPadding.h * 2,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (timesheet.name != null)
-                  RichText(
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(
-                      text: 'Description: ',
-                      style: Theme.of(context).textTheme.bodySmall,
-                      children: [
-                        TextSpan(
-                          text: timesheet.name!,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: kPadding.h * 2,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (timesheet.name != null)
+                RichText(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: 'Description: ',
+                    style: Theme.of(context).textTheme.bodySmall,
+                    children: [
+                      TextSpan(
+                        text: timesheet.name!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
-                _TimesheetDateDetails(
-                  startTime: timesheet.startTime,
                 ),
-                SizedBox(
-                  height: kPadding.h,
+              _TimesheetDateDetails(
+                startTime: timesheet.startTime,
+              ),
+              SizedBox(
+                height: kPadding.h,
+              ),
+              TaskTimer.large(
+                key: ValueKey(
+                  [
+                    TimesheetStatusEnum.initial,
+                    TimesheetStatusEnum.stopped,
+                  ].contains(timesheet.currentStatus),
                 ),
-                TaskTimer.large(
-                  key: ValueKey(
-                    [
-                      TimesheetStatusEnum.initial,
-                      TimesheetStatusEnum.stopped,
-                    ].contains(timesheet.currentStatus),
-                  ),
-                  disabled: isSyncing,
-                  elapsedTime: elapsedTime,
-                  initialTimerStatus: timesheet.currentStatus,
-                  onTimerResume: (context) {
-                    final currentlyElapsedTime = timesheet.elapsedTime;
-                    context.read<TimerCubit>().elapsedTime = Duration(
-                      seconds: currentlyElapsedTime,
-                    );
-                  },
-                  onTimerStateChange:
-                      (timercontext, timerState, tickDurationInSeconds) async {
-                    final router = context.router;
-                    final taskDetailsCubit = context.read<TaskDetailsCubit>();
+                disabled: isSyncing,
+                elapsedTime: elapsedTime,
+                initialTimerStatus: timesheet.currentStatus,
+                onTimerResume: (context) {
+                  final currentlyElapsedTime = timesheet.elapsedTime;
+                  context.read<TimerCubit>().elapsedTime = Duration(
+                    seconds: currentlyElapsedTime,
+                  );
+                },
+                onTimerStateChange:
+                    (timercontext, timerState, tickDurationInSeconds) async {
+                  final router = context.router;
+                  final taskDetailsCubit = context.read<TaskDetailsCubit>();
 
-                    final isRunning =
-                        timerState.status == TimesheetStatusEnum.running;
-                    final updatableSeconds =
-                        (isRunning ? tickDurationInSeconds : 0);
-                    final startTimeValue =
-                        (isRunning && timesheet.startTime == null)
-                            ? DateTime.now()
-                            : timesheet.startTime;
+                  final isRunning =
+                      timerState.status == TimesheetStatusEnum.running;
+                  final updatableSeconds =
+                      (isRunning ? tickDurationInSeconds : 0);
+                  final startTimeValue =
+                      (isRunning && timesheet.startTime == null)
+                          ? DateTime.now()
+                          : timesheet.startTime;
 
-                    final lastTickedValue =
-                        isRunning ? DateTime.now() : timesheet.lastTicked;
-                    Timesheet updatableTimesheet = timesheet.copyWith(
-                      unitAmount: Value(
-                          (elapsedTime + updatableSeconds).toUnitAmount()),
-                      currentStatus: timerState.status,
-                      startTime: Value(startTimeValue),
-                      lastTicked: Value(lastTickedValue),
-                    );
-                    await taskDetailsCubit.updateTimesheet(updatableTimesheet);
+                  final lastTickedValue =
+                      isRunning ? DateTime.now() : timesheet.lastTicked;
+                  Timesheet updatableTimesheet = timesheet.copyWith(
+                    unitAmount:
+                        Value((elapsedTime + updatableSeconds).toUnitAmount()),
+                    currentStatus: timerState.status,
+                    startTime: Value(startTimeValue),
+                    lastTicked: Value(lastTickedValue),
+                  );
+                  await taskDetailsCubit.updateTimesheet(updatableTimesheet);
 
-                    // update task locally in task list cubit
+                  // update task locally in task list cubit
 
-                    if (timerState.status == TimesheetStatusEnum.stopped) {
-                      if (context.mounted) {
-                        if (context
-                                .read<AuthCubit>()
-                                .state
-                                .connectedBackends
-                                .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                                .isNotEmpty &&
-                            backendId != null) {
-                          _syncTimesheet(
-                            context: context,
-                            timesheet: updatableTimesheet,
-                            backendId: backendId,
+                  if (timerState.status == TimesheetStatusEnum.stopped) {
+                    if (context.mounted) {
+                      if (context
+                              .read<AuthCubit>()
+                              .state
+                              .connectedBackends
+                              .getBackendsFilteredByType(BackendTypeEnum.odoo)
+                              .isNotEmpty &&
+                          backendId != null) {
+                        _syncTimesheet(
+                          context: context,
+                          timesheet: updatableTimesheet,
+                          backendId: backendId,
+                        );
+                      } else {
+                        final result = await _showActionSheet(context);
+                        if (result == null ||
+                            result == _TaskStopAction.cancel) {
+                          await taskDetailsCubit.updateTimesheet(
+                            updatableTimesheet.copyWith(
+                              currentStatus: TimesheetStatusEnum.paused,
+                            ),
                           );
-                        } else {
-                          final result = await _showActionSheet(context);
-                          if (result == null ||
-                              result == _TaskStopAction.cancel) {
-                            await taskDetailsCubit.updateTimesheet(
-                              updatableTimesheet.copyWith(
-                                currentStatus: TimesheetStatusEnum.paused,
-                              ),
+                        } else if (result == _TaskStopAction.saveLocally) {
+                          if (context.mounted) {
+                            await _syncTimesheet(
+                              context: context,
+                              timesheet: updatableTimesheet,
                             );
-                          } else if (result == _TaskStopAction.saveLocally) {
+                          }
+                        } else if (result ==
+                            _TaskStopAction.mergeWithSyncedProject) {
+                          updatableTimesheet = updatableTimesheet.copyWith(
+                            currentStatus: TimesheetStatusEnum.paused,
+                          );
+                          await taskDetailsCubit
+                              .updateTimesheet(updatableTimesheet);
+                          // Need to write logic for merging task to odoo
+                          final oldTaskId = updatableTimesheet.taskId;
+                          final oldProjectId = updatableTimesheet.projectId;
+                          final didUpdateTask = await router.push(
+                            TimesheetRouter(
+                              children: [
+                                TimesheetMergeRoute(
+                                  timesheet: updatableTimesheet,
+                                ),
+                              ],
+                            ),
+                          );
+                          if (context.mounted && didUpdateTask != null) {
+                            final latestTimesheet = await taskDetailsCubit
+                                .getTimesheetById(updatableTimesheet.id);
+                            if (latestTimesheet == null ||
+                                latestTimesheet.taskId == null &&
+                                    latestTimesheet.projectId != null) {
+                              throw Exception(
+                                'Timesheet is empty or does not have a valid task',
+                              );
+                            }
+                            if (oldProjectId != null && oldTaskId != null) {
+                              await taskDetailsCubit
+                                  .updateTimesheetsProjectAndTaskIds(
+                                oldProjectId: oldProjectId,
+                                oldTaskId: oldTaskId,
+                                updatedProjectId: latestTimesheet.projectId!,
+                                updatedTaskId: latestTimesheet.taskId!,
+                              );
+                            }
+                            final lastestTaskWithProjectExternalData =
+                                await taskDetailsCubit
+                                    .getTaskWithProjectExternalDataByTaskId(
+                              latestTimesheet.taskId!,
+                            );
+                            final backendId = lastestTaskWithProjectExternalData
+                                .projectWithExternalData
+                                .externalProject
+                                ?.backendId;
+                            if (backendId == null) {
+                              throw Exception('Project is not synced yet');
+                            }
                             if (context.mounted) {
                               await _syncTimesheet(
                                 context: context,
-                                timesheet: updatableTimesheet,
+                                timesheet: latestTimesheet,
+                                backendId: backendId,
                               );
-                            }
-                          } else if (result ==
-                              _TaskStopAction.mergeWithSyncedProject) {
-                            updatableTimesheet = updatableTimesheet.copyWith(
-                              currentStatus: TimesheetStatusEnum.paused,
-                            );
-                            await taskDetailsCubit
-                                .updateTimesheet(updatableTimesheet);
-                            // Need to write logic for merging task to odoo
-                            final oldTaskId = updatableTimesheet.taskId;
-                            final oldProjectId = updatableTimesheet.projectId;
-                            final didUpdateTask = await router.push(
-                              TimesheetRouter(
-                                children: [
-                                  TimesheetMergeRoute(
-                                    timesheet: updatableTimesheet,
-                                  ),
-                                ],
-                              ),
-                            );
-                            if (context.mounted && didUpdateTask != null) {
-                              final latestTimesheet = await taskDetailsCubit
-                                  .getTimesheetById(updatableTimesheet.id);
-                              if (latestTimesheet == null ||
-                                  latestTimesheet.taskId == null &&
-                                      latestTimesheet.projectId != null) {
-                                throw Exception(
-                                  'Timesheet is empty or does not have a valid task',
-                                );
-                              }
-                              if (oldProjectId != null && oldTaskId != null) {
-                                await taskDetailsCubit
-                                    .updateTimesheetsProjectAndTaskIds(
-                                  oldProjectId: oldProjectId,
-                                  oldTaskId: oldTaskId,
-                                  updatedProjectId: latestTimesheet.projectId!,
-                                  updatedTaskId: latestTimesheet.taskId!,
-                                );
-                              }
-                              final lastestTaskWithProjectExternalData =
-                                  await taskDetailsCubit
-                                      .getTaskWithProjectExternalDataByTaskId(
-                                latestTimesheet.taskId!,
+                              debugPrint(
+                                  'updated timesheet $didUpdateTask ${latestTimesheet.id}');
+                              taskDetailsCubit.taskIdValue =
+                                  latestTimesheet.taskId!;
+                              taskDetailsCubit.loadTaskDetails(
+                                showLoading: true,
                               );
-                              final backendId =
-                                  lastestTaskWithProjectExternalData
-                                      .projectWithExternalData
-                                      .externalProject
-                                      ?.backendId;
-                              if (backendId == null) {
-                                throw Exception('Project is not synced yet');
-                              }
-                              if (context.mounted) {
-                                await _syncTimesheet(
-                                  context: context,
-                                  timesheet: latestTimesheet,
-                                  backendId: backendId,
-                                );
-                                debugPrint(
-                                    'updated timesheet $didUpdateTask ${latestTimesheet.id}');
-                                taskDetailsCubit.taskIdValue =
-                                    latestTimesheet.taskId!;
-                                taskDetailsCubit.loadTaskDetails(
-                                  showLoading: true,
-                                );
-                              }
                             }
                           }
                         }
                       }
                     }
-                  },
-                ),
-              ],
-            ),
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
