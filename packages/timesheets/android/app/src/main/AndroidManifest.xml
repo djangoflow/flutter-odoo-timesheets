@@ -2,6 +2,7 @@
     package="com.djangoflow.odoo.timesheets">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
+        android:allowBackup="false"
         android:label="Apexive Timesheets"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
