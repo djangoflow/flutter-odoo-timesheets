@@ -1,5 +1,4 @@
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timer/timer.dart';
 
 extension TaskExtensions on Task {
   // int get elapsedTime {

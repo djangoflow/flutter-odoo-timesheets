@@ -1,6 +1,5 @@
 import 'package:timesheets/configurations/configurations.dart';
 
-import 'auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'route_parser.dart';

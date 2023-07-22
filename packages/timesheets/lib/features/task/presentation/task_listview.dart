@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
+
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 

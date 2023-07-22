@@ -5,9 +5,6 @@ import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
-import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 import 'package:timesheets/utils/utils.dart';
 
 import 'auth_state.dart';

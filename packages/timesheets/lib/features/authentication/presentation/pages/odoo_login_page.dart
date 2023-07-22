@@ -9,11 +9,8 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_information_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
 import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
-import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 @RoutePage()
 class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {

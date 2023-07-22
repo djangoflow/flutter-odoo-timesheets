@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
-import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';

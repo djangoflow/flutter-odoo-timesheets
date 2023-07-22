@@ -5,7 +5,6 @@ import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timesheet/presentation/timesheet_list_tile.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/features/timesheet/blocs/timesheet_with_task_external_list_cubit/timesheet_with_task_external_list_cubit.dart';
 import 'package:timesheets/features/timesheet/blocs/timesheet_with_task_external_list_cubit/timesheet_with_task_external_list_filter.dart';

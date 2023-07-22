@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'login_listener.dart';
 
