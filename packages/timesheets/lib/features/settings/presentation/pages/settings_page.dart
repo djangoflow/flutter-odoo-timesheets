@@ -1,5 +1,6 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:progress_builder/progress_builder.dart';
@@ -69,14 +70,15 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(
                     height: kPadding,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.router.pushNativeRoute(MaterialPageRoute(
-                          builder: (context) =>
-                              DriftDbViewer(context.read<AppDatabase>())));
-                    },
-                    child: const Text('Check DB'),
-                  ),
+                  if (kDebugMode)
+                    ElevatedButton(
+                      onPressed: () {
+                        context.router.pushNativeRoute(MaterialPageRoute(
+                            builder: (context) =>
+                                DriftDbViewer(context.read<AppDatabase>())));
+                      },
+                      child: const Text('Check DB'),
+                    ),
                   const SectionTitle(title: 'Synchronizations'),
                   SyncCubitProvider(
                     child: BlocBuilder<AuthCubit, AuthState>(
