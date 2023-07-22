@@ -1,22 +1,26 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
 
 export 'task_details_state.dart';
 
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TaskRepository taskRepository;
   final TimesheetRepository timesheetRepository;
+  final ExternalTimesheetRepository externalTimesheetRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final ProjectRepository projectRepository;
   final int taskId;
   TaskDetailsCubit({
     required this.taskRepository,
     required this.timesheetRepository,
+    required this.externalTimesheetRepository,
     required this.odooTimesheetRepository,
     required this.projectRepository,
     required this.taskId,
@@ -124,6 +128,52 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     });
   }
 
+  Future<void> stopWorkingOnTimesheet(int timesheetId) async {
+    await errorWrapper(() async {
+      await _stopWorkinOnTimesheet(timesheetId);
+      final updatedTimesheetWithExternalData =
+          await timesheetRepository.getTimesheetExternalDataById(timesheetId);
+      if (updatedTimesheetWithExternalData == null) {
+        throw Exception('Timesheet not found');
+      }
+
+      emit(
+        state.copyWith(
+          timesheets: [updatedTimesheetWithExternalData, ...state.timesheets],
+          activeTimesheets: [
+            for (final timesheetExternalData in state.activeTimesheets)
+              if (timesheetExternalData.timesheet.id !=
+                  updatedTimesheetWithExternalData.timesheet.id)
+                timesheetExternalData,
+          ],
+        ),
+      );
+    });
+  }
+
+  Future<void> _stopWorkinOnTimesheet(int timesheetId) async {
+    final timesheet = await timesheetRepository.getItemById(timesheetId);
+    if (timesheet == null) {
+      throw Exception('Timesheet not found');
+    }
+
+    if (timesheet.startTime == null) {
+      throw Exception('Timesheet has not started yet');
+    }
+    if (timesheet.endTime != null) {
+      throw Exception('Timesheet has already ended');
+    }
+    await timesheetRepository.update(
+      timesheet.copyWith(
+        endTime: Value(
+          timesheet.startTime?.add(
+            Duration(seconds: (timesheet.unitAmount?.toInt() ?? 0) * 3600),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> deleteTask() async {
     await errorWrapper(() async {
       emit(TaskDetailsState.loading());
@@ -227,67 +277,66 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   /// Syncs a timesheet to Odoo and updates onlineId in the local database
   Future<void> _syncTimesheet(int timesheetId, int backendId) async {
-    // final timesheet = await timesheetRepository.getTimesheetById(timesheetId);
-    // if (timesheet == null) {
-    //   throw Exception('Timesheet not found');
-    // }
+    final timesheet = await timesheetRepository.getItemById(timesheetId);
+    if (timesheet == null || timesheet.taskId == null) {
+      throw Exception('Timesheet with Task not found');
+    }
 
-    // final taskWithProjectExternalData =
-    //     await taskRepository.getTaskWithProjectById(timesheet.taskId);
-    // if (taskWithProjectExternalData == null) {
-    //   throw Exception('Task and Project not found');
-    // }
+    final taskWithProjectExternalData =
+        await taskRepository.getTaskWithProjectById(timesheet.taskId!);
+    if (taskWithProjectExternalData == null) {
+      throw Exception('Task and Project not found');
+    }
 
-    // final taskOnlineId = taskWithProjectExternalData.task.onlineId;
-    // final projectOnlineId = taskWithProjectExternalData.project.onlineId;
+    final taskExternalId = taskWithProjectExternalData
+        .taskWithExternalData.externalTask?.externalId;
+    final projectExternalId = taskWithProjectExternalData
+        .projectWithExternalData.externalProject?.externalId;
 
-    // if (taskOnlineId == null || projectOnlineId == null) {
-    //   throw Exception('Task or Project not found');
-    // }
+    if (taskExternalId == null || projectExternalId == null) {
+      throw Exception('Task or Project not found');
+    }
 
-    // final startTime = timesheet.startTime;
-    // final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    // final timesheetOnlineId = await odooTimesheetRepository.create(
-    //   OdooTimesheetRequest(
-    //     projectId: projectOnlineId,
-    //     taskId: taskOnlineId,
-    //     startTime: formatter.format(startTime),
-    //     endTime: formatter.format(
-    //       startTime.add(
-    //         Duration(seconds: timesheet.totalSpentSeconds),
-    //       ),
-    //     ),
-    //     unitAmount: double.parse(
-    //         (timesheet.totalSpentSeconds / 3600).toStringAsFixed(2)),
-    //     name: taskWithProjectExternalData.task.description,
-    //   ),
-    // );
-    // // update timesheet with online id to mark as synced
-    // await timesheetRepository.updateTimesheet(
-    //   timesheet.copyWith(
-    //     onlineId: Value(timesheetOnlineId),
-    //   ),
-    // );
-
-    // // update task backend to mark as synced, all the timesheets are under one TaskBackend
-    // final taskId = taskWithProjectExternalData.task.id;
-    // final taskBackend =
-    //     await taskBackendRepository.getTaskBackendByTaskId(taskId);
-    // if (taskBackend == null) {
-    //   await taskBackendRepository.createTaskBackend(
-    //     TaskBackendsCompanion(
-    //       taskId: Value(taskId),
-    //       backendId: Value(backendId),
-    //       lastSynced: Value(DateTime.now()),
-    //     ),
-    //   );
-    // } else {
-    //   await taskBackendRepository.updateTaskBackend(
-    //     taskBackend.copyWith(
-    //       lastSynced: Value(DateTime.now()),
-    //     ),
-    //   );
-    // }
+    final startTime = timesheet.startTime;
+    if (startTime == null) {
+      throw Exception('Timesheet was not started');
+    }
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    final timesheetExternalId = await odooTimesheetRepository.create(
+      backendId: backendId,
+      timesheetRequest: OdooTimesheetRequest(
+        projectId: projectExternalId,
+        taskId: taskExternalId,
+        startTime: formatter.format(startTime),
+        endTime: formatter.format(
+          startTime.add(
+            Duration(seconds: (timesheet.unitAmount?.toInt() ?? 0) * 3600),
+          ),
+        ),
+        unitAmount: timesheet.unitAmount ?? 0,
+        name: timesheet.name,
+      ),
+    );
+    // update timesheet with online id to mark as synced
+    final externalTimesheets =
+        await externalTimesheetRepository.getExternalTimesheetsByInternalIds([
+      timesheetId,
+    ]);
+    if (externalTimesheets.isEmpty) {
+      await externalTimesheetRepository.create(
+        ExternalTimesheetsCompanion(
+          externalId: Value(timesheetExternalId),
+          internalId: Value(timesheetId),
+        ),
+      );
+    } else {
+      await externalTimesheetRepository.update(
+        externalTimesheets.first.copyWith(
+          externalId: Value(timesheetExternalId),
+          lastSycned: Value(DateTime.now()),
+        ),
+      );
+    }
   }
 
   Future<void> syncTimesheet(int timesheetId, int backendId) async {
@@ -315,26 +364,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         showLoading: false,
       );
     });
-  }
-
-  Future<void> resetTask(Task task) async {
-    // TODO Need to create a new timesheet for this task which will be have initial status
-    // await errorWrapper(() async {
-    //   await taskRepository.resetTask(task);
-    //   final taskWithProjectExternalData =
-    //       await taskRepository.getTaskWithProjectById(task.id);
-
-    //   if (taskWithProjectExternalData == null) {
-    //     throw Exception('Task not found');
-    //   }
-
-    //   emit(
-    //     TaskDetailsState.loaded(
-    //       taskWithProjectExternalData: taskWithProjectExternalData,
-    //       timesheets: state.timesheets,
-    //     ),
-    //   );
-    // });
   }
 
   Future errorWrapper(Function callback) async {

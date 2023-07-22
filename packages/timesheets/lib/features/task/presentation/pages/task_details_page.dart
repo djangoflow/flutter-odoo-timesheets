@@ -399,6 +399,11 @@ class _ActiveTimesheetDetails extends StatelessWidget {
       throw Exception('Timer was not started');
     }
     try {
+      await taskDetailsCubit.stopWorkingOnTimesheet(timesheet.id);
+      if (backendId != null) {
+        await taskDetailsCubit.syncTimesheet(timesheet.id, backendId);
+      }
+
       if (context.mounted) {
         AppDialog.showSuccessDialog(
           context: context,
@@ -417,6 +422,7 @@ class _ActiveTimesheetDetails extends StatelessWidget {
             content: 'Your timesheet has been successfully saved locally.',
           );
         }
+        print(e.message);
       }
       throw Exception(
           'Seems like you are offline. But changes were saved locally.');
@@ -561,10 +567,16 @@ class _TimesheetListView extends StatelessWidget {
                   ? DateFormat.yMd().format(timesheet.startTime!)
                   : 'No starting date',
             ),
-            subtitle: Text(
-              timesheet.startTime != null
-                  ? DateFormat.jms().format(timesheet.startTime!)
-                  : 'No starting time',
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  timesheet.startTime != null
+                      ? DateFormat.jms().format(timesheet.startTime!)
+                      : 'No starting time',
+                ),
+                Text(timesheet.name ?? '/'),
+              ],
             ),
             trailing: Text(
               Duration(

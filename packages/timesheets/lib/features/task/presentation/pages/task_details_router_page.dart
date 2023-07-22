@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
@@ -21,6 +22,8 @@ class TaskDetailsRouterPage extends AutoRouter with AutoRouteWrapper {
               odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
               taskRepository: context.read<TaskRepository>(),
               projectRepository: context.read<ProjectRepository>(),
+              externalTimesheetRepository:
+                  context.read<ExternalTimesheetRepository>(),
             )..loadTaskDetails(),
           ),
         ],
