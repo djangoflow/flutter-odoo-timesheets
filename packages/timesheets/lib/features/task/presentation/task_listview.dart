@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 
-import 'task_list_tile.dart';
+import '../../timesheet/presentation/timesheet_list_tile.dart';
 
 class TaskListView extends StatelessWidget {
   const TaskListView({super.key, required this.taskListFilter});
@@ -21,17 +22,15 @@ class TaskListView extends StatelessWidget {
           odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
         )..load(taskListFilter),
         withRefreshIndicator: true,
-        loadingBuilder: (_, __) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        emptyBuilder: (_, __) => const TasksPlaceHolder(),
+        loadingBuilder: (_, __) => const SizedBox(),
+        emptyBuilder: (_, __) => const TimesheetsPlaceHolder(),
         errorBuilder: (_, __) => const Center(
           child: Text('Error occurred!'),
         ),
         loadingItemsCount: 1,
         itemBuilder: (context, state, index, item) {
           final task = item.taskWithExternalData.task;
-          return TaskListTile(
+          return TimesheetListTile(
             key: ValueKey(task.id),
             title: Text(task.name ?? ''),
             subtitle: const Text(

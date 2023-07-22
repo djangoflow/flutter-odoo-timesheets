@@ -5,8 +5,8 @@ import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
-class TaskListTile extends StatelessWidget {
-  const TaskListTile({
+class TimesheetListTile extends StatelessWidget {
+  const TimesheetListTile({
     super.key,
     required this.title,
     required this.subtitle,
@@ -30,10 +30,10 @@ class TaskListTile extends StatelessWidget {
       onTimerStateChange;
   final void Function(BuildContext context)? onTimerResume;
 
-  factory TaskListTile.placeholder({
+  factory TimesheetListTile.placeholder({
     Key? key,
   }) =>
-      TaskListTile(
+      TimesheetListTile(
         key: key,
         title: Builder(
           builder: (context) => _PlaceholderContainer(

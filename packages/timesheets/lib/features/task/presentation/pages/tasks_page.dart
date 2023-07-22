@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/task/presentation/task_list_tile.dart';
+import 'package:timesheets/features/timesheet/presentation/timesheet_list_tile.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
@@ -80,7 +80,7 @@ class _TasksPageState extends State<TasksPage>
                                       .taskWithExternalData.task;
                                   // final elapsedTime = task.elapsedTime;
 
-                                  return TaskListTile(
+                                  return TimesheetListTile(
                                     key: ValueKey(task.id),
                                     title: Text(task.name ?? ''),
                                     subtitle: Text(
@@ -117,7 +117,7 @@ class _TasksPageState extends State<TasksPage>
                 loading: (_) => const Center(
                   child: CircularProgressIndicator(),
                 ),
-                empty: (_) => const TasksPlaceHolder(),
+                empty: (_) => const TimesheetsPlaceHolder(),
                 error: (_) => const Center(
                   child: Text('Error occurred!'),
                 ),

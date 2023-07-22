@@ -20,9 +20,7 @@ class ProjectListView extends StatelessWidget {
         emptyBuilder: (context, state) => const Center(
           child: Text('No projects'),
         ),
-        loadingBuilder: (context, state) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, item) => ListTile(
           title: Row(
             children: [
