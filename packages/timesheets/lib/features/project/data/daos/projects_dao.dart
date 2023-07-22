@@ -54,7 +54,6 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
     ]);
 
     if (isLocal == true) {
-      print('IsLocal projects true');
       // make sure that none of the externalProjects have internalId as the project's ids
       query.where((projects) {
         final subquery = selectOnly(externalProjects)

@@ -473,7 +473,6 @@ class _ActiveTimesheetDetails extends StatelessWidget {
             content: 'Your timesheet has been successfully saved locally.',
           );
         }
-        print(e.message);
       }
       throw Exception(
           'Seems like you are offline. But changes were saved locally.');

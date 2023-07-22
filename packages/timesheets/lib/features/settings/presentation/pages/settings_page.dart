@@ -149,12 +149,12 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                   ).then((value) async {
                                     if (value == true) {
+                                      final authCubit =
+                                          context.read<AuthCubit>();
                                       await context
                                           .read<SyncCubit>()
                                           .removeData(backend.id);
-                                      await context
-                                          .read<AuthCubit>()
-                                          .logout(backend);
+                                      await authCubit.logout(backend);
                                     }
                                   }),
                                 ))

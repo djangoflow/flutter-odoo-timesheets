@@ -10,8 +10,6 @@ import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_reposi
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 
-import '../../timesheet/presentation/timesheet_list_tile.dart';
-
 class TaskListView extends StatelessWidget {
   const TaskListView({super.key, required this.taskListFilter});
   final TaskListFilter taskListFilter;
