@@ -6,6 +6,7 @@ import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/utils/utils.dart';
 
 class ProjectListView extends StatelessWidget {
   const ProjectListView({super.key, required this.projectListFilter});
@@ -22,6 +23,9 @@ class ProjectListView extends StatelessWidget {
         ),
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, item) => ListTile(
+          leading: ColoredBar(
+            color: item.color.toColorFromColorIndex,
+          ),
           title: Row(
             children: [
               Text(

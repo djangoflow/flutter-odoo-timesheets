@@ -82,6 +82,7 @@ class AppTheme {
     return theme.copyWith(
       listTileTheme: theme.listTileTheme.copyWith(
         tileColor: theme.colorScheme.primaryContainer,
+        minLeadingWidth: kPadding.w / 4,
         contentPadding: EdgeInsets.symmetric(
           horizontal: kPadding.w * 2,
           vertical: kPadding.h,

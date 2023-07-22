@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 
 import 'package:timesheets/features/odoo/data/repositories/odoo_timesheet_repository.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/utils/utils.dart';
 
 import '../../timesheet/presentation/timesheet_list_tile.dart';
 
@@ -29,18 +31,14 @@ class TaskListView extends StatelessWidget {
         loadingItemsCount: 1,
         itemBuilder: (context, state, index, item) {
           final task = item.taskWithExternalData.task;
-          return TimesheetListTile(
+          final project = item.projectWithExternalData.project;
+
+          return ListTile(
             key: ValueKey(task.id),
-            title: Text(task.name ?? ''),
-            subtitle: const Text(
-              // Should be timesheet description
-              '',
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+            leading: ColoredBar(
+              color: project.color.toColorFromColorIndex,
             ),
-            // elapsedTime: elapsedTime,
-            // initialTimerStatus: TimesheetStatusEnum
-            //     .values[task.status],
+            title: Text(task.name ?? ''),
             onTap: () {
               context.router.push(
                 TaskDetailsRouter(
@@ -48,16 +46,6 @@ class TaskListView extends StatelessWidget {
                   children: const [TaskDetailsRoute()],
                 ),
               );
-            },
-            onTimerResume: (context) {
-              // context.read<TimerCubit>().elapsedTime =
-              //     Duration(
-              //   seconds: elapsedTime,
-              // );
-            },
-            onTimerStateChange:
-                (context, timerState, tickDurationInSeconds) async {
-              // Need to update timesheet
             },
           );
         },

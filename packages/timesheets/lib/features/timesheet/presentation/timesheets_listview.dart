@@ -35,6 +35,7 @@ class TimesheetListView extends StatelessWidget {
 
           return TimesheetListTile(
             key: ValueKey(timesheet.id),
+            leadingBarColor: project.color.toColorFromColorIndex,
             title: Text(timesheet.name ?? ''),
             subtitle: Text(project.name ?? ''),
             elapsedTime: elapsedTime,

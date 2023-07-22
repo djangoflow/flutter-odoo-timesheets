@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
@@ -16,6 +17,7 @@ class TimesheetListTile extends StatelessWidget {
     this.initialTimerStatus,
     this.onTimerStateChange,
     this.onTimerResume,
+    this.leadingBarColor,
   });
   final Widget title;
   final Widget subtitle;
@@ -25,6 +27,7 @@ class TimesheetListTile extends StatelessWidget {
   final int? elapsedTime;
   final TimesheetStatusEnum? initialTimerStatus;
   final VoidCallback? onTap;
+  final Color? leadingBarColor;
   final void Function(
           BuildContext context, TimerState timerState, int tickInterval)?
       onTimerStateChange;
@@ -63,6 +66,11 @@ class TimesheetListTile extends StatelessWidget {
   Widget build(BuildContext context) => Stack(
         children: [
           ListTile(
+            leading: leadingBarColor != null
+                ? ColoredBar(
+                    color: leadingBarColor!,
+                  )
+                : null,
             title: title,
             subtitle: subtitle,
             trailing: TaskTimer.small(
