@@ -130,8 +130,25 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     bool? isLocal,
     int? taskId,
     bool? isEndDateNull,
+    bool? isProjectLocal,
   }) async {
+    assert(isLocal == null || isProjectLocal == null, 'Invalid query');
     final query = select(timesheets);
+    // orderBy if currentStatus is running and then by latest createdAt date
+    query.orderBy([
+      // if currentStatus is running, then it should be the first item
+      (timesheets) => OrderingTerm(
+            expression: timesheets.currentStatus.equals(
+              TimesheetStatusEnum.running.index,
+            ),
+            mode: OrderingMode.desc,
+          ),
+
+      (timesheets) => OrderingTerm(
+            expression: timesheets.createdAt,
+            mode: OrderingMode.desc,
+          ),
+    ]);
 
     if (taskId != null) {
       query.where((timesheets) => timesheets.taskId.equals(taskId));
@@ -145,6 +162,23 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
     if (limit != null && offset != null) {
       query.limit(limit, offset: offset);
+    }
+
+    if (isProjectLocal == true) {
+      // fetch timesheets which have projects with id as the externalProjects' internalIds
+      query.where((timesheets) {
+        final subquery = selectOnly(projects)
+          ..addColumns([projects.id, externalProjects.internalId]);
+        return notExistsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(timesheets.projectId)));
+      });
+    } else if (isProjectLocal == false) {
+      query.where((timesheets) {
+        final subquery = selectOnly(projects)
+          ..addColumns([projects.id, externalProjects.internalId]);
+        return existsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(timesheets.projectId)));
+      });
     }
 
     if (isLocal == true) {

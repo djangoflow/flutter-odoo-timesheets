@@ -14,9 +14,10 @@ class TimesheetWithTaskExternalListFilter
   const factory TimesheetWithTaskExternalListFilter({
     @Default(50) int limit,
     @Default(0) int offset,
-    @Default(false) bool isLocal,
+    bool? isLocal,
     int? taskId,
     bool? isEndDateNull,
+    bool? isProjectLocal,
   }) = _TimesheetWithTaskExternalListFilter;
 
   factory TimesheetWithTaskExternalListFilter.fromJson(

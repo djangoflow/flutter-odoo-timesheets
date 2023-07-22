@@ -25,6 +25,7 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
               isLocal: filter?.isLocal,
               taskId: filter?.taskId,
               isEndDateNull: filter?.isEndDateNull,
+              isProjectLocal: filter?.isProjectLocal,
             ),
           ),
         );

@@ -15,7 +15,7 @@ class SyncedTimesheetsPage extends StatelessWidget {
         child: TimesheetListView(
           timesheetWithTaskExternalListFilter:
               TimesheetWithTaskExternalListFilter(
-            isLocal: false,
+            isProjectLocal: false,
             isEndDateNull: true,
           ),
         ),

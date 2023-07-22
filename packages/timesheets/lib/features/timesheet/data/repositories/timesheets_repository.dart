@@ -122,6 +122,7 @@ class TimesheetRepository
     bool? isLocal,
     int? taskId,
     bool? isEndDateNull,
+    bool? isProjectLocal,
   }) =>
           timesheetsDao.getPaginatedTimesheetWithTaskProjectData(
             limit: limit,
@@ -129,6 +130,7 @@ class TimesheetRepository
             isLocal: isLocal,
             taskId: taskId,
             isEndDateNull: isEndDateNull,
+            isProjectLocal: isProjectLocal,
           );
 
   Future<List<TimesheetExternalData>> getPaginatedTimesheetExternalData({
