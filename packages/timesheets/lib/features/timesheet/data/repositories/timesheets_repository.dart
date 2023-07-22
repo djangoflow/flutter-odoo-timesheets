@@ -143,4 +143,17 @@ class TimesheetRepository
         taskId: taskId,
         isEndDateNull: isEndDateNull,
       );
+
+  Future<void> updateTimesheetsProjectAndTaskIds({
+    required int oldProjectId,
+    required int oldTaskId,
+    required int updatedProjectId,
+    required int updatedTaskId,
+  }) =>
+      timesheetsDao.updateTimesheetsProjectAndTaskIds(
+        oldProjectId: oldProjectId,
+        oldTaskId: oldTaskId,
+        updatedProjectId: updatedProjectId,
+        updatedTaskId: updatedTaskId,
+      );
 }

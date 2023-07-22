@@ -16,7 +16,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final ExternalTimesheetRepository externalTimesheetRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final ProjectRepository projectRepository;
-  final int taskId;
+  int taskId;
   TaskDetailsCubit({
     required this.taskRepository,
     required this.timesheetRepository,
@@ -27,6 +27,10 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   }) : super(
           TaskDetailsState.initial(),
         );
+
+  set taskIdValue(int value) {
+    taskId = value;
+  }
 
   @override
   void onError(Object error, StackTrace stackTrace) {
@@ -124,9 +128,24 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
             else
               timesheetExternalData,
         ],
+        activeTimesheets: [
+          for (final timesheetExternalData in state.activeTimesheets)
+            if (timesheetExternalData.timesheet.id ==
+                updatedTimesheetWithExternalData.timesheet.id)
+              updatedTimesheetWithExternalData
+            else
+              timesheetExternalData,
+        ],
       ));
     });
   }
+
+  Future<Timesheet?> getTimesheetById(int timesheetId) =>
+      timesheetRepository.getItemById(timesheetId);
+
+  Future<TaskWithProjectExternalData> getTaskWithProjectExternalDataByTaskId(
+          int taskId) =>
+      _getTaskWithProjectExternalData(taskId);
 
   Future<void> stopWorkingOnTimesheet(int timesheetId) async {
     await errorWrapper(() async {
@@ -385,6 +404,21 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       ),
     );
   }
+
+  Future<void> updateTimesheetsProjectAndTaskIds({
+    required int oldProjectId,
+    required int oldTaskId,
+    required int updatedProjectId,
+    required int updatedTaskId,
+  }) =>
+      errorWrapper(() async {
+        timesheetRepository.updateTimesheetsProjectAndTaskIds(
+          oldProjectId: oldProjectId,
+          oldTaskId: oldTaskId,
+          updatedProjectId: updatedProjectId,
+          updatedTaskId: updatedTaskId,
+        );
+      });
 
   Future<TaskWithProjectExternalData> _getTaskWithProjectExternalData(
       int taskId) async {

@@ -19,14 +19,16 @@ class TimesheetWithTaskEditor extends StatelessWidget {
     this.task,
     this.project,
     this.additionalChildrenBuilder,
-    this.displaySycnedItemsOnly,
+    this.showOnlySyncedTaskAndProjects,
+    this.disableProjectTaskSelection,
   });
 
   final Task? task;
   final String? description;
   final Project? project;
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
-  final bool? displaySycnedItemsOnly;
+  final bool? showOnlySyncedTaskAndProjects;
+  final bool? disableProjectTaskSelection;
 
   final Widget Function(
       BuildContext context, FormGroup form, Widget formListView) builder;
@@ -72,7 +74,10 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                 create: (context) => ProjectListCubit(
                   context.read<ProjectRepository>(),
                 )..load(
-                    const ProjectListFilter(),
+                    ProjectListFilter(
+                      isLocal:
+                          showOnlySyncedTaskAndProjects == true ? false : null,
+                    ),
                   ),
                 child: BlocBuilder<ProjectListCubit, ProjectListState>(
                   builder: (context, state) {
@@ -154,7 +159,9 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                               context.read<OdooTimesheetRepository>(),
                           taskRepository: context.read<TaskRepository>(),
                         )..load(
-                            TaskListFilter(projectId: project.id),
+                            TaskListFilter(
+                              projectId: project.id,
+                            ),
                           ),
                         child: BlocBuilder<
                             TaskListCubit,

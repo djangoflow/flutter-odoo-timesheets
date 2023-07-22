@@ -10,32 +10,26 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 import 'package:timesheets/features/timesheet/presentation/timesheet_with_task_editor.dart';
-import 'package:timesheets/features/task/task.dart';
 
 @RoutePage()
-class TimesheetAddPage extends StatelessWidget {
-  const TimesheetAddPage({
+class TimesheetMergePage extends StatelessWidget {
+  const TimesheetMergePage({
     Key? key,
-    this.taskWithProjectExternalData,
-    this.disableProjectTaskSelection,
+    required this.timesheet,
   }) : super(key: key);
-  final TaskWithProjectExternalData? taskWithProjectExternalData;
 
-  /// If true, the project and task selection will be disabled.
-  /// Needed when only adding a timesheet for specific Project and Task
-  final bool? disableProjectTaskSelection;
+  final Timesheet timesheet;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           leading: const AutoLeadingButton(),
-          title: const Text(
-            'Add Timesheet',
-          ),
+          title: const Text('Merge with Synced Project'),
         ),
         body: TimesheetWithTaskEditor(
-          showOnlySyncedTaskAndProjects: false,
-          disableProjectTaskSelection: disableProjectTaskSelection,
+          showOnlySyncedTaskAndProjects: true,
+          disableProjectTaskSelection: false,
+          description: timesheet.name,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
@@ -47,17 +41,15 @@ class TimesheetAddPage extends StatelessWidget {
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;
-                        DjangoflowAppSnackbar.showInfo('Added successfully');
+                        DjangoflowAppSnackbar.showInfo('Merged successfully');
                         await router.pop(true);
                       },
                       action: (_) =>
-                          _addTimesheet(context: context, form: form),
+                          _mergeTimesheet(context: context, form: form),
                       builder: (context, action, state) => ElevatedButton(
                         onPressed: form.valid ? action : null,
                         child: const Center(
-                          child: Text(
-                            'Add Timesheet',
-                          ),
+                          child: Text('Confirm'),
                         ),
                       ),
                     ),
@@ -69,7 +61,7 @@ class TimesheetAddPage extends StatelessWidget {
         ),
       );
 
-  Future<void> _addTimesheet(
+  Future<void> _mergeTimesheet(
       {required BuildContext context, required FormGroup form}) async {
     final project = form.control(projectControlName).value as Project;
     final task = form.control(taskControlName).value as Task;
@@ -77,8 +69,8 @@ class TimesheetAddPage extends StatelessWidget {
 
     final timesheetRepository = context.read<TimesheetRepository>();
 
-    await timesheetRepository.create(
-      TimesheetsCompanion(
+    await timesheetRepository.update(
+      timesheet.copyWith(
         projectId: Value(project.id),
         taskId: Value(task.id),
         name: Value(description),

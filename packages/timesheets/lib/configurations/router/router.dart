@@ -69,6 +69,7 @@ class AppRouter extends $AppRouter {
           path: '/timesheets',
           children: [
             AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
+            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge'),
           ],
         ),
         AutoRoute(

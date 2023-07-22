@@ -28,7 +28,11 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
       into(timesheets).insert(timesheetsCompanion);
 
   Future<void> updateTimesheet(Timesheet timesheet) =>
-      update(timesheets).replace(timesheet);
+      update(timesheets).replace(
+        timesheet.copyWith(
+          updatedAt: DateTime.now(),
+        ),
+      );
 
   Future<int> deleteTimesheet(Timesheet timesheet) =>
       delete(timesheets).delete(timesheet);
@@ -100,7 +104,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     await batch((batch) {
       batch.insertAll(
         this.timesheets,
-        timesheets,
+        timesheets.map((e) => e.copyWith(updatedAt: DateTime.now())).toList(),
         mode: InsertMode.insertOrReplace,
       );
     });
@@ -273,4 +277,20 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
           );
         },
       ).getSingleOrNull();
+
+  Future<void> updateTimesheetsProjectAndTaskIds({
+    required int oldProjectId,
+    required int oldTaskId,
+    required int updatedProjectId,
+    required int updatedTaskId,
+  }) async =>
+      (update(timesheets)
+            ..where((t) =>
+                t.projectId.equals(oldProjectId) & t.taskId.equals(oldTaskId)))
+          .write(
+        TimesheetsCompanion(
+          projectId: Value(updatedProjectId),
+          taskId: Value(updatedTaskId),
+        ),
+      );
 }
