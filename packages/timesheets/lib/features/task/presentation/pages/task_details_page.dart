@@ -362,7 +362,6 @@ class _ActiveTimesheetDetails extends StatelessWidget {
                 key: ValueKey(
                   [
                     TimesheetStatusEnum.initial,
-                    TimesheetStatusEnum.stopped,
                   ].contains(timesheet.currentStatus),
                 ),
                 disabled: isSyncing,
@@ -533,9 +532,9 @@ class _ActiveTimesheetDetails extends StatelessWidget {
               'Your timesheet has been successfully ${backendId == null ? 'saved locally' : 'sent to your Odoo account'}.',
         );
       }
+      taskDetailsCubit.loadTaskDetails();
     } catch (e) {
       if (e is OdooRepositoryException) {
-        await taskDetailsCubit.loadTaskDetails(showLoading: false);
         if (context.mounted) {
           AppDialog.showSuccessDialog(
             context: context,
@@ -543,6 +542,7 @@ class _ActiveTimesheetDetails extends StatelessWidget {
             content: 'Your timesheet has been successfully saved locally.',
           );
         }
+        await taskDetailsCubit.loadTaskDetails(showLoading: false);
       }
       throw Exception(
           'Seems like you are offline. But changes were saved locally.');

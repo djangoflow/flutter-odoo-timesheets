@@ -155,18 +155,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       if (updatedTimesheetWithExternalData == null) {
         throw Exception('Timesheet not found');
       }
-
-      emit(
-        state.copyWith(
-          timesheets: [updatedTimesheetWithExternalData, ...state.timesheets],
-          activeTimesheets: [
-            for (final timesheetExternalData in state.activeTimesheets)
-              if (timesheetExternalData.timesheet.id !=
-                  updatedTimesheetWithExternalData.timesheet.id)
-                timesheetExternalData,
-          ],
-        ),
-      );
     });
   }
 

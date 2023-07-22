@@ -30,6 +30,7 @@ class TimesheetsAppBuilder extends AppBuilder {
           onInitState: (context) {
             VisibilityDetectorController.instance.updateInterval =
                 animationDurationShort;
+            appRouter.authCubit = context.read<AuthCubit>();
           },
           repositoryProviders: [
             RepositoryProvider<AppDatabase>(create: (_) => AppDatabase()),

@@ -1,4 +1,7 @@
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/authentication/authentication.dart';
+
+import 'odoo_auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'route_parser.dart';
@@ -12,6 +15,9 @@ class AppRouter extends $AppRouter {
   @override
   RouteType get defaultRouteType =>
       const RouteType.material(); //.cupertino, .adaptive ..etc
+
+  AuthCubit? _authCubit;
+  set authCubit(AuthCubit authCubit) => _authCubit = authCubit;
 
   @override
   List<AutoRoute> get routes => <AutoRoute>[
@@ -67,7 +73,9 @@ class AppRouter extends $AppRouter {
           path: '/timesheets',
           children: [
             AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
-            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge'),
+            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge', guards: [
+              if (_authCubit != null) OdooAuthGuard(_authCubit!),
+            ]),
           ],
         ),
         AutoRoute(

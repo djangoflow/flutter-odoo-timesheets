@@ -262,7 +262,10 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                   },
                 ),
                 if (disableProjectTaskSelection == true) ...[
-                  const Text('Add description for your timesheet entry'),
+                  SizedBox(
+                    height: kPadding.h,
+                  ),
+                  const Text('Just enter a description and start to work!'),
                 ],
                 if (additionalChildrenBuilder != null)
                   ...additionalChildrenBuilder!(context),
@@ -327,10 +330,11 @@ class _EmptyItem extends StatelessWidget {
             SizedBox(
               height: kPadding.h * 2,
             ),
-            ElevatedButton(
-              onPressed: onCreatePressed,
-              child: Text('Create this $label'),
-            ),
+            if (searchTerm.isNotEmpty)
+              ElevatedButton(
+                onPressed: onCreatePressed,
+                child: Text('Create this $label'),
+              ),
           ],
         ),
       ),
