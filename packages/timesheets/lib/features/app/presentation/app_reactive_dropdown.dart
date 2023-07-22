@@ -58,6 +58,8 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
             ),
           ),
           containerBuilder: (context, popupWidget) => Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            elevation: 0,
             child: popupWidget,
           ),
           searchFieldProps: TextFieldProps(
