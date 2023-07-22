@@ -67,8 +67,8 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: kPadding,
+                  SizedBox(
+                    height: kPadding.h,
                   ),
                   if (kDebugMode)
                     ElevatedButton(
@@ -79,6 +79,9 @@ class SettingsPage extends StatelessWidget {
                       },
                       child: const Text('Check DB'),
                     ),
+                  SizedBox(
+                    height: kPadding.h,
+                  ),
                   const SectionTitle(title: 'Synchronizations'),
                   SyncCubitProvider(
                     child: BlocBuilder<AuthCubit, AuthState>(
@@ -185,8 +188,30 @@ class SettingsPage extends StatelessWidget {
                       OdooLoginRoute(),
                     ),
                   ),
-                  const SizedBox(
-                    height: kPadding,
+                  SizedBox(
+                    height: kPadding.h * 2,
+                  ),
+                  const SectionTitle(title: 'Legal'),
+                  ListTile(
+                    onTap: () {},
+                    title: const Text('Terms and Conditions'),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      size: kPadding.w * 4,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  SizedBox(
+                    height: kPadding.h,
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    title: const Text('Privacy Policy'),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      size: kPadding.w * 4,
+                      color: theme.colorScheme.onSurface,
+                    ),
                   ),
                 ],
               ),

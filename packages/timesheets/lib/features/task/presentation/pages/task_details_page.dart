@@ -80,6 +80,7 @@ class TaskDetailsPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
+                if (state.isSyncing) const LinearProgressIndicator(),
                 if (activeTimesheets.isEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(
