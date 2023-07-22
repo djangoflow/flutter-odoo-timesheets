@@ -1,6 +1,5 @@
 import 'package:timesheets/configurations/configurations.dart';
 
-
 export 'package:auto_route/auto_route.dart';
 export 'route_parser.dart';
 
@@ -75,10 +74,6 @@ class AppRouter extends $AppRouter {
           page: TasksRouter.page,
           path: '/tasks',
           children: [
-            AutoRoute(
-              path: '',
-              page: TasksRoute.page,
-            ),
             AutoRoute(
               path: ':id',
               page: TaskDetailsRouter.page,
