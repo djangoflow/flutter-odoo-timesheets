@@ -1,60 +1,129 @@
-import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:timesheets/features/settings/presentation/pages/settings_router_page.dart';
-import 'package:timesheets/features/tasks/presentation/pages/task_router_page.dart';
-import 'package:timesheets/features/settings/presentation/pages/settings_routes.dart';
 
-import '../../features/tasks/presentation/pages/task_routes.dart';
+import 'odoo_auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
-export 'auth_guard.dart';
 export 'route_parser.dart';
 
 export 'router.gr.dart';
 
-@MaterialAutoRouter(
-  replaceInRouteName: 'Page,Route',
+@AutoRouterConfig(
   deferredLoading: true,
-  routes: <AutoRoute>[
-    RedirectRoute(path: '/', redirectTo: '/tasks'),
-    AutoRoute(
-      path: '/tasks',
-      page: TasksRouterPage,
-      name: 'TasksRouter',
-      children: taskRoutes,
-    ),
-    AutoRoute(
-      path: '/settings',
-      page: SettingsRouterPage,
-      name: 'SettingsRouter',
-      children: settingsRoutes,
-    ),
-    AutoRoute(
-      path: '/splash',
-      page: SplashPage,
-    ),
-    AutoRoute(
-      path: '/login',
-      page: LoginPage,
-      name: 'LoginRouter',
-      children: loginRoutes,
-    ),
-    // Or redirect to home
-    AutoRoute(path: '*', page: UnknownRoutePage),
-  ],
 )
-// extend the generated private router
-class $AppRouter {}
+class AppRouter extends $AppRouter {
+  @override
+  RouteType get defaultRouteType =>
+      const RouteType.material(); //.cupertino, .adaptive ..etc
 
-Route<T> modalSheetBuilder<T>(
-        BuildContext context, Widget child, CustomPage<T> page) =>
-    ModalSheetRoute(
-      settings: page,
-      containerBuilder: (context, animation, child) => SizedBox(
-          height: (MediaQuery.of(context).size.height / 10) * 7, child: child),
-      builder: (context) => child,
-      expanded: false,
-    );
+  AuthCubit? _authCubit;
+  set authCubit(AuthCubit authCubit) => _authCubit = authCubit;
+
+  @override
+  List<AutoRoute> get routes => <AutoRoute>[
+        AutoRoute(
+          path: '/splash',
+          page: SplashRoute.page,
+        ),
+        AutoRoute(
+          page: OdooLoginRoute.page,
+          path: '/login',
+        ),
+        AutoRoute(
+          page: HomeTabRouter.page,
+          path: '/',
+          children: [
+            AutoRoute(
+              page: TimesheetsRoute.page,
+              path: 'timesheets',
+              initial: true,
+              children: [
+                AutoRoute(
+                  path: 'synced',
+                  page: SyncedTimesheetsRoute.page,
+                  initial: true,
+                ),
+                AutoRoute(
+                  path: 'local',
+                  page: LocalTimesheetsRoute.page,
+                ),
+              ],
+            ),
+            AutoRoute(
+              page: ProjectsRoute.page,
+              path: 'projects',
+              children: [
+                AutoRoute(
+                  page: SyncedProjectsRoute.page,
+                  path: 'synced',
+                  initial: true,
+                ),
+                AutoRoute(
+                  page: LocalProjectsRoute.page,
+                  path: 'local',
+                ),
+              ],
+            ),
+            AutoRoute(page: SettingsRoute.page, path: 'settings'),
+          ],
+        ),
+        AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
+        AutoRoute(
+          page: TimesheetRouter.page,
+          path: '/timesheets',
+          children: [
+            AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
+            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge', guards: [
+              if (_authCubit != null) OdooAuthGuard(_authCubit!),
+            ]),
+          ],
+        ),
+        AutoRoute(
+          page: TasksRouter.page,
+          path: '/tasks',
+          children: [
+            AutoRoute(
+              path: ':id',
+              page: TaskDetailsRouter.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  page: TaskDetailsRoute.page,
+                ),
+                // AutoRoute(
+                //   path: 'edit',
+                //   page: TaskEditRoute.page,
+                // ),
+                AutoRoute(
+                  path: 'timesheets/:timesheetId',
+                  page: TimesheetsRouter.page,
+                  children: [
+                    AutoRoute(
+                      path: '',
+                      page: TimesheetDetailsRoute.page,
+                    ),
+                    AutoRoute(
+                      path: 'edit',
+                      page: TimesheetEditRoute.page,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Or redirect to home
+        AutoRoute(path: '*', page: UnknownRouteRoute.page),
+      ];
+}
+// TODO can be used with CustomRoute
+// Route<T> modalSheetBuilder<T>(
+//         BuildContext context, Widget child, CustomPage<T> page) =>
+//     ModalBottomSheetRoute(
+//       settings: page,
+//       isScrollControlled: true,
+//       constraints: BoxConstraints(
+//         maxHeight: (MediaQuery.of(context).size.height / 10) * 7,
+//       ),
+//       builder: (context) => child,
+//     );

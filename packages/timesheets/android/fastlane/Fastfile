@@ -17,16 +17,15 @@ platform :android do
     upload_to_play_store(
         track: "internal",
         aab: "../build/app/outputs/bundle/release/app-release.aab",
-        release_status: "draft",
         skip_upload_images: true,
         skip_upload_screenshots: true,
-    )
+        release_status:"draft"
+        )
   end
 
   desc "Submit a new Beta Build to Playstore Beta track"
   lane :beta do
     sh "cd .. && flutter pub get"
-    sh "cd ../../../openapi && flutter pub run build_runner build --delete-conflicting-outputs"
     sh "cd .. && flutter pub run build_runner build --delete-conflicting-outputs"
     sh "cd .. && flutter build appbundle"
     # Add .env.default or .env file and add SENTRY_DSN="sentry dsn link"

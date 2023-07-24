@@ -1,20 +1,15 @@
-import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:timesheets/utils/assets.gen.dart';
 
-import 'package:timesheets/configurations/constants.dart';
+class AppLogo extends StatelessWidget {
+  const AppLogo({super.key, this.height, this.width});
 
-class AppLogoWidget extends StatelessWidget {
-  const AppLogoWidget({Key? key, required this.size}) : super(key: key);
-  final double size;
+  final double? height;
+  final double? width;
 
   @override
-  Widget build(BuildContext context) => SvgPicture.asset(
-        context.read<AppCubit>().state.themeMode == ThemeMode.light
-            ? appLogoDarkPath
-            : appLogoPath,
-        height: size,
-        width: size,
+  Widget build(BuildContext context) => Assets.appLogoLogo.image(
+        height: height,
+        width: width,
       );
 }

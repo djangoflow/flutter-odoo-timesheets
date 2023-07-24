@@ -2,6 +2,7 @@ import 'package:timesheets/configurations/router/router.dart';
 import 'package:timesheets/configurations/theme/size_constants.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class UnknownRoutePage extends StatelessWidget {
   const UnknownRoutePage({super.key});
 
@@ -31,9 +32,9 @@ class UnknownRoutePage extends StatelessWidget {
                 final router = context.router;
 
                 if (router.canNavigateBack) {
-                  router.navigateBack();
+                  router.back();
                 } else {
-                  router.replace(const TasksRouter());
+                  router.replace(const HomeTabRouter());
                 }
               },
               child: const Text('Go to Home'),

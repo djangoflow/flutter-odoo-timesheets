@@ -2,10 +2,11 @@
     package="com.djangoflow.odoo.timesheets">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="Odoo Timesheets"
+        android:allowBackup="false"
+        android:label="Apexive Timesheets"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-		android:roundIcon="@mipmap/ic_launcher_round">
+		android:roundIcon="@mipmap/ic_launcher_rounded">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,8 +35,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="None" />
-                <data android:host="None" />
+                <data android:host="timesheets.odoo.djangoflow.com" />
+                <data android:host="timesheets.odoo.djangoflow.com" />
             </intent-filter>
         </activity>
         

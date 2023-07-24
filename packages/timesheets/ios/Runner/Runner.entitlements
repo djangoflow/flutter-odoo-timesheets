@@ -5,8 +5,8 @@
 	
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:None</string>
-		<string>applinks:None</string>
+		<string>applinks:timesheets.odoo.djangoflow.com</string>
+		<string>applinks:timesheets.odoo.djangoflow.com</string>
 	</array>
 </dict>
 </plist>

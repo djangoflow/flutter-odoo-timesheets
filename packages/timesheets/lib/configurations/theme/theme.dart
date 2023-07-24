@@ -1,5 +1,6 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'colors.dart';
 import 'size_constants.dart';
@@ -10,78 +11,100 @@ export 'size_constants.dart';
 export 'typography.dart';
 
 class AppTheme {
-  static const double _buttonRadius = kPadding;
-
+  static const double _buttonRadius = 10;
   // Shared sub theme data for light, darktheme.
-  static FlexSubThemesData get _commonSubThemeData => FlexSubThemesData(
-        buttonPadding: const EdgeInsets.symmetric(
-          horizontal: kPadding * 2,
-          vertical: kPadding * 2.5,
-        ),
-        elevatedButtonElevation: kPadding / 2,
-        elevatedButtonRadius: _buttonRadius,
-        textButtonRadius: _buttonRadius,
-        outlinedButtonRadius: _buttonRadius,
-        inputDecoratorRadius: _buttonRadius,
-        elevatedButtonTextStyle:
-            MaterialStateProperty.all(AppTextStyle.titleMedium),
-        elevatedButtonSchemeColor: SchemeColor.onPrimary,
-        elevatedButtonSecondarySchemeColor: SchemeColor.primary,
-        outlinedButtonOutlineSchemeColor: SchemeColor.primary,
-        checkboxSchemeColor: SchemeColor.primary,
-        inputDecoratorSchemeColor: SchemeColor.tertiary,
-        inputDecoratorIsFilled: true,
-        fabSchemeColor: SchemeColor.primary,
-        chipSchemeColor: SchemeColor.primary,
-        cardElevation: kPadding * 0.4,
-        cardRadius: kPadding * 2,
-        popupMenuRadius: kPadding,
-      );
+  static FlexSubThemesData get _commonSubThemeData {
+    final buttonTextStyle = AppTextStyle.titleMedium.copyWith(
+      height: 1,
+    );
+    return FlexSubThemesData(
+      buttonPadding: EdgeInsets.symmetric(
+        horizontal: kPadding.w * 2,
+        vertical: kPadding.h * 2.5,
+      ),
+      elevatedButtonRadius: _buttonRadius,
+      textButtonRadius: _buttonRadius,
+      outlinedButtonRadius: _buttonRadius,
+      filledButtonRadius: _buttonRadius,
+      inputDecoratorRadius: _buttonRadius,
+      elevatedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      textButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      outlinedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      filledButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      elevatedButtonSchemeColor: SchemeColor.onPrimary,
+      elevatedButtonSecondarySchemeColor: SchemeColor.primary,
+      outlinedButtonOutlineSchemeColor: SchemeColor.primary,
+      checkboxSchemeColor: SchemeColor.primary,
+      inputDecoratorSchemeColor: SchemeColor.tertiary,
+      inputDecoratorIsFilled: false,
+      fabSchemeColor: SchemeColor.primary,
+      chipSchemeColor: SchemeColor.primary,
+      cardElevation: 1,
+      cardRadius: kPadding.r * 2,
+      inputDecoratorBorderSchemeColor: SchemeColor.primary,
+    );
+  }
 
   static ThemeData get light {
+    final colorScheme = AppColors.lightThemeColorScheme;
     final theme = FlexThemeData.light(
-      colorScheme: AppColors.getLightColorScheme,
+      colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
-      primaryTextTheme: AppTextStyle.textTheme.apply(
-        bodyColor: AppColors.primary,
-        displayColor: AppColors.primary,
-        decorationColor: AppColors.primary,
-      ),
-      usedColors: 2,
-      surfaceMode: FlexSurfaceMode.level,
-      blendLevel: 9,
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surface: AppColors.surface,
-      tones: FlexTones.material(Brightness.light).onMainsUseBW(),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
+      useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
-      lightIsWhite: true,
     );
 
-    return theme;
+    return applyCommonTheme(theme);
   }
 
   static ThemeData get dark {
+    final colorScheme = AppColors.darkThemeColorScheme;
     final theme = FlexThemeData.dark(
-      colorScheme: AppColors.getDarkColorScheme,
+      colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
-      primaryTextTheme: AppTextStyle.textTheme.apply(
-        bodyColor: AppColors.surface,
-        displayColor: AppColors.surface,
-        decorationColor: AppColors.surface,
-      ),
-      usedColors: 6,
-      appBarStyle: FlexAppBarStyle.scaffoldBackground,
-      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-      surface: AppColors.surfaceDark,
-      blendLevel: 15,
+      primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
+      useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
-      darkIsTrueBlack: true,
     );
+    return applyCommonTheme(theme);
+  }
 
-    return theme;
+  static ThemeData applyCommonTheme(ThemeData theme) {
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return theme.copyWith(
+      listTileTheme: theme.listTileTheme.copyWith(
+        tileColor: theme.colorScheme.primaryContainer,
+        minLeadingWidth: kPadding.w / 4,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: kPadding.w * 2,
+          vertical: kPadding.h,
+        ),
+        titleTextStyle: textTheme.titleMedium,
+        subtitleTextStyle: textTheme.bodySmall?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding.r),
+        ),
+      ),
+      inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: kPadding.w * 2,
+          vertical: kPadding.h * 2,
+        ),
+      ),
+      tabBarTheme: theme.tabBarTheme.copyWith(
+        labelStyle: textTheme.labelLarge,
+      ),
+      cardColor: theme.colorScheme.primaryContainer,
+    );
   }
 }

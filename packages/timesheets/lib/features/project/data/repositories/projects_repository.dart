@@ -1,43 +1,120 @@
-import 'package:timesheets/configurations/configurations.dart';
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/odoo/data/models/odoo_project.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:collection/collection.dart';
 
-///Repository to fetch projects data using [OdooRepository]
-class ProjectRepository extends OdooRpcRepositoryBase {
-  ProjectRepository(super.rpcClient);
+class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
+  final ProjectsDao projectsDao;
+  final ExternalProjectsDao externalProjectsDao;
 
-  Future<List<Project>> getProjects([ProjectListFilter? filter]) async {
-    Map<String, dynamic> optionalParams = buildFilterableFields([name]);
-    if (filter != null) {
-      optionalParams.addAll({
-        offset: filter.offset,
-        limit: filter.limit,
-      });
+  const ProjectRepository({
+    required this.projectsDao,
+    required this.externalProjectsDao,
+  });
+
+  @override
+  Future<int> create(ProjectsCompanion companion) =>
+      projectsDao.createProject(companion);
+
+  @override
+  Future<int> delete(Project entity) => projectsDao.deleteProject(entity);
+
+  @override
+  Future<Project?> getItemById(int id) => projectsDao.getProjectById(id);
+
+  @override
+  Future<List<Project>> getItems() => projectsDao.getAllProjects();
+
+  @override
+  Future<List<Project>> getPaginatedItems({
+    int? offset,
+    int? limit,
+    bool? isLocal,
+    String? search,
+  }) =>
+      projectsDao.getPaginatedProjects(
+        limit: limit,
+        offset: offset,
+        isLocal: isLocal,
+        search: search,
+      );
+
+  @override
+  Future<void> update(Project entity) => projectsDao.updateProject(
+        entity.copyWith(
+          updatedAt: DateTime.now(),
+        ),
+      );
+
+  Future<void> syncWithOdooProjects(
+      {required int backendId, required List<OdooProject> odooProjects}) async {
+    final odooProjectIds = odooProjects.map((e) => e.id).toList();
+    final externalProjects =
+        await externalProjectsDao.getExternalProjectsByIdsAndBackendId(
+      backendId: backendId,
+      externalIds: odooProjectIds,
+    );
+    final internalProjectIds =
+        externalProjects.map((e) => e.internalId).whereType<int>().toList();
+    final internalProjects = await projectsDao.getProjectsByIds(
+      internalProjectIds,
+    );
+    final updatableProjects = <Project>[];
+    final insertableProjectCompanions = <int, ProjectsCompanion>{};
+
+    for (final odooProject in odooProjects) {
+      final externalProject = externalProjects.firstWhereOrNull(
+        (e) => e.externalId == odooProject.id,
+      );
+
+      if (externalProject != null) {
+        final internalProject = internalProjects.firstWhereOrNull(
+          (e) => e.id == externalProject.internalId,
+        );
+        if (internalProject != null) {
+          updatableProjects.add(
+            internalProject.copyWith(
+              active: Value(odooProject.active),
+              color: Value(odooProject.color),
+              isFavorite: Value(odooProject.isFavorite),
+              name: Value(odooProject.name),
+              taskCount: Value(odooProject.taskCount),
+            ),
+          );
+        }
+      } else {
+        insertableProjectCompanions[odooProject.id] = ProjectsCompanion(
+          active: Value(odooProject.active),
+          color: Value(odooProject.color),
+          isFavorite: Value(odooProject.isFavorite),
+          name: Value(odooProject.name),
+          taskCount: Value(odooProject.taskCount),
+        );
+      }
     }
-    final searchParameters = [];
-    if (filter != null && filter.search != null) {
-      searchParameters.add(
-        [
-          name,
-          caseInsensitiveComparison,
-          '${filter.search}%',
-        ],
+
+    await projectsDao.batchUpdateProjects(updatableProjects);
+    for (final entry in insertableProjectCompanions.entries) {
+      final externalProjectComapanion = ExternalProjectsCompanion(
+        backendId: Value(backendId),
+        externalId: Value(entry.key),
+      );
+      await projectsDao.createProjectWithExternal(
+        projectsCompanion: entry.value,
+        externalProjectsCompanion: externalProjectComapanion,
       );
     }
 
-    var response = await odooCallMethod(
-      odooModel: projectModel,
-      method: OdooApiMethod.searchRead.name,
-      parameters: [
-        [searchParameters],
-        optionalParams,
-      ],
-    );
-
-    final projects = <Project>[];
-    for (final project in response) {
-      projects.add(Project.fromJson(project));
-    }
-    return projects;
+    debugPrint('Updated ${updatableProjects.length} projects');
+    debugPrint('Inserted ${insertableProjectCompanions.length} projects');
   }
+
+  Future<Project?> getProjectByExternalId(int externalProjectId) =>
+      projectsDao.getProjectByExternalId(externalProjectId);
+
+  Future<List<Project>> getProjectsByIds(List<int> ids) =>
+      projectsDao.getProjectsByIds(ids);
 }
