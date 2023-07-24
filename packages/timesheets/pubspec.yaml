@@ -3,73 +3,110 @@ description: Odoo timesheets flutter application
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+4
+version: 1.0.0+8
 
 environment:
-  sdk: ">=2.17.3 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  auto_route: ^5.0.4
-  bloc: ^8.1.0
+  auto_route: ^7.4.0
+  bloc: ^8.1.2
+  collection: ^1.17.1
   countdown_widget: ^2.0.2
-  dio: 4.0.4
-  djangoflow_app: ^3.0.0
-  djangoflow_app_links: ^1.1.3
-  flutter_bloc: ^8.1.1
-  firebase_core: ^2.4.1
-  flex_color_scheme: ^6.1.2
-  flutter_list_bloc: ^4.0.1
+  cupertino_icons: ^1.0.5
+  dio: ^5.2.1+1
+  djangoflow_app: ^3.2.0
+  djangoflow_app_links: ^1.2.0
+  djangoflow_openapi: ^0.0.14
+  drift: ^2.10.0
+  flutter_bloc: ^8.1.3
+  flutter_screenutil: ^5.8.4
+  firebase_core: ^2.14.0
+  flex_color_scheme: ^7.1.2
+  flutter_list_bloc: ^4.1.0
   freezed_annotation: ^2.2.0
-  hydrated_bloc: ^9.0.0
+  hydrated_bloc: ^9.1.1
   intl: ^0.18.0
-  json_annotation: ^4.7.0
+  json_annotation: ^4.8.1
   list_bloc: ^3.1.0
   modal_bottom_sheet: ^3.0.0-pre
-  package_info_plus: ^3.0.2
-  path_provider: ^2.0.11
+  openapi_repository_annotations: ^1.1.0
+  package_info_plus: ^4.0.2
+  path: ^1.8.3
+  path_provider: ^2.0.15
   progress_builder: ^1.1.3
-  reactive_forms: ^14.2.0
-  reactive_dropdown_search: ^0.13.0
+  reactive_dropdown_search: ^2.0.0
+  reactive_forms: ^15.0.0
   responsive_framework: ^0.2.0
-  xml_rpc: ^0.4.0
+  skeletonizer: ^0.2.0
+  sqlite3_flutter_libs: ^0.5.15
+  # Disabled due to incompatible with xml_rpc
+  # upgrader: ^6.2.0
+  url_launcher: ^6.1.12
+  visibility_detector: ^0.4.0+2
+  xml_rpc:
+    git:
+      url: https://github.com/djangoflow/dart-xmlrpc.git
+  lottie: ^2.4.0
+  drift_db_viewer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  auto_route_generator: ^5.0.3
-  build_runner: ^2.3.3
-  flutter_lints: ^2.0.0
-  freezed: ^2.3.2
-  icons_launcher: ^2.0.7
-  json_serializable: ^6.5.4
+  auto_route_generator: ^7.1.1
+  build_runner: ^2.4.5
+  drift_dev: ^2.10.0
+  flutter_lints: ^2.0.1
+  flutter_gen_runner: ^5.3.1
+  freezed: ^2.3.5
+  icons_launcher: ^2.1.3
+  json_serializable: ^6.7.0
+  openapi_repository: ^3.0.0
 
-# Tempo: until built_value_generator bug is fixed
-dependency_overrides:
-  dio: 4.0.4
-  # Conflict for icons_launcher and flutter_test
-  path: 1.8.2
-  # Conflict with flutter_test and test packages
-  test_api: 0.4.18
-  # Conflict between auto_router and xml_rpc
-  xml: ^6.0.1
-  # Until null check error fixed pushed https://github.com/Milad-Akarie/auto_route_library/pull/1301
-  auto_route:
-    git:
-      url: "https://github.com/djangoflow/auto_route_library.git"
-      ref: master
-      path: "auto_route"
-  auto_route_generator:
-    git:
-      url: "https://github.com/djangoflow/auto_route_library.git"
-      ref: master
-      path: "auto_route_generator"
-  # Conflict between flutter_localizations and reactive_forms
-  intl: ^0.18.0
+# Uncomment to override djangoflow_openapi from generated local lib
+# dependency_overrides:
+#  djangoflow_openapi:
+#    path: ../djangoflow_openapi
+
+flutter_gen:
+  output: lib/utils/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  assets:
+    enabled: true
+    outputs:
+      style: camel-case
+    integrations:
+      lottie: true
+
 flutter:
   uses-material-design: true
   assets:
     - assets/app_logo/
+    - assets/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: fonts/inter/Inter-Thin.ttf
+          weight: 100
+        - asset: fonts/inter/Inter-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/inter/Inter-Light.ttf
+          weight: 300
+        - asset: fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: fonts/inter/Inter-Bold.ttf
+          weight: 700
+        - asset: fonts/inter/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: fonts/inter/Inter-Black.ttf
+          weight: 900

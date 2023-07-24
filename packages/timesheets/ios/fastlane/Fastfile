@@ -8,12 +8,12 @@ platform :ios do
     sh "cd .. && flutter pub get"
     sh "cd .. && flutter pub run build_runner build --delete-conflicting-outputs"
     sh "cd .. && flutter build ios --release --no-codesign"
-    # Add .env.default or .env file and add SENTRY_DSN="sentry dsn link"
     build_app(
     workspace: "Runner.xcworkspace", scheme: "Runner", xcargs: "-allowProvisioningUpdates",
     output_directory: "../build/ios")
     upload_to_testflight(skip_waiting_for_build_processing: true, expire_previous_builds: true)
   end
+  
   lane :expire_test_flight_build do |options|
       app_identifier = CredentialsManger::AppfileConfig.try_fetch_value(:app_identifier)
       version = options[:version]

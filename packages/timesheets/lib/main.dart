@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_app_links/djangoflow_app_links.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'timesheets_app_builder.dart';
 import 'configurations/configurations.dart';
@@ -13,11 +15,13 @@ Future<void> main() async {
   DjangoflowAppRunner.run(
     onException: (exception, stackTrace) {
       debugPrint('Exception Caught -- $exception');
-      // Dispatch exception to error reporters
-      // ExeptionFilter.filter(exception); returns: true -> show exception to user or false -> do not show
-      DjangoflowAppSnackbar.showError(
-        exception is DioError ? exception.message : exception.toString(),
-      );
+      String errorMessage = exception.toString();
+      if (exception is DioException) {
+        errorMessage = exception.message ?? 'Something went wrong!';
+      } else if (exception is OdooRepositoryException) {
+        errorMessage = exception.message;
+      }
+      DjangoflowAppSnackbar.showError(errorMessage);
     },
     rootWidgetBuilder: (appBuilder) async {
       String? initialDeepLink;
@@ -25,11 +29,14 @@ Future<void> main() async {
       if (!kIsWeb) {
         initialDeepLink = (await appLinksRepository.getInitialLink())?.path;
       }
-
-      // initialize router
-      final router = AppRouter(
-        authGuard: AuthGuard(),
+      AppCubit.initialState = const AppState(
+        themeMode: ThemeMode.dark,
       );
+      // initialize router
+      final router = AppRouter();
+
+      // Enable this test upgrade dialog
+      // await Upgrader.clearSavedSettings();
 
       return appBuilder(
         TimesheetsAppBuilder(

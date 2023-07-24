@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:timesheets/features/authentication/data/models/user_model.dart';
+import 'package:timesheets/features/app/app.dart';
+
 import 'login_listener.dart';
 
 /// Checks for intialUser, if available then triggers onLogin callback,
@@ -10,10 +11,11 @@ class LoginListenerWrapper extends StatefulWidget {
     this.onLogin,
     this.onLogout,
     required this.child,
-    required this.initialUser,
+    required this.initialConnectedBackends,
   });
-  final User? initialUser;
-  final void Function(BuildContext context, User user)? onLogin;
+  final List<Backend>? initialConnectedBackends;
+  final void Function(BuildContext context, List<Backend> connectedBackends)?
+      onLogin;
   final void Function(BuildContext context)? onLogout;
   final Widget child;
   @override
@@ -24,8 +26,8 @@ class _LoginListenerWrapperState extends State<LoginListenerWrapper> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialUser != null) {
-      widget.onLogin?.call(context, widget.initialUser!);
+    if (widget.initialConnectedBackends != null) {
+      widget.onLogin?.call(context, widget.initialConnectedBackends!);
     }
   }
 

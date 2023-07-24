@@ -1,8 +1,9 @@
-import 'dart:math';
-import 'package:timesheets/configurations/router/router.gr.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timesheets/configurations/configurations.dart';
 import 'package:flutter/material.dart';
+import 'package:timesheets/features/app/app.dart';
 
+@RoutePage()
 class SplashPage extends StatefulWidget {
   final Color backgroundColor;
   const SplashPage({Key? key, required this.backgroundColor}) : super(key: key);
@@ -19,22 +20,32 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(_kDuration).then((value) {
-        context.router.replace(const HomeRoute());
+        context.router.replace(const HomeTabRouter());
       });
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final side = min(size.width, size.height) * 0.4;
-
-    return Scaffold(
-      body: Center(
-        child: FlutterLogo(
-          size: side,
+  Widget build(BuildContext context) => Scaffold(
+        body: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AppLogo(
+                width: 134.w,
+                height: 128.h,
+              ),
+              SizedBox(
+                height: (kPadding * 4).h,
+              ),
+              Text(
+                'Time management without obstacles',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
