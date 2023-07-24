@@ -284,18 +284,22 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     if (startTime == null) {
       throw Exception('Timesheet was not started');
     }
+
     final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    final effetiveAdditionalDuration =
+        Duration(seconds: ((timesheet.unitAmount ?? 0) * 3600).toInt());
+    final effectiveEndTime =
+        timesheet.endTime != null && timesheet.startTime != timesheet.endTime
+            ? timesheet.endTime!
+            : startTime.add(effetiveAdditionalDuration);
+
     final timesheetExternalId = await odooTimesheetRepository.create(
       backendId: backendId,
       timesheetRequest: OdooTimesheetRequest(
         projectId: projectExternalId,
         taskId: taskExternalId,
         startTime: formatter.format(startTime),
-        endTime: formatter.format(
-          startTime.add(
-            Duration(seconds: (timesheet.unitAmount?.toInt() ?? 0) * 3600),
-          ),
-        ),
+        endTime: formatter.format(effectiveEndTime),
         unitAmount: timesheet.unitAmount ?? 0,
         name: timesheet.name,
       ),
