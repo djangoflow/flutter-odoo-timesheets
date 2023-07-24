@@ -7,6 +7,7 @@ import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
+import 'package:timesheets/utils/utils.dart';
 
 export 'task_details_state.dart';
 
@@ -173,9 +174,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     await timesheetRepository.update(
       timesheet.copyWith(
         endTime: Value(
-          timesheet.startTime?.add(
-            Duration(seconds: (timesheet.unitAmount?.toInt() ?? 0) * 3600),
-          ),
+          timesheet.calculatedEndDate,
         ),
       ),
     );
@@ -286,8 +285,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     }
 
     final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    final effetiveAdditionalDuration =
-        Duration(seconds: ((timesheet.unitAmount ?? 0) * 3600).toInt());
+    final effetiveAdditionalDuration = Duration(seconds: timesheet.elapsedTime);
     final effectiveEndTime =
         timesheet.endTime != null && timesheet.startTime != timesheet.endTime
             ? timesheet.endTime!

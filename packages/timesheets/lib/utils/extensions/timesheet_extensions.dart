@@ -21,4 +21,7 @@ extension TimesheetExtension on Timesheet {
 
     return elapsedTime.inSeconds;
   }
+
+  DateTime? get calculatedEndDate =>
+      startTime?.add(Duration(seconds: elapsedTime));
 }
