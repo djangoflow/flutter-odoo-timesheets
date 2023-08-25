@@ -13,7 +13,7 @@ import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
 import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
 
 @RoutePage()
-class OdooLoginPage extends StatelessWidget with AutoRouteWrapper {
+class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
   const OdooLoginPage({
     super.key,
     @queryParam this.serverUrl,

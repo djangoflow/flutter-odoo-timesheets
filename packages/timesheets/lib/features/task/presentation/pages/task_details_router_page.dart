@@ -8,7 +8,7 @@ import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 @RoutePage(name: 'TaskDetailsRouter')
-class TaskDetailsRouterPage extends AutoRouter with AutoRouteWrapper {
+class TaskDetailsRouterPage extends AutoRouter implements AutoRouteWrapper {
   final int taskId;
   const TaskDetailsRouterPage({super.key, @pathParam required this.taskId});
 

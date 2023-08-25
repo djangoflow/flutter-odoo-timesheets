@@ -6,7 +6,7 @@ import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 @RoutePage(name: 'TimesheetsRouter')
-class TimesheetsRouterPage extends AutoRouter with AutoRouteWrapper {
+class TimesheetsRouterPage extends AutoRouter implements AutoRouteWrapper {
   final int timesheetId;
 
   const TimesheetsRouterPage({super.key, @pathParam required this.timesheetId});
