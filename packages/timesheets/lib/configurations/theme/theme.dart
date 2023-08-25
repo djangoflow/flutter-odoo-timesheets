@@ -42,6 +42,12 @@ class AppTheme {
       cardElevation: 1,
       cardRadius: kPadding.r * 2,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
+      bottomNavigationBarSelectedIconSchemeColor: SchemeColor.onSurfaceVariant,
+      bottomNavigationBarSelectedLabelSchemeColor: SchemeColor.onSurfaceVariant,
+      bottomNavigationBarUnselectedIconSchemeColor:
+          SchemeColor.onSurfaceVariant,
+      bottomNavigationBarUnselectedLabelSchemeColor:
+          SchemeColor.onSurfaceVariant,
     );
   }
 
@@ -51,7 +57,6 @@ class AppTheme {
       colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
       primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
-      appBarStyle: FlexAppBarStyle.scaffoldBackground,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       useMaterial3ErrorColors: true,
@@ -81,7 +86,8 @@ class AppTheme {
 
     return theme.copyWith(
       listTileTheme: theme.listTileTheme.copyWith(
-        tileColor: theme.colorScheme.primaryContainer,
+        tileColor: ElevationOverlay.applySurfaceTint(
+            theme.colorScheme.surface, theme.colorScheme.surfaceTint, 1),
         minLeadingWidth: kPadding.w / 4,
         contentPadding: EdgeInsets.symmetric(
           horizontal: kPadding.w * 2,
@@ -105,6 +111,9 @@ class AppTheme {
         labelStyle: textTheme.labelLarge,
       ),
       cardColor: theme.colorScheme.primaryContainer,
+      appBarTheme: theme.appBarTheme.copyWith(
+        backgroundColor: Colors.transparent,
+      ),
     );
   }
 }

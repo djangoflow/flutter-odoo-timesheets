@@ -256,9 +256,9 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(kPadding.r * 8),
           color: timerStatus == TimesheetStatusEnum.running
-              ? theme.colorScheme.primary
+              ? theme.colorScheme.primaryContainer
               : ElevationOverlay.applySurfaceTint(
-                  theme.colorScheme.primaryContainer,
+                  theme.colorScheme.surface,
                   theme.colorScheme.surfaceTint,
                   4,
                 ),
