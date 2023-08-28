@@ -14,25 +14,21 @@ class GradientScaffold extends StatelessWidget {
     final surface = theme.colorScheme.surface;
     final surfaceVariant = theme.colorScheme.surfaceVariant;
 
-    return Material(
-      color: Colors.transparent,
-      elevation: 0,
-      child: Container(
-        key: const ValueKey('GradientScaffold'),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [surfaceVariant, surface],
-            stops: const [.15, 1],
-          ),
+    return Container(
+      key: const ValueKey('GradientScaffold'),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [surfaceVariant, surface],
+          stops: const [.15, .85],
         ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: appBar,
-          bottomNavigationBar: bottomNavigationBar,
-          body: body,
-        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: appBar,
+        bottomNavigationBar: bottomNavigationBar,
+        body: body,
       ),
     );
   }
