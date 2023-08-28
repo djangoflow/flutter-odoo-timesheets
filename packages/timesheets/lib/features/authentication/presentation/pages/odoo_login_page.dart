@@ -65,7 +65,7 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) => DefaultActionController(
-        child: Scaffold(
+        child: GradientScaffold(
           appBar: AppBar(
             title: const Text('Odoo Login'),
             leading: const AutoLeadingButton(),

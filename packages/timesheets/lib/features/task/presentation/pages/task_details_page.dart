@@ -277,7 +277,7 @@ class TaskDetailsPage extends StatelessWidget {
             ),
           );
 
-          return Scaffold(
+          return GradientScaffold(
             appBar: AppBar(
               title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
               leading: const AutoLeadingButton(),

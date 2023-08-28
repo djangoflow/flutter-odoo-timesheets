@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
@@ -18,7 +19,7 @@ class TimesheetDetailsPage extends StatelessWidget {
           final timesheet =
               timesheetWithTaskExternalData?.timesheetExternalData.timesheet;
 
-          return Scaffold(
+          return GradientScaffold(
             appBar: AppBar(
               title: Text(
                 timesheet != null

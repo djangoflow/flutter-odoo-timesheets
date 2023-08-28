@@ -218,12 +218,7 @@ class SettingsPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Card(
-                elevation: kPadding / 8,
                 margin: const EdgeInsets.all(kPadding * 2),
-                color: schemeColors.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(kPadding),
-                ),
                 child: Padding(
                   padding: const EdgeInsets.all(kPadding * 2),
                   child: Center(

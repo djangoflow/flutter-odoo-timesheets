@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/blocs/project_data_cubit/project_data_cubit.dart';
 import 'package:timesheets/features/project/blocs/project_data_cubit/project_retrieve_filter.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
@@ -21,7 +22,7 @@ class ProjectDetailsPage extends StatelessWidget {
               id: projectId,
             ),
           ),
-        child: Scaffold(
+        child: GradientScaffold(
           appBar: AppBar(
             title: BlocBuilder<ProjectDataCubit, ProjectDataState>(
               builder: (context, state) => Text(

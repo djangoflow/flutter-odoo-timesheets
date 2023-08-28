@@ -14,7 +14,7 @@ class TimesheetsPage extends StatelessWidget {
         builder: (context, child, tabController) => Column(
           children: [
             Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: Theme.of(context).colorScheme.surfaceVariant,
               child: TabBar(
                 controller: tabController,
                 tabs: const [

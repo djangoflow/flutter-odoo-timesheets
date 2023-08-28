@@ -21,7 +21,7 @@ class TimesheetMergePage extends StatelessWidget {
   final Timesheet timesheet;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => GradientScaffold(
         appBar: AppBar(
           leading: const AutoLeadingButton(),
           title: const Text('Merge with Synced Project'),

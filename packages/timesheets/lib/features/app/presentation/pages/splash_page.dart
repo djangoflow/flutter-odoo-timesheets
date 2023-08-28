@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => GradientScaffold(
         body: SizedBox(
           width: double.infinity,
           child: Column(

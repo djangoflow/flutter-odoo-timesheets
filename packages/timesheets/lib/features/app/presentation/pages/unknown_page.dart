@@ -1,6 +1,7 @@
 import 'package:timesheets/configurations/router/router.dart';
 import 'package:timesheets/configurations/theme/size_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:timesheets/features/app/app.dart';
 
 @RoutePage()
 class UnknownRoutePage extends StatelessWidget {
@@ -10,7 +11,7 @@ class UnknownRoutePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
+    return GradientScaffold(
       appBar: AppBar(
         title: const Text('Unknown Route'),
       ),
