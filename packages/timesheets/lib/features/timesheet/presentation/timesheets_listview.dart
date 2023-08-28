@@ -24,7 +24,15 @@ class TimesheetListView extends StatelessWidget {
         create: (context) => TimesheetWithTaskExternalListCubit(
           context.read<TimesheetRepository>(),
         )..load(timesheetWithTaskExternalListFilter),
-        emptyBuilder: (context, state) => const TimesheetsPlaceHolder(),
+        emptyBuilder: (context, state) => LocalTimesheetsPlaceHolder(
+          onGetStarted: () => context.router.push(
+            TimesheetRouter(
+              children: [
+                TimesheetAddRoute(),
+              ],
+            ),
+          ),
+        ),
         withRefreshIndicator: true,
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, item) {
