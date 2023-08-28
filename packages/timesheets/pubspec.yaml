@@ -89,6 +89,7 @@ flutter_gen:
 flutter:
   uses-material-design: true
   assets:
+    - assets/icons/
     - assets/app_logo/
     - assets/
   fonts:

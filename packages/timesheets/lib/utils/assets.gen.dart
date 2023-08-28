@@ -33,13 +33,27 @@ class Assets {
   static const AssetGenImage appLogoLogoAndroidForeground =
       AssetGenImage('assets/app_logo/logo_android_foreground.png');
 
+  /// File path: assets/icons/clock.svg
+  static const SvgGenImage iconsClock = SvgGenImage('assets/icons/clock.svg');
+
+  /// File path: assets/icons/favorite.svg
+  static const SvgGenImage iconsFavorite =
+      SvgGenImage('assets/icons/favorite.svg');
+
+  /// File path: assets/icons/odoo_logo.svg
+  static const SvgGenImage iconsOdooLogo =
+      SvgGenImage('assets/icons/odoo_logo.svg');
+
   /// List of all assets
   List<dynamic> get values => [
         animationSyncing,
         appLogoLogoPng,
         appLogoLogoSvg,
         appLogoLogoAndroidBackground,
-        appLogoLogoAndroidForeground
+        appLogoLogoAndroidForeground,
+        iconsClock,
+        iconsFavorite,
+        iconsOdooLogo
       ];
 }
 
