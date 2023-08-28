@@ -131,6 +131,18 @@ class AppTheme {
           borderRadius: BorderRadius.circular(kPadding),
         ),
       ),
+      iconButtonTheme: IconButtonThemeData(
+        style: theme.iconButtonTheme.style?.copyWith(
+          backgroundColor:
+              MaterialStatePropertyAll(colorScheme.secondaryContainer),
+          iconSize: MaterialStatePropertyAll(kPadding.h * 3),
+          shape: MaterialStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(kPadding.r * 1.5),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
