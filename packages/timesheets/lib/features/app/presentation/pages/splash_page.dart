@@ -26,26 +26,38 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
-  Widget build(BuildContext context) => GradientScaffold(
-        body: SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AppLogo(
-                width: 134.w,
-                height: 128.h,
-              ),
-              SizedBox(
-                height: (kPadding * 4).h,
-              ),
-              Text(
-                'Time management without obstacles',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return GradientScaffold(
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AppLogo(
+              width: 134.w,
+              height: 128.h,
+            ),
+            SizedBox(
+              height: (kPadding * 4).h,
+            ),
+            Text(
+              'Odoo',
+              style: textTheme.headlineLarge,
+            ),
+            SizedBox(
+              height: kPadding.h,
+            ),
+            Text(
+              'Time management without obstacles',
+              style: textTheme.bodyLarge,
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }
