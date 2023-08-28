@@ -1,5 +1,5 @@
 enum FilterEnum {
-  newest(label: 'Newest'),
+  newest(label: 'Recent'),
   oldest(label: 'Oldest');
 
   final String label;
