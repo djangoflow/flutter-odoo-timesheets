@@ -13,3 +13,4 @@ export 'presentation/app_list_tile_skeleton.dart';
 export 'presentation/colored_bar.dart';
 export 'presentation/empty_placeholder.dart';
 export 'presentation/gradient_scaffold.dart';
+export 'presentation/decorated_svg_image.dart';
