@@ -14,16 +14,14 @@ class TimesheetsPage extends StatelessWidget {
         ],
         builder: (context, child, tabController) => Column(
           children: [
-            Container(
-              color: Theme.of(context).colorScheme.surfaceVariant,
-              child: TabBar(
-                controller: tabController,
-                tabs: const [
-                  Tab(text: 'Favorites'),
-                  Tab(text: 'Odoo'),
-                  Tab(text: 'Local'),
-                ],
-              ),
+            TabBar(
+              controller: tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+              tabs: const [
+                Tab(text: 'Favorites'),
+                Tab(text: 'Odoo'),
+                Tab(text: 'Local'),
+              ],
             ),
             Flexible(
               child: child,
