@@ -66,8 +66,8 @@ class AppColors {
   // Dark theme colors
   static const Color darkThemePrimary = Color(0xff000000);
   static const Color darkThemeOnPrimary = Color(0xffffffff);
-  static const Color darkThemePrimaryContainer = Color(0xffffffff);
-  static const Color darkThemeOnPrimaryContainer = Color(0xff000000);
+  static const Color darkThemePrimaryContainer = Color(0xff000000);
+  static const Color darkThemeOnPrimaryContainer = Color(0xffffffff);
   static const Color darkThemeSecondary = Color(0x29ffffff);
   static const Color darkThemeOnSecondary = Color(0xffffffff);
   static const Color darkThemeSecondaryContainer = Color(0x3dffffff);
@@ -88,11 +88,6 @@ class AppColors {
   static const Color darkThemeOnSurfaceVariant = Color(0xffffffff);
   static const Color darkThemeOutline = Color(0x29ffffff);
   static const Color darkThemeOutlinevariant = Color(0x7affffff);
-  // static const Color darkSurfaceat1 = Color(0x1fffffff);
-  // static const Color darkSurfaceat2 = Color(0x33ffffff);
-  // static const Color darkSurfaceat3 = Color(0x47ffffff);
-  // static const Color darkSurfaceat4 = Color(0x5cffffff);
-  // static const Color darkSurfaceat5 = Color(0x85ffffff);
 
   // Light theme colors
   static const Color lightThemePrimary = Color(0xffffffff);
@@ -119,9 +114,4 @@ class AppColors {
   static const Color lightThemeOnErrorContainer = Color(0xffcc3c21);
   static const Color lightThemeOutline = Color(0x29ffffff);
   static const Color lightThemeOutlinevariant = Color(0x7affffff);
-  // static const Color surfaceat1 = Color(0x14ffffff);
-  // static const Color Surfaceat2 = Color(0x29ffffff);
-  // static const Color Surfaceat3 = Color(0x3dffffff);
-  // static const Color Surfaceat4 = Color(0x52ffffff);
-  // static const Color Surfaceat5 = Color(0x7affffff);
 }

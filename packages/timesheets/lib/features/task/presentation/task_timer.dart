@@ -225,8 +225,8 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
         ).animate(widget.animationController);
 
         colorAnimation = ColorTween(
-          begin: theme.colorScheme.primary,
-          end: theme.colorScheme.onPrimary,
+          begin: theme.colorScheme.onSecondaryContainer,
+          end: theme.colorScheme.onPrimaryContainer,
         ).animate(widget.animationController);
       });
     });
@@ -258,9 +258,9 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
           color: timerStatus == TimesheetStatusEnum.running
               ? theme.colorScheme.primaryContainer
               : ElevationOverlay.applySurfaceTint(
-                  theme.colorScheme.surface,
+                  Colors.transparent,
                   theme.colorScheme.surfaceTint,
-                  4,
+                  1,
                 ),
         ),
         child: Padding(
