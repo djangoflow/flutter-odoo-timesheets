@@ -143,6 +143,9 @@ class AppTheme {
           ),
         ),
       ),
+      iconTheme: theme.iconTheme.copyWith(
+        color: theme.colorScheme.onSecondary,
+      ),
     );
   }
 }

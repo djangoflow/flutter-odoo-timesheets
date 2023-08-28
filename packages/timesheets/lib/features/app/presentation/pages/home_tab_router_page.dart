@@ -21,6 +21,17 @@ class HomeTabRouterPage extends StatelessWidget {
               scrolledUnderElevation: 0,
               backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
               actions: [
+                IconButton(
+                  onPressed: () {
+                    AppModalSheet.show(
+                      context: context,
+                      child: FilterSelector(onFilterChanged: (f) {
+                        print(f.label);
+                      }),
+                    );
+                  },
+                  icon: const Icon(CupertinoIcons.arrow_up_down),
+                ),
                 if (tabsRouter.activeIndex == 0)
                   IconButton(
                     onPressed: () {
@@ -33,8 +44,10 @@ class HomeTabRouterPage extends StatelessWidget {
                       );
                     },
                     icon: const Icon(CupertinoIcons.add),
-                    iconSize: kPadding.h * 4,
-                  )
+                  ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
               ],
               centerTitle: false,
             ),
