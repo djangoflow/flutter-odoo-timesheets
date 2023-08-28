@@ -52,6 +52,9 @@ class AppTheme {
           SchemeColor.onSurfaceVariant,
       appBarBackgroundSchemeColor: SchemeColor.surfaceVariant,
       appBarScrolledUnderElevation: 0,
+      tabBarIndicatorSchemeColor: SchemeColor.onSurfaceVariant,
+      tabBarItemSchemeColor: SchemeColor.onSurfaceVariant,
+      tabBarUnselectedItemOpacity: 0.5,
     );
   }
 
@@ -117,6 +120,7 @@ class AppTheme {
       ),
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
+        unselectedLabelStyle: textTheme.labelLarge,
       ),
       cardTheme: theme.cardTheme.copyWith(
         elevation: 1,
