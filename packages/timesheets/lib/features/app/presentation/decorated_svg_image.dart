@@ -11,12 +11,14 @@ class DecoratedSvgImage extends StatelessWidget {
     this.width,
     this.decorationHeight,
     this.decorationWidth,
+    this.padding,
   });
   final SvgGenImage image;
   final double? height;
   final double? width;
   final double? decorationHeight;
   final double? decorationWidth;
+  final double? padding;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -28,10 +30,12 @@ class DecoratedSvgImage extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(32.r),
         ),
-        padding: EdgeInsets.all(24.w),
-        child: image.svg(
-          height: height,
-          width: width,
+        padding: EdgeInsets.all(padding ?? 24.w),
+        child: Center(
+          child: image.svg(
+            height: height,
+            width: width,
+          ),
         ),
       );
 }
