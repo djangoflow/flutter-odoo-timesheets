@@ -24,6 +24,7 @@ Future<void> main() async {
       DjangoflowAppSnackbar.showError(errorMessage);
     },
     rootWidgetBuilder: (appBuilder) async {
+      Paint.enableDithering = true;
       String? initialDeepLink;
       final appLinksRepository = AppLinksRepository();
       if (!kIsWeb) {
