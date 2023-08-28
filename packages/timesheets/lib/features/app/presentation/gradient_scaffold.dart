@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scaffold_gradient_background/scaffold_gradient_background.dart';
 
 class GradientScaffold extends StatelessWidget {
   const GradientScaffold(
@@ -14,22 +15,16 @@ class GradientScaffold extends StatelessWidget {
     final surface = theme.colorScheme.surface;
     final surfaceVariant = theme.colorScheme.surfaceVariant;
 
-    return Container(
-      key: const ValueKey('GradientScaffold'),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [surfaceVariant, surface],
-          stops: const [.15, .85],
-        ),
+    return ScaffoldGradientBackground(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [surfaceVariant, surface],
+        stops: const [.15, .85],
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: appBar,
-        bottomNavigationBar: bottomNavigationBar,
-        body: body,
-      ),
+      appBar: appBar,
+      bottomNavigationBar: bottomNavigationBar,
+      body: body,
     );
   }
 }
