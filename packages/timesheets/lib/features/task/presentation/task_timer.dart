@@ -263,70 +263,74 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
                   1,
                 ),
         ),
-        child: Padding(
-          padding: widget.padding ??
-              EdgeInsets.fromLTRB(
-                kPadding.w * 2,
-                kPadding.h,
-                kPadding.w,
-                kPadding.h,
-              ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: kPadding.w * 6,
-                child: textStyleAnimation != null
-                    ? ValueListenableBuilder<TextStyle>(
-                        valueListenable: textStyleAnimation!,
-                        builder: (context, value, child) => Text(
-                          widget.state.duration
-                              .timerString(DurationFormat.minutesSeconds),
-                          style: value,
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: colorAnimation != null
-                    ? ValueListenableBuilder<Color?>(
-                        valueListenable: colorAnimation!,
-                        builder: (context, value, child) => AnimatedIcon(
-                          icon: AnimatedIcons.play_pause,
-                          size: 32.w,
-                          progress: animation,
-                          // animated color based on controller's value, and it should be animated as well
-                          color: value,
-                        ),
-                      )
-                    : const SizedBox(),
-                color: theme.colorScheme.onPrimary,
-                onPressed: widget.disabled
-                    ? null
-                    : () {
-                        final timerCubit = context.read<TimerCubit>();
-                        if (timerStatus == TimesheetStatusEnum.running) {
-                          timerCubit.pauseTimer();
-                        } else if ([
-                          TimesheetStatusEnum.initial,
-                          TimesheetStatusEnum.paused
-                        ].contains(timerStatus)) {
-                          if (timerStatus == TimesheetStatusEnum.initial) {
-                            timerCubit.startTimer();
-                          } else if (timerStatus ==
-                              TimesheetStatusEnum.paused) {
-                            timerCubit.resumeTimer();
-                          }
-                        }
-                      },
-              ),
-            ],
+        child: InkWell(
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kPadding.r * 8),
+          ),
+          onTap: widget.disabled ? null : () => _onPressed(timerStatus),
+          child: Padding(
+            padding: widget.padding ??
+                EdgeInsets.fromLTRB(
+                  kPadding.w * 2,
+                  kPadding.h,
+                  kPadding.w,
+                  kPadding.h,
+                ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: kPadding.w * 6,
+                  child: textStyleAnimation != null
+                      ? ValueListenableBuilder<TextStyle>(
+                          valueListenable: textStyleAnimation!,
+                          builder: (context, value, child) => Text(
+                            widget.state.duration
+                                .timerString(DurationFormat.minutesSeconds),
+                            style: value,
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: colorAnimation != null
+                      ? ValueListenableBuilder<Color?>(
+                          valueListenable: colorAnimation!,
+                          builder: (context, value, child) => AnimatedIcon(
+                            icon: AnimatedIcons.play_pause,
+                            size: 32.w,
+                            progress: animation,
+                            // animated color based on controller's value, and it should be animated as well
+                            color: value,
+                          ),
+                        )
+                      : const SizedBox(),
+                  color: theme.colorScheme.onPrimary,
+                  onPressed:
+                      widget.disabled ? null : () => _onPressed(timerStatus),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _onPressed(TimesheetStatusEnum timerStatus) {
+    final timerCubit = context.read<TimerCubit>();
+    if (timerStatus == TimesheetStatusEnum.running) {
+      timerCubit.pauseTimer();
+    } else if ([TimesheetStatusEnum.initial, TimesheetStatusEnum.paused]
+        .contains(timerStatus)) {
+      if (timerStatus == TimesheetStatusEnum.initial) {
+        timerCubit.startTimer();
+      } else if (timerStatus == TimesheetStatusEnum.paused) {
+        timerCubit.resumeTimer();
+      }
+    }
   }
 }
 
