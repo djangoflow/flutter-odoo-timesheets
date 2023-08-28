@@ -5,10 +5,10 @@ import 'package:timesheets/configurations/configurations.dart';
 class AppTextStyle {
   static TextStyle get _baseTextStyle => const TextStyle(
         fontFamily: appFontFamily,
+        decoration: TextDecoration.none,
       );
   static TextStyle get displayLarge => _baseTextStyle.copyWith(
         fontSize: 57.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (64 / 57).h,
@@ -17,7 +17,6 @@ class AppTextStyle {
 
   static TextStyle get displayMedium => _baseTextStyle.copyWith(
         fontSize: 45.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (52 / 45).sp,
@@ -26,7 +25,6 @@ class AppTextStyle {
 
   static TextStyle get displaySmall => _baseTextStyle.copyWith(
         fontSize: 36.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w700,
         height: (44 / 36).h,
@@ -35,7 +33,6 @@ class AppTextStyle {
 
   static TextStyle get headlineLarge => _baseTextStyle.copyWith(
         fontSize: 32.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w700,
         height: (40 / 32).h,
@@ -44,16 +41,14 @@ class AppTextStyle {
 
   static TextStyle get headlineMedium => _baseTextStyle.copyWith(
         fontSize: 28.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w700,
         height: (36 / 28).h,
         letterSpacing: 0,
       );
 
   static TextStyle get headlineSmall => _baseTextStyle.copyWith(
         fontSize: 24.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w700,
         height: (32 / 24).h,
@@ -62,7 +57,6 @@ class AppTextStyle {
 
   static TextStyle get titleLarge => _baseTextStyle.copyWith(
         fontSize: 22.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w700,
         height: (28 / 22).h,
@@ -71,7 +65,6 @@ class AppTextStyle {
 
   static TextStyle get titleMedium => _baseTextStyle.copyWith(
         fontSize: 16.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w500,
         height: (24 / 16).h,
@@ -80,7 +73,6 @@ class AppTextStyle {
 
   static TextStyle get titleSmall => _baseTextStyle.copyWith(
         fontSize: 14.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w500,
         height: (20 / 14).h,
@@ -89,7 +81,6 @@ class AppTextStyle {
 
   static TextStyle get labelLarge => _baseTextStyle.copyWith(
         fontSize: 14.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (20 / 14).h,
@@ -98,7 +89,6 @@ class AppTextStyle {
 
   static TextStyle get labelMedium => _baseTextStyle.copyWith(
         fontSize: 12.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (16 / 12).h,
@@ -107,7 +97,6 @@ class AppTextStyle {
 
   static TextStyle get labelSmall => _baseTextStyle.copyWith(
         fontSize: 11.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w500,
         height: (16 / 11).h,
@@ -116,7 +105,6 @@ class AppTextStyle {
 
   static TextStyle get bodyLarge => _baseTextStyle.copyWith(
         fontSize: 16.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (24 / 16).h,
@@ -125,7 +113,6 @@ class AppTextStyle {
 
   static TextStyle get bodyMedium => _baseTextStyle.copyWith(
         fontSize: 14.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (20 / 14).h,
@@ -134,7 +121,6 @@ class AppTextStyle {
 
   static TextStyle get bodySmall => _baseTextStyle.copyWith(
         fontSize: 12.sp,
-        decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
         height: (16 / 12).h,
