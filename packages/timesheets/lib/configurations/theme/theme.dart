@@ -69,7 +69,7 @@ class AppTheme {
       useMaterial3: true,
       useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
-      surfaceMode: FlexSurfaceMode.highScaffoldLevelSurface,
+      scaffoldBackground: colorScheme.surfaceVariant,
     );
 
     return applyCommonTheme(theme);
@@ -85,6 +85,7 @@ class AppTheme {
       useMaterial3: true,
       blendLevel: 0,
       useMaterial3ErrorColors: true,
+      scaffoldBackground: colorScheme.surfaceVariant,
       subThemesData: _commonSubThemeData,
     );
 
@@ -97,8 +98,7 @@ class AppTheme {
 
     return theme.copyWith(
       listTileTheme: theme.listTileTheme.copyWith(
-        tileColor: ElevationOverlay.applySurfaceTint(
-            Colors.transparent, colorScheme.surfaceTint, 1),
+        tileColor: AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
         minLeadingWidth: kPadding.w / 4,
         contentPadding: EdgeInsets.symmetric(
           horizontal: kPadding.w * 2,
