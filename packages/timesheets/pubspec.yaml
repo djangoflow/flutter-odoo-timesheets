@@ -53,6 +53,7 @@ dependencies:
       url: https://github.com/djangoflow/dart-xmlrpc.git
   lottie: ^2.4.0
   drift_db_viewer: ^2.0.0
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:
@@ -75,14 +76,15 @@ dev_dependencies:
 flutter_gen:
   output: lib/utils/ # Optional (default: lib/gen/)
   line_length: 80 # Optional (default: 80)
-
+  integrations:
+      flutter_svg: true
   # Optional
   assets:
     enabled: true
     outputs:
       style: camel-case
-    integrations:
-      lottie: true
+    
+
 
 flutter:
   uses-material-design: true
