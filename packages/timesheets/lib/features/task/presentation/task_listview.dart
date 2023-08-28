@@ -23,9 +23,10 @@ class TaskListView extends StatelessWidget {
         )..load(taskListFilter),
         withRefreshIndicator: true,
         loadingBuilder: (_, __) => const SizedBox(),
-        emptyBuilder: (_, __) => const EmptyPlaceholder(
-          message: 'You have no tasks yet for this project',
-        ),
+        // emptyBuilder: (_, __) => const EmptyPlaceholder(
+        //   message: 'You have no tasks yet for this project',
+        // ),
+        emptyBuilder: (context, state) => SizedBox(),
         errorBuilder: (_, __) => const Center(
           child: Text('Error occurred!'),
         ),

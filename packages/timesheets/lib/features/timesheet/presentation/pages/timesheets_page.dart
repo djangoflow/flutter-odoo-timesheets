@@ -8,7 +8,8 @@ class TimesheetsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
         routes: const [
-          SyncedTimesheetsRoute(),
+          FavoriteTimesheetsRoute(),
+          OdooTimesheetsRoute(),
           LocalTimesheetsRoute(),
         ],
         builder: (context, child, tabController) => Column(
@@ -18,7 +19,8 @@ class TimesheetsPage extends StatelessWidget {
               child: TabBar(
                 controller: tabController,
                 tabs: const [
-                  Tab(text: 'Synced'),
+                  Tab(text: 'Favorites'),
+                  Tab(text: 'Odoo'),
                   Tab(text: 'Local'),
                 ],
               ),

@@ -6,20 +6,20 @@ import 'package:timesheets/features/timesheet/presentation/timesheets_listview.d
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage()
-class LocalTimesheetsPage extends StatelessWidget {
-  const LocalTimesheetsPage({super.key});
+class OdooTimesheetsPage extends StatelessWidget {
+  const OdooTimesheetsPage({super.key});
 
   @override
   Widget build(BuildContext context) => AppVisiblityBuilder(
-        key: const ValueKey('local_timesheets_builder'),
-        appVisibilityKey: const ValueKey('local_timesheets_page'),
+        key: const ValueKey('synced_timesheets_builder'),
+        appVisibilityKey: const ValueKey('synced_timesheets_page'),
         child: TimesheetListView(
           timesheetWithTaskExternalListFilter:
               const TimesheetWithTaskExternalListFilter(
-            isProjectLocal: true,
+            isProjectLocal: false,
             isEndDateNull: true,
           ),
-          emptyBuilder: (context, state) => LocalTimesheetsPlaceHolder(
+          emptyBuilder: (context, state) => OdooTimesheetsPlaceHolder(
             onGetStarted: () => context.router.push(
               TimesheetRouter(
                 children: [

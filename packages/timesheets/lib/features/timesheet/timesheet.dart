@@ -6,4 +6,6 @@ export 'data/models/timesheet_with_task_external_data.dart';
 export 'presentation/pages/timesheet_add_page.dart';
 export 'presentation/timesheet_with_task_editor.dart';
 export 'presentation/timesheet_list_tile.dart';
-export 'presentation/local_timesheets_placeholder.dart';
+export 'presentation/placeholders/local_timesheets_placeholder.dart';
+export 'presentation/placeholders/odoo_timesheets_placeholder.dart';
+export 'presentation/placeholders/favorite_timesheets_placeholder.dart';

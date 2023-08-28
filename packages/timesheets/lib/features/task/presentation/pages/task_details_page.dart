@@ -264,15 +264,15 @@ class TaskDetailsPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-                if (timesheets.isEmpty)
-                  const EmptyPlaceholder(
-                    message: 'Completed timesheets will appear here!',
-                  )
-                else
-                  _TimesheetListView(
-                    key: ValueKey(timesheets),
-                    timesheets: timesheets,
-                  ),
+                // if (timesheets.isEmpty)
+                // const EmptyPlaceholder(
+                //   message: 'Completed timesheets will appear here!',
+                // )
+                // else
+                _TimesheetListView(
+                  key: ValueKey(timesheets),
+                  timesheets: timesheets,
+                ),
               ],
             ),
           );

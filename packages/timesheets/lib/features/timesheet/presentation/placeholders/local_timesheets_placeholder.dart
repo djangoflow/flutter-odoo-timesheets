@@ -7,8 +7,8 @@ class LocalTimesheetsPlaceHolder extends EmptyPlaceholder {
       : super(
           icon: DecoratedSvgImage(
             image: Assets.iconsClock,
-            height: 92.h,
-            width: 92.h,
+            height: 96.h,
+            width: 96.h,
           ),
           title: 'You don\'t have any local timesheets',
           message: 'Create a timer to to begin tracking time',

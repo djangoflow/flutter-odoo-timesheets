@@ -39,9 +39,13 @@ class AppRouter extends $AppRouter {
               initial: true,
               children: [
                 AutoRoute(
-                  path: 'synced',
-                  page: SyncedTimesheetsRoute.page,
                   initial: true,
+                  path: 'favorite',
+                  page: FavoriteTimesheetsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'odoo',
+                  page: OdooTimesheetsRoute.page,
                 ),
                 AutoRoute(
                   path: 'local',

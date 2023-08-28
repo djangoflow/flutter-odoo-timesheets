@@ -13,9 +13,15 @@ import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class TimesheetListView extends StatelessWidget {
-  const TimesheetListView(
-      {super.key, required this.timesheetWithTaskExternalListFilter});
+  const TimesheetListView({
+    super.key,
+    required this.timesheetWithTaskExternalListFilter,
+    required this.emptyBuilder,
+  });
   final TimesheetWithTaskExternalListFilter timesheetWithTaskExternalListFilter;
+  final Widget Function(
+          BuildContext context, TimesheetWithTaskExternalListState state)
+      emptyBuilder;
   @override
   Widget build(BuildContext context) => ContinuousListViewBlocBuilder<
           TimesheetWithTaskExternalListCubit,
@@ -24,15 +30,7 @@ class TimesheetListView extends StatelessWidget {
         create: (context) => TimesheetWithTaskExternalListCubit(
           context.read<TimesheetRepository>(),
         )..load(timesheetWithTaskExternalListFilter),
-        emptyBuilder: (context, state) => LocalTimesheetsPlaceHolder(
-          onGetStarted: () => context.router.push(
-            TimesheetRouter(
-              children: [
-                TimesheetAddRoute(),
-              ],
-            ),
-          ),
-        ),
+        emptyBuilder: emptyBuilder,
         withRefreshIndicator: true,
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, item) {
