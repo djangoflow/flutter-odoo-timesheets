@@ -42,12 +42,16 @@ class AppTheme {
       cardElevation: 1,
       cardRadius: kPadding.r * 2,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
+      bottomNavigationBarBackgroundSchemeColor: SchemeColor.surface,
+      bottomNavigationBarElevation: 0,
       bottomNavigationBarSelectedIconSchemeColor: SchemeColor.onSurfaceVariant,
       bottomNavigationBarSelectedLabelSchemeColor: SchemeColor.onSurfaceVariant,
       bottomNavigationBarUnselectedIconSchemeColor:
           SchemeColor.onSurfaceVariant,
       bottomNavigationBarUnselectedLabelSchemeColor:
           SchemeColor.onSurfaceVariant,
+      appBarBackgroundSchemeColor: SchemeColor.surfaceVariant,
+      appBarScrolledUnderElevation: 0,
     );
   }
 
@@ -56,11 +60,13 @@ class AppTheme {
     final theme = FlexThemeData.light(
       colorScheme: colorScheme,
       textTheme: AppTextStyle.textTheme,
+      blendLevel: 0,
       primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
+      surfaceMode: FlexSurfaceMode.highScaffoldLevelSurface,
     );
 
     return applyCommonTheme(theme);
@@ -74,9 +80,11 @@ class AppTheme {
       primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
+      blendLevel: 0,
       useMaterial3ErrorColors: true,
       subThemesData: _commonSubThemeData,
     );
+
     return applyCommonTheme(theme);
   }
 
@@ -87,7 +95,7 @@ class AppTheme {
     return theme.copyWith(
       listTileTheme: theme.listTileTheme.copyWith(
         tileColor: ElevationOverlay.applySurfaceTint(
-            theme.colorScheme.surface, theme.colorScheme.surfaceTint, 1),
+            Colors.transparent, colorScheme.surfaceTint, 1),
         minLeadingWidth: kPadding.w / 4,
         contentPadding: EdgeInsets.symmetric(
           horizontal: kPadding.w * 2,
@@ -110,9 +118,13 @@ class AppTheme {
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
       ),
-      cardColor: theme.colorScheme.primaryContainer,
-      appBarTheme: theme.appBarTheme.copyWith(
-        backgroundColor: Colors.transparent,
+      cardTheme: theme.cardTheme.copyWith(
+        elevation: 1,
+        color: Colors.transparent,
+        surfaceTintColor: colorScheme.surfaceTint,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding),
+        ),
       ),
     );
   }

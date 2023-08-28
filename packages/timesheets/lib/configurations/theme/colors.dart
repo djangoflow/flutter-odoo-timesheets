@@ -29,6 +29,7 @@ class AppColors {
         background: darkThemeBackground,
         onBackground: darkThemeOnBackground,
         shadow: Colors.transparent,
+        surfaceTint: Colors.white,
       );
 
   /// ColorScheme for light theme
@@ -59,6 +60,7 @@ class AppColors {
         background: lightThemeBackground,
         onBackground: lightThemeOnBackground,
         shadow: Colors.transparent,
+        surfaceTint: Colors.white,
       );
 
   // Dark theme colors
@@ -86,11 +88,11 @@ class AppColors {
   static const Color darkThemeOnSurfaceVariant = Color(0xffffffff);
   static const Color darkThemeOutline = Color(0x29ffffff);
   static const Color darkThemeOutlinevariant = Color(0x7affffff);
-  static const Color darkSurfaceat1 = Color(0x1fffffff);
-  static const Color darkSurfaceat2 = Color(0x33ffffff);
-  static const Color darkSurfaceat3 = Color(0x47ffffff);
-  static const Color darkSurfaceat4 = Color(0x5cffffff);
-  static const Color darkSurfaceat5 = Color(0x85ffffff);
+  // static const Color darkSurfaceat1 = Color(0x1fffffff);
+  // static const Color darkSurfaceat2 = Color(0x33ffffff);
+  // static const Color darkSurfaceat3 = Color(0x47ffffff);
+  // static const Color darkSurfaceat4 = Color(0x5cffffff);
+  // static const Color darkSurfaceat5 = Color(0x85ffffff);
 
   // Light theme colors
   static const Color lightThemePrimary = Color(0xffffffff);
@@ -107,7 +109,7 @@ class AppColors {
   static const Color lightThemeOnTertiaryContainer = Color(0xff000000);
   static const Color lightThemeSurface = Color(0xFF214ECC);
   static const Color lightThemeOnSurface = Color(0xffffffff);
-  static const Color lightThemeSurfaceVariant = Color(0x03000000);
+  static const Color lightThemeSurfaceVariant = Color(0xFF0C1D4D);
   static const Color lightThemeOnSurfaceVariant = Color(0xffffffff);
   static const Color lightThemeBackground = Color(0xFF214ECC);
   static const Color lightThemeOnBackground = Color(0xffffffff);
@@ -117,7 +119,7 @@ class AppColors {
   static const Color lightThemeOnErrorContainer = Color(0xffcc3c21);
   static const Color lightThemeOutline = Color(0x29ffffff);
   static const Color lightThemeOutlinevariant = Color(0x7affffff);
-  // static const Color Surfaceat1 = Color(0x14ffffff);
+  // static const Color surfaceat1 = Color(0x14ffffff);
   // static const Color Surfaceat2 = Color(0x29ffffff);
   // static const Color Surfaceat3 = Color(0x3dffffff);
   // static const Color Surfaceat4 = Color(0x52ffffff);
