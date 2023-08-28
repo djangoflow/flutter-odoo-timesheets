@@ -32,6 +32,7 @@ class AppTheme {
       outlinedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
       filledButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
       elevatedButtonSchemeColor: SchemeColor.onSecondaryContainer,
+      elevatedButtonSecondarySchemeColor: SchemeColor.secondaryContainer,
       textButtonSchemeColor: SchemeColor.onSecondaryContainer,
       outlinedButtonSchemeColor: SchemeColor.onSecondaryContainer,
       checkboxSchemeColor: SchemeColor.primary,
