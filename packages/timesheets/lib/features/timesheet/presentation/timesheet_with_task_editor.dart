@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' hide Column;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,8 +100,28 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                       return AppReactiveTypeAhead<ProjectWithExternalData,
                           ProjectWithExternalData>(
                         formControlName: projectControlName,
-                        labelText: 'Project',
-                        hintText: 'Select Project',
+                        inputDecoration: InputDecoration(
+                          labelText: 'Project',
+                          hintText: 'Select Project',
+                          suffixIcon: ReactiveValueListenableBuilder(
+                            formControlName: projectControlName,
+                            builder: (context, control, child) {
+                              final projectWithExternalData =
+                                  control.value as ProjectWithExternalData?;
+
+                              if (projectWithExternalData == null) {
+                                return const SizedBox();
+                              } else {
+                                return Icon(
+                                  projectWithExternalData.externalProject !=
+                                          null
+                                      ? CupertinoIcons.cloud_fill
+                                      : CupertinoIcons.floppy_disk,
+                                );
+                              }
+                            },
+                          ),
+                        ),
                         emptyBuilder: (_, textEditingController) =>
                             AppGlassContainer(
                           child: _EmptyItem(
@@ -161,6 +182,11 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
+                            trailing: Icon(
+                              itemData.externalProject != null
+                                  ? CupertinoIcons.cloud_fill
+                                  : CupertinoIcons.floppy_disk,
+                            ),
                           ),
                         ),
                       );
@@ -203,9 +229,11 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
                               return AppReactiveTypeAhead<Task, Task>(
                                 stringify: (task) => task.name ?? '',
-                                labelText: 'Task',
+                                inputDecoration: const InputDecoration(
+                                  labelText: 'Task',
+                                  hintText: 'Select task',
+                                ),
                                 formControlName: taskControlName,
-                                hintText: 'Select task',
                                 validationMessages: {
                                   ValidationMessage.required: (_) =>
                                       'Please select task',

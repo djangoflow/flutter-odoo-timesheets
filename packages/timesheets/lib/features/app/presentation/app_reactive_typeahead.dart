@@ -11,9 +11,7 @@ class AppReactiveTypeAhead<T, V> extends StatefulWidget {
     super.key,
     required this.formControlName,
     this.validationMessages,
-    this.hintText,
-    this.helperText,
-    this.labelText,
+    this.inputDecoration = const InputDecoration(),
     this.emptyBuilder,
     required this.stringify,
     required this.suggestionsCallback,
@@ -21,9 +19,7 @@ class AppReactiveTypeAhead<T, V> extends StatefulWidget {
   });
   final String formControlName;
   final Map<String, String Function(Object)>? validationMessages;
-  final String? hintText;
-  final String? helperText;
-  final String? labelText;
+  final InputDecoration inputDecoration;
   final Widget Function(
           BuildContext context, TextEditingController textEditingController)?
       emptyBuilder;
@@ -67,10 +63,7 @@ class _AppReactiveTypeAheadState<T, V>
         keepSuggestionsOnLoading: true,
         textFieldConfiguration: TextFieldConfiguration(
           controller: _textEditingController,
-          decoration: InputDecoration(
-            labelText: widget.labelText,
-            hintText: widget.helperText,
-          ),
+          decoration: widget.inputDecoration,
         ),
         getImmediateSuggestions: true,
         noItemsFoundBuilder: widget.emptyBuilder != null

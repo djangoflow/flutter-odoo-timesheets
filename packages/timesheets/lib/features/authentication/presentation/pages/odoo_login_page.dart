@@ -187,8 +187,11 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
                                                           .toLowerCase()))
                                                   .toList(),
                                           formControlName: dbControlName,
-                                          hintText: 'Select database',
-                                          labelText: 'Database',
+                                          inputDecoration:
+                                              const InputDecoration(
+                                            hintText: 'Select database',
+                                            labelText: 'Database',
+                                          ),
                                           validationMessages: {
                                             ValidationMessage.required: (_) =>
                                                 'Please select DB',
