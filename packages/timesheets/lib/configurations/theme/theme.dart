@@ -68,7 +68,7 @@ class AppTheme {
       primaryTextTheme: AppTextStyle.primaryTextTheme(colorScheme.onPrimary),
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
-      useMaterial3ErrorColors: true,
+      useMaterial3ErrorColors: false,
       subThemesData: _commonSubThemeData,
       scaffoldBackground: colorScheme.surfaceVariant,
     );
@@ -85,7 +85,7 @@ class AppTheme {
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       blendLevel: 0,
-      useMaterial3ErrorColors: true,
+      useMaterial3ErrorColors: false,
       scaffoldBackground: colorScheme.surfaceVariant,
       subThemesData: _commonSubThemeData,
     );
@@ -118,6 +118,11 @@ class AppTheme {
           horizontal: kPadding.w * 2,
           vertical: kPadding.h * 2,
         ),
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.tertiary,
+        ),
+        filled: true,
+        fillColor: colorScheme.secondaryContainer,
       ),
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
