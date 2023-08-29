@@ -65,7 +65,9 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
                   ),
                   selected: isSelected,
                 ),
-                const Divider(),
+                const Divider(
+                  height: 1,
+                ),
               ],
             ),
           ),
