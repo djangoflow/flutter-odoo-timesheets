@@ -123,6 +123,7 @@ class AppTheme {
         ),
         filled: true,
         fillColor: colorScheme.secondaryContainer,
+        floatingLabelStyle: textTheme.labelLarge,
       ),
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
