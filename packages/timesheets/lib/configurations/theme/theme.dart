@@ -144,6 +144,9 @@ class AppTheme {
       iconTheme: theme.iconTheme.copyWith(
         color: theme.colorScheme.onSecondary,
       ),
+      progressIndicatorTheme: theme.progressIndicatorTheme.copyWith(
+        color: theme.colorScheme.tertiary,
+      ),
     );
   }
 
