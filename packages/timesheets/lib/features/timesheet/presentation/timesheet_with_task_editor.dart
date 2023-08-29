@@ -96,57 +96,71 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       }
-                      return AppReactiveDropdown<Project, Project>(
+                      return AppReactiveTypeAhead<Project, Project>(
                         formControlName: projectControlName,
                         labelText: 'Project',
                         hintText: 'Select Project',
-                        itemAsString: (project) => project.name ?? '',
-                        emptyBuilder: (_, searchTerm) => _EmptyItem(
-                          label: 'Project',
-                          searchTerm: searchTerm,
-                          onCreatePressed: () async {
-                            final router = context.router;
-                            final projectListCubit =
-                                context.read<ProjectListCubit>();
-                            final createdProject =
-                                await projectListCubit.createProject(
-                              ProjectsCompanion(
-                                name: Value(searchTerm),
-                                taskCount: const Value(0),
-                                active: const Value(true),
-                              ),
-                            );
-                            if (createdProject != null) {
-                              formGroup.control(projectControlName).value =
-                                  createdProject;
-                              projectListCubit.reload();
-                              router.pop();
-                            }
-                          },
+                        emptyBuilder: (_, textEditingController) =>
+                            AppGlassContainer(
+                          child: _EmptyItem(
+                            label: 'Project',
+                            searchTerm: textEditingController.value.text,
+                            onCreatePressed: () async {
+                              final router = context.router;
+                              final projectListCubit =
+                                  context.read<ProjectListCubit>();
+                              final createdProject =
+                                  await projectListCubit.createProject(
+                                ProjectsCompanion(
+                                  name: Value(
+                                    textEditingController.value.text,
+                                  ),
+                                  taskCount: const Value(0),
+                                  active: const Value(true),
+                                ),
+                              );
+                              if (createdProject != null) {
+                                formGroup.control(projectControlName).value =
+                                    createdProject;
+                                projectListCubit.reload();
+                                router.pop();
+                              }
+                            },
+                          ),
                         ),
                         validationMessages: {
                           ValidationMessage.required: (_) =>
                               'Please select project',
                         },
-                        onBeforeChange: (prev, next) async {
-                          if (prev?.id != next?.id) {
-                            formGroup.control(taskControlName).value = null;
-                          }
-                          return true;
-                        },
-                        asyncItems: (searchTerm) async {
+                        stringify: (Project value) => value.name ?? '',
+                        suggestionsCallback: (String searchTerm) async {
                           if (searchTerm.isNotEmpty) {
                             final projectListCubit =
                                 context.read<ProjectListCubit>();
-                            return await projectListCubit.loader(
+                            final result = await projectListCubit.loader(
                               state.filter?.copyWith(
                                 search: searchTerm,
                               ),
                             );
+
+                            return result;
                           }
 
                           return state.data ?? [];
                         },
+                        itemBuilder: (BuildContext context, Project itemData) =>
+                            Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: kPadding.h / 2),
+                          child: ListTile(
+                            tileColor: Colors.transparent,
+                            title: Text(
+                              itemData.name ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -184,10 +198,24 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                                 );
                               }
 
-                              return AppReactiveDropdown<Task, Task>(
-                                itemAsString: (task) => task.name ?? '',
+                              return AppReactiveTypeAhead<Task, Task>(
+                                stringify: (task) => task.name ?? '',
                                 labelText: 'Task',
-                                asyncItems: (searchTerm) async {
+                                formControlName: taskControlName,
+                                hintText: 'Select task',
+                                validationMessages: {
+                                  ValidationMessage.required: (_) =>
+                                      'Please select task',
+                                },
+                                itemBuilder: (context, task) => ListTile(
+                                  tileColor: Colors.transparent,
+                                  title: Text(
+                                    task.name ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                suggestionsCallback: (searchTerm) async {
                                   if (searchTerm.isNotEmpty) {
                                     final taskListCubit =
                                         context.read<TaskListCubit>();
@@ -205,34 +233,36 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                                           .toList() ??
                                       [];
                                 },
-                                emptyBuilder: (_, searchTerm) => _EmptyItem(
-                                  label: 'Task',
-                                  searchTerm: searchTerm,
-                                  onCreatePressed: () async {
-                                    final router = context.router;
-                                    final taskListCubit =
-                                        context.read<TaskListCubit>();
-                                    final createdTask =
-                                        await taskListCubit.createTask(
-                                      TasksCompanion(
-                                        name: Value(searchTerm),
-                                        projectId: Value(project.id),
-                                        active: const Value(true),
-                                      ),
-                                    );
-                                    if (createdTask != null) {
-                                      formGroup.control(taskControlName).value =
-                                          createdTask;
-                                      taskListCubit.reload();
-                                      router.pop();
-                                    }
-                                  },
-                                ),
-                                formControlName: taskControlName,
-                                hintText: 'Select task',
-                                validationMessages: {
-                                  ValidationMessage.required: (_) =>
-                                      'Please select task',
+                                emptyBuilder: (_, textEditingController) {
+                                  final searchTerm =
+                                      textEditingController.value.text;
+
+                                  return AppGlassContainer(
+                                    child: _EmptyItem(
+                                      label: 'Task',
+                                      searchTerm: searchTerm,
+                                      onCreatePressed: () async {
+                                        final router = context.router;
+                                        final taskListCubit =
+                                            context.read<TaskListCubit>();
+                                        final createdTask =
+                                            await taskListCubit.createTask(
+                                          TasksCompanion(
+                                            name: Value(searchTerm),
+                                            projectId: Value(project.id),
+                                            active: const Value(true),
+                                          ),
+                                        );
+                                        if (createdTask != null) {
+                                          formGroup
+                                              .control(taskControlName)
+                                              .value = createdTask;
+                                          taskListCubit.reload();
+                                          router.pop();
+                                        }
+                                      },
+                                    ),
+                                  );
                                 },
                               );
                             },
