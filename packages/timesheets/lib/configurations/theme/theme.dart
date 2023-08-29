@@ -147,6 +147,7 @@ class AppTheme {
       ),
       progressIndicatorTheme: theme.progressIndicatorTheme.copyWith(
         color: theme.colorScheme.tertiary,
+        linearTrackColor: theme.colorScheme.tertiaryContainer,
       ),
     );
   }
