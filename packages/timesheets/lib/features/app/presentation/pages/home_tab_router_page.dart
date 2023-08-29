@@ -13,65 +13,69 @@ class HomeTabRouterPage extends StatelessWidget {
   Widget build(BuildContext context) => AutoTabsRouter(
         builder: (context, child) {
           final tabsRouter = context.tabsRouter;
-          return GradientScaffold(
-            appBar: AppBar(
-              title: Text(
-                tabsRouter.current.path.capitalize,
+          return IconButtonTheme(
+            data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
+            child: GradientScaffold(
+              appBar: AppBar(
+                title: Text(
+                  tabsRouter.current.path.capitalize,
+                ),
+                scrolledUnderElevation: 0,
+                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                actions: [
+                  if (tabsRouter.activeIndex == 0) ...[
+                    IconButton(
+                      onPressed: () {
+                        AppModalSheet.show(
+                          context: context,
+                          child: FilterSelector(onFilterChanged: (f) {
+                            print(f.label);
+                          }),
+                        );
+                      },
+                      icon: const Icon(CupertinoIcons.arrow_up_down),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context.router.push(
+                          TimesheetRouter(
+                            children: [
+                              TimesheetAddRoute(),
+                            ],
+                          ),
+                        );
+                      },
+                      icon: const Icon(CupertinoIcons.add),
+                    ),
+                    SizedBox(
+                      width: kPadding.w * 2,
+                    ),
+                  ],
+                ],
+                centerTitle: false,
               ),
-              scrolledUnderElevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    AppModalSheet.show(
-                      context: context,
-                      child: FilterSelector(onFilterChanged: (f) {
-                        print(f.label);
-                      }),
-                    );
-                  },
-                  icon: const Icon(CupertinoIcons.arrow_up_down),
-                ),
-                if (tabsRouter.activeIndex == 0)
-                  IconButton(
-                    onPressed: () {
-                      context.router.push(
-                        TimesheetRouter(
-                          children: [
-                            TimesheetAddRoute(),
-                          ],
-                        ),
-                      );
-                    },
-                    icon: const Icon(CupertinoIcons.add),
+              body: child,
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: tabsRouter.activeIndex,
+                onTap: tabsRouter.setActiveIndex,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.clock),
+                    activeIcon: Icon(CupertinoIcons.clock_fill),
+                    label: 'Timers',
                   ),
-                SizedBox(
-                  width: kPadding.w * 2,
-                ),
-              ],
-              centerTitle: false,
-            ),
-            body: child,
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: tabsRouter.activeIndex,
-              onTap: tabsRouter.setActiveIndex,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.clock),
-                  activeIcon: Icon(CupertinoIcons.clock_fill),
-                  label: 'Timers',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.briefcase),
-                  activeIcon: Icon(CupertinoIcons.briefcase_fill),
-                  label: 'Projects',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.settings),
-                  activeIcon: Icon(CupertinoIcons.settings_solid),
-                  label: 'Settings',
-                ),
-              ],
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.briefcase),
+                    activeIcon: Icon(CupertinoIcons.briefcase_fill),
+                    label: 'Projects',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.settings),
+                    activeIcon: Icon(CupertinoIcons.settings_solid),
+                    label: 'Settings',
+                  ),
+                ],
+              ),
             ),
           );
         },

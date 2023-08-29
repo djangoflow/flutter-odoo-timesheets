@@ -133,14 +133,7 @@ class AppTheme {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: theme.iconButtonTheme.style?.copyWith(
-          backgroundColor:
-              MaterialStatePropertyAll(colorScheme.secondaryContainer),
           iconSize: MaterialStatePropertyAll(kPadding.h * 3),
-          shape: MaterialStatePropertyAll(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kPadding.r * 1.5),
-            ),
-          ),
         ),
       ),
       iconTheme: theme.iconTheme.copyWith(
@@ -148,4 +141,18 @@ class AppTheme {
       ),
     );
   }
+
+  static IconButtonThemeData getFilledIconButtonTheme(ThemeData theme) =>
+      IconButtonThemeData(
+        style: theme.iconButtonTheme.style?.copyWith(
+          backgroundColor:
+              MaterialStatePropertyAll(theme.colorScheme.secondaryContainer),
+          iconSize: MaterialStatePropertyAll(kPadding.h * 3),
+          shape: MaterialStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(kPadding.r * 1.5),
+            ),
+          ),
+        ),
+      );
 }
