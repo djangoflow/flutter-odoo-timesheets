@@ -21,6 +21,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
     this.additionalChildrenBuilder,
     this.showOnlySyncedTaskAndProjects,
     this.disableProjectTaskSelection,
+    this.isFavorite,
   });
 
   final Task? task;
@@ -29,6 +30,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
   final bool? showOnlySyncedTaskAndProjects;
   final bool? disableProjectTaskSelection;
+  final bool? isFavorite;
 
   final Widget Function(
       BuildContext context, FormGroup form, Widget formListView) builder;
@@ -54,6 +56,9 @@ class TimesheetWithTaskEditor extends StatelessWidget {
             validators: [
               Validators.required,
             ],
+          ),
+          isFavoriteControlName: FormControl<bool>(
+            value: isFavorite ?? false,
           ),
         },
       );
@@ -267,6 +272,23 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                   ),
                   const Text('Just enter a description and start to work!'),
                 ],
+                SizedBox(
+                  height: kPadding.h * 2,
+                ),
+                Row(
+                  children: [
+                    ReactiveCheckbox(
+                      formControlName: isFavoriteControlName,
+                    ),
+                    SizedBox(
+                      width: kPadding.w,
+                    ),
+                    Text(
+                      'Make Favorite',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    )
+                  ],
+                ),
                 if (additionalChildrenBuilder != null)
                   ...additionalChildrenBuilder!(context),
               ],

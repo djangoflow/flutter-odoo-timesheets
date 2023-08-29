@@ -50,5 +50,5 @@ const dbControlName = 'db';
 const projectControlName = 'selectedProject';
 const taskControlName = 'selectedTask';
 const descriptionControlName = 'description';
-
+const isFavoriteControlName = 'isFavorite';
 const searchDelayMs = 500;
