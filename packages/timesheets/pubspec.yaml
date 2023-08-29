@@ -56,6 +56,11 @@ dependencies:
       url: https://github.com/djangoflow/dart-xmlrpc.git
   lottie: ^2.4.0
   drift_db_viewer: ^2.0.0
+  reactive_flutter_typeahead:
+    git:
+      url: https://github.com/djangoflow/reactive_forms_widgets.git
+      path: packages/reactive_flutter_typeahead
+      ref: d81877a158f6ba8746725adb007a0962a549c3f7
 
 dev_dependencies:
   flutter_test:
