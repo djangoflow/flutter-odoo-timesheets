@@ -13,20 +13,16 @@ class TaskDetailsRouterPage extends AutoRouter implements AutoRouteWrapper {
   const TaskDetailsRouterPage({super.key, @pathParam required this.taskId});
 
   @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider<TaskDetailsCubit>(
-            create: (context) => TaskDetailsCubit(
-              taskId: taskId,
-              timesheetRepository: context.read<TimesheetRepository>(),
-              odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
-              taskRepository: context.read<TaskRepository>(),
-              projectRepository: context.read<ProjectRepository>(),
-              externalTimesheetRepository:
-                  context.read<ExternalTimesheetRepository>(),
-            )..loadTaskDetails(),
-          ),
-        ],
+  Widget wrappedRoute(BuildContext context) => BlocProvider<TaskDetailsCubit>(
+        create: (context) => TaskDetailsCubit(
+          taskId: taskId,
+          timesheetRepository: context.read<TimesheetRepository>(),
+          odooTimesheetRepository: context.read<OdooTimesheetRepository>(),
+          taskRepository: context.read<TaskRepository>(),
+          projectRepository: context.read<ProjectRepository>(),
+          externalTimesheetRepository:
+              context.read<ExternalTimesheetRepository>(),
+        )..loadTaskDetails(),
         child: this,
       );
 }

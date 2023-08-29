@@ -92,7 +92,18 @@ class AppRouter extends $AppRouter {
               children: [
                 AutoRoute(
                   path: '',
-                  page: TaskDetailsRoute.page,
+                  page: TaskDetailsTabRouter.page,
+                  children: [
+                    AutoRoute(
+                      initial: true,
+                      page: TaskDetailsTimesheetsTab.page,
+                      path: 'timesheets',
+                    ),
+                    AutoRoute(
+                      page: TaskDetailsDetailsTab.page,
+                      path: 'details',
+                    ),
+                  ],
                 ),
                 // AutoRoute(
                 //   path: 'edit',

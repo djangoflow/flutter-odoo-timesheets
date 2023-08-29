@@ -18,9 +18,11 @@ import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 import 'package:timesheets/utils/utils.dart';
 
-@RoutePage()
-class TaskDetailsPage extends StatelessWidget {
-  const TaskDetailsPage({super.key});
+@RoutePage(
+  name: 'TaskDetailsTimesheetsTab',
+)
+class TaskDetailsTimesheetsTabPage extends StatelessWidget {
+  const TaskDetailsTimesheetsTabPage({super.key});
 
   @override
   Widget build(BuildContext context) =>
@@ -277,35 +279,7 @@ class TaskDetailsPage extends StatelessWidget {
             ),
           );
 
-          return GradientScaffold(
-            appBar: AppBar(
-              title: Text(task != null ? 'Task ${task.name}' : 'Task details'),
-              leading: const AutoLeadingButton(),
-              actions: [
-                if (taskWithProjectExternalData != null &&
-                    taskWithProjectExternalData
-                            .taskWithExternalData.externalTask ==
-                        null)
-                  IconButton(
-                    onPressed: () {
-                      // context.router
-                      //     .push(
-                      //   TaskEditRoute(
-                      //       taskWithProjectExternalData:
-                      //           taskWithProjectExternalData),
-                      // )
-                      //     .then((value) {
-                      //   if (value != null && value == true) {
-                      //     context.router.pop(true);
-                      //   }
-                      // });
-                    },
-                    icon: const Icon(Icons.edit),
-                  )
-              ],
-            ),
-            body: body,
-          );
+          return body;
         },
       );
 }

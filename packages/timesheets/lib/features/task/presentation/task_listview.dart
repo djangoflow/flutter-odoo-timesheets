@@ -47,7 +47,7 @@ class TaskListView extends StatelessWidget {
               context.router.push(
                 TaskDetailsRouter(
                   taskId: task.id,
-                  children: const [TaskDetailsRoute()],
+                  children: const [TaskDetailsTabRouter()],
                 ),
               );
             },
