@@ -30,9 +30,7 @@ Future<void> main() async {
       if (!kIsWeb) {
         initialDeepLink = (await appLinksRepository.getInitialLink())?.path;
       }
-      AppCubit.initialState = const AppState(
-        themeMode: ThemeMode.dark,
-      );
+
       // initialize router
       final router = AppRouter();
 
