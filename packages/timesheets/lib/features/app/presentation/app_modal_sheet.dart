@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timesheets/configurations/configurations.dart';
 
 import 'app_glass_container.dart';
 
@@ -16,6 +18,9 @@ class AppModalSheet extends StatelessWidget {
       backgroundColor: colorScheme.surface.withOpacity(.6),
       elevation: 0,
       builder: (context) => AppGlassContainer(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(kPadding.r * 2),
+        ),
         child: SizedBox(
           width: double.infinity,
           child: child,
