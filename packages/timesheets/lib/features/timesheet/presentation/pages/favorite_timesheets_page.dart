@@ -23,7 +23,9 @@ class FavoriteTimesheetsPage extends StatelessWidget {
             onGetStarted: () => context.router.push(
               TimesheetRouter(
                 children: [
-                  TimesheetAddRoute(),
+                  TimesheetAddRoute(
+                    isInitiallyFavorite: true,
+                  ),
                 ],
               ),
             ),
