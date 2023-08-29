@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
@@ -13,7 +14,7 @@ import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
 import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
 
 @RoutePage()
-class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
+class OdooLoginPage extends StatefulWidget implements AutoRouteWrapper {
   const OdooLoginPage({
     super.key,
     @queryParam this.serverUrl,
@@ -26,6 +27,36 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
 
   final void Function(bool success)? onLoginSuccess;
 
+  @override
+  State<OdooLoginPage> createState() => _OdooLoginPageState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) {
+              final cubit = OdooInformationCubit(
+                OdooInformationRepository(
+                  context.read<OdooXmlRpcClient>(),
+                ),
+              );
+
+              final providedServerUrl = serverUrl ??
+                  context.read<AuthCubit>().state.lastConnectedOdooServerUrl;
+              if (providedServerUrl != null) {
+                cubit.getDbList(providedServerUrl);
+              }
+              return cubit;
+            },
+          ),
+          SyncCubitProvider(),
+        ],
+        child: this,
+      );
+}
+
+class _OdooLoginPageState extends State<OdooLoginPage> {
+  final _showPassword = ValueNotifier<bool>(false);
   FormGroup _formBuilder(BuildContext context) => fb.group(
         {
           emailControlName: FormControl<String>(
@@ -50,7 +81,7 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
                   context.read<OdooInformationCubit>().getDbList)
             ],
             asyncValidatorsDebounceTime: 500,
-            value: serverUrl ??
+            value: widget.serverUrl ??
                 context.read<AuthCubit>().state.lastConnectedOdooServerUrl ??
                 'https://',
           ),
@@ -58,10 +89,17 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
             validators: [
               Validators.required,
             ],
-            value: db ?? context.read<AuthCubit>().state.lastConnectedOdooDb,
+            value: widget.db ??
+                context.read<AuthCubit>().state.lastConnectedOdooDb,
           ),
         },
       );
+
+  @override
+  void dispose() {
+    _showPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => DefaultActionController(
@@ -174,28 +212,45 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
                           SizedBox(
                             height: kPadding.h * 3,
                           ),
-                          ReactiveTextField(
-                            formControlName: passControlName,
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.visiblePassword,
-                            decoration: const InputDecoration(
-                              hintText: 'Password',
-                            ),
-                            autofillHints: const [AutofillHints.password],
-                            validationMessages: {
-                              ValidationMessage.required: (_) =>
-                                  'Password is required',
-                            },
-                            obscureText: true,
-                            onSubmitted: (_) {
-                              if (!form.valid) {
-                                form.markAsTouched();
-                              } else {
-                                DefaultActionController.of(context)
-                                    ?.add(ActionType.start);
-                              }
-                            },
-                          ),
+                          ValueListenableBuilder<bool>(
+                              valueListenable: _showPassword,
+                              builder: (context, showPassword, child) =>
+                                  ReactiveTextField(
+                                    formControlName: passControlName,
+                                    textInputAction: TextInputAction.done,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    textCapitalization: TextCapitalization.none,
+                                    autofillHints: const [
+                                      AutofillHints.password
+                                    ],
+                                    obscureText: !_showPassword.value,
+                                    decoration: InputDecoration(
+                                      hintText: 'Password',
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          _showPassword.value =
+                                              !_showPassword.value;
+                                        },
+                                        icon: Icon(
+                                          !showPassword
+                                              ? CupertinoIcons.eye
+                                              : CupertinoIcons.eye_slash,
+                                        ),
+                                      ),
+                                    ),
+                                    validationMessages: {
+                                      ValidationMessage.required: (_) =>
+                                          'Password is required',
+                                    },
+                                    onSubmitted: (_) {
+                                      if (!form.valid) {
+                                        form.markAsTouched();
+                                      } else {
+                                        DefaultActionController.of(context)
+                                            ?.add(ActionType.start);
+                                      }
+                                    },
+                                  )),
                         ],
                       ),
                     ),
@@ -210,8 +265,8 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
                         ),
                         action: (_) => _signIn(context, form),
                         onSuccess: () {
-                          if (onLoginSuccess != null) {
-                            onLoginSuccess!(true);
+                          if (widget.onLoginSuccess != null) {
+                            widget.onLoginSuccess!(true);
                           } else {
                             context.router.pop(true);
                           }
@@ -244,30 +299,6 @@ class OdooLoginPage extends StatelessWidget implements AutoRouteWrapper {
         );
     await syncCubit.syncData(backendId);
   }
-
-  @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) {
-              final cubit = OdooInformationCubit(
-                OdooInformationRepository(
-                  context.read<OdooXmlRpcClient>(),
-                ),
-              );
-
-              final providedServerUrl = serverUrl ??
-                  context.read<AuthCubit>().state.lastConnectedOdooServerUrl;
-              if (providedServerUrl != null) {
-                cubit.getDbList(providedServerUrl);
-              }
-              return cubit;
-            },
-          ),
-          SyncCubitProvider(),
-        ],
-        child: this,
-      );
 }
 
 class _ValidServerAsyncValidator extends AsyncValidator<dynamic> {
