@@ -56,6 +56,9 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
             child: Column(
               children: [
+                Divider(
+                  height: kPadding.h / 8,
+                ),
                 ListTile(
                   tileColor: Colors.transparent,
                   title: Text(
@@ -64,9 +67,6 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   selected: isSelected,
-                ),
-                Divider(
-                  height: kPadding.h / 8,
                 ),
               ],
             ),
