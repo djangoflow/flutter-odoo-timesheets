@@ -49,6 +49,19 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
         ),
       );
 
+  Future<List<ProjectWithExternalData>> getPaginatedProjectsWithExternalData({
+    int? offset,
+    int? limit,
+    bool? isLocal,
+    String? search,
+  }) =>
+      projectsDao.getPaginatedProjectsWithExternalData(
+        offset: offset,
+        isLocal: isLocal,
+        limit: limit,
+        search: search,
+      );
+
   Future<void> syncWithOdooProjects(
       {required int backendId, required List<OdooProject> odooProjects}) async {
     final odooProjectIds = odooProjects.map((e) => e.id).toList();

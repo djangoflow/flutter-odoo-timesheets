@@ -26,7 +26,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
   final Task? task;
   final String? description;
-  final Project? project;
+  final ProjectWithExternalData? project;
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
   final bool? showOnlySyncedTaskAndProjects;
   final bool? disableProjectTaskSelection;
@@ -37,7 +37,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
   FormGroup get _formGroup => fb.group(
         {
-          projectControlName: FormControl<Project>(
+          projectControlName: FormControl<ProjectWithExternalData>(
             value: project,
             disabled: disableProjectTaskSelection == true ? true : false,
             validators: [
@@ -96,7 +96,8 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       }
-                      return AppReactiveTypeAhead<Project, Project>(
+                      return AppReactiveTypeAhead<ProjectWithExternalData,
+                          ProjectWithExternalData>(
                         formControlName: projectControlName,
                         labelText: 'Project',
                         hintText: 'Select Project',
@@ -121,7 +122,9 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                               );
                               if (createdProject != null) {
                                 formGroup.control(projectControlName).value =
-                                    createdProject;
+                                    ProjectWithExternalData(
+                                  project: createdProject,
+                                );
                                 projectListCubit.reload();
                                 router.pop();
                               }
@@ -132,7 +135,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                           ValidationMessage.required: (_) =>
                               'Please select project',
                         },
-                        stringify: (Project value) => value.name ?? '',
+                        stringify: (value) => value.project.name ?? '',
                         suggestionsCallback: (String searchTerm) async {
                           if (searchTerm.isNotEmpty) {
                             final projectListCubit =
@@ -148,14 +151,13 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
                           return state.data ?? [];
                         },
-                        itemBuilder: (BuildContext context, Project itemData) =>
-                            Padding(
+                        itemBuilder: (context, itemData) => Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: kPadding.h / 2),
                           child: ListTile(
                             tileColor: Colors.transparent,
                             title: Text(
-                              itemData.name ?? '',
+                              itemData.project.name ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -166,10 +168,11 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: kPadding.h * 2),
-                ReactiveValueListenableBuilder<Project>(
+                ReactiveValueListenableBuilder<ProjectWithExternalData>(
                   formControlName: projectControlName,
                   builder: (context, control, child) {
-                    final project = control.value;
+                    final projectWithExternalData = control.value;
+                    final project = projectWithExternalData?.project;
 
                     if (project != null) {
                       return RepositoryProvider(

@@ -14,7 +14,7 @@ class ProjectListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ContinuousListViewBlocBuilder<
-          ProjectListCubit, Project, ProjectListFilter>(
+          ProjectListCubit, ProjectWithExternalData, ProjectListFilter>(
         create: (context) => ProjectListCubit(context.read<ProjectRepository>())
           ..load(projectListFilter),
         withRefreshIndicator: true,
@@ -23,32 +23,36 @@ class ProjectListView extends StatelessWidget {
         // ),
         emptyBuilder: (context, state) => SizedBox(),
         loadingBuilder: (context, state) => const SizedBox(),
-        itemBuilder: (context, state, index, item) => ListTile(
-          leading: ColoredBar(
-            color: item.color.toColorFromColorIndex,
-          ),
-          title: Row(
-            children: [
-              Text(
-                item.name ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(
-                width: kPadding.w,
-              ),
-              if (item.isFavorite == true)
-                const Icon(
-                  Icons.star,
-                  color: Colors.amber,
+        itemBuilder: (context, state, index, projectWithExternalData) {
+          final item = projectWithExternalData.project;
+
+          return ListTile(
+            leading: ColoredBar(
+              color: item.color.toColorFromColorIndex,
+            ),
+            title: Row(
+              children: [
+                Text(
+                  item.name ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            ],
-          ),
-          subtitle: Text('${item.taskCount ?? 0} Tasks'),
-          onTap: () {
-            context.router.push(ProjectDetailsRoute(projectId: item.id));
-          },
-        ),
+                SizedBox(
+                  width: kPadding.w,
+                ),
+                if (item.isFavorite == true)
+                  const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+              ],
+            ),
+            subtitle: Text('${item.taskCount ?? 0} Tasks'),
+            onTap: () {
+              context.router.push(ProjectDetailsRoute(projectId: item.id));
+            },
+          );
+        },
         builder: (context, controller, itemBuilder, itemCount) =>
             ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),

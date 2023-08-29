@@ -1,17 +1,20 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/project/blocs/project_list_cubit/project_list_filter.dart';
 import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
+import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/utils/utils.dart';
 
-typedef ProjectListState = Data<List<Project>, ProjectListFilter>;
+typedef ProjectListState
+    = Data<List<ProjectWithExternalData>, ProjectListFilter>;
 
-class ProjectListCubit extends ListCubit<Project, ProjectListFilter> {
+class ProjectListCubit
+    extends ListCubit<ProjectWithExternalData, ProjectListFilter> {
   final ProjectRepository projectRepository;
   ProjectListCubit(this.projectRepository)
       : super(
-          ListBlocUtil.listLoader<Project, ProjectListFilter>(
-            loader: ([filter]) => projectRepository.getPaginatedItems(
+          ListBlocUtil.listLoader<ProjectWithExternalData, ProjectListFilter>(
+            loader: ([filter]) =>
+                projectRepository.getPaginatedProjectsWithExternalData(
               limit: filter?.limit,
               offset: filter?.offset,
               isLocal: filter?.isLocal,
