@@ -29,6 +29,8 @@ class Timesheets extends Table {
   /// for total spent time calculation
   DateTimeColumn get lastTicked => dateTime().nullable()();
 
+  BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
