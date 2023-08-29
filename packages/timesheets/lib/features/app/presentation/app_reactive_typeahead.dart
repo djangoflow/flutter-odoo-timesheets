@@ -53,8 +53,11 @@ class _AppReactiveTypeAheadState<T, V>
           borderRadius: BorderRadius.all(
             Radius.circular(kPadding.r * 1),
           ),
-          child: ListView.builder(
+          child: ListView.separated(
             controller: scrollController,
+            separatorBuilder: (_, __) => const Divider(
+              height: 1,
+            ),
             itemBuilder: (context, index) => suggestions.elementAt(index),
             itemCount: suggestions.length,
           ),
