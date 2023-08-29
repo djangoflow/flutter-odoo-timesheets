@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 
-import 'package:timesheets/configurations/configurations.dart';
+import 'app_glass_container.dart';
 
 class AppModalSheet extends StatelessWidget {
   const AppModalSheet({super.key});
@@ -17,13 +15,7 @@ class AppModalSheet extends StatelessWidget {
       barrierColor: colorScheme.surfaceVariant.withOpacity(.24),
       backgroundColor: colorScheme.surface.withOpacity(.6),
       elevation: 0,
-      builder: (context) => GlassContainer(
-        blur: kDefaultBlur,
-        shadowStrength: 0,
-        color: AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(kPadding.r * 2),
-        ),
+      builder: (context) => AppGlassContainer(
         child: SizedBox(
           width: double.infinity,
           child: child,
