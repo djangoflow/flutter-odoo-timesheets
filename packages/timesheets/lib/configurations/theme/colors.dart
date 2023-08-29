@@ -115,7 +115,8 @@ class AppColors {
   static const Color lightThemeOnSurfaceVariant = Color(0xffffffff);
   static const Color lightThemeBackground = Color(0xFF214ECC);
   static const Color lightThemeOnBackground = Color(0xffffffff);
-  static const Color lightThemeError = Color(0xffcc3c21);
+  // as the design one does not look good against blue, so I decided to use vivid yellow
+  static const Color lightThemeError = Color(0xFFFFA500);
   static const Color lightThemeOnError = Color(0xffffffff);
   static const Color lightThemeErrorContainer = Color(0x52cc3c21);
   static const Color lightThemeOnErrorContainer = Color(0xffcc3c21);
