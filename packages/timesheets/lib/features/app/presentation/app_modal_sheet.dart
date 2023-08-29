@@ -18,7 +18,7 @@ class AppModalSheet extends StatelessWidget {
       backgroundColor: colorScheme.surface.withOpacity(.6),
       elevation: 0,
       builder: (context) => GlassContainer(
-        blur: 12,
+        blur: kDefaultBlur,
         shadowStrength: 0,
         color: AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
         borderRadius: BorderRadius.vertical(

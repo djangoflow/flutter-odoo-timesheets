@@ -65,14 +65,14 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
                   ),
                   selected: isSelected,
                 ),
-                const Divider(
-                  height: 1,
+                Divider(
+                  height: kPadding.h / 8,
                 ),
               ],
             ),
           ),
           containerBuilder: (context, popupWidget) => GlassContainer(
-            blur: 12,
+            blur: kDefaultBlur,
             shadowStrength: 0,
             shape: BoxShape.rectangle,
             color: AppColors.getTintedSurfaceColor(
