@@ -5,7 +5,7 @@ class AppColors {
       ElevationOverlay.applySurfaceTint(
         Colors.transparent,
         surfaceTintColor,
-        1,
+        4,
       );
 
   /// ColorScheme for dark theme

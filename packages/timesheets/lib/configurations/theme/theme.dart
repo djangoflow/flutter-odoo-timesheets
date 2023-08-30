@@ -40,7 +40,7 @@ class AppTheme {
       inputDecoratorIsFilled: false,
       fabSchemeColor: SchemeColor.primary,
       chipSchemeColor: SchemeColor.primary,
-      cardElevation: 1,
+      cardElevation: 4,
       cardRadius: kPadding.r * 2,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
       bottomNavigationBarBackgroundSchemeColor: SchemeColor.surface,
