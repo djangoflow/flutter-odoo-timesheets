@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static Color getTintedSurfaceColor(Color surfaceTintColor) =>
+  static Color getTintedSurfaceColor(Color surfaceTintColor,
+          {double elevation = 4}) =>
       ElevationOverlay.applySurfaceTint(
         Colors.transparent,
         surfaceTintColor,
-        4,
+        elevation,
       );
 
   /// ColorScheme for dark theme

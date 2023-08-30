@@ -40,8 +40,8 @@ class AppTheme {
       inputDecoratorIsFilled: false,
       fabSchemeColor: SchemeColor.primary,
       chipSchemeColor: SchemeColor.primary,
-      cardElevation: 4,
       cardRadius: kPadding.r * 2,
+      cardElevation: 4,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
       bottomNavigationBarBackgroundSchemeColor: SchemeColor.surface,
       bottomNavigationBarElevation: 0,
@@ -113,6 +113,20 @@ class AppTheme {
           borderRadius: BorderRadius.circular(kPadding.r),
         ),
       ),
+      expansionTileTheme: theme.expansionTileTheme.copyWith(
+        backgroundColor:
+            AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
+        tilePadding: EdgeInsets.symmetric(
+          vertical: kPadding.h,
+          horizontal: kPadding.w * 2,
+        ),
+        collapsedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding.r),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding.r),
+        ),
+      ),
       inputDecorationTheme: theme.inputDecorationTheme.copyWith(
         contentPadding: EdgeInsets.symmetric(
           horizontal: kPadding.w * 2,
@@ -130,7 +144,6 @@ class AppTheme {
         unselectedLabelStyle: textTheme.labelLarge,
       ),
       cardTheme: theme.cardTheme.copyWith(
-        elevation: 1,
         color: Colors.transparent,
         surfaceTintColor: colorScheme.surfaceTint,
         shape: RoundedRectangleBorder(
@@ -148,6 +161,10 @@ class AppTheme {
       progressIndicatorTheme: theme.progressIndicatorTheme.copyWith(
         color: theme.colorScheme.tertiary,
         linearTrackColor: theme.colorScheme.tertiaryContainer,
+      ),
+      dividerTheme: theme.dividerTheme.copyWith(
+        color: theme.colorScheme.outline,
+        thickness: 1,
       ),
     );
   }
