@@ -24,32 +24,32 @@ class ProjectListView extends StatelessWidget {
         emptyBuilder: (context, state) => SizedBox(),
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, projectWithExternalData) {
-          final item = projectWithExternalData.project;
+          final project = projectWithExternalData.project;
 
           return ListTile(
             leading: ColoredBar(
-              color: item.color.toColorFromColorIndex,
+              color: project.color.toColorFromColorIndex,
             ),
             title: Row(
               children: [
                 Text(
-                  item.name ?? '',
+                  project.name ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(
                   width: kPadding.w,
                 ),
-                if (item.isFavorite == true)
+                if (project.isFavorite == true)
                   const Icon(
                     Icons.star,
                     color: Colors.amber,
                   ),
               ],
             ),
-            subtitle: Text('${item.taskCount ?? 0} Tasks'),
+            subtitle: Text('${project.taskCount ?? 0} Tasks'),
             onTap: () {
-              context.router.push(ProjectDetailsRoute(projectId: item.id));
+              context.router.push(ProjectDetailsRoute(projectId: project.id));
             },
           );
         },
