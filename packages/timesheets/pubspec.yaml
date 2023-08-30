@@ -43,8 +43,14 @@ dependencies:
   path_provider: ^2.0.15
   progress_builder: ^1.1.3
   reactive_dropdown_search: ^3.0.0
+  reactive_flutter_typeahead:
+    git:
+      url: https://github.com/djangoflow/reactive_forms_widgets.git
+      path: packages/reactive_flutter_typeahead
+      ref: d81877a158f6ba8746725adb007a0962a549c3f7
   reactive_forms: ^16.1.0
   responsive_framework: ^0.2.0
+  rich_readmore: ^1.0.6
   scaffold_gradient_background: ^1.0.3+1
   skeletonizer: ^0.7.0
   sqlite3_flutter_libs: ^0.5.15
@@ -57,11 +63,6 @@ dependencies:
       url: https://github.com/djangoflow/dart-xmlrpc.git
   lottie: ^2.4.0
   drift_db_viewer: ^2.0.0
-  reactive_flutter_typeahead:
-    git:
-      url: https://github.com/djangoflow/reactive_forms_widgets.git
-      path: packages/reactive_flutter_typeahead
-      ref: d81877a158f6ba8746725adb007a0962a549c3f7
   
 
 dev_dependencies:

@@ -126,6 +126,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                                   .read<ExpansionListCubit>()
                                   .updateValue(index, p0);
                             },
+                            // TODO fix this
                             subtitle: TaskTimer.large(
                               key: ValueKey(
                                 [

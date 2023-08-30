@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rich_readmore/rich_readmore.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -154,7 +155,17 @@ class _TimesheetDescription extends StatelessWidget {
             SizedBox(
               height: kPadding.h / 2,
             ),
-            Text(description ?? ''),
+            RichReadMoreText(
+              TextSpan(text: description ?? ''),
+              settings: LineModeSettings(
+                trimLines: 2,
+                textAlign: TextAlign.end,
+                moreStyle: textTheme.bodySmall,
+                lessStyle: textTheme.bodySmall,
+                trimExpandedText: '\nRead less',
+                trimCollapsedText: '...\nRead more',
+              ),
+            ),
           ],
         ),
       ),
