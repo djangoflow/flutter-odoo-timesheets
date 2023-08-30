@@ -23,7 +23,7 @@ class HomeTabRouterPage extends StatelessWidget {
                 scrolledUnderElevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
                 actions: [
-                  if (tabsRouter.activeIndex == 0) ...[
+                  if (tabsRouter.activeIndex == 0)
                     IconButton(
                       onPressed: () {
                         AppModalSheet.show(
@@ -35,22 +35,33 @@ class HomeTabRouterPage extends StatelessWidget {
                       },
                       icon: const Icon(CupertinoIcons.arrow_up_down),
                     ),
+                  if ([0, 1].contains(tabsRouter.activeIndex)) ...[
                     IconButton(
                       onPressed: () {
-                        context.router.push(
-                          TimesheetRouter(
-                            children: [
-                              TimesheetAddRoute(),
-                            ],
-                          ),
-                        );
+                        if (tabsRouter.activeIndex == 0) {
+                          context.router.push(
+                            TimesheetRouter(
+                              children: [
+                                TimesheetAddRoute(),
+                              ],
+                            ),
+                          );
+                        } else {
+                          // context.router.push(
+                          //   ProjectRouter(
+                          //     children: [
+                          //       ProjectAddRoute(),
+                          //     ],
+                          //   ),
+                          // );
+                        }
                       },
                       icon: const Icon(CupertinoIcons.add),
                     ),
                     SizedBox(
                       width: kPadding.w * 2,
                     ),
-                  ],
+                  ]
                 ],
                 centerTitle: false,
               ),
