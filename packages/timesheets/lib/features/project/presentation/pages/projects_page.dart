@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
-@RoutePage()
-class ProjectsPage extends StatelessWidget {
-  const ProjectsPage({super.key});
+@RoutePage(
+  name: 'ProjectsTabRouter',
+)
+class ProjectsTabRouterPage extends StatelessWidget {
+  const ProjectsTabRouterPage({super.key});
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
         routes: const [
-          SyncedProjectsRoute(),
-          LocalProjectsRoute(),
+          FavoriteProjectsTab(),
+          OdooProjectsTab(),
+          LocalProjectsTab(),
         ],
         builder: (context, child, tabController) => Column(
           children: [
@@ -18,7 +21,8 @@ class ProjectsPage extends StatelessWidget {
               child: TabBar(
                 controller: tabController,
                 tabs: const [
-                  Tab(text: 'Synced'),
+                  Tab(text: 'Favorites'),
+                  Tab(text: 'Odoo'),
                   Tab(text: 'Local'),
                 ],
               ),

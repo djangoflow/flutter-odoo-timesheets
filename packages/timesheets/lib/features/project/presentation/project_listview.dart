@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
@@ -9,8 +10,11 @@ import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class ProjectListView extends StatelessWidget {
-  const ProjectListView({super.key, required this.projectListFilter});
+  const ProjectListView(
+      {super.key, required this.projectListFilter, required this.emptyBuilder});
   final ProjectListFilter projectListFilter;
+  final Widget Function(BuildContext context, ProjectListState state)
+      emptyBuilder;
 
   @override
   Widget build(BuildContext context) => ContinuousListViewBlocBuilder<
@@ -18,10 +22,7 @@ class ProjectListView extends StatelessWidget {
         create: (context) => ProjectListCubit(context.read<ProjectRepository>())
           ..load(projectListFilter),
         withRefreshIndicator: true,
-        // emptyBuilder: (context, state) => const EmptyPlaceholder(
-        //   message: 'No projects found',
-        // ),
-        emptyBuilder: (context, state) => SizedBox(),
+        emptyBuilder: emptyBuilder,
         loadingBuilder: (context, state) => const SizedBox(),
         itemBuilder: (context, state, index, projectWithExternalData) {
           final project = projectWithExternalData.project;
@@ -32,19 +33,21 @@ class ProjectListView extends StatelessWidget {
             ),
             title: Row(
               children: [
-                Text(
-                  project.name ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Icon(
+                  project.isFavorite == true
+                      ? CupertinoIcons.star_fill
+                      : CupertinoIcons.star,
                 ),
                 SizedBox(
                   width: kPadding.w,
                 ),
-                if (project.isFavorite == true)
-                  const Icon(
-                    Icons.star,
-                    color: Colors.amber,
+                Expanded(
+                  child: Text(
+                    project.name ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                ),
               ],
             ),
             subtitle: Text('${project.taskCount ?? 0} Tasks'),

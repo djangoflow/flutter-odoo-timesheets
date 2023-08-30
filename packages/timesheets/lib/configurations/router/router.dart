@@ -54,16 +54,20 @@ class AppRouter extends $AppRouter {
               ],
             ),
             AutoRoute(
-              page: ProjectsRoute.page,
+              page: ProjectsTabRouter.page,
               path: 'projects',
               children: [
                 AutoRoute(
-                  page: SyncedProjectsRoute.page,
-                  path: 'synced',
+                  page: FavoriteProjectsTab.page,
+                  path: 'favorite',
                   initial: true,
                 ),
                 AutoRoute(
-                  page: LocalProjectsRoute.page,
+                  page: OdooProjectsTab.page,
+                  path: 'odoo',
+                ),
+                AutoRoute(
+                  page: LocalProjectsTab.page,
                   path: 'local',
                 ),
               ],

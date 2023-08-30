@@ -81,7 +81,7 @@ class HomeTabRouterPage extends StatelessWidget {
         },
         routes: const [
           TimesheetsRoute(),
-          ProjectsRoute(),
+          ProjectsTabRouter(),
           SettingsRoute(),
         ],
       );

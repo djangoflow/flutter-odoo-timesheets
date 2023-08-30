@@ -4,3 +4,6 @@ export 'data/models/project_with_external_data.dart';
 export 'blocs/project_list_cubit/project_list_cubit.dart';
 export 'blocs/project_list_cubit/project_list_filter.dart';
 export 'presentation/project_listview.dart';
+export 'presentation/placeholders/favorite_projects_placeholder.dart';
+export 'presentation/placeholders/local_projects_placeholder.dart';
+export 'presentation/placeholders/odoo_projects_placeholder.dart';

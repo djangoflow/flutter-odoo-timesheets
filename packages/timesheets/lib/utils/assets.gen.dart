@@ -44,6 +44,9 @@ class Assets {
   static const SvgGenImage iconsOdooLogo =
       SvgGenImage('assets/icons/odoo_logo.svg');
 
+  /// File path: assets/icons/work.svg
+  static const SvgGenImage iconsWork = SvgGenImage('assets/icons/work.svg');
+
   /// List of all assets
   List<dynamic> get values => [
         animationSyncing,
@@ -53,7 +56,8 @@ class Assets {
         appLogoLogoAndroidForeground,
         iconsClock,
         iconsFavorite,
-        iconsOdooLogo
+        iconsOdooLogo,
+        iconsWork
       ];
 }
 
