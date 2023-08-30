@@ -257,10 +257,8 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
           borderRadius: BorderRadius.circular(kPadding.r * 8),
           color: timerStatus == TimesheetStatusEnum.running
               ? theme.colorScheme.primaryContainer
-              : ElevationOverlay.applySurfaceTint(
-                  Colors.transparent,
+              : AppColors.getTintedSurfaceColor(
                   theme.colorScheme.surfaceTint,
-                  1,
                 ),
         ),
         child: InkWell(
@@ -413,14 +411,12 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
           )),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               widget.state.duration
                   .timerString(DurationFormat.hoursMinutesSeconds),
               style: textTheme.displaySmall,
-            ),
-            SizedBox(
-              height: kPadding.h,
             ),
             Padding(
               padding: widget.padding ??
@@ -434,7 +430,7 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                   IconButton(
                     icon: AnimatedIcon(
                       icon: AnimatedIcons.play_pause,
-                      size: 32.w,
+                      size: kPadding.w * 3,
                       progress: animation,
                       color: theme.colorScheme.primary,
                     ),
@@ -466,7 +462,7 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                     color: theme.colorScheme.primary,
                     icon: Icon(
                       Icons.stop,
-                      size: kPadding.w * 4,
+                      size: kPadding.w * 3,
                     ),
                     onPressed: widget.disabled ||
                             timerStatus == TimesheetStatusEnum.initial
