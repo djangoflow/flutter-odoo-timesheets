@@ -17,20 +17,20 @@ class OdooTask with _$OdooTask {
     @JsonKey(name: 'project_id') required List<Object> project,
     @JsonKey(
       name: 'date_start',
-      fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-      toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+      fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull,
     )
     DateTime? dateStart,
     @JsonKey(
       name: 'date_end',
-      fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-      toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+      fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull,
     )
     DateTime? dateEnd,
     @JsonKey(
       name: 'date_deadline',
-      fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-      toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+      fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull,
     )
     DateTime? dateDeadline,
     String? priority,
@@ -41,6 +41,12 @@ class OdooTask with _$OdooTask {
     )
     List<int>? timesheetIds,
     bool? active,
+    @JsonKey(
+      name: 'description',
+      fromJson: OdooNullableStringJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableStringJsonConverter.toJsonOrNull,
+    )
+    String? description,
   }) = _OdooTask;
 
   factory OdooTask.fromJson(Map<String, dynamic> json) =>

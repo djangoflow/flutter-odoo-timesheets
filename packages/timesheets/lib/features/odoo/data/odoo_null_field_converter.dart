@@ -1,43 +1,55 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-class OdooNullValueJsonConverter<T> implements JsonConverter<T?, Object?> {
-  const OdooNullValueJsonConverter();
+class OdooNullableStringJsonConverter
+    implements JsonConverter<String?, Object?> {
+  const OdooNullableStringJsonConverter();
 
   @override
-  T? fromJson(Object? json) {
+  String? fromJson(Object? json) {
     if (json is bool && json == false) {
       return null;
     } else {
-      if (T is DateTime) {
-        return DateTime.parse(json as String) as T;
-      } else {
-        return json as T;
-      }
+      return json as String;
     }
   }
 
   @override
-  Object? toJson(T? object) => object;
+  Object? toJson(String? object) => object;
 
-  static T? fromJsonOrNull<T>(Object? json) {
-    const T? typeCheckValue = null;
-
+  static String? fromJsonOrNull(Object? json) {
     if (json is bool && json == false) {
       return null;
     } else {
-      if (typeCheckValue is DateTime?) {
-        return DateTime.parse(json as String) as T;
-      } else {
-        return json as T;
-      }
+      return json as String;
     }
   }
 
-  static Object? toJsonOrNull<T>(T? object) {
-    if (object is DateTime?) {
-      return object?.toIso8601String();
+  static Object? toJsonOrNull(String? object) => object;
+}
+
+class OdooNullableDateTimeJsonConverter
+    implements JsonConverter<DateTime?, Object?> {
+  const OdooNullableDateTimeJsonConverter();
+
+  @override
+  DateTime? fromJson(Object? json) {
+    if (json is bool && json == false) {
+      return null;
     } else {
-      return object?.toString();
+      return DateTime.tryParse(json as String);
     }
   }
+
+  @override
+  Object? toJson(DateTime? object) => object?.toIso8601String();
+
+  static DateTime? fromJsonOrNull(Object? json) {
+    if (json is bool && json == false) {
+      return null;
+    } else {
+      return DateTime.tryParse(json as String);
+    }
+  }
+
+  static Object? toJsonOrNull(DateTime? object) => object?.toIso8601String();
 }

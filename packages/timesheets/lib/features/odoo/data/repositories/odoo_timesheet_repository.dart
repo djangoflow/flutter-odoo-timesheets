@@ -177,14 +177,14 @@ class OdooTimesheetRepository extends OdooRpcRepositoryBase {
 //     @JsonKey(name: 'task_id') required List<Object> task,
 //     @JsonKey(
 //       name: 'date_time',
-//       fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-//       toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+//       fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull<DateTime>,
+//       toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull<DateTime>,
 //     )
 //     DateTime? startTime,
 //     @JsonKey(
 //       name: 'date_time_end',
-//       fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-//       toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+//       fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull<DateTime>,
+//       toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull<DateTime>,
 //     )
 //     DateTime? endTime,
 //     @JsonKey(name: 'unit_amount') required double unitAmount,

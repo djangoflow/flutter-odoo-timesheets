@@ -164,5 +164,6 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     'priority',
     'color',
     'timesheet_ids',
+    'description',
   ];
 }

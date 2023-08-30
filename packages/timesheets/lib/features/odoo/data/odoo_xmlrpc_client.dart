@@ -46,8 +46,12 @@ class OdooXmlRpcClient {
           odooCredentials.password
         ];
 
-        final response =
-            await xml_rpc.call(uri, rpcFunction, [...defaultParams, ...params]);
+        final response = await xml_rpc.call(uri, rpcFunction, [
+          ...defaultParams,
+          ...params
+        ], headers: {
+          'Connection': 'keep-alive',
+        });
         return response;
       } catch (e) {
         rethrow;

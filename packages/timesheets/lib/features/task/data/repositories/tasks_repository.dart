@@ -98,6 +98,7 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
               dateStart: Value(odooTask.dateStart),
               priority: Value(odooTask.priority),
               name: Value(odooTask.name),
+              description: Value(odooTask.description),
             ),
           );
         }
@@ -110,6 +111,7 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
           dateEnd: Value(odooTask.dateEnd),
           dateStart: Value(odooTask.dateStart),
           priority: Value(odooTask.priority),
+          description: Value(odooTask.description),
         );
       }
     }
