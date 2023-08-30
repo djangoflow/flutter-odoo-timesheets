@@ -363,8 +363,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
 class _EmptyItem extends StatelessWidget {
   const _EmptyItem(
-      {super.key,
-      required this.searchTerm,
+      {required this.searchTerm,
       required this.onCreatePressed,
       required this.label});
   final String searchTerm;

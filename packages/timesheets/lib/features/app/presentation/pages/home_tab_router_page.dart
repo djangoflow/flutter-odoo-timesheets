@@ -1,9 +1,6 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/app/app.dart';
 
 @RoutePage(name: 'HomeTabRouter')
 class HomeTabRouterPage extends StatelessWidget {
@@ -16,51 +13,6 @@ class HomeTabRouterPage extends StatelessWidget {
           return IconButtonTheme(
             data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
             child: Column(
-              // appBar: AppBar(
-              //   title: Text(
-              //     tabsRouter.current.path.capitalize,
-              //   ),
-              //   scrolledUnderElevation: 0,
-              //   backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-              //   actions: [
-              //     if (tabsRouter.activeIndex == 0)
-              //       IconButton(
-              //         onPressed: () {
-              //           AppModalSheet.show(
-              //             context: context,
-              //             child: FilterSelector(onFilterChanged: (f) {
-              //               print(f.label);
-              //             }),
-              //           );
-              //         },
-              //         icon: const Icon(CupertinoIcons.arrow_up_down),
-              //       ),
-              //     if ([0, 1].contains(tabsRouter.activeIndex)) ...[
-              //       IconButton(
-              //         onPressed: () {
-              //           if (tabsRouter.activeIndex == 0) {
-              //             context.router.push(
-              //               TimesheetRouter(
-              //                 children: [
-              //                   TimesheetAddRoute(),
-              //                 ],
-              //               ),
-              //             );
-              //           } else {
-              //             context.router.push(
-              //               const ProjectAddRoute(),
-              //             );
-              //           }
-              //         },
-              //         icon: const Icon(CupertinoIcons.add),
-              //       ),
-              //       SizedBox(
-              //         width: kPadding.w * 2,
-              //       ),
-              //     ]
-              //   ],
-              //   centerTitle: false,
-              // ),
               children: [
                 Expanded(
                   child: child,

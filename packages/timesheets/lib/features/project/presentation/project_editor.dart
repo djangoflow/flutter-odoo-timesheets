@@ -88,14 +88,20 @@ class ProjectEditor extends StatelessWidget {
                   ),
                   selectedItemBuilder: (context) => OdooColors.values
                       .map(
-                        (e) => _OdooColorLabel(odooColor: e),
+                        (e) => _OdooColorLabel(
+                          odooColor: e,
+                          key: Key(e.name),
+                        ),
                       )
                       .toList(),
                   items: OdooColors.values
                       .map(
                         (e) => DropdownMenuItem<OdooColors>(
                           value: e,
-                          child: _OdooColorLabel(odooColor: e),
+                          child: _OdooColorLabel(
+                            odooColor: e,
+                            key: Key(e.name),
+                          ),
                         ),
                       )
                       .toList(),
@@ -126,70 +132,6 @@ class ProjectEditor extends StatelessWidget {
           return builder(context, formGroup, formListView);
         },
       );
-}
-
-class _EmptyItem extends StatelessWidget {
-  const _EmptyItem(
-      {super.key,
-      required this.searchTerm,
-      required this.onCreatePressed,
-      required this.label});
-  final String searchTerm;
-  final String label;
-  final VoidCallback? onCreatePressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: kPadding.w * 2,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RichText(
-              text: TextSpan(
-                text: 'No ${label}s Found. ',
-                children: [
-                  if (searchTerm.isNotEmpty) ...[
-                    const TextSpan(
-                      text: 'But you can create one named ',
-                    ),
-                    TextSpan(
-                      text: searchTerm,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ] else ...[
-                    TextSpan(
-                      text: 'Type something to search or Add a new $label.',
-                    ),
-                  ],
-                ],
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.colorScheme.onBackground,
-                ),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: kPadding.h * 2,
-            ),
-            if (searchTerm.isNotEmpty)
-              ElevatedButton(
-                onPressed: onCreatePressed,
-                child: Text('Create this $label'),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _OdooColorLabel extends StatelessWidget {

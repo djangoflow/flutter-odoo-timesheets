@@ -73,7 +73,7 @@ class TimesheetExpansionPanel extends ExpansionPanel {
 }
 
 class _TimesheetExpansionHeader extends StatelessWidget {
-  const _TimesheetExpansionHeader({super.key, required this.timesheet});
+  const _TimesheetExpansionHeader({required this.timesheet});
   final Timesheet timesheet;
 
   @override
@@ -110,7 +110,7 @@ class _TimesheetExpansionHeader extends StatelessWidget {
 }
 
 class _TimesheetDescription extends StatelessWidget {
-  const _TimesheetDescription({super.key, this.description});
+  const _TimesheetDescription({this.description});
   final String? description;
 
   @override

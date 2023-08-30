@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/features/project/data/database_tables/project.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/task.dart';
 

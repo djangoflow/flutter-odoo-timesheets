@@ -26,7 +26,7 @@ class TimesheetsPage extends StatelessWidget {
                   AppModalSheet.show(
                     context: context,
                     child: FilterSelector(onFilterChanged: (f) {
-                      print(f.label);
+                      debugPrint(f.label);
                     }),
                   );
                 },

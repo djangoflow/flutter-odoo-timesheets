@@ -7,7 +7,7 @@ class ExpansionListCubit extends Cubit<List<bool>> {
   void updateValue(int index, bool value) {
     final updatedList =
         state.mapIndexed((i, e) => i == index ? value : e).toList();
-    print(updatedList);
+
     emit(updatedList);
   }
 
