@@ -190,7 +190,6 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
                                           inputDecoration:
                                               const InputDecoration(
                                             hintText: 'Select database',
-                                            labelText: 'Database',
                                           ),
                                           validationMessages: {
                                             ValidationMessage.required: (_) =>
