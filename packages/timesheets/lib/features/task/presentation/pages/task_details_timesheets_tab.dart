@@ -14,6 +14,7 @@ import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timer/timer.dart';
+import 'package:timesheets/features/timesheet/presentation/timesheet_expansion_panel.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -29,9 +30,6 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
       BlocBuilder<TaskDetailsCubit, TaskDetailsState>(
         builder: (context, state) {
           final taskWithProjectExternalData = state.taskWithProjectExternalData;
-          final task = taskWithProjectExternalData?.taskWithExternalData.task;
-          final project =
-              taskWithProjectExternalData?.projectWithExternalData.project;
           final externalProject = taskWithProjectExternalData
               ?.projectWithExternalData.externalProject;
 
@@ -55,33 +53,11 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
               await context.read<TaskDetailsCubit>().loadTaskDetails();
             },
             child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: kPadding.h * 2,
+                vertical: kPadding.h * 3,
+              ),
               children: [
-                if (project?.name != null)
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kPadding.w * 2,
-                      vertical: kPadding.h,
-                    ),
-                    child: _ProjectLabel(title: project!.name!),
-                  ),
-                if (task?.name != null)
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kPadding.w * 2,
-                      vertical: kPadding.h,
-                    ),
-                    child: _TaskLabel(title: task!.name!),
-                  ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: kPadding.w * 2,
-                    vertical: kPadding.h,
-                  ),
-                  child: Text(
-                    'Active timesheets',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
                 if (state.isSyncing) const LinearProgressIndicator(),
                 if (activeTimesheets.isEmpty)
                   Padding(
@@ -119,24 +95,47 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                     ),
                   )
                 else
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final timesheetWithExternalData = activeTimesheets[index];
-                      return _ActiveTimesheetDetails(
-                        key: ValueKey(timesheetWithExternalData.timesheet.id),
-                        activeTimesheetExternalData: timesheetWithExternalData,
-                        isSyncing: state.isSyncing,
-                        backendId: externalProject?.backendId,
-                        taskWithProjectExternalData:
-                            taskWithProjectExternalData!,
-                      );
-                    },
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: kPadding.h,
+                  BlocProvider<ExpansionListCubit>(
+                    create: (context) => ExpansionListCubit()
+                      ..updateList(
+                        activeTimesheets.map((e) => true).toList(),
+                      ),
+                    child: BlocBuilder<ExpansionListCubit, List<bool>>(
+                      builder: (context, expansionListState) =>
+                          ExpansionPanelList(
+                        elevation: 0,
+                        dividerColor: Colors.transparent,
+                        expansionCallback: (panelIndex, isExpanded) {
+                          context
+                              .read<ExpansionListCubit>()
+                              .updateValue(panelIndex, isExpanded);
+                        },
+                        children: [
+                          for (final timesheetWithExternalData
+                              in activeTimesheets)
+                            TimesheetExpansionPanel(
+                              timesheet: timesheetWithExternalData.timesheet,
+                              backgroundColor: AppColors.getTintedSurfaceColor(
+                                Theme.of(context).colorScheme.surfaceTint,
+                              ),
+                              canTapOnHeader: true,
+                              isExpanded: expansionListState[activeTimesheets
+                                  .indexOf(timesheetWithExternalData)],
+                            ),
+                        ],
+                        // itemBuilder: (context, index) {
+                        //   final timesheetWithExternalData = activeTimesheets[index];
+                        //   return _ActiveTimesheetDetails(
+                        //     key: ValueKey(timesheetWithExternalData.timesheet.id),
+                        //     activeTimesheetExternalData: timesheetWithExternalData,
+                        //     isSyncing: state.isSyncing,
+                        //     backendId: externalProject?.backendId,
+                        //     taskWithProjectExternalData:
+                        //         taskWithProjectExternalData!,
+                        //   );
+                        // },
+                      ),
                     ),
-                    itemCount: activeTimesheets.length,
                   ),
                 SizedBox(
                   height: kPadding.h,
