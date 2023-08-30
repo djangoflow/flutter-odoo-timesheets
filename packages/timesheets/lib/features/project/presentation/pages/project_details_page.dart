@@ -30,6 +30,7 @@ class ProjectDetailsPage extends StatelessWidget {
               ),
             ),
           ),
+          // TODO should be Tasks with current timers count
           body: TaskListView(
             taskListFilter: TaskListFilter(
               projectId: projectId,

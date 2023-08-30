@@ -75,6 +75,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),
+        AutoRoute(page: ProjectAddRoute.page, path: '/projects/add'),
         AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
         AutoRoute(
           page: TimesheetRouter.page,

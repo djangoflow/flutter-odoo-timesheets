@@ -15,78 +15,78 @@ class HomeTabRouterPage extends StatelessWidget {
           final tabsRouter = context.tabsRouter;
           return IconButtonTheme(
             data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
-            child: GradientScaffold(
-              appBar: AppBar(
-                title: Text(
-                  tabsRouter.current.path.capitalize,
+            child: Column(
+              // appBar: AppBar(
+              //   title: Text(
+              //     tabsRouter.current.path.capitalize,
+              //   ),
+              //   scrolledUnderElevation: 0,
+              //   backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+              //   actions: [
+              //     if (tabsRouter.activeIndex == 0)
+              //       IconButton(
+              //         onPressed: () {
+              //           AppModalSheet.show(
+              //             context: context,
+              //             child: FilterSelector(onFilterChanged: (f) {
+              //               print(f.label);
+              //             }),
+              //           );
+              //         },
+              //         icon: const Icon(CupertinoIcons.arrow_up_down),
+              //       ),
+              //     if ([0, 1].contains(tabsRouter.activeIndex)) ...[
+              //       IconButton(
+              //         onPressed: () {
+              //           if (tabsRouter.activeIndex == 0) {
+              //             context.router.push(
+              //               TimesheetRouter(
+              //                 children: [
+              //                   TimesheetAddRoute(),
+              //                 ],
+              //               ),
+              //             );
+              //           } else {
+              //             context.router.push(
+              //               const ProjectAddRoute(),
+              //             );
+              //           }
+              //         },
+              //         icon: const Icon(CupertinoIcons.add),
+              //       ),
+              //       SizedBox(
+              //         width: kPadding.w * 2,
+              //       ),
+              //     ]
+              //   ],
+              //   centerTitle: false,
+              // ),
+              children: [
+                Expanded(
+                  child: child,
                 ),
-                scrolledUnderElevation: 0,
-                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-                actions: [
-                  if (tabsRouter.activeIndex == 0)
-                    IconButton(
-                      onPressed: () {
-                        AppModalSheet.show(
-                          context: context,
-                          child: FilterSelector(onFilterChanged: (f) {
-                            print(f.label);
-                          }),
-                        );
-                      },
-                      icon: const Icon(CupertinoIcons.arrow_up_down),
+                BottomNavigationBar(
+                  currentIndex: tabsRouter.activeIndex,
+                  onTap: tabsRouter.setActiveIndex,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.clock),
+                      activeIcon: Icon(CupertinoIcons.clock_fill),
+                      label: 'Timers',
                     ),
-                  if ([0, 1].contains(tabsRouter.activeIndex)) ...[
-                    IconButton(
-                      onPressed: () {
-                        if (tabsRouter.activeIndex == 0) {
-                          context.router.push(
-                            TimesheetRouter(
-                              children: [
-                                TimesheetAddRoute(),
-                              ],
-                            ),
-                          );
-                        } else {
-                          // context.router.push(
-                          //   ProjectRouter(
-                          //     children: [
-                          //       ProjectAddRoute(),
-                          //     ],
-                          //   ),
-                          // );
-                        }
-                      },
-                      icon: const Icon(CupertinoIcons.add),
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.briefcase),
+                      activeIcon: Icon(CupertinoIcons.briefcase_fill),
+                      label: 'Projects',
                     ),
-                    SizedBox(
-                      width: kPadding.w * 2,
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.settings),
+                      activeIcon: Icon(CupertinoIcons.settings_solid),
+                      label: 'Settings',
                     ),
-                  ]
-                ],
-                centerTitle: false,
-              ),
-              body: child,
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: tabsRouter.activeIndex,
-                onTap: tabsRouter.setActiveIndex,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.clock),
-                    activeIcon: Icon(CupertinoIcons.clock_fill),
-                    label: 'Timers',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.briefcase),
-                    activeIcon: Icon(CupertinoIcons.briefcase_fill),
-                    label: 'Projects',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.settings),
-                    activeIcon: Icon(CupertinoIcons.settings_solid),
-                    label: 'Settings',
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           );
         },
