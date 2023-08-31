@@ -131,6 +131,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     int? taskId,
     bool? isEndDateNull,
     bool? isProjectLocal,
+    List<OrderingTerm Function($TimesheetsTable)>? orderBy,
   }) async {
     assert(isLocal == null || isProjectLocal == null, 'Invalid query');
     final query = select(timesheets);
@@ -144,10 +145,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
             mode: OrderingMode.desc,
           ),
 
-      (timesheets) => OrderingTerm(
-            expression: timesheets.createdAt,
-            mode: OrderingMode.desc,
-          ),
+      ...orderBy ?? [],
     ]);
 
     if (taskId != null) {

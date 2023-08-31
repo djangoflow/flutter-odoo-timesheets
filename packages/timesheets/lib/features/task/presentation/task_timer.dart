@@ -217,18 +217,20 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
 
     // To access proper context
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final theme = Theme.of(context);
-      setState(() {
-        textStyleAnimation = TextStyleTween(
-          begin: theme.textTheme.titleSmall,
-          end: theme.primaryTextTheme.titleSmall,
-        ).animate(widget.animationController);
+      if (mounted) {
+        final theme = Theme.of(context);
+        setState(() {
+          textStyleAnimation = TextStyleTween(
+            begin: theme.textTheme.titleSmall,
+            end: theme.primaryTextTheme.titleSmall,
+          ).animate(widget.animationController);
 
-        colorAnimation = ColorTween(
-          begin: theme.colorScheme.onSecondaryContainer,
-          end: theme.colorScheme.onPrimaryContainer,
-        ).animate(widget.animationController);
-      });
+          colorAnimation = ColorTween(
+            begin: theme.colorScheme.onSecondaryContainer,
+            end: theme.colorScheme.onPrimaryContainer,
+          ).animate(widget.animationController);
+        });
+      }
     });
   }
 

@@ -1,10 +1,9 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
-import 'timesheet_with_task_external_list_filter.dart';
+export 'timesheet_with_task_external_list_filter.dart';
 
 typedef TimesheetWithTaskExternalListState = Data<
     List<TimesheetWithTaskExternalData>, TimesheetWithTaskExternalListFilter>;
@@ -26,6 +25,9 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
               taskId: filter?.taskId,
               isEndDateNull: filter?.isEndDateNull,
               isProjectLocal: filter?.isProjectLocal,
+              orderBy: filter?.orderingFilters
+                  .map((e) => e.orderingTermBuilder)
+                  .toList(),
             ),
           ),
         );

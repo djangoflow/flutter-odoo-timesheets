@@ -123,6 +123,7 @@ class TimesheetRepository
     int? taskId,
     bool? isEndDateNull,
     bool? isProjectLocal,
+    List<OrderingTerm Function($TimesheetsTable)>? orderBy,
   }) =>
           timesheetsDao.getPaginatedTimesheetWithTaskProjectData(
             limit: limit,
@@ -131,6 +132,7 @@ class TimesheetRepository
             taskId: taskId,
             isEndDateNull: isEndDateNull,
             isProjectLocal: isProjectLocal,
+            orderBy: orderBy,
           );
 
   Future<List<TimesheetExternalData>> getPaginatedTimesheetExternalData({

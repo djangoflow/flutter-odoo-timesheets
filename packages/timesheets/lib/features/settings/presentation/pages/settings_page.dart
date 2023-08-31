@@ -9,7 +9,6 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
 import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';

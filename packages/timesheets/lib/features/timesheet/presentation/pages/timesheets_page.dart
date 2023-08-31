@@ -1,12 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/timesheet/data/timesheet_ordering_filters.dart';
 
 @RoutePage()
-class TimesheetsPage extends StatelessWidget {
+class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
   const TimesheetsPage({super.key});
+
+  @override
+  Widget wrappedRoute(BuildContext context) =>
+      BlocProvider<TabbedOrderingFilterCubit>(
+        create: (context) => TabbedOrderingFilterCubit({
+          0: TimesheetRecentFirstFilter(),
+          1: TimesheetRecentFirstFilter(),
+          2: TimesheetRecentFirstFilter(),
+        }),
+        lazy: false,
+        child: this,
+      );
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
@@ -25,9 +39,23 @@ class TimesheetsPage extends StatelessWidget {
                 onPressed: () {
                   AppModalSheet.show(
                     context: context,
-                    child: FilterSelector(onFilterChanged: (f) {
-                      debugPrint(f.label);
-                    }),
+                    child: FilterSelector(
+                      onFilterChanged: (f) {
+                        context
+                            .read<TabbedOrderingFilterCubit>()
+                            .updateFilter(tabController.index, f);
+                      },
+                      initialFilter: context
+                              .read<TabbedOrderingFilterCubit>()
+                              .getFilterForTab(
+                                tabController.index,
+                              ) ??
+                          TimesheetRecentFirstFilter(),
+                      availableFilters: [
+                        TimesheetRecentFirstFilter(),
+                        TimesheetOldestFirstFilter(),
+                      ],
+                    ),
                   );
                 },
                 icon: const Icon(CupertinoIcons.arrow_up_down),
@@ -49,23 +77,17 @@ class TimesheetsPage extends StatelessWidget {
               ),
             ],
             centerTitle: false,
+            bottom: TabBar(
+              controller: tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+              tabs: const [
+                Tab(text: 'Favorites'),
+                Tab(text: 'Odoo'),
+                Tab(text: 'Local'),
+              ],
+            ),
           ),
-          body: Column(
-            children: [
-              TabBar(
-                controller: tabController,
-                indicatorSize: TabBarIndicatorSize.label,
-                tabs: const [
-                  Tab(text: 'Favorites'),
-                  Tab(text: 'Odoo'),
-                  Tab(text: 'Local'),
-                ],
-              ),
-              Flexible(
-                child: child,
-              ),
-            ],
-          ),
+          body: child,
         ),
       );
 }

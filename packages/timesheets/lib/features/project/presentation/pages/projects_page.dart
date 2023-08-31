@@ -46,25 +46,16 @@ class ProjectsTabRouterPage extends StatelessWidget {
               ),
             ],
             centerTitle: false,
+            bottom: TabBar(
+              controller: tabController,
+              tabs: const [
+                Tab(text: 'Favorites'),
+                Tab(text: 'Odoo'),
+                Tab(text: 'Local'),
+              ],
+            ),
           ),
-          body: Column(
-            children: [
-              Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: TabBar(
-                  controller: tabController,
-                  tabs: const [
-                    Tab(text: 'Favorites'),
-                    Tab(text: 'Odoo'),
-                    Tab(text: 'Local'),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: child,
-              ),
-            ],
-          ),
+          body: child,
         ),
       );
 }

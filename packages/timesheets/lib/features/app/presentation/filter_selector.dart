@@ -8,18 +8,20 @@ class FilterSelector extends StatefulWidget {
   const FilterSelector({
     super.key,
     required this.onFilterChanged,
-    this.initialFilter = FilterEnum.newest,
+    required this.initialFilter,
+    required this.availableFilters,
   });
 
-  final void Function(FilterEnum filter) onFilterChanged;
-  final FilterEnum initialFilter;
+  final void Function(OrderingFilter filter) onFilterChanged;
+  final OrderingFilter initialFilter;
+  final List<OrderingFilter> availableFilters;
 
   @override
   State<FilterSelector> createState() => _FilterSelectorState();
 }
 
 class _FilterSelectorState extends State<FilterSelector> {
-  FilterEnum? _filter;
+  OrderingFilter? _filter;
 
   @override
   void initState() {
@@ -51,10 +53,10 @@ class _FilterSelectorState extends State<FilterSelector> {
                 right: kPadding.w * 2,
                 top: kPadding.h * 2,
               ),
-              itemCount: FilterEnum.values.length,
+              itemCount: widget.availableFilters.length,
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
-                final filter = FilterEnum.values[index];
+                final filter = widget.availableFilters[index];
 
                 return InkWell(
                   onTap: () => setState(() {
@@ -67,13 +69,13 @@ class _FilterSelectorState extends State<FilterSelector> {
                     ),
                     child: Row(
                       children: [
-                        if (_filter == filter) ...[
+                        if (_filter?.slug == filter.slug) ...[
                           const Icon(CupertinoIcons.check_mark),
                           SizedBox(
                             width: kPadding.w / 4,
                           ),
                         ],
-                        if (_filter != filter)
+                        if (_filter?.slug != filter.slug)
                           SizedBox(
                             width: kPadding.w * 1.5,
                           ),
