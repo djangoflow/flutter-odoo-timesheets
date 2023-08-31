@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
-class FilterSelector extends StatefulWidget {
+class FilterSelector<T> extends StatefulWidget {
   const FilterSelector({
     super.key,
     required this.onFilterChanged,
@@ -12,16 +12,16 @@ class FilterSelector extends StatefulWidget {
     required this.availableFilters,
   });
 
-  final void Function(OrderingFilter filter) onFilterChanged;
-  final OrderingFilter initialFilter;
-  final List<OrderingFilter> availableFilters;
+  final void Function(OrderingFilter<T> filter) onFilterChanged;
+  final OrderingFilter<T> initialFilter;
+  final List<OrderingFilter<T>> availableFilters;
 
   @override
-  State<FilterSelector> createState() => _FilterSelectorState();
+  State<FilterSelector<T>> createState() => _FilterSelectorState<T>();
 }
 
-class _FilterSelectorState extends State<FilterSelector> {
-  OrderingFilter? _filter;
+class _FilterSelectorState<T> extends State<FilterSelector<T>> {
+  OrderingFilter<T>? _filter;
 
   @override
   void initState() {

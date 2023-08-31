@@ -67,7 +67,15 @@ class TimesheetListView extends StatelessWidget {
                   title: _ListTileItem(
                     icon: InkWell(
                       borderRadius: BorderRadius.circular(kPadding * 1.5),
-                      onTap: () {},
+                      onTap: () {
+                        context
+                            .read<TimesheetWithTaskExternalListCubit>()
+                            .updateTimesheet(
+                              timesheet.copyWith(
+                                isFavorite: !timesheet.isFavorite,
+                              ),
+                            );
+                      },
                       child: _PaddedIcon(
                         icon: Icon(
                           timesheet.isFavorite

@@ -39,14 +39,15 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                 onPressed: () {
                   AppModalSheet.show(
                     context: context,
-                    child: FilterSelector(
+                    child: FilterSelector<$TimesheetsTable>(
                       onFilterChanged: (f) {
                         context
-                            .read<TabbedOrderingFilterCubit>()
+                            .read<TabbedOrderingFilterCubit<$TimesheetsTable>>()
                             .updateFilter(tabController.index, f);
                       },
                       initialFilter: context
-                              .read<TabbedOrderingFilterCubit>()
+                              .read<
+                                  TabbedOrderingFilterCubit<$TimesheetsTable>>()
                               .getFilterForTab(
                                 tabController.index,
                               ) ??

@@ -8,7 +8,7 @@ class TimesheetRecentFirstFilter extends OrderingFilter<$TimesheetsTable> {
           slug: 'recent',
           label: 'Recent',
           orderingTermBuilder: (b) => OrderingTerm(
-            expression: b.updatedAt,
+            expression: b.lastTicked,
             mode: OrderingMode.desc,
           ),
         );
@@ -20,7 +20,7 @@ class TimesheetOldestFirstFilter extends OrderingFilter<$TimesheetsTable> {
           slug: 'oldest',
           label: 'Oldest',
           orderingTermBuilder: (b) => OrderingTerm(
-            expression: b.updatedAt,
+            expression: b.lastTicked,
             mode: OrderingMode.asc,
           ),
         );
