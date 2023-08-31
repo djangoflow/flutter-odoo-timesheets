@@ -80,7 +80,7 @@ class TimesheetAddPage extends StatelessWidget {
     final project = form.control(projectControlName).value as Project;
     final task = form.control(taskControlName).value as Task;
     final description = form.control(descriptionControlName).value as String;
-
+    final isFavorite = form.control(isFavoriteControlName).value as bool;
     final timesheetRepository = context.read<TimesheetRepository>();
 
     await timesheetRepository.create(
@@ -88,6 +88,7 @@ class TimesheetAddPage extends StatelessWidget {
         projectId: Value(project.id),
         taskId: Value(task.id),
         name: Value(description),
+        isFavorite: Value(isFavorite),
       ),
     );
   }
