@@ -12,18 +12,22 @@ class LocalTimesheetsPage extends StatelessWidget {
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('local_timesheets_builder'),
         appVisibilityKey: const ValueKey('local_timesheets_page'),
-        child: TimesheetListView(
-          timesheetWithTaskExternalListFilter:
-              const TimesheetWithTaskExternalListFilter(
-            isProjectLocal: true,
-            isEndDateNull: true,
-          ),
-          emptyBuilder: (context, state) => LocalTimesheetsPlaceHolder(
-            onGetStarted: () => context.router.push(
-              TimesheetRouter(
-                children: [
-                  TimesheetAddRoute(),
-                ],
+        child: InitialTimesheetOrderingFilterWrapper(
+          builder: (initialOrderingFilter) => TimesheetListView(
+            timesheetWithTaskExternalListFilter:
+                TimesheetWithTaskExternalListFilter(
+              isProjectLocal: true,
+              isEndDateNull: true,
+              orderingFilters:
+                  initialOrderingFilter != null ? [initialOrderingFilter] : [],
+            ),
+            emptyBuilder: (context, state) => LocalTimesheetsPlaceHolder(
+              onGetStarted: () => context.router.push(
+                TimesheetRouter(
+                  children: [
+                    TimesheetAddRoute(),
+                  ],
+                ),
               ),
             ),
           ),

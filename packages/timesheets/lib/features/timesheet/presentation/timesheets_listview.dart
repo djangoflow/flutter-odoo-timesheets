@@ -27,19 +27,19 @@ class TimesheetListView extends StatelessWidget {
         create: (context) => TimesheetWithTaskExternalListCubit(
           context.read<TimesheetRepository>(),
         )..load(timesheetWithTaskExternalListFilter),
-        child:
-            BlocListener<TabbedOrderingFilterCubit, Map<int, OrderingFilter>>(
+        child: BlocListener<TabbedOrderingFilterCubit<$TimesheetsTable>,
+            Map<int, OrderingFilter<$TimesheetsTable>>>(
           listener: (context, state) {
             final tabsRouter = context.tabsRouter;
 
             final currentFilter = state[tabsRouter.activeIndex];
-            context.read<TimesheetWithTaskExternalListCubit>().reload(
-                  timesheetWithTaskExternalListFilter.copyWith(
-                    orderingFilters: [
-                      currentFilter as OrderingFilter<$TimesheetsTable>
-                    ],
-                  ),
-                );
+            if (currentFilter != null) {
+              context.read<TimesheetWithTaskExternalListCubit>().reload(
+                    timesheetWithTaskExternalListFilter.copyWith(
+                      orderingFilters: [currentFilter],
+                    ),
+                  );
+            }
           },
           child: ContinuousListViewBlocBuilder<
               TimesheetWithTaskExternalListCubit,

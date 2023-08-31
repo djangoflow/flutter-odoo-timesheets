@@ -12,18 +12,22 @@ class OdooTimesheetsPage extends StatelessWidget {
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('synced_timesheets_builder'),
         appVisibilityKey: const ValueKey('synced_timesheets_page'),
-        child: TimesheetListView(
-          timesheetWithTaskExternalListFilter:
-              const TimesheetWithTaskExternalListFilter(
-            isProjectLocal: false,
-            isEndDateNull: true,
-          ),
-          emptyBuilder: (context, state) => OdooTimesheetsPlaceHolder(
-            onGetStarted: () => context.router.push(
-              TimesheetRouter(
-                children: [
-                  TimesheetAddRoute(),
-                ],
+        child: InitialTimesheetOrderingFilterWrapper(
+          builder: (initialOrderingFilter) => TimesheetListView(
+            timesheetWithTaskExternalListFilter:
+                TimesheetWithTaskExternalListFilter(
+              isProjectLocal: false,
+              isEndDateNull: true,
+              orderingFilters:
+                  initialOrderingFilter != null ? [initialOrderingFilter] : [],
+            ),
+            emptyBuilder: (context, state) => OdooTimesheetsPlaceHolder(
+              onGetStarted: () => context.router.push(
+                TimesheetRouter(
+                  children: [
+                    TimesheetAddRoute(),
+                  ],
+                ),
               ),
             ),
           ),

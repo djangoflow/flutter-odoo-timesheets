@@ -28,6 +28,7 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
               orderBy: filter?.orderingFilters
                   .map((e) => e.orderingTermBuilder)
                   .toList(),
+              isFavorite: filter?.isFavorite,
             ),
           ),
         );

@@ -27,6 +27,7 @@ class TimesheetWithTaskExternalListFilter
     )
     @Default([])
     List<OrderingFilter<$TimesheetsTable>> orderingFilters,
+    bool? isFavorite,
   }) = _TimesheetWithTaskExternalListFilter;
 
   factory TimesheetWithTaskExternalListFilter.fromJson(

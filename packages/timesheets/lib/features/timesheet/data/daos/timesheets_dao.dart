@@ -132,6 +132,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     bool? isEndDateNull,
     bool? isProjectLocal,
     List<OrderingTerm Function($TimesheetsTable)>? orderBy,
+    bool? isFavorite,
   }) async {
     assert(isLocal == null || isProjectLocal == null, 'Invalid query');
     final query = select(timesheets);
@@ -160,6 +161,10 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
     if (limit != null && offset != null) {
       query.limit(limit, offset: offset);
+    }
+
+    if (isFavorite != null) {
+      query.where((timesheets) => timesheets.isFavorite.equals(isFavorite));
     }
 
     if (isProjectLocal == true) {

@@ -12,20 +12,24 @@ class FavoriteTimesheetsPage extends StatelessWidget {
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('fav_timesheets_builder'),
         appVisibilityKey: const ValueKey('fav_timesheets_page'),
-        child: TimesheetListView(
-          timesheetWithTaskExternalListFilter:
-              const TimesheetWithTaskExternalListFilter(
-            isProjectLocal: true,
-            isEndDateNull: true,
-          ),
-          emptyBuilder: (context, state) => FavoriteTimesheetsPlaceHolder(
-            onGetStarted: () => context.router.push(
-              TimesheetRouter(
-                children: [
-                  TimesheetAddRoute(
-                    isInitiallyFavorite: true,
-                  ),
-                ],
+        child: InitialTimesheetOrderingFilterWrapper(
+          builder: (initialOrderingFilter) => TimesheetListView(
+            timesheetWithTaskExternalListFilter:
+                TimesheetWithTaskExternalListFilter(
+              isEndDateNull: true,
+              isFavorite: true,
+              orderingFilters:
+                  initialOrderingFilter != null ? [initialOrderingFilter] : [],
+            ),
+            emptyBuilder: (context, state) => FavoriteTimesheetsPlaceHolder(
+              onGetStarted: () => context.router.push(
+                TimesheetRouter(
+                  children: [
+                    TimesheetAddRoute(
+                      isInitiallyFavorite: true,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

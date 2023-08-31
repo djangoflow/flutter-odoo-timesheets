@@ -12,8 +12,8 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) =>
-      BlocProvider<TabbedOrderingFilterCubit>(
-        create: (context) => TabbedOrderingFilterCubit({
+      BlocProvider<TabbedOrderingFilterCubit<$TimesheetsTable>>(
+        create: (context) => TabbedOrderingFilterCubit<$TimesheetsTable>({
           0: TimesheetRecentFirstFilter(),
           1: TimesheetRecentFirstFilter(),
           2: TimesheetRecentFirstFilter(),
