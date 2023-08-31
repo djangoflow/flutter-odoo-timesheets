@@ -1,26 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/utils/utils.dart';
 
-class ProjectListView extends StatelessWidget {
-  const ProjectListView(
-      {super.key, required this.projectListFilter, required this.emptyBuilder});
-  final ProjectListFilter projectListFilter;
+class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
+  const ProjectListView({super.key, required this.emptyBuilder});
+
   final Widget Function(BuildContext context, ProjectListState state)
       emptyBuilder;
 
   @override
-  Widget build(BuildContext context) => ContinuousListViewBlocBuilder<
-          ProjectListCubit, ProjectWithExternalData, ProjectListFilter>(
-        create: (context) => ProjectListCubit(context.read<ProjectRepository>())
-          ..load(projectListFilter),
+  Widget build(BuildContext context) => ContinuousListViewBlocBuilder<T,
+          ProjectWithExternalData, ProjectListFilter>(
         withRefreshIndicator: true,
         emptyBuilder: emptyBuilder,
         loadingBuilder: (context, state) => const SizedBox(),

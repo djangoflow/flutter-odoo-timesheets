@@ -14,6 +14,7 @@ class ProjectListFilter with _$ProjectListFilter implements OffsetLimitFilter {
     @Default(0) int offset,
     bool? isLocal,
     String? search,
+    bool? isFavorite,
   }) = _ProjectListFilter;
 
   factory ProjectListFilter.fromJson(

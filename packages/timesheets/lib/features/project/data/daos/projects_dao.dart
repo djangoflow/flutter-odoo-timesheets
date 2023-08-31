@@ -99,6 +99,7 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
     int? offset,
     bool? isLocal,
     String? search,
+    bool? isFavorite,
   }) async {
     final query = select(projects);
 
@@ -113,6 +114,10 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
       (p) => OrderingTerm(expression: p.updatedAt, mode: OrderingMode.desc),
       (p) => OrderingTerm(expression: p.name, mode: OrderingMode.asc),
     ]);
+
+    if (isFavorite != null) {
+      query.where((p) => p.isFavorite.equals(isFavorite));
+    }
 
     if (isLocal == true) {
       // make sure that none of the externalProjects have internalId as the project's ids

@@ -7,3 +7,4 @@ export 'presentation/project_listview.dart';
 export 'presentation/placeholders/favorite_projects_placeholder.dart';
 export 'presentation/placeholders/local_projects_placeholder.dart';
 export 'presentation/placeholders/odoo_projects_placeholder.dart';
+export 'data/repositories/projects_repository.dart';

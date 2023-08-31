@@ -41,7 +41,6 @@ class ProjectAddPage extends StatelessWidget {
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;
-                        DjangoflowAppSnackbar.showInfo('Added successfully');
                         await router.pop(true);
                       },
                       action: (_) => _addProject(context: context, form: form),

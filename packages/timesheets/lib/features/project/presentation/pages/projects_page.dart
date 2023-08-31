@@ -1,14 +1,39 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/project/project.dart';
 
 @RoutePage(
   name: 'ProjectsTabRouter',
 )
-class ProjectsTabRouterPage extends StatelessWidget {
+class ProjectsTabRouterPage extends StatelessWidget
+    implements AutoRouteWrapper {
   const ProjectsTabRouterPage({super.key});
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    final projectRepository = context.read<ProjectRepository>();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FavoriteProjectListCubit>(
+          create: (context) => FavoriteProjectListCubit(projectRepository),
+          lazy: false,
+        ),
+        BlocProvider<OdooProjectListCubit>(
+          create: (context) => OdooProjectListCubit(projectRepository),
+        ),
+        BlocProvider<LocalProjectListCubit>(
+          create: (context) => LocalProjectListCubit(projectRepository),
+        ),
+      ],
+      child: Builder(builder: (context) => this),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
@@ -26,11 +51,18 @@ class ProjectsTabRouterPage extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   if (tabController.index == 0) {
-                    context.router.push(
+                    context.router
+                        .push(
                       ProjectAddRoute(
                         isInitiallyFavorite: true,
                       ),
-                    );
+                    )
+                        .then((value) {
+                      if (value == true) {
+                        context.read<FavoriteProjectListCubit>().load();
+                        DjangoflowAppSnackbar.showInfo('Added successfully');
+                      }
+                    });
                   } else if (tabController.index == 1) {
                     context.router.push(
                       ProjectAddRoute(),

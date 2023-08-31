@@ -54,12 +54,14 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
     int? limit,
     bool? isLocal,
     String? search,
+    bool? isFavorite,
   }) =>
       projectsDao.getPaginatedProjectsWithExternalData(
         offset: offset,
         isLocal: isLocal,
         limit: limit,
         search: search,
+        isFavorite: isFavorite,
       );
 
   Future<void> syncWithOdooProjects(

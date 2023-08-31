@@ -1,6 +1,5 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/utils/utils.dart';
 
@@ -19,6 +18,7 @@ class ProjectListCubit
               offset: filter?.offset,
               isLocal: filter?.isLocal,
               search: filter?.search,
+              isFavorite: filter?.isFavorite,
             ),
           ),
         );
@@ -27,4 +27,16 @@ class ProjectListCubit
     final timesheetId = await projectRepository.create(projectsCompanion);
     return await projectRepository.getItemById(timesheetId);
   }
+}
+
+class FavoriteProjectListCubit extends ProjectListCubit {
+  FavoriteProjectListCubit(super.projectRepository);
+}
+
+class LocalProjectListCubit extends ProjectListCubit {
+  LocalProjectListCubit(super.projectRepository);
+}
+
+class OdooProjectListCubit extends ProjectListCubit {
+  OdooProjectListCubit(super.projectRepository);
 }

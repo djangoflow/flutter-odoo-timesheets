@@ -20,7 +20,7 @@ class GradientScaffold extends StatelessWidget {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [surfaceVariant, surface],
-        stops: const [.15, .85],
+        stops: const [.2, .85],
       ),
       appBar: appBar,
       bottomNavigationBar: bottomNavigationBar,

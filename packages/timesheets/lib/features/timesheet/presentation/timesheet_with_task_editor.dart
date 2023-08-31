@@ -8,7 +8,6 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/task.dart';
 
