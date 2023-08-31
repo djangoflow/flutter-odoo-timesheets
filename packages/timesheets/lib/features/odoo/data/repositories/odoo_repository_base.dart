@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
-
+import 'package:http/http.dart' as http;
 import '../odoo_repository_exception.dart';
 import '../odoo_xmlrpc_client.dart';
 
@@ -42,6 +42,8 @@ class OdooRpcRepositoryBase {
   OdooRepositoryException getHandledException(error) {
     if (error is xml_rpc.Fault) {
       return OdooRepositoryException.fromCode(error.text);
+    } else if (error is http.ClientException) {
+      return OdooRepositoryException(error.message);
     } else if ((!kIsWeb && error is SocketException)) {
       return const OdooRepositoryException('Seems like you are offline!');
     } else if (error is ArgumentError || error is FormatException) {

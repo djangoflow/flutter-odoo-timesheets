@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
@@ -94,83 +95,85 @@ class SettingsPage extends StatelessWidget {
                         builder: (context, state) {
                           final children = state.connectedBackends
                               .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                              .map((backend) => ListTile(
-                                    key: ValueKey(backend.id),
-                                    title: RichText(
-                                      text: TextSpan(
-                                        text: 'Odoo',
-                                        style:
-                                            theme.listTileTheme.titleTextStyle,
-                                        children: [
-                                          if (backend.serverUrl != null)
-                                            TextSpan(
-                                              text: ' (${backend.serverUrl})',
-                                              style: theme.textTheme.labelSmall
-                                                  ?.copyWith(
-                                                color: theme.colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                    ),
-                                    subtitle: Text(backend.email ?? ''),
-                                    // TODO Enable later with proper testing
-                                    // leading: Builder(
-                                    //   builder: (context) =>
-                                    //       CircularProgressBuilder(
-                                    //     action: (_) async {
-                                    //       await context
-                                    //           .read<SyncCubit>()
-                                    //           .syncData(backend.id);
-                                    //     },
-                                    //     builder: (context, action, error) =>
-                                    //         IconButton(
-                                    //       icon: const Icon(Icons.sync),
-                                    //       onPressed: action,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    trailing: Icon(
-                                      Icons.chevron_right,
-                                      size: kPadding.w * 4,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                    // Logout
-                                    onTap: () => showCupertinoDialog<bool?>(
-                                      context: context,
-                                      builder: (context) =>
-                                          CupertinoAlertDialog(
-                                        title:
-                                            const Text('Disconnect from Odoo?'),
-                                        content: const Text(
-                                          'You will be logged out from Odoo and lose synchronization.',
+                              .map((backend) => DefaultActionController(
+                                    child: LinearProgressBuilder(
+                                      action: (_) async {
+                                        final result = await AppModalSheet.show<
+                                            _BackendSyncOptionsEnum>(
+                                          context: context,
+                                          child: SafeArea(
+                                            bottom: true,
+                                            child: _BackendSyncOptions(
+                                              backend: backend,
+                                            ),
+                                          ),
+                                        );
+                                        if (context.mounted) {
+                                          final syncCubit =
+                                              context.read<SyncCubit>();
+                                          switch (result) {
+                                            case _BackendSyncOptionsEnum.unlink:
+                                              await _disconnectBackend(
+                                                  context, backend);
+                                              break;
+                                            case _BackendSyncOptionsEnum.resync:
+                                              await syncCubit
+                                                  .syncData(backend.id);
+                                              break;
+                                            default:
+                                              break;
+                                          }
+                                        }
+                                      },
+                                      builder: (context, action, error) =>
+                                          ListTile(
+                                        key: ValueKey(backend.id),
+                                        title: RichText(
+                                          text: TextSpan(
+                                            text: 'Odoo',
+                                            style: theme
+                                                .listTileTheme.titleTextStyle,
+                                            children: [
+                                              if (backend.serverUrl != null)
+                                                TextSpan(
+                                                  text:
+                                                      ' (${backend.serverUrl})',
+                                                  style: theme
+                                                      .textTheme.labelSmall
+                                                      ?.copyWith(
+                                                    color: theme.colorScheme
+                                                        .onSurfaceVariant,
+                                                  ),
+                                                )
+                                            ],
+                                          ),
                                         ),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            child: const Text('Cancel'),
-                                            onPressed: () =>
-                                                context.router.pop(false),
-                                          ),
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
-                                            child: const Text('Disconnect'),
-                                            onPressed: () {
-                                              context.router.pop(true);
-                                            },
-                                          ),
-                                        ],
+                                        subtitle: Text(backend.email ?? ''),
+                                        // TODO Enable later with proper testing
+                                        // leading: Builder(
+                                        //   builder: (context) =>
+                                        //       CircularProgressBuilder(
+                                        //     action: (_) async {
+                                        //       await context
+                                        //           .read<SyncCubit>()
+                                        //           .syncData(backend.id);
+                                        //     },
+                                        //     builder: (context, action, error) =>
+                                        //         IconButton(
+                                        //       icon: const Icon(Icons.sync),
+                                        //       onPressed: action,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        trailing: Icon(
+                                          Icons.chevron_right,
+                                          size: kPadding.w * 4,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                        // Logout
+                                        onTap: action,
                                       ),
-                                    ).then((value) async {
-                                      if (value == true) {
-                                        final authCubit =
-                                            context.read<AuthCubit>();
-                                        await context
-                                            .read<SyncCubit>()
-                                            .removeData(backend.id);
-                                        await authCubit.logout(backend);
-                                      }
-                                    }),
+                                    ),
                                   ))
                               .toList();
 
@@ -275,4 +278,81 @@ class SettingsPage extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _disconnectBackend(BuildContext context, Backend backend) async {
+    final authCubit = context.read<AuthCubit>();
+    final syncCubit = context.read<SyncCubit>();
+    final router = context.router;
+    final result = await showCupertinoDialog<bool?>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text('Disconnect from Odoo?'),
+        content: const Text(
+          'You will be logged out from Odoo and lose synchronization.',
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('Cancel'),
+            onPressed: () => context.router.pop(false),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: const Text('Disconnect'),
+            onPressed: () {
+              context.router.pop(true);
+            },
+          ),
+        ],
+      ),
+    );
+    if (result == true) {
+      await syncCubit.removeData(backend.id);
+      await authCubit.logout(backend);
+      router.pop();
+    }
+  }
+}
+
+class _BackendSyncOptions extends StatelessWidget {
+  const _BackendSyncOptions({super.key, required this.backend});
+  final Backend backend;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListTileTheme(
+      data: theme.listTileTheme.copyWith(
+        titleTextStyle: theme.textTheme.labelLarge,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(CupertinoIcons.delete),
+            title: const Text(
+              'Unlink the Account',
+            ),
+            onTap: () => context.router.pop(_BackendSyncOptionsEnum.unlink),
+          ),
+          const Divider(
+            height: 1,
+          ),
+          ListTile(
+            leading: const Icon(CupertinoIcons.arrow_2_circlepath),
+            title: const Text(
+              'Re-sync the account',
+            ),
+            // TODO fix bug with re-sync
+            onTap: () => context.router.pop(_BackendSyncOptionsEnum.resync),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+enum _BackendSyncOptionsEnum {
+  unlink,
+  resync,
 }

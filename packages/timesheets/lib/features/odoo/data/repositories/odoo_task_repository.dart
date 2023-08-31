@@ -110,9 +110,15 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
   Future<List<OdooTask>> getTasksByTaskIds({
     required int backendId,
     required List<int> taskIds,
+    int offset = 0, // Add an offset parameter to fetch data in chunks
+    List<OdooTask> previousTasks = const [], // To store previous tasks
   }) async {
     Map<String, dynamic> optionalParams =
         buildFilterableFields(_taskDefaultFields);
+
+    // Add limit and offset to the optionalParams to fetch data in chunks
+    optionalParams[limitKey] = 10; // Or any other chunk size you prefer
+    optionalParams[offsetKey] = offset;
 
     final searchParameters = [
       [
@@ -136,7 +142,19 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
     for (final task in response) {
       tasks.add(OdooTask.fromJson(task));
     }
-    return tasks;
+
+    // If the response is not empty, call the method recursively with an increased offset
+    if (response.isNotEmpty) {
+      final nextTasks = await getTasksByTaskIds(
+        backendId: backendId,
+        taskIds: taskIds,
+        offset: offset + optionalParams[limitKey] as int,
+        previousTasks: tasks,
+      );
+      return previousTasks + nextTasks;
+    } else {
+      return previousTasks + tasks;
+    }
   }
 
   /// Get available fields for [taskModel]
