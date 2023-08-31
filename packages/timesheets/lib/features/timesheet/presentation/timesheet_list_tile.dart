@@ -67,11 +67,15 @@ class TimesheetListTile extends StatelessWidget {
         children: [
           ListTile(
             leading: leadingBarColor != null
-                ? ColoredBar(
-                    color: leadingBarColor!,
+                ? SizedBox(
+                    height: double.infinity,
+                    child: ColoredBar(
+                      color: leadingBarColor!,
+                    ),
                   )
                 : null,
             title: title,
+            horizontalTitleGap: 0,
             subtitle: subtitle,
             trailing: TaskTimer.small(
               disabled: disabled,
