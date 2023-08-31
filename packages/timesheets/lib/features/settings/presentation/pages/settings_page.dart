@@ -292,7 +292,10 @@ class SettingsPage extends StatelessWidget {
         ),
         actions: [
           CupertinoDialogAction(
-            child: const Text('Cancel'),
+            child: Text('Cancel',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                )),
             onPressed: () => context.router.pop(false),
           ),
           CupertinoDialogAction(
