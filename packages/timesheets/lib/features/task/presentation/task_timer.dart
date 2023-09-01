@@ -399,13 +399,6 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
       child: IconButtonTheme(
         data: IconButtonThemeData(
           style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
-                // backgroundColor: MaterialStatePropertyAll(
-                //   ElevationOverlay.applySurfaceTint(
-                //     theme.colorScheme.primaryContainer,
-                //     theme.colorScheme.surfaceTint,
-                //     2,
-                //   ),
-                // ),
                 shape: const MaterialStatePropertyAll(StadiumBorder()),
                 maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
                 minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
