@@ -1,3 +1,4 @@
+import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -321,7 +322,12 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           serverUrl: serverUrl,
           db: db,
         );
-    await syncCubit.syncData(backendId);
+    try {
+      await syncCubit.syncData(backendId);
+    } catch (e) {
+      DjangoflowAppSnackbar.showInfo(
+          'Sync failed, but you can re-sync from Settings later.');
+    }
   }
 }
 
