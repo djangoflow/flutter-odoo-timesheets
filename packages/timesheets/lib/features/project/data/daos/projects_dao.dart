@@ -188,11 +188,15 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> batchUpdateProjects(List<Project> projects) async {
     await batch((batch) {
-      batch.insertAll(
-        this.projects,
-        projects,
-        mode: InsertMode.insertOrReplace,
-      );
+      for (final project in projects) {
+        batch.update(
+          this.projects,
+          project.copyWith(
+            updatedAt: DateTime.now(),
+          ),
+          where: (table) => table.id.equals(project.id),
+        );
+      }
     });
   }
 

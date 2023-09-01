@@ -102,11 +102,15 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> batchUpdateTimesheets(List<Timesheet> timesheets) async {
     await batch((batch) {
-      batch.insertAll(
-        this.timesheets,
-        timesheets.map((e) => e.copyWith(updatedAt: DateTime.now())).toList(),
-        mode: InsertMode.insertOrReplace,
-      );
+      for (final timesheet in timesheets) {
+        batch.update(
+          this.timesheets,
+          timesheet.copyWith(
+            updatedAt: DateTime.now(),
+          ),
+          where: (table) => table.id.equals(timesheet.id),
+        );
+      }
     });
   }
 

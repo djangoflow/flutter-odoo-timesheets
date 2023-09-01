@@ -117,7 +117,7 @@ class OdooTaskRepository extends OdooRpcRepositoryBase {
         buildFilterableFields(_taskDefaultFields);
 
     // Add limit and offset to the optionalParams to fetch data in chunks
-    optionalParams[limitKey] = 10; // Or any other chunk size you prefer
+    optionalParams[limitKey] = 5; // Or any other chunk size you prefer
     optionalParams[offsetKey] = offset;
 
     final searchParameters = [

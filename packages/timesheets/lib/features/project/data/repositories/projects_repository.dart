@@ -100,6 +100,7 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
               isFavorite: Value(odooProject.isFavorite),
               name: Value(odooProject.name),
               taskCount: Value(odooProject.taskCount),
+              updatedAt: DateTime.now(),
             ),
           );
         }
