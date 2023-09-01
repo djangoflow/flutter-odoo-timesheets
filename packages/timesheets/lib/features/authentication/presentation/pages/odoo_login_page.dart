@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:timesheets/features/external/external.dart';
 import 'package:timesheets/features/odoo/data/repositories/odoo_information_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
 import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
+import 'package:timesheets/utils/utils.dart';
 
 @RoutePage()
 class OdooLoginPage extends StatefulWidget implements AutoRouteWrapper {
@@ -308,6 +310,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
 
   Future<void> _signIn(BuildContext context, FormGroup form) async {
     final syncCubit = context.read<SyncCubit>();
+    final authCubit = context.read<AuthCubit>();
     final email = form.control(emailControlName).value as String;
     final pass = form.control(passControlName).value as String;
     String serverUrl = form.control(serverUrlControlName).value as String;
@@ -316,12 +319,23 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
       serverUrl += '/';
     }
     TextInput.finishAutofillContext();
-    final backendId = await context.read<AuthCubit>().loginWithOdoo(
-          email: email,
-          password: pass,
-          serverUrl: serverUrl,
-          db: db,
-        );
+
+    final alreadyExists = authCubit.state.connectedBackends
+        .getBackendsFilteredByType(BackendTypeEnum.odoo)
+        .any((element) =>
+            element.serverUrl == serverUrl &&
+            element.db == db &&
+            element.email == email);
+    if (alreadyExists) {
+      throw Exception('Already logged in');
+    }
+
+    final backendId = await authCubit.loginWithOdoo(
+      email: email,
+      password: pass,
+      serverUrl: serverUrl,
+      db: db,
+    );
     try {
       await syncCubit.syncData(backendId);
     } catch (e) {
