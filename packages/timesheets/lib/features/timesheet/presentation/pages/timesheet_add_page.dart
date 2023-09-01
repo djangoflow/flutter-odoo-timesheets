@@ -7,6 +7,7 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 import 'package:timesheets/features/timesheet/presentation/timesheet_with_task_editor.dart';
@@ -19,8 +20,11 @@ class TimesheetAddPage extends StatelessWidget {
     this.taskWithProjectExternalData,
     this.disableProjectTaskSelection,
     this.isInitiallyFavorite,
+    this.disableLocalProjectTaskSelection,
   }) : super(key: key);
   final TaskWithProjectExternalData? taskWithProjectExternalData;
+
+  final bool? disableLocalProjectTaskSelection;
 
   /// If true, the project and task selection will be disabled.
   /// Needed when only adding a timesheet for specific Project and Task
@@ -37,7 +41,7 @@ class TimesheetAddPage extends StatelessWidget {
           ),
         ),
         body: TimesheetWithTaskEditor(
-          showOnlySyncedTaskAndProjects: false,
+          showOnlySyncedTaskAndProjects: disableLocalProjectTaskSelection,
           disableProjectTaskSelection: disableProjectTaskSelection,
           project: taskWithProjectExternalData?.projectWithExternalData,
           task: taskWithProjectExternalData?.taskWithExternalData.task,
@@ -77,7 +81,9 @@ class TimesheetAddPage extends StatelessWidget {
 
   Future<void> _addTimesheet(
       {required BuildContext context, required FormGroup form}) async {
-    final project = form.control(projectControlName).value as Project;
+    final project =
+        (form.control(projectControlName).value as ProjectWithExternalData)
+            .project;
     final task = form.control(taskControlName).value as Task;
     final description = form.control(descriptionControlName).value as String;
     final isFavorite = form.control(isFavoriteControlName).value as bool;

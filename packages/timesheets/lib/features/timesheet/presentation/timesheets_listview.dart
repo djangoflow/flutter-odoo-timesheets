@@ -11,176 +11,167 @@ import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
-class TimesheetListView extends StatelessWidget {
+class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
+    extends StatelessWidget {
   const TimesheetListView({
     super.key,
-    required this.timesheetWithTaskExternalListFilter,
     required this.emptyBuilder,
   });
-  final TimesheetWithTaskExternalListFilter timesheetWithTaskExternalListFilter;
+
   final Widget Function(
           BuildContext context, TimesheetWithTaskExternalListState state)
       emptyBuilder;
   @override
-  Widget build(BuildContext context) =>
-      BlocProvider<TimesheetWithTaskExternalListCubit>(
-        create: (context) => TimesheetWithTaskExternalListCubit(
-          context.read<TimesheetRepository>(),
-        )..load(timesheetWithTaskExternalListFilter),
-        child: BlocListener<TabbedOrderingFilterCubit<$TimesheetsTable>,
-            Map<int, OrderingFilter<$TimesheetsTable>>>(
-          listener: (context, state) {
-            final tabsRouter = context.tabsRouter;
+  Widget build(BuildContext context) => BlocListener<
+          TabbedOrderingFilterCubit<$TimesheetsTable>,
+          Map<int, OrderingFilter<$TimesheetsTable>>>(
+        listener: (context, state) {
+          final tabsRouter = context.tabsRouter;
 
-            final currentFilter = state[tabsRouter.activeIndex];
-            if (currentFilter != null) {
-              context.read<TimesheetWithTaskExternalListCubit>().reload(
-                    timesheetWithTaskExternalListFilter.copyWith(
-                      orderingFilters: [currentFilter],
-                    ),
-                  );
-            }
-          },
-          child: ContinuousListViewBlocBuilder<
-              TimesheetWithTaskExternalListCubit,
-              TimesheetWithTaskExternalData,
-              TimesheetWithTaskExternalListFilter>(
-            emptyBuilder: emptyBuilder,
-            withRefreshIndicator: true,
-            loadingBuilder: (context, state) => const SizedBox(),
-            itemBuilder: (context, state, index, item) {
-              final timesheet = item.timesheetExternalData.timesheet;
-              final project = item
-                  .taskWithProjectExternalData.projectWithExternalData.project;
-              final task =
-                  item.taskWithProjectExternalData.taskWithExternalData.task;
-              final elapsedTime = timesheet.elapsedTime;
-              final theme = Theme.of(context);
+          final currentFilter = state[tabsRouter.activeIndex];
+          if (currentFilter != null) {
+            final cubit = context.read<T>();
+            final f = cubit.state.filter;
+            cubit.reload(
+              f?.copyWith(
+                orderingFilters: [currentFilter],
+              ),
+            );
+          }
+        },
+        child: ContinuousListViewBlocBuilder<T, TimesheetWithTaskExternalData,
+            TimesheetWithTaskExternalListFilter>(
+          emptyBuilder: emptyBuilder,
+          withRefreshIndicator: true,
+          loadingBuilder: (context, state) => const SizedBox(),
+          itemBuilder: (context, state, index, item) {
+            final timesheet = item.timesheetExternalData.timesheet;
+            final project = item
+                .taskWithProjectExternalData.projectWithExternalData.project;
+            final task =
+                item.taskWithProjectExternalData.taskWithExternalData.task;
+            final elapsedTime = timesheet.elapsedTime;
+            final theme = Theme.of(context);
 
-              return IconTheme(
-                data: theme.iconTheme.copyWith(
-                  size: kPadding.r * 2,
-                ),
-                child: TimesheetListTile(
-                  key: ValueKey(timesheet.id),
-                  leadingBarColor: project.color.toColorFromColorIndex,
-                  title: _ListTileItem(
-                    icon: InkWell(
-                      borderRadius: BorderRadius.circular(kPadding * 1.5),
-                      onTap: () {
-                        context
-                            .read<TimesheetWithTaskExternalListCubit>()
-                            .updateTimesheet(
-                              timesheet.copyWith(
-                                isFavorite: !timesheet.isFavorite,
-                              ),
-                            );
-                      },
-                      child: _PaddedIcon(
-                        icon: Icon(
-                          timesheet.isFavorite
-                              ? CupertinoIcons.star_fill
-                              : CupertinoIcons.star,
-                        ),
+            return IconTheme(
+              data: theme.iconTheme.copyWith(
+                size: kPadding.r * 2,
+              ),
+              child: TimesheetListTile(
+                key: ValueKey(timesheet.id),
+                leadingBarColor: project.color.toColorFromColorIndex,
+                title: _ListTileItem(
+                  icon: InkWell(
+                    borderRadius: BorderRadius.circular(kPadding * 1.5),
+                    onTap: () {
+                      context.read<T>().updateTimesheet(
+                            timesheet.copyWith(
+                              isFavorite: !timesheet.isFavorite,
+                            ),
+                          );
+                    },
+                    child: _PaddedIcon(
+                      icon: Icon(
+                        timesheet.isFavorite
+                            ? CupertinoIcons.star_fill
+                            : CupertinoIcons.star,
                       ),
                     ),
-                    text: timesheet.name ?? '',
-                    textStyle: theme.textTheme.titleMedium,
                   ),
-                  subtitle: Column(
-                    children: [
+                  text: timesheet.name ?? '',
+                  textStyle: theme.textTheme.titleMedium,
+                ),
+                subtitle: Column(
+                  children: [
+                    SizedBox(
+                      height: kPadding.h / 1.5,
+                    ),
+                    _ListTileItem(
+                      icon: const _PaddedIcon(
+                        icon: Icon(
+                          CupertinoIcons.briefcase,
+                        ),
+                      ),
+                      text: project.name ?? '',
+                      maxLines: 2,
+                      // textStyle: const TextStyle(height: 1),
+                    ),
+                    if (task.dateDeadline != null) ...[
                       SizedBox(
                         height: kPadding.h / 1.5,
                       ),
                       _ListTileItem(
                         icon: const _PaddedIcon(
                           icon: Icon(
-                            CupertinoIcons.briefcase,
+                            CupertinoIcons.time,
                           ),
                         ),
-                        text: project.name ?? '',
-                        maxLines: 2,
-                        // textStyle: const TextStyle(height: 1),
+                        text: 'Deadline ${task.dateDeadline!.toDateString()}',
+                        textStyle: const TextStyle(height: 1),
                       ),
-                      if (task.dateDeadline != null) ...[
-                        SizedBox(
-                          height: kPadding.h / 1.5,
-                        ),
-                        _ListTileItem(
-                          icon: const _PaddedIcon(
-                            icon: Icon(
-                              CupertinoIcons.time,
-                            ),
-                          ),
-                          text: 'Deadline ${task.dateDeadline!.toDateString()}',
-                          textStyle: const TextStyle(height: 1),
-                        ),
-                      ],
                     ],
-                  ),
-                  elapsedTime: elapsedTime,
-                  initialTimerStatus:
-                      item.timesheetExternalData.timesheet.currentStatus,
-                  onTimerStateChange:
-                      (context, timerState, tickInterval) async {
-                    final timesheetWithTaskExternalListCubit =
-                        context.read<TimesheetWithTaskExternalListCubit>();
-                    final isRunning =
-                        timerState.status == TimesheetStatusEnum.running;
-                    final updatableSeconds = (isRunning ? tickInterval : 0);
-                    final startTimeValue =
-                        (isRunning && timesheet.startTime == null)
-                            ? DateTime.now()
-                            : timesheet.startTime;
-
-                    final lastTickedValue =
-                        isRunning ? DateTime.now() : timesheet.lastTicked;
-                    Timesheet updatableTimesheet = timesheet.copyWith(
-                      unitAmount: Value(
-                          (elapsedTime + updatableSeconds).toUnitAmount()),
-                      currentStatus: timerState.status,
-                      startTime: Value(startTimeValue),
-                      lastTicked: Value(lastTickedValue),
-                    );
-                    await timesheetWithTaskExternalListCubit.updateTimesheet(
-                      updatableTimesheet,
-                    );
-                  },
-                  onTimerResume: (context) {
-                    final currentlyElapsedTime = timesheet.elapsedTime;
-                    context.read<TimerCubit>().elapsedTime = Duration(
-                      seconds: currentlyElapsedTime,
-                    );
-                  },
-                  onTap: () {
-                    if (timesheet.taskId != null) {
-                      context.router.push(
-                        TasksRouter(
-                          children: [
-                            TaskDetailsRouter(taskId: timesheet.taskId!),
-                          ],
-                        ),
-                      );
-                    } else {
-                      throw Exception('Task id is null');
-                    }
-                  },
+                  ],
                 ),
-              );
-            },
-            builder: (context, controller, itemBuilder, itemCount) =>
-                ListView.separated(
-              shrinkWrap: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.all(
-                kPadding.h * 2,
+                elapsedTime: elapsedTime,
+                initialTimerStatus:
+                    item.timesheetExternalData.timesheet.currentStatus,
+                onTimerStateChange: (context, timerState, tickInterval) async {
+                  final timesheetWithTaskExternalListCubit = context.read<T>();
+                  final isRunning =
+                      timerState.status == TimesheetStatusEnum.running;
+                  final updatableSeconds = (isRunning ? tickInterval : 0);
+                  final startTimeValue =
+                      (isRunning && timesheet.startTime == null)
+                          ? DateTime.now()
+                          : timesheet.startTime;
+
+                  final lastTickedValue =
+                      isRunning ? DateTime.now() : timesheet.lastTicked;
+                  Timesheet updatableTimesheet = timesheet.copyWith(
+                    unitAmount:
+                        Value((elapsedTime + updatableSeconds).toUnitAmount()),
+                    currentStatus: timerState.status,
+                    startTime: Value(startTimeValue),
+                    lastTicked: Value(lastTickedValue),
+                  );
+                  await timesheetWithTaskExternalListCubit.updateTimesheet(
+                    updatableTimesheet,
+                  );
+                },
+                onTimerResume: (context) {
+                  final currentlyElapsedTime = timesheet.elapsedTime;
+                  context.read<TimerCubit>().elapsedTime = Duration(
+                    seconds: currentlyElapsedTime,
+                  );
+                },
+                onTap: () {
+                  if (timesheet.taskId != null) {
+                    context.router.push(
+                      TasksRouter(
+                        children: [
+                          TaskDetailsRouter(taskId: timesheet.taskId!),
+                        ],
+                      ),
+                    );
+                  } else {
+                    throw Exception('Task id is null');
+                  }
+                },
               ),
-              controller: controller,
-              itemBuilder: itemBuilder,
-              itemCount: itemCount,
-              separatorBuilder: (context, index) => SizedBox(
-                height: kPadding.h,
-              ),
+            );
+          },
+          builder: (context, controller, itemBuilder, itemCount) =>
+              ListView.separated(
+            shrinkWrap: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(
+              kPadding.h * 2,
+            ),
+            controller: controller,
+            itemBuilder: itemBuilder,
+            itemCount: itemCount,
+            separatorBuilder: (context, index) => SizedBox(
+              height: kPadding.h,
             ),
           ),
         ),

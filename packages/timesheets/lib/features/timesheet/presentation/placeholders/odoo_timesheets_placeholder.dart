@@ -3,7 +3,8 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class OdooTimesheetsPlaceHolder extends EmptyPlaceholder {
-  OdooTimesheetsPlaceHolder({super.key, super.onGetStarted})
+  OdooTimesheetsPlaceHolder(
+      {super.key, super.onGetStarted, required super.message})
       : super(
           icon: DecoratedSvgImage(
             image: Assets.iconsOdooLogo,
@@ -11,6 +12,5 @@ class OdooTimesheetsPlaceHolder extends EmptyPlaceholder {
             width: 150.h,
           ),
           title: 'You don\'t have any Odoo timesheets',
-          message: 'Synchronize with odoo to get started',
         );
 }

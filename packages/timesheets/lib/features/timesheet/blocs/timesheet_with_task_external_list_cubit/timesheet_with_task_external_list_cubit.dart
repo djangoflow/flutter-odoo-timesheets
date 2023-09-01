@@ -86,3 +86,18 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
     }
   }
 }
+
+class FavoriteTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  FavoriteTimesheetWithTaskExternalListCubit(super.timesheetRepository);
+}
+
+class LocalTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  LocalTimesheetWithTaskExternalListCubit(super.timesheetRepository);
+}
+
+class OdooTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  OdooTimesheetWithTaskExternalListCubit(super.timesheetRepository);
+}
