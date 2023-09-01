@@ -22,6 +22,21 @@ class FavoriteProjectsTabPage extends StatelessWidget
   Widget build(BuildContext context) =>
       ProjectListView<FavoriteProjectListCubit>(
         key: const ValueKey('fav_projects_page'),
-        emptyBuilder: (context, state) => FavoriteProjectsPlaceHolder(),
+        emptyBuilder: (context, state) => FavoriteProjectsPlaceHolder(
+          onGetStarted: () async {
+            final router = context.router;
+            final favoriteProjectListCubit =
+                context.read<FavoriteProjectListCubit>();
+
+            final result = await router.push(
+              ProjectAddRoute(
+                isInitiallyFavorite: true,
+              ),
+            );
+            if (result != null && result is bool && result == true) {
+              favoriteProjectListCubit.reload();
+            }
+          },
+        ),
       );
 }
