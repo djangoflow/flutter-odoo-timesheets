@@ -49,6 +49,9 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
         ),
       );
 
+  Future<ProjectWithExternalData> getProjectWithExternalDataById(int id) =>
+      projectsDao.getProjectWithExternalDataById(id);
+
   Future<List<ProjectWithExternalData>> getPaginatedProjectsWithExternalData({
     int? offset,
     int? limit,

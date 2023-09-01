@@ -11,8 +11,10 @@ import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class TaskListView extends StatelessWidget {
-  const TaskListView({super.key, required this.taskListFilter});
+  const TaskListView(
+      {super.key, required this.taskListFilter, required this.emptyBuilder});
   final TaskListFilter taskListFilter;
+  final Widget Function(BuildContext context, TaskListState state) emptyBuilder;
 
   @override
   Widget build(BuildContext context) => ContinuousListViewBlocBuilder<
@@ -23,10 +25,7 @@ class TaskListView extends StatelessWidget {
         )..load(taskListFilter),
         withRefreshIndicator: true,
         loadingBuilder: (_, __) => const SizedBox(),
-        // emptyBuilder: (_, __) => const EmptyPlaceholder(
-        //   message: 'You have no tasks yet for this project',
-        // ),
-        emptyBuilder: (context, state) => SizedBox(),
+        emptyBuilder: emptyBuilder,
         errorBuilder: (_, __) => const Center(
           child: Text('Error occurred!'),
         ),

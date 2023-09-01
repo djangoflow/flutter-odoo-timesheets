@@ -94,6 +94,21 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
     return projectsWithTaskCount;
   }
 
+  Future<ProjectWithExternalData> getProjectWithExternalDataById(int id) async {
+    final project = await getProjectById(id);
+    if (project == null) {
+      throw Exception('Project with id $id not found');
+    }
+
+    final externalProject = await (select(externalProjects)
+          ..where((p) => p.internalId.equals(id)))
+        .getSingleOrNull();
+    return ProjectWithExternalData(
+      project: project,
+      externalProject: externalProject,
+    );
+  }
+
   Future<List<ProjectWithExternalData>> getPaginatedProjectsWithExternalData({
     int? limit,
     int? offset,

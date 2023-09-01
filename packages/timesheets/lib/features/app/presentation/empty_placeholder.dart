@@ -9,12 +9,16 @@ class EmptyPlaceholder extends StatelessWidget {
     required this.icon,
     required this.title,
     this.onGetStarted,
+    this.height = .7,
+    this.buttonText = 'Get Started',
   });
   final Widget icon;
   final String title;
   final String message;
 
   final void Function()? onGetStarted;
+  final String buttonText;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class EmptyPlaceholder extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     return SizedBox(
-      height: .7.sh,
+      height: height.sh,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -50,7 +54,7 @@ class EmptyPlaceholder extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onGetStarted,
-                child: const Text('Get Started'),
+                child: Text(buttonText),
               ),
             ),
         ],
