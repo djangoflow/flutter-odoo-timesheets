@@ -93,7 +93,7 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                         ),
                       ),
                       text: project.name ?? '',
-                      maxLines: 2,
+                      maxLines: 1,
                       // textStyle: const TextStyle(height: 1),
                     ),
                     if (task.dateDeadline != null) ...[
