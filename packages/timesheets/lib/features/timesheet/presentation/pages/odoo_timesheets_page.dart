@@ -35,11 +35,12 @@ class OdooTimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
           builder: (initialOrderingFilter) =>
               TimesheetListView<OdooTimesheetWithTaskExternalListCubit>(
                   emptyBuilder: (context, state) {
-            final isAuthenticated = context.select(
-              (AuthCubit cubit) => cubit.state.connectedBackends
-                  .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                  .isNotEmpty,
-            );
+            final isAuthenticated = context
+                .watch<AuthCubit>()
+                .state
+                .connectedBackends
+                .getBackendsFilteredByType(BackendTypeEnum.odoo)
+                .isNotEmpty;
 
             return OdooTimesheetsPlaceHolder(
               message: isAuthenticated

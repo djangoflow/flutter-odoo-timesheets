@@ -26,11 +26,12 @@ class OdooProjectsTabPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) => ProjectListView<OdooProjectListCubit>(
         key: const ValueKey('synced_projects_page'),
         emptyBuilder: (context, state) {
-          final isAuthenticated = context.select(
-            (AuthCubit cubit) => cubit.state.connectedBackends
-                .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                .isNotEmpty,
-          );
+          final isAuthenticated = context
+              .watch<AuthCubit>()
+              .state
+              .connectedBackends
+              .getBackendsFilteredByType(BackendTypeEnum.odoo)
+              .isNotEmpty;
 
           return OdooProjectsPlaceHolder(
             message: isAuthenticated
