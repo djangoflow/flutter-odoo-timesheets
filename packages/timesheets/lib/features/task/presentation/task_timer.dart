@@ -396,22 +396,22 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
           widget.animationController.reverse();
         }
       },
-      child: Theme(
-        data: theme.copyWith(
-          iconButtonTheme: IconButtonThemeData(
-              style: theme.iconButtonTheme.style?.copyWith(
-            backgroundColor: MaterialStatePropertyAll(
-              ElevationOverlay.applySurfaceTint(
-                theme.colorScheme.primaryContainer,
-                theme.colorScheme.surfaceTint,
-                2,
+      child: IconButtonTheme(
+        data: IconButtonThemeData(
+          style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
+                // backgroundColor: MaterialStatePropertyAll(
+                //   ElevationOverlay.applySurfaceTint(
+                //     theme.colorScheme.primaryContainer,
+                //     theme.colorScheme.surfaceTint,
+                //     2,
+                //   ),
+                // ),
+                shape: const MaterialStatePropertyAll(StadiumBorder()),
+                maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
+                minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
+                padding:
+                    const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
               ),
-            ),
-            shape: const MaterialStatePropertyAll(StadiumBorder()),
-            maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
-            minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
-            padding: const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
-          )),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,62 +421,56 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
                   .timerString(DurationFormat.hoursMinutesSeconds),
               style: textTheme.displaySmall,
             ),
-            Padding(
-              padding: widget.padding ??
-                  EdgeInsets.symmetric(
-                    horizontal: kPadding.w * 2,
-                  ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: AnimatedIcon(
-                      icon: AnimatedIcons.play_pause,
-                      size: kPadding.w * 3,
-                      progress: animation,
-                      color: theme.colorScheme.primary,
-                    ),
-                    onPressed: widget.disabled
-                        ? null
-                        : () {
-                            final timerCubit = context.read<TimerCubit>();
-                            if (timerStatus == TimesheetStatusEnum.running) {
-                              timerCubit.pauseTimer();
-                            } else if ([
-                              TimesheetStatusEnum.initial,
-                              TimesheetStatusEnum.paused,
-                              TimesheetStatusEnum.pausedByForce,
-                              TimesheetStatusEnum.stopped
-                            ].contains(timerStatus)) {
-                              if (timerStatus == TimesheetStatusEnum.initial) {
-                                timerCubit.startTimer();
-                              } else {
-                                timerCubit.resumeTimer();
-                              }
-                            }
-                          },
-                  ),
-                  SizedBox(
-                    width: kPadding.w * 2,
-                  ),
-                  IconButton(
-                    disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.play_pause,
+                    size: kPadding.w * 3,
+                    progress: animation,
                     color: theme.colorScheme.primary,
-                    icon: Icon(
-                      Icons.stop,
-                      size: kPadding.w * 3,
-                    ),
-                    onPressed: widget.disabled ||
-                            timerStatus == TimesheetStatusEnum.initial
-                        ? null
-                        : () {
-                            final timerCubit = context.read<TimerCubit>();
-                            timerCubit.stopTimer();
-                          },
                   ),
-                ],
-              ),
+                  onPressed: widget.disabled
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          if (timerStatus == TimesheetStatusEnum.running) {
+                            timerCubit.pauseTimer();
+                          } else if ([
+                            TimesheetStatusEnum.initial,
+                            TimesheetStatusEnum.paused,
+                            TimesheetStatusEnum.pausedByForce,
+                            TimesheetStatusEnum.stopped
+                          ].contains(timerStatus)) {
+                            if (timerStatus == TimesheetStatusEnum.initial) {
+                              timerCubit.startTimer();
+                            } else {
+                              timerCubit.resumeTimer();
+                            }
+                          }
+                        },
+                ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
+                IconButton(
+                  disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+                  color: theme.colorScheme.primary,
+                  icon: Icon(
+                    Icons.stop,
+                    size: kPadding.w * 3,
+                  ),
+                  onPressed: widget.disabled ||
+                          timerStatus == TimesheetStatusEnum.initial
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          timerCubit.stopTimer();
+                        },
+                ),
+              ],
             ),
           ],
         ),
