@@ -22,7 +22,6 @@ class ProjectsTabRouterPage extends StatelessWidget
       providers: [
         BlocProvider<FavoriteProjectListCubit>(
           create: (context) => FavoriteProjectListCubit(projectRepository),
-          lazy: false,
         ),
         BlocProvider<OdooProjectListCubit>(
           create: (context) => OdooProjectListCubit(projectRepository),
