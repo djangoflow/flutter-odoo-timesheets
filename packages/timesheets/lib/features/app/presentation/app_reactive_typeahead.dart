@@ -58,6 +58,7 @@ class _AppReactiveTypeAheadState<T, V>
             ),
             itemBuilder: (context, index) => suggestions.elementAt(index),
             itemCount: suggestions.length,
+            shrinkWrap: true,
           ),
         ),
         suggestionsBoxController: widget.suggestionsBoxController,
