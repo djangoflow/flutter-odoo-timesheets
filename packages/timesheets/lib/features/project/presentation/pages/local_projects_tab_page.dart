@@ -21,6 +21,18 @@ class LocalProjectsTabPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) => ProjectListView<LocalProjectListCubit>(
         key: const ValueKey('local_projects_page'),
-        emptyBuilder: (context, state) => LocalProjectsPlaceHolder(),
+        emptyBuilder: (context, state) => LocalProjectsPlaceHolder(
+          onGetStarted: () async {
+            final router = context.router;
+            final localProjectListCubit = context.read<LocalProjectListCubit>();
+
+            final result = await router.push(
+              ProjectAddRoute(),
+            );
+            if (result != null && result is bool && result == true) {
+              localProjectListCubit.reload();
+            }
+          },
+        ),
       );
 }
