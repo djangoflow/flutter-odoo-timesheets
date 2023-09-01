@@ -16,6 +16,7 @@ class AppReactiveTypeAhead<T, V> extends StatefulWidget {
     required this.stringify,
     required this.suggestionsCallback,
     required this.itemBuilder,
+    this.suggestionsBoxController,
   });
   final String formControlName;
   final Map<String, String Function(Object)>? validationMessages;
@@ -26,6 +27,7 @@ class AppReactiveTypeAhead<T, V> extends StatefulWidget {
   final String Function(V) stringify;
   final FutureOr<Iterable<V>> Function(String) suggestionsCallback;
   final Widget Function(BuildContext, V) itemBuilder;
+  final SuggestionsBoxController? suggestionsBoxController;
   @override
   State<AppReactiveTypeAhead<T, V>> createState() =>
       _AppReactiveTypeAheadState<T, V>();
@@ -58,6 +60,7 @@ class _AppReactiveTypeAheadState<T, V>
             itemCount: suggestions.length,
           ),
         ),
+        suggestionsBoxController: widget.suggestionsBoxController,
         hideOnEmpty: false,
         hideOnLoading: false,
         keepSuggestionsOnLoading: true,
