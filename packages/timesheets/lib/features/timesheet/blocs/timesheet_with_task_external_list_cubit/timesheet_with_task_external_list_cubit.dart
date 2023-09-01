@@ -9,7 +9,8 @@ typedef TimesheetWithTaskExternalListState = Data<
     List<TimesheetWithTaskExternalData>, TimesheetWithTaskExternalListFilter>;
 
 class TimesheetWithTaskExternalListCubit extends ListCubit<
-    TimesheetWithTaskExternalData, TimesheetWithTaskExternalListFilter> {
+    TimesheetWithTaskExternalData,
+    TimesheetWithTaskExternalListFilter> with ActiveStateMixin {
   final TimesheetRepository timesheetRepository;
 
   TimesheetWithTaskExternalListCubit(this.timesheetRepository)
@@ -64,10 +65,13 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
 
   // Need to implement this method
   Future<void> updateTimesheet(Timesheet timesheet) async {
+    if (isActive == false) {
+      return;
+    }
     await timesheetRepository.update(timesheet);
     final updatedTimesheet =
         await timesheetRepository.getItemById(timesheet.id);
-    if (updatedTimesheet != null) {
+    if (updatedTimesheet != null && isActive) {
       emit(
         state.copyWith(
           data: state.data!

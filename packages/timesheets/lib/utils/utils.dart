@@ -10,3 +10,4 @@ export 'extensions/odoo_timesheet_extensions.dart';
 export 'extensions/int_extensions.dart';
 export 'extensions/color_extensions.dart';
 export 'extensions/date_time_extensions.dart';
+export 'mixins/cubit_active_state_mixin.dart';

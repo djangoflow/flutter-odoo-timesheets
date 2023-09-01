@@ -30,6 +30,16 @@ class FavoriteTimesheetsPage extends StatelessWidget
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('fav_timesheets_builder'),
         appVisibilityKey: const ValueKey('fav_timesheets_page'),
+        onVisibilityChanged: (isVisible) {
+          final cubit =
+              context.read<FavoriteTimesheetWithTaskExternalListCubit>();
+          if (isVisible == true) {
+            cubit.reactivate();
+            cubit.reload();
+          } else {
+            cubit.deactivate();
+          }
+        },
         child: InitialTimesheetOrderingFilterWrapper(
           builder: (initialOrderingFilter) =>
               TimesheetListView<FavoriteTimesheetWithTaskExternalListCubit>(

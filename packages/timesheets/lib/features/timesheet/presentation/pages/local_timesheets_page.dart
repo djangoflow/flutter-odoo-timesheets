@@ -30,6 +30,15 @@ class LocalTimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('local_timesheets_builder'),
         appVisibilityKey: const ValueKey('local_timesheets_page'),
+        onVisibilityChanged: (isVisible) {
+          final cubit = context.read<LocalTimesheetWithTaskExternalListCubit>();
+          if (isVisible == true) {
+            cubit.reactivate();
+            cubit.reload();
+          } else {
+            cubit.deactivate();
+          }
+        },
         child: InitialTimesheetOrderingFilterWrapper(
           builder: (initialOrderingFilter) =>
               TimesheetListView<LocalTimesheetWithTaskExternalListCubit>(

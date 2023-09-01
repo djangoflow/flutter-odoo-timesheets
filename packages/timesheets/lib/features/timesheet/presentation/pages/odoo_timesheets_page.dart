@@ -31,6 +31,15 @@ class OdooTimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) => AppVisiblityBuilder(
         key: const ValueKey('synced_timesheets_builder'),
         appVisibilityKey: const ValueKey('synced_timesheets_page'),
+        onVisibilityChanged: (isVisible) {
+          final cubit = context.read<OdooTimesheetWithTaskExternalListCubit>();
+          if (isVisible == true) {
+            cubit.reactivate();
+            cubit.reload();
+          } else {
+            cubit.deactivate();
+          }
+        },
         child: InitialTimesheetOrderingFilterWrapper(
           builder: (initialOrderingFilter) =>
               TimesheetListView<OdooTimesheetWithTaskExternalListCubit>(
