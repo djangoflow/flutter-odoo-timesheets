@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,8 +48,12 @@ class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
               ],
             ),
             subtitle: Text('${project.taskCount ?? 0} Tasks'),
-            onTap: () {
-              context.router.push(ProjectDetailsRoute(projectId: project.id));
+            onTap: () async {
+              final cubit = context.read<T>();
+              await context.router
+                  .push(ProjectDetailsRoute(projectId: project.id));
+
+              cubit.reload();
             },
           );
         },

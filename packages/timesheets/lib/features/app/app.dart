@@ -21,3 +21,4 @@ export 'presentation/app_glass_container.dart';
 export 'presentation/app_reactive_typeahead.dart';
 export 'blocs/expansion_list_cubit.dart';
 export 'blocs/tabbed_ordering_filter_cubit.dart';
+export 'data/models/options.dart';

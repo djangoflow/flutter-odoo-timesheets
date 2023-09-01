@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
 class AppDialog extends StatelessWidget {
@@ -20,6 +21,39 @@ class AppDialog extends StatelessWidget {
                 context.router.pop();
               },
               child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+
+  static Future<bool?> showConfirmationDialog({
+    required BuildContext context,
+    String? affirmativeText,
+    String? negativeText,
+    required String titleText,
+    required String contentText,
+  }) =>
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(titleText),
+          content: Text(
+            contentText,
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(negativeText ?? 'No',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  )),
+              onPressed: () => context.router.pop(false),
+            ),
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              child: Text(affirmativeText ?? 'Yes'),
+              onPressed: () {
+                context.router.pop(true);
+              },
             ),
           ],
         ),
