@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.djangoflow.odoo.timesheets">
+    package="com.apexive.timesheet">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:allowBackup="false"

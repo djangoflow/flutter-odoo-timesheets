@@ -1,4 +1,4 @@
-package com.djangoflow.odoo.timesheets
+package com.apexive.timesheet
 
 import io.flutter.embedding.android.FlutterActivity
 
