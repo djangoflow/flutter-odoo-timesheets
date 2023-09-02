@@ -34,4 +34,13 @@ class ExternalProjectRepository
 
   Future<List<ExternalProject>> getExternalProjectsByBackendId(int backendId) =>
       externalProjectsDao.getExternalProjectsByBackendId(backendId);
+
+  Future<List<ExternalProject>> getOrphanedExternalProjectsForBackend({
+    required int backendId,
+    required List<int> excludedExternalIds,
+  }) =>
+      externalProjectsDao.getOrphanedExternalProjectsForBackend(
+        backendId: backendId,
+        excludedExternalIds: excludedExternalIds,
+      );
 }

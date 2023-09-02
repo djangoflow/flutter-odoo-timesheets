@@ -4,7 +4,7 @@ import 'package:timesheets/features/external/external.dart';
 
 part 'external_tasks_dao.g.dart';
 
-@DriftAccessor(tables: [ExternalTasks])
+@DriftAccessor(tables: [ExternalTasks, ExternalProjects])
 class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
     with _$ExternalTasksDaoMixin {
   ExternalTasksDao(AppDatabase db) : super(db);
@@ -51,4 +51,23 @@ class ExternalTasksDao extends DatabaseAccessor<AppDatabase>
   Future<void> batchDeleteExternalTasksByIds(List<int> ids) => batch((batch) {
         batch.deleteWhere(externalTasks, (t) => t.id.isIn(ids));
       });
+
+  Future<List<ExternalTask>> getOrphanedExternalTasksForBackend(
+      {required int backendId, required List<int> excludedExternalIds}) async {
+    final query = select(externalTasks).join([
+      innerJoin(tasks, tasks.id.equalsExp(externalTasks.internalId)),
+      innerJoin(externalProjects,
+          externalProjects.internalId.equalsExp(tasks.projectId)),
+    ])
+      ..where(externalProjects.backendId.equals(backendId))
+      ..where(
+        externalTasks.externalId.isNotIn(excludedExternalIds),
+      );
+
+    final rows = await query.get();
+    return rows.map((row) {
+      final externalTask = row.readTable(externalTasks);
+      return externalTask;
+    }).toList();
+  }
 }

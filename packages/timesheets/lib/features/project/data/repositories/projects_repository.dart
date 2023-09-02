@@ -71,7 +71,7 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
       {required int backendId, required List<OdooProject> odooProjects}) async {
     final odooProjectIds = odooProjects.map((e) => e.id).toList();
     final externalProjects =
-        await externalProjectsDao.getExternalProjectsByIdsAndBackendId(
+        await externalProjectsDao.getExternalProjectsByBackendAndIds(
       backendId: backendId,
       externalIds: odooProjectIds,
     );

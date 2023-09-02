@@ -52,6 +52,13 @@ class SyncCubit extends Cubit<SyncState> {
         odooProjects: odooProjects,
       );
 
+      // DELETED Projects
+      final orphanedExternalProjects =
+          await externalProjectRepository.getOrphanedExternalProjectsForBackend(
+        backendId: backendId,
+        excludedExternalIds: odooProjects.map((e) => e.id).toList(),
+      );
+
       // Fetch tasks from Odoo and insert/update in the local database
       final externalTaskIds = <int>[];
 
@@ -63,6 +70,15 @@ class SyncCubit extends Cubit<SyncState> {
         backendId: backendId,
         taskIds: externalTaskIds,
       );
+      try {
+        final orphaedExternalTasks =
+            await externalTaskRepository.getOrphanedExternalTasksForBackend(
+                backendId: backendId, excludedIds: externalTaskIds);
+        print('We are orphaed tasks :(');
+        print(orphaedExternalTasks);
+      } catch (e) {
+        print(e);
+      }
 
       final odooTasksWithInternalProjects = <OdooTask, Project>{};
 
