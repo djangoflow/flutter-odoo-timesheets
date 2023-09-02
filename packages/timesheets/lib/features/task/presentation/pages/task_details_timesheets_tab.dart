@@ -34,6 +34,8 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
 
           final timesheets = state.timesheets;
           final activeTimesheets = state.activeTimesheets;
+          final externalTask =
+              taskWithProjectExternalData?.taskWithExternalData.externalTask;
 
           Widget body;
 
@@ -179,14 +181,15 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                                 if (timerState.status ==
                                     TimesheetStatusEnum.stopped) {
                                   if (context.mounted) {
-                                    if (context
-                                            .read<AuthCubit>()
-                                            .state
-                                            .connectedBackends
-                                            .getBackendsFilteredByType(
-                                                BackendTypeEnum.odoo)
-                                            .isNotEmpty &&
-                                        backendId != null) {
+                                    final odooBackends = context
+                                        .read<AuthCubit>()
+                                        .state
+                                        .connectedBackends
+                                        .getBackendsFilteredByType(
+                                            BackendTypeEnum.odoo);
+                                    if (odooBackends.isNotEmpty &&
+                                        backendId != null &&
+                                        externalTask != null) {
                                       _syncTimesheet(
                                         context: context,
                                         timesheet: updatableTimesheet,

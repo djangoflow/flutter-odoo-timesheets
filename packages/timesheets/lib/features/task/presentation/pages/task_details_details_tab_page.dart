@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,12 @@ class TaskDetailsDetailsTabPage extends StatelessWidget {
                 .taskWithProjectExternalData?.projectWithExternalData.project;
             final task =
                 state.taskWithProjectExternalData?.taskWithExternalData.task;
+            final hasExternalTask = state.taskWithProjectExternalData
+                    ?.taskWithExternalData.externalTask !=
+                null;
+            final hasExternalProject = state.taskWithProjectExternalData
+                    ?.projectWithExternalData.externalProject !=
+                null;
 
             return ListView(
               padding: EdgeInsets.all(kPadding.h * 2),
@@ -35,6 +42,8 @@ class TaskDetailsDetailsTabPage extends StatelessWidget {
                     child: _TaskDetailsCard(
                       project: project,
                       task: task,
+                      hasExternalTask: hasExternalTask,
+                      hasExternalProject: hasExternalProject,
                     ),
                   ),
                 if (task?.description != null && task!.description!.isNotEmpty)
@@ -69,9 +78,15 @@ class _DescriptionCard extends StatelessWidget {
 }
 
 class _TaskDetailsCard extends StatelessWidget {
-  const _TaskDetailsCard({required this.project, required this.task});
+  const _TaskDetailsCard(
+      {required this.project,
+      required this.task,
+      required this.hasExternalProject,
+      required this.hasExternalTask});
   final Project project;
   final Task task;
+  final bool hasExternalProject;
+  final bool hasExternalTask;
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +113,17 @@ class _TaskDetailsCard extends StatelessWidget {
                   SizedBox(
                     width: kPadding.w,
                   ),
-                  Text(
-                    project.name ?? '',
-                    style: textTheme.titleMedium,
+                  _StorageIcon(
+                    isExternal: hasExternalProject,
+                  ),
+                  SizedBox(
+                    width: kPadding.w,
+                  ),
+                  Flexible(
+                    child: Text(
+                      project.name ?? '',
+                      style: textTheme.titleMedium,
+                    ),
                   )
                 ],
               ),
@@ -111,9 +134,21 @@ class _TaskDetailsCard extends StatelessWidget {
               ),
               _TaskDetailsItem(
                 title: 'Task',
-                child: Text(
-                  task.name!,
-                  style: textTheme.titleMedium,
+                child: Row(
+                  children: [
+                    _StorageIcon(
+                      isExternal: hasExternalTask,
+                    ),
+                    SizedBox(
+                      width: kPadding.w,
+                    ),
+                    Flexible(
+                      child: Text(
+                        task.name!,
+                        style: textTheme.titleMedium,
+                      ),
+                    ),
+                  ],
                 ),
               )
             ],
@@ -155,4 +190,17 @@ class _TaskDetailsItem extends StatelessWidget {
           child,
         ],
       );
+}
+
+class _StorageIcon extends StatelessWidget {
+  const _StorageIcon({super.key, required this.isExternal});
+  final bool isExternal;
+  @override
+  Widget build(BuildContext context) => isExternal
+      ? const Icon(
+          CupertinoIcons.cloud_fill,
+        )
+      : const Icon(
+          CupertinoIcons.floppy_disk,
+        );
 }
