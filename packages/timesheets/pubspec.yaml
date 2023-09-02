@@ -47,7 +47,7 @@ dependencies:
     git:
       url: https://github.com/djangoflow/reactive_forms_widgets.git
       path: packages/reactive_flutter_typeahead
-      ref: d81877a158f6ba8746725adb007a0962a549c3f7
+      ref: 9310c439ca4fcba8bc95b85564674e5cfb2976ae
   reactive_forms: ^16.1.0
   responsive_framework: ^0.2.0
   rich_readmore: ^1.0.6
