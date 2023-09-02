@@ -53,280 +53,267 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
             onRefresh: () async {
               await context.read<TaskDetailsCubit>().loadTaskDetails();
             },
-            child: ListView(
-              padding: EdgeInsets.symmetric(
-                horizontal: kPadding.h * 2,
-                vertical: kPadding.h * 3,
-              ),
+            child: Stack(
               children: [
-                if (state.isSyncing) const LinearProgressIndicator(),
-                if (activeTimesheets.isEmpty)
-                  Column(
-                    children: [
-                      Text(
-                        'No active timesheets, create a timer to begin!',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      SizedBox(
-                        height: kPadding.h * 2,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () async {
-                            final taskDetailsCubit =
-                                context.read<TaskDetailsCubit>();
-                            final result = await context.router.push(
-                              TimesheetRouter(children: [
-                                TimesheetAddRoute(
-                                  disableProjectTaskSelection: false,
-                                  taskWithProjectExternalData:
-                                      taskWithProjectExternalData,
-                                ),
-                              ]),
-                            );
-                            if (result != null && result is bool && result) {
-                              await taskDetailsCubit.loadTaskDetails();
-                            }
-                          },
-                          child: const Text('Create Timer'),
-                        ),
-                      ),
-                    ],
-                  )
-                else
-                  BlocProvider<ExpansionListCubit>(
-                    create: (context) => ExpansionListCubit()
-                      ..updateList(
-                        activeTimesheets.map((e) => true).toList(),
-                      ),
-                    child: BlocBuilder<ExpansionListCubit, List<bool>>(
-                      builder: (context, expansionListState) =>
-                          ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: activeTimesheets.length,
-                        separatorBuilder: (context, index) => SizedBox(
-                          height: kPadding.h,
-                        ),
-                        itemBuilder: (context, index) {
-                          final timesheetWithExternalData =
-                              activeTimesheets[index];
-                          final timesheet = timesheetWithExternalData.timesheet;
-                          final elapsedTime = timesheet.elapsedTime;
-                          final backendId = externalProject?.backendId;
-
-                          return TimesheetExpansionTile(
-                            key: ValueKey(
-                              timesheet.id,
-                            ),
-                            initiallyExpanded: expansionListState[index],
-                            timesheet: timesheet,
-                            onExpansionChanged: (p0) {
-                              context
-                                  .read<ExpansionListCubit>()
-                                  .updateValue(index, p0);
-                            },
-                            // TODO fix this
-                            subtitle: TaskTimer.large(
-                              key: ValueKey(
-                                [
-                                  TimesheetStatusEnum.initial,
-                                ].contains(timesheet.currentStatus),
-                              ),
-                              disabled: state.isSyncing,
-                              elapsedTime: elapsedTime,
-                              initialTimerStatus: timesheet.currentStatus,
-                              onTimerResume: (context) {
-                                final currentlyElapsedTime =
-                                    timesheet.elapsedTime;
-                                context.read<TimerCubit>().elapsedTime =
-                                    Duration(
-                                  seconds: currentlyElapsedTime,
-                                );
-                              },
-                              onTimerStateChange: (timercontext, timerState,
-                                  tickDurationInSeconds) async {
-                                final taskDetailsCubit =
-                                    context.read<TaskDetailsCubit>();
-
-                                final isRunning = timerState.status ==
-                                    TimesheetStatusEnum.running;
-                                final updatableSeconds =
-                                    (isRunning ? tickDurationInSeconds : 0);
-                                final startTimeValue =
-                                    (isRunning && timesheet.startTime == null)
-                                        ? DateTime.now()
-                                        : timesheet.startTime;
-
-                                final lastTickedValue = isRunning
-                                    ? DateTime.now()
-                                    : timesheet.lastTicked;
-                                Timesheet updatableTimesheet =
-                                    timesheet.copyWith(
-                                  unitAmount: Value(
-                                      (elapsedTime + updatableSeconds)
-                                          .toUnitAmount()),
-                                  currentStatus: timerState.status,
-                                  startTime: Value(startTimeValue),
-                                  lastTicked: Value(lastTickedValue),
-                                );
-                                await taskDetailsCubit
-                                    .updateTimesheet(updatableTimesheet);
-
-                                // update task locally in task list cubit
-
-                                if (timerState.status ==
-                                        TimesheetStatusEnum.stopped &&
-                                    context.mounted) {
-                                  await _onTimerStopped(
-                                    context: context,
-                                    updatableTimesheet: updatableTimesheet,
-                                    backendId: backendId,
-                                    externalTask: externalTask,
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                ListView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: kPadding.h * 2,
+                    vertical: kPadding.h * 3,
                   ),
-                SizedBox(
-                  height: kPadding.h,
-                ),
-                BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, authState) {
-                    if (timesheets.isNotEmpty &&
-                        externalProject?.backendId != null &&
-                        timesheets.any(
-                          (element) => element.externalTimesheet == null,
-                        )) {
-                      return Column(
+                  children: [
+                    if (activeTimesheets.isEmpty)
+                      Column(
                         children: [
+                          Text(
+                            'No active timesheets, create a timer to begin!',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
                           SizedBox(
                             height: kPadding.h * 2,
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: Stack(
-                              children: [
-                                if (!state.isSyncing)
-                                  LinearProgressBuilder(
-                                    action: (_) async {
-                                      final taskDetailsCubit =
-                                          context.read<TaskDetailsCubit>();
-
-                                      await taskDetailsCubit.syncAllTimesheets(
-                                        externalProject!.backendId!,
-                                      );
-                                    },
-                                    onSuccess: () =>
-                                        AppDialog.showSuccessDialog(
-                                      context: context,
-                                      title: 'Success',
-                                      content:
-                                          'Timesheets synced successfully, cheers!',
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                final taskDetailsCubit =
+                                    context.read<TaskDetailsCubit>();
+                                final result = await context.router.push(
+                                  TimesheetRouter(children: [
+                                    TimesheetAddRoute(
+                                      disableProjectTaskSelection: false,
+                                      taskWithProjectExternalData:
+                                          taskWithProjectExternalData,
                                     ),
-                                    builder: (context, action, error) =>
-                                        SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton.icon(
-                                        icon: const Icon(
-                                            CupertinoIcons.arrow_2_circlepath),
-                                        onPressed: action,
-                                        label: const Text(
-                                            'Sync timesheets with Odoo'),
-                                      ),
-                                    ),
-                                  ),
-                                if (state.isSyncing)
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Skeletonizer(
-                                      enabled: true,
-                                      child: ElevatedButton.icon(
-                                        onPressed: null,
-                                        label: const Skeleton.keep(
-                                          child: Text(
-                                            'Syncing',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          CupertinoIcons.arrow_2_circlepath,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (state.isSyncing)
-                                  Positioned(
-                                    top: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Lottie.asset(
-                                            Assets.animationSyncing,
-                                            height: kPadding * 3,
-                                            width: kPadding * 3,
-                                            repeat: true,
-                                          ),
-                                          SizedBox(
-                                            width: kPadding.w,
-                                          ),
-                                          Text(
-                                            'Syncing...',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                              ],
+                                  ]),
+                                );
+                                if (result != null &&
+                                    result is bool &&
+                                    result) {
+                                  await taskDetailsCubit.loadTaskDetails();
+                                }
+                              },
+                              child: const Text('Create Timer'),
                             ),
                           ),
-                          SizedBox(
-                            height: kPadding.h,
-                          ),
                         ],
-                      );
-                    }
+                      )
+                    else
+                      BlocProvider<ExpansionListCubit>(
+                        create: (context) => ExpansionListCubit()
+                          ..updateList(
+                            activeTimesheets.map((e) => true).toList(),
+                          ),
+                        child: BlocBuilder<ExpansionListCubit, List<bool>>(
+                          builder: (context, expansionListState) =>
+                              ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: activeTimesheets.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: kPadding.h,
+                            ),
+                            itemBuilder: (context, index) {
+                              final timesheetWithExternalData =
+                                  activeTimesheets[index];
+                              final timesheet =
+                                  timesheetWithExternalData.timesheet;
+                              final elapsedTime = timesheet.elapsedTime;
+                              final backendId = externalProject?.backendId;
 
-                    return const SizedBox();
-                  },
+                              return TimesheetExpansionTile(
+                                key: ValueKey(
+                                  timesheet.id,
+                                ),
+                                initiallyExpanded: expansionListState[index],
+                                timesheet: timesheet,
+                                onExpansionChanged: (p0) {
+                                  context
+                                      .read<ExpansionListCubit>()
+                                      .updateValue(index, p0);
+                                },
+                                // TODO fix this
+                                subtitle: TaskTimer.large(
+                                  key: ValueKey(
+                                    [
+                                      TimesheetStatusEnum.initial,
+                                    ].contains(timesheet.currentStatus),
+                                  ),
+                                  disabled: state.isSyncing,
+                                  elapsedTime: elapsedTime,
+                                  initialTimerStatus: timesheet.currentStatus,
+                                  onTimerResume: (context) {
+                                    final currentlyElapsedTime =
+                                        timesheet.elapsedTime;
+                                    context.read<TimerCubit>().elapsedTime =
+                                        Duration(
+                                      seconds: currentlyElapsedTime,
+                                    );
+                                  },
+                                  onTimerStateChange: (timercontext, timerState,
+                                      tickDurationInSeconds) async {
+                                    final taskDetailsCubit =
+                                        context.read<TaskDetailsCubit>();
+
+                                    final isRunning = timerState.status ==
+                                        TimesheetStatusEnum.running;
+                                    final updatableSeconds =
+                                        (isRunning ? tickDurationInSeconds : 0);
+                                    final startTimeValue = (isRunning &&
+                                            timesheet.startTime == null)
+                                        ? DateTime.now()
+                                        : timesheet.startTime;
+
+                                    final lastTickedValue = isRunning
+                                        ? DateTime.now()
+                                        : timesheet.lastTicked;
+                                    Timesheet updatableTimesheet =
+                                        timesheet.copyWith(
+                                      unitAmount: Value(
+                                          (elapsedTime + updatableSeconds)
+                                              .toUnitAmount()),
+                                      currentStatus: timerState.status,
+                                      startTime: Value(startTimeValue),
+                                      lastTicked: Value(lastTickedValue),
+                                    );
+                                    await taskDetailsCubit
+                                        .updateTimesheet(updatableTimesheet);
+
+                                    // update task locally in task list cubit
+
+                                    if (timerState.status ==
+                                            TimesheetStatusEnum.stopped &&
+                                        context.mounted) {
+                                      await _onTimerStopped(
+                                        context: context,
+                                        updatableTimesheet: updatableTimesheet,
+                                        backendId: backendId,
+                                        externalTask: externalTask,
+                                      );
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    SizedBox(
+                      height: kPadding.h,
+                    ),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, authState) {
+                        if (timesheets.isNotEmpty &&
+                            externalProject?.backendId != null &&
+                            timesheets.any(
+                              (element) => element.externalTimesheet == null,
+                            )) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: kPadding.h * 2,
+                              ),
+                              const Text(
+                                'There are some timesheets that are not synced',
+                              ),
+                              SizedBox(
+                                height: kPadding.h * 2,
+                              ),
+                              if (!state.isSyncing)
+                                LinearProgressBuilder(
+                                  action: (_) async {
+                                    final taskDetailsCubit =
+                                        context.read<TaskDetailsCubit>();
+
+                                    await taskDetailsCubit.syncAllTimesheets(
+                                      externalProject!.backendId!,
+                                    );
+                                  },
+                                  onSuccess: () => AppDialog.showSuccessDialog(
+                                    context: context,
+                                    title: 'Success',
+                                    content:
+                                        'Timesheets synced successfully, cheers!',
+                                  ),
+                                  builder: (context, action, error) => SizedBox(
+                                    key: const ValueKey('syncButton'),
+                                    width: double.infinity,
+                                    child: OutlinedButton.icon(
+                                      icon: const Icon(
+                                        CupertinoIcons.arrow_2_circlepath,
+                                      ),
+                                      onPressed: action,
+                                      label: const Text(
+                                        'Sync timesheets with Odoo',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (state.isSyncing)
+                                SizedBox(
+                                  width: double.infinity,
+                                  key: const ValueKey('syncSkeletonButton'),
+                                  child: Skeletonizer(
+                                    enabled: true,
+                                    // containersColor: Colors.black,
+                                    child: ElevatedButton.icon(
+                                      onPressed: null,
+                                      label: const Skeleton.keep(
+                                        child: Text(
+                                          'Syncing',
+                                        ),
+                                      ),
+                                      icon: Skeleton.keep(
+                                        child: Lottie.asset(
+                                          Assets.animationSyncing,
+                                          height: kPadding.h * 2.8,
+                                          width: kPadding.h * 2.8,
+                                          repeat: true,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              SizedBox(
+                                height: kPadding.h,
+                              ),
+                            ],
+                          );
+                        }
+
+                        return const SizedBox();
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: kPadding.w * 2,
+                        vertical: kPadding.h,
+                      ),
+                      child: Text(
+                        'Completed timesheets',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                    // if (timesheets.isEmpty)
+                    // const EmptyPlaceholder(
+                    //   message: 'Completed timesheets will appear here!',
+                    // )
+                    // else
+                    _TimesheetListView(
+                      key: ValueKey(timesheets),
+                      timesheets: timesheets,
+                      isSyncing: state.isSyncing,
+                      backendId: externalProject?.backendId,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: kPadding.w * 2,
-                    vertical: kPadding.h,
+                if (state.isSyncing)
+                  const Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: LinearProgressIndicator(),
                   ),
-                  child: Text(
-                    'Completed timesheets',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                // if (timesheets.isEmpty)
-                // const EmptyPlaceholder(
-                //   message: 'Completed timesheets will appear here!',
-                // )
-                // else
-                _TimesheetListView(
-                  key: ValueKey(timesheets),
-                  timesheets: timesheets,
-                  isSyncing: state.isSyncing,
-                  backendId: externalProject?.backendId,
-                ),
               ],
             ),
           );
