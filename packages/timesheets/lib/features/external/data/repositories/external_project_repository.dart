@@ -43,4 +43,8 @@ class ExternalProjectRepository
         backendId: backendId,
         excludedExternalIds: excludedExternalIds,
       );
+
+  Future<ExternalProject?> getExternalProjectByInternalId(
+          int internalProjectId) =>
+      externalProjectsDao.getExternalProjectByInternalId(internalProjectId);
 }

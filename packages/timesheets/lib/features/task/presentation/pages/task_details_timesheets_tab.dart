@@ -232,34 +232,58 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                                     );
                                   },
                                   onError: (error) async {
-                                    if (error is RecondNotFoundError) {
-                                      if (error.model == projectModel) {
-                                        final result = await _showActionSheet(
+                                    if (error is RecordNotFoundError) {
+                                      final taskDetailsCubit =
+                                          context.read<TaskDetailsCubit>();
+                                      final router = context.router;
+                                      final notFoundModel = error.model;
+                                      if ([projectModel, taskModel]
+                                          .contains(notFoundModel)) {
+                                        final result =
+                                            await _showOdooRecordDeletedAction(
                                           context,
                                           title:
-                                              'Project was deleted from Odoo!',
-                                          message:
-                                              'You can always merge local project with synced project later on.',
-                                          actions: [
-                                            _TaskStopAction.keepLocally,
-                                            _TaskStopAction.delete,
-                                          ],
+                                              '${projectModel == notFoundModel ? 'Project' : 'Task'} was deleted from Odoo!',
                                         );
-
-                                        print(result);
-                                      } else if (error.model == taskModel) {
-                                        final result = await _showActionSheet(
-                                          context,
-                                          title: 'Task was deleted from Odoo!',
-                                          message:
-                                              'You can always merge local project with synced project later on.',
-                                          actions: [
-                                            _TaskStopAction.keepLocally,
-                                            _TaskStopAction.delete,
-                                          ],
-                                        );
-
-                                        print(result);
+                                        if (result != null) {
+                                          if (notFoundModel == projectModel) {
+                                            switch (result) {
+                                              case _TaskStopAction.keepLocally:
+                                                await taskDetailsCubit
+                                                    .deleteExternalProject();
+                                                await taskDetailsCubit
+                                                    .deleteExternalTask();
+                                                await taskDetailsCubit
+                                                    .deleteExternalTimesheets();
+                                                taskDetailsCubit
+                                                    .loadTaskDetails();
+                                                break;
+                                              case _TaskStopAction.delete:
+                                                await taskDetailsCubit
+                                                    .deleteProject();
+                                                router.pop();
+                                                break;
+                                              default:
+                                            }
+                                          } else {
+                                            switch (result) {
+                                              case _TaskStopAction.keepLocally:
+                                                await taskDetailsCubit
+                                                    .deleteExternalTask();
+                                                await taskDetailsCubit
+                                                    .deleteExternalTimesheets();
+                                                taskDetailsCubit
+                                                    .loadTaskDetails();
+                                                break;
+                                              case _TaskStopAction.delete:
+                                                await taskDetailsCubit
+                                                    .deleteTask();
+                                                router.pop();
+                                                break;
+                                              default:
+                                            }
+                                          }
+                                        }
                                       } else {
                                         throw error;
                                       }
@@ -405,6 +429,19 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
       throw Exception('Failed to sync. But changes were saved locally.');
     }
   }
+
+  Future<_TaskStopAction?> _showOdooRecordDeletedAction(BuildContext context,
+          {required String title}) =>
+      _showActionSheet(
+        context,
+        title: title,
+        message:
+            'You can always merge local project and task with synced project later on.',
+        actions: [
+          _TaskStopAction.keepLocally,
+          _TaskStopAction.delete,
+        ],
+      );
 
   Future<_TaskStopAction?> _showActionSheet(BuildContext context,
           {required List<_TaskStopAction> actions,

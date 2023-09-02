@@ -15,6 +15,8 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   final TaskRepository taskRepository;
   final TimesheetRepository timesheetRepository;
   final ExternalTimesheetRepository externalTimesheetRepository;
+  final ExternalProjectRepository externalProjectRepository;
+  final ExternalTaskRepository externalTaskRepository;
   final OdooTimesheetRepository odooTimesheetRepository;
   final ProjectRepository projectRepository;
   int taskId;
@@ -25,6 +27,8 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     required this.odooTimesheetRepository,
     required this.projectRepository,
     required this.taskId,
+    required this.externalProjectRepository,
+    required this.externalTaskRepository,
   }) : super(
           TaskDetailsState.initial(),
         );
@@ -183,15 +187,11 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
   Future<void> deleteTask() async {
     await errorWrapper(() async {
       emit(TaskDetailsState.loading());
-      final project =
-          state.taskWithProjectExternalData?.projectWithExternalData.project;
-      if (project == null) {
-        throw Exception('Project not found');
+      final task = state.taskWithProjectExternalData?.taskWithExternalData.task;
+      if (task == null) {
+        throw Exception('Task not found');
       }
-      await projectRepository.delete(project);
-      emit(
-        TaskDetailsState.initial(),
-      );
+      await taskRepository.delete(task);
     });
   }
 
@@ -324,6 +324,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     }
   }
 
+  // TODO Separate this into [SyncCubit]
   Future<void> syncTimesheet(int timesheetId, int backendId) async {
     await errorWrapper(() async {
       emit(
@@ -395,5 +396,51 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     }
 
     return taskWithProjectExternalData;
+  }
+
+  Future<void> deleteExternalProject() async {
+    await errorWrapper(() async {
+      final externalProject = state
+          .taskWithProjectExternalData?.projectWithExternalData.externalProject;
+      if (externalProject == null) {
+        throw Exception('External project not found');
+      }
+      await externalProjectRepository.delete(externalProject);
+    });
+  }
+
+  Future<void> deleteExternalTask() async {
+    await errorWrapper(() async {
+      final externalTask =
+          state.taskWithProjectExternalData?.taskWithExternalData.externalTask;
+      if (externalTask == null) {
+        throw Exception('External task not found');
+      }
+
+      await externalTaskRepository.delete(externalTask);
+    });
+  }
+
+  Future<void> deleteProject() async {
+    await errorWrapper(() async {
+      final project =
+          state.taskWithProjectExternalData?.projectWithExternalData.project;
+      if (project == null) {
+        throw Exception('Project not found');
+      }
+      await projectRepository.delete(project);
+    });
+  }
+
+  Future<void> deleteExternalTimesheets() async {
+    await errorWrapper(() async {
+      final externalTimesheets = state.timesheets
+          .where((element) => element.externalTimesheet != null)
+          .toList();
+      for (final externalTimesheet in externalTimesheets) {
+        await externalTimesheetRepository
+            .delete(externalTimesheet.externalTimesheet!);
+      }
+    });
   }
 }

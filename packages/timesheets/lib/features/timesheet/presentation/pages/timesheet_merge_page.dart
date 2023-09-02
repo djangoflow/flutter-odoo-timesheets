@@ -7,6 +7,7 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/project/data/models/project_with_external_data.dart';
 import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 
 import 'package:timesheets/features/timesheet/presentation/timesheet_with_task_editor.dart';
@@ -63,7 +64,9 @@ class TimesheetMergePage extends StatelessWidget {
 
   Future<void> _mergeTimesheet(
       {required BuildContext context, required FormGroup form}) async {
-    final project = form.control(projectControlName).value as Project;
+    final project =
+        (form.control(projectControlName).value as ProjectWithExternalData)
+            .project;
     final task = form.control(taskControlName).value as Task;
     final description = form.control(descriptionControlName).value as String;
 

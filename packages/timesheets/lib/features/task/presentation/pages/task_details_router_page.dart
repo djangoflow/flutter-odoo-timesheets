@@ -22,6 +22,8 @@ class TaskDetailsRouterPage extends AutoRouter implements AutoRouteWrapper {
           projectRepository: context.read<ProjectRepository>(),
           externalTimesheetRepository:
               context.read<ExternalTimesheetRepository>(),
+          externalProjectRepository: context.read<ExternalProjectRepository>(),
+          externalTaskRepository: context.read<ExternalTaskRepository>(),
         )..loadTaskDetails(),
         child: this,
       );

@@ -47,4 +47,7 @@ class ExternalTaskRepository
           {required int backendId, required List<int> excludedIds}) =>
       externalTasksDao.getOrphanedExternalTasksForBackend(
           backendId: backendId, excludedExternalIds: excludedIds);
+
+  Future<ExternalTask?> getExternalTaskByInternalId(int internalId) =>
+      externalTasksDao.getExternalTaskByInternalId(internalId);
 }

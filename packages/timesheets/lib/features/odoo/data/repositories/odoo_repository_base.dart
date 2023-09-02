@@ -48,7 +48,7 @@ class OdooRpcRepositoryBase {
       if (error.code == 2) {
         final model = RecordExceptionUtils.extractRecordModel(error.text);
         final id = RecordExceptionUtils.extractRecordId(error.text);
-        return RecondNotFoundError(
+        return RecordNotFoundError(
           model: model,
           recordId: id,
         );

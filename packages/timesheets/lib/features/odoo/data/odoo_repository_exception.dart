@@ -31,10 +31,10 @@ class OdooRepositoryException implements Exception {
   final String message;
 }
 
-class RecondNotFoundError extends OdooRepositoryException {
+class RecordNotFoundError extends OdooRepositoryException {
   final String? model;
   final String? recordId;
-  const RecondNotFoundError({
+  const RecordNotFoundError({
     this.model,
     this.recordId,
   }) : super('Record not found');
