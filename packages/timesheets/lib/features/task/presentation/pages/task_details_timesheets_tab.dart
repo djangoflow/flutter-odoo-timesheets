@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -229,6 +231,42 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                                       externalProject!.backendId!,
                                     );
                                   },
+                                  onError: (error) async {
+                                    if (error is RecondNotFoundError) {
+                                      if (error.model == projectModel) {
+                                        final result = await _showActionSheet(
+                                          context,
+                                          title:
+                                              'Project was deleted from Odoo!',
+                                          message:
+                                              'You can always merge local project with synced project later on.',
+                                          actions: [
+                                            _TaskStopAction.keepLocally,
+                                            _TaskStopAction.delete,
+                                          ],
+                                        );
+
+                                        print(result);
+                                      } else if (error.model == taskModel) {
+                                        final result = await _showActionSheet(
+                                          context,
+                                          title: 'Task was deleted from Odoo!',
+                                          message:
+                                              'You can always merge local project with synced project later on.',
+                                          actions: [
+                                            _TaskStopAction.keepLocally,
+                                            _TaskStopAction.delete,
+                                          ],
+                                        );
+
+                                        print(result);
+                                      } else {
+                                        throw error;
+                                      }
+                                    } else {
+                                      throw error;
+                                    }
+                                  },
                                   onSuccess: () => AppDialog.showSuccessDialog(
                                     context: context,
                                     title: 'Success',
@@ -326,6 +364,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
   Future<void> _syncTimesheet({
     required BuildContext context,
     required Timesheet timesheet,
+    // if backendId is available then also try to sync with odoo as well as save locally.
     int? backendId,
   }) async {
     final taskDetailsCubit = context.read<TaskDetailsCubit>();
@@ -334,6 +373,10 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
     }
     try {
       await taskDetailsCubit.stopWorkingOnTimesheet(timesheet.id);
+    } catch (e) {
+      rethrow;
+    }
+    try {
       if (backendId != null) {
         await taskDetailsCubit.syncTimesheet(timesheet.id, backendId);
       }
@@ -358,36 +401,57 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
         }
         await taskDetailsCubit.loadTaskDetails(showLoading: false);
       }
-      throw Exception(
-          'Seems like you are offline. But changes were saved locally.');
+
+      throw Exception('Failed to sync. But changes were saved locally.');
     }
   }
 
-  Future<_TaskStopAction?> _showActionSheet(BuildContext context) =>
+  Future<_TaskStopAction?> _showActionSheet(BuildContext context,
+          {required List<_TaskStopAction> actions,
+          required String title,
+          String? message}) =>
       showCupertinoModalPopup<_TaskStopAction?>(
         context: context,
-        builder: (BuildContext context) => CupertinoActionSheet(
-          message: const Text('Timesheet is not synchronized'),
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () {
-              context.router.pop(_TaskStopAction.cancel);
-            },
-            child: const Text('Cancel'),
+        filter: ImageFilter.blur(
+          sigmaX: 10,
+          sigmaY: 10,
+        ),
+        builder: (BuildContext context) => CupertinoTheme(
+          data: const CupertinoThemeData(
+            barBackgroundColor: CupertinoColors.systemBlue,
           ),
-          actions: <CupertinoActionSheetAction>[
-            CupertinoActionSheetAction(
-              onPressed: () {
-                context.router.pop(_TaskStopAction.mergeWithSyncedProject);
-              },
-              child: const Text('Merge with Synced Project'),
+          child: CupertinoActionSheet(
+            title: Text(
+              title,
+              style: const TextStyle(color: CupertinoColors.label),
             ),
-            CupertinoActionSheetAction(
+            message: message != null
+                ? Text(
+                    message,
+                    style: const TextStyle(
+                      color: CupertinoColors.secondaryLabel,
+                    ),
+                  )
+                : null,
+            cancelButton: CupertinoActionSheetAction(
               onPressed: () {
-                context.router.pop(_TaskStopAction.saveLocally);
+                context.router.pop(_TaskStopAction.cancel);
               },
-              child: const Text('Save locally'),
+              child: const Text('Cancel'),
             ),
-          ],
+            actions: <CupertinoActionSheetAction>[
+              ...actions
+                  .map(
+                    (e) => CupertinoActionSheetAction(
+                      onPressed: () {
+                        context.router.pop(e);
+                      },
+                      child: Text(e.label),
+                    ),
+                  )
+                  .toList(),
+            ],
+          ),
         ),
       );
   Future<void> _onTimerStopped({
@@ -410,7 +474,14 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
         backendId: backendId,
       );
     } else {
-      final result = await _showActionSheet(context);
+      final result = await _showActionSheet(
+        context,
+        title: 'Timesheet is not synchronized',
+        actions: [
+          _TaskStopAction.mergeWithSyncedProject,
+          _TaskStopAction.saveLocally,
+        ],
+      );
       if (result == null || result == _TaskStopAction.cancel) {
         await taskDetailsCubit.updateTimesheet(
           updatableTimesheet.copyWith(
@@ -487,7 +558,16 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
   }
 }
 
-enum _TaskStopAction { mergeWithSyncedProject, cancel, saveLocally }
+enum _TaskStopAction {
+  mergeWithSyncedProject(label: 'Merge with Synced Project'),
+  cancel(label: 'Cancel'),
+  saveLocally(label: 'Save locally'),
+  keepLocally(label: 'Keep locally only'),
+  delete(label: 'Delete');
+
+  final String label;
+  const _TaskStopAction({required this.label});
+}
 
 class _TimesheetListView extends StatelessWidget {
   const _TimesheetListView({
