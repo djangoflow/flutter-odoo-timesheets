@@ -38,4 +38,11 @@ class ExternalTimesheetRepository
 
   Future<void> batchDeleteExternalTimesheetsByIds(List<int> ids) =>
       externalTimesheetsDao.batchDeleteExternalTimesheets(ids);
+
+  Future<List<ExternalTimesheet>> getOrphanedExternalTimesheetsForBackend(
+          {required int backendId, required List<int> excludedExternalIds}) =>
+      externalTimesheetsDao.getOrphanedExternalTimesheetsForBackend(
+        backendId: backendId,
+        excludedExternalIds: excludedExternalIds,
+      );
 }

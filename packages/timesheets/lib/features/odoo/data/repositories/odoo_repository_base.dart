@@ -40,7 +40,10 @@ class OdooRpcRepositoryBase {
 
   ///Handles errors generated due to various operations in [OdooRepository] using [OdooRepositoryException]
   OdooRepositoryException getHandledException(error) {
+    // debugPrint(error.toString());
     if (error is xml_rpc.Fault) {
+      debugPrint(error.text);
+      debugPrint(error.code.toString());
       return OdooRepositoryException.fromCode(error.text);
     } else if (error is http.ClientException) {
       return OdooRepositoryException(error.message);

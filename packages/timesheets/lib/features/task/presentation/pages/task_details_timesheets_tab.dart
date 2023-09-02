@@ -78,7 +78,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                             final result = await context.router.push(
                               TimesheetRouter(children: [
                                 TimesheetAddRoute(
-                                  disableProjectTaskSelection: true,
+                                  disableProjectTaskSelection: false,
                                   taskWithProjectExternalData:
                                       taskWithProjectExternalData,
                                 ),

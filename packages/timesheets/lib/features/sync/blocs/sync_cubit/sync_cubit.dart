@@ -52,12 +52,12 @@ class SyncCubit extends Cubit<SyncState> {
         odooProjects: odooProjects,
       );
 
-      // DELETED Projects
-      final orphanedExternalProjects =
-          await externalProjectRepository.getOrphanedExternalProjectsForBackend(
-        backendId: backendId,
-        excludedExternalIds: odooProjects.map((e) => e.id).toList(),
-      );
+      // // DELETED Projects
+      // final orphanedExternalProjects =
+      //     await externalProjectRepository.getOrphanedExternalProjectsForBackend(
+      //   backendId: backendId,
+      //   excludedExternalIds: odooProjects.map((e) => e.id).toList(),
+      // );
 
       // Fetch tasks from Odoo and insert/update in the local database
       final externalTaskIds = <int>[];
@@ -70,15 +70,15 @@ class SyncCubit extends Cubit<SyncState> {
         backendId: backendId,
         taskIds: externalTaskIds,
       );
-      try {
-        final orphaedExternalTasks =
-            await externalTaskRepository.getOrphanedExternalTasksForBackend(
-                backendId: backendId, excludedIds: externalTaskIds);
-        print('We are orphaed tasks :(');
-        print(orphaedExternalTasks);
-      } catch (e) {
-        print(e);
-      }
+      // try {
+      //   final orphaedExternalTasks =
+      //       await externalTaskRepository.getOrphanedExternalTasksForBackend(
+      //           backendId: backendId, excludedIds: externalTaskIds);
+      //   print('We are orphaed tasks :(');
+      //   print(orphaedExternalTasks);
+      // } catch (e) {
+      //   print(e);
+      // }
 
       final odooTasksWithInternalProjectIds = <OdooTask, int>{};
 
@@ -130,6 +130,15 @@ class SyncCubit extends Cubit<SyncState> {
       await timesheetRepository.syncWithOdooTimesheets(
         odooTimesheetsWithTasksMap: odooTimesheetsWithInternalTasks,
       );
+
+      // final orphanedExternalTimesheets = await externalTimesheetRepository
+      //     .getOrphanedExternalTimesheetsForBackend(
+      //   backendId: backendId,
+      //   excludedExternalIds: odooTimesheets.map((e) => e.id).toList(),
+      // );
+
+      // print('We are orphaed timesheets :(');
+      // print(orphanedExternalTimesheets);
 
       // final odooProjectIds = odooProjects.map((e) => e.id).toList();
       // List<OdooTask> odooTasks = await odooTaskRepository.getTasksByProjectIds(
