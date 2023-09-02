@@ -11,3 +11,4 @@ export 'extensions/int_extensions.dart';
 export 'extensions/color_extensions.dart';
 export 'extensions/date_time_extensions.dart';
 export 'mixins/cubit_active_state_mixin.dart';
+export 'record_exception_utils.dart';

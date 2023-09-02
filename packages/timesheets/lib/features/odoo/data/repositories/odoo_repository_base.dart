@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/utils/utils.dart';
 import 'package:xml_rpc/client.dart' as xml_rpc;
 import 'package:http/http.dart' as http;
 import '../odoo_repository_exception.dart';
@@ -44,6 +45,15 @@ class OdooRpcRepositoryBase {
     if (error is xml_rpc.Fault) {
       debugPrint(error.text);
       debugPrint(error.code.toString());
+      if (error.code == 2) {
+        final model = RecordExceptionUtils.extractRecordModel(error.text);
+        final id = RecordExceptionUtils.extractRecordId(error.text);
+        return RecondNotFoundError(
+          model: model,
+          recordId: id,
+        );
+      }
+
       return OdooRepositoryException.fromCode(error.text);
     } else if (error is http.ClientException) {
       return OdooRepositoryException(error.message);

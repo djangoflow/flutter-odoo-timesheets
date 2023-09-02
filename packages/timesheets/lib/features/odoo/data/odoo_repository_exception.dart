@@ -30,3 +30,31 @@ class OdooRepositoryException implements Exception {
   /// The associated error message.
   final String message;
 }
+
+class RecondNotFoundError extends OdooRepositoryException {
+  final String? model;
+  final String? recordId;
+  const RecondNotFoundError({
+    this.model,
+    this.recordId,
+  }) : super('Record not found');
+  static String? extractModel(String input) {
+    final modelRegex = RegExp(r'(\w+\.\w+)');
+    final modelMatch = modelRegex.firstMatch(input);
+    if (modelMatch != null) {
+      return modelMatch.group(1);
+    } else {
+      return null;
+    }
+  }
+
+  static String? extractId(String input) {
+    final idRegex = RegExp(r'\((\d+),');
+    final idMatch = idRegex.firstMatch(input);
+    if (idMatch != null) {
+      return idMatch.group(1)!;
+    } else {
+      return null;
+    }
+  }
+}
