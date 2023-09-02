@@ -80,7 +80,7 @@ class SyncCubit extends Cubit<SyncState> {
         print(e);
       }
 
-      final odooTasksWithInternalProjects = <OdooTask, Project>{};
+      final odooTasksWithInternalProjectIds = <OdooTask, int>{};
 
       for (final odooTask in odooTasks) {
         if (odooTask.projectId != null) {
@@ -88,13 +88,13 @@ class SyncCubit extends Cubit<SyncState> {
             odooTask.projectId!,
           );
           if (project != null) {
-            odooTasksWithInternalProjects[odooTask] = project;
+            odooTasksWithInternalProjectIds[odooTask] = project.id;
           }
         }
       }
 
       await taskRepository.syncWithOdooTasks(
-        odooTasksWithProjectsMap: odooTasksWithInternalProjects,
+        odooTasksWithInternalProjectIds: odooTasksWithInternalProjectIds,
       );
 
       // Timesheets syncing...

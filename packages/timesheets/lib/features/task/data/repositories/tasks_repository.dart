@@ -65,9 +65,9 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
       );
 
   Future<void> syncWithOdooTasks({
-    required Map<OdooTask, Project> odooTasksWithProjectsMap,
+    required Map<OdooTask, int> odooTasksWithInternalProjectIds,
   }) async {
-    final odooTasks = odooTasksWithProjectsMap.keys.toList();
+    final odooTasks = odooTasksWithInternalProjectIds.keys.toList();
     final odooTaskIds = odooTasks.map((e) => e.id).toList();
     final externalTasks = await externalTasksDao.getExternalTasksByIds(
       odooTaskIds,
@@ -103,9 +103,12 @@ class TaskRepository extends CrudRepository<Task, TasksCompanion> {
           );
         }
       } else {
+        if (odooTasksWithInternalProjectIds[odooTask] == null) {
+          debugPrint('Task ${odooTask.id} has no project id and was ignored');
+        }
         insertableTaskCompanions[odooTask.id] = TasksCompanion(
           active: Value(odooTask.active),
-          projectId: Value(odooTasksWithProjectsMap[odooTask]!.id),
+          projectId: Value(odooTasksWithInternalProjectIds[odooTask]),
           name: Value(odooTask.name),
           dateDeadline: Value(odooTask.dateDeadline),
           dateEnd: Value(odooTask.dateEnd),
