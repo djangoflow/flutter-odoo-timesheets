@@ -61,19 +61,19 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
               children: [
                 if (state.isSyncing) const LinearProgressIndicator(),
                 if (activeTimesheets.isEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kPadding.w * 2,
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'No active timesheets, create one to start working!',
-                        ),
-                        SizedBox(
-                          height: kPadding.h,
-                        ),
-                        OutlinedButton(
+                  Column(
+                    children: [
+                      Text(
+                        'No active timesheets, create a timer to begin!',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      SizedBox(
+                        height: kPadding.h * 2,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
                           onPressed: () async {
                             final taskDetailsCubit =
                                 context.read<TaskDetailsCubit>();
@@ -90,10 +90,10 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                               await taskDetailsCubit.loadTaskDetails();
                             }
                           },
-                          child: const Text('Start working'),
+                          child: const Text('Create Timer'),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   )
                 else
                   BlocProvider<ExpansionListCubit>(
@@ -179,123 +179,14 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                                 // update task locally in task list cubit
 
                                 if (timerState.status ==
-                                    TimesheetStatusEnum.stopped) {
-                                  if (context.mounted) {
-                                    final odooBackends = context
-                                        .read<AuthCubit>()
-                                        .state
-                                        .connectedBackends
-                                        .getBackendsFilteredByType(
-                                            BackendTypeEnum.odoo);
-                                    if (odooBackends.isNotEmpty &&
-                                        backendId != null &&
-                                        externalTask != null) {
-                                      _syncTimesheet(
-                                        context: context,
-                                        timesheet: updatableTimesheet,
-                                        backendId: backendId,
-                                      );
-                                    } else {
-                                      final result =
-                                          await _showActionSheet(context);
-                                      if (result == null ||
-                                          result == _TaskStopAction.cancel) {
-                                        await taskDetailsCubit.updateTimesheet(
-                                          updatableTimesheet.copyWith(
-                                            currentStatus:
-                                                TimesheetStatusEnum.paused,
-                                          ),
-                                        );
-                                      } else if (result ==
-                                          _TaskStopAction.saveLocally) {
-                                        if (context.mounted) {
-                                          await _syncTimesheet(
-                                            context: context,
-                                            timesheet: updatableTimesheet,
-                                          );
-                                        }
-                                      } else if (result ==
-                                          _TaskStopAction
-                                              .mergeWithSyncedProject) {
-                                        updatableTimesheet =
-                                            updatableTimesheet.copyWith(
-                                          currentStatus:
-                                              TimesheetStatusEnum.paused,
-                                        );
-                                        await taskDetailsCubit.updateTimesheet(
-                                            updatableTimesheet);
-                                        // Need to write logic for merging task to odoo
-                                        final oldTaskId =
-                                            updatableTimesheet.taskId;
-                                        final oldProjectId =
-                                            updatableTimesheet.projectId;
-                                        final didUpdateTask = await router.push(
-                                          TimesheetRouter(
-                                            children: [
-                                              TimesheetMergeRoute(
-                                                timesheet: updatableTimesheet,
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                        if (context.mounted &&
-                                            didUpdateTask != null) {
-                                          final latestTimesheet =
-                                              await taskDetailsCubit
-                                                  .getTimesheetById(
-                                                      updatableTimesheet.id);
-                                          if (latestTimesheet == null ||
-                                              latestTimesheet.taskId == null &&
-                                                  latestTimesheet.projectId !=
-                                                      null) {
-                                            throw Exception(
-                                              'Timesheet is empty or does not have a valid task',
-                                            );
-                                          }
-                                          if (oldProjectId != null &&
-                                              oldTaskId != null) {
-                                            await taskDetailsCubit
-                                                .updateTimesheetsProjectAndTaskIds(
-                                              oldProjectId: oldProjectId,
-                                              oldTaskId: oldTaskId,
-                                              updatedProjectId:
-                                                  latestTimesheet.projectId!,
-                                              updatedTaskId:
-                                                  latestTimesheet.taskId!,
-                                            );
-                                          }
-                                          final lastestTaskWithProjectExternalData =
-                                              await taskDetailsCubit
-                                                  .getTaskWithProjectExternalDataByTaskId(
-                                            latestTimesheet.taskId!,
-                                          );
-                                          final backendId =
-                                              lastestTaskWithProjectExternalData
-                                                  .projectWithExternalData
-                                                  .externalProject
-                                                  ?.backendId;
-                                          if (backendId == null) {
-                                            throw Exception(
-                                                'Project is not synced yet');
-                                          }
-                                          if (context.mounted) {
-                                            await _syncTimesheet(
-                                              context: context,
-                                              timesheet: latestTimesheet,
-                                              backendId: backendId,
-                                            );
-                                            debugPrint(
-                                                'updated timesheet $didUpdateTask ${latestTimesheet.id}');
-                                            taskDetailsCubit.taskIdValue =
-                                                latestTimesheet.taskId!;
-                                            taskDetailsCubit.loadTaskDetails(
-                                              showLoading: true,
-                                            );
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
+                                        TimesheetStatusEnum.stopped &&
+                                    context.mounted) {
+                                  await _onTimerStopped(
+                                    context: context,
+                                    updatableTimesheet: updatableTimesheet,
+                                    backendId: backendId,
+                                    externalTask: externalTask,
+                                  );
                                 }
                               },
                             ),
@@ -321,95 +212,89 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: kPadding.h * 2,
-                              ),
-                              child: Stack(
-                                children: [
-                                  if (!state.isSyncing)
-                                    LinearProgressBuilder(
-                                      action: (_) async {
-                                        final taskDetailsCubit =
-                                            context.read<TaskDetailsCubit>();
+                            child: Stack(
+                              children: [
+                                if (!state.isSyncing)
+                                  LinearProgressBuilder(
+                                    action: (_) async {
+                                      final taskDetailsCubit =
+                                          context.read<TaskDetailsCubit>();
 
-                                        await taskDetailsCubit
-                                            .syncAllTimesheets(
-                                          externalProject!.backendId!,
-                                        );
-                                      },
-                                      onSuccess: () =>
-                                          AppDialog.showSuccessDialog(
-                                        context: context,
-                                        title: 'Success',
-                                        content:
-                                            'Timesheets synced successfully, cheers!',
-                                      ),
-                                      builder: (context, action, error) =>
-                                          SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton.icon(
-                                          icon: const Icon(CupertinoIcons
-                                              .arrow_2_circlepath),
-                                          onPressed: action,
-                                          label: const Text(
-                                              'Sync timesheets with Odoo'),
-                                        ),
-                                      ),
+                                      await taskDetailsCubit.syncAllTimesheets(
+                                        externalProject!.backendId!,
+                                      );
+                                    },
+                                    onSuccess: () =>
+                                        AppDialog.showSuccessDialog(
+                                      context: context,
+                                      title: 'Success',
+                                      content:
+                                          'Timesheets synced successfully, cheers!',
                                     ),
-                                  if (state.isSyncing)
-                                    SizedBox(
+                                    builder: (context, action, error) =>
+                                        SizedBox(
                                       width: double.infinity,
-                                      child: Skeletonizer(
-                                        enabled: true,
-                                        child: ElevatedButton.icon(
-                                          onPressed: null,
-                                          label: const Skeleton.keep(
-                                            child: Text(
-                                              'Syncing',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
+                                      child: ElevatedButton.icon(
+                                        icon: const Icon(
+                                            CupertinoIcons.arrow_2_circlepath),
+                                        onPressed: action,
+                                        label: const Text(
+                                            'Sync timesheets with Odoo'),
+                                      ),
+                                    ),
+                                  ),
+                                if (state.isSyncing)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Skeletonizer(
+                                      enabled: true,
+                                      child: ElevatedButton.icon(
+                                        onPressed: null,
+                                        label: const Skeleton.keep(
+                                          child: Text(
+                                            'Syncing',
+                                            style: TextStyle(
+                                              color: Colors.white,
                                             ),
                                           ),
-                                          icon: const Icon(
-                                            CupertinoIcons.arrow_2_circlepath,
-                                          ),
+                                        ),
+                                        icon: const Icon(
+                                          CupertinoIcons.arrow_2_circlepath,
                                         ),
                                       ),
                                     ),
-                                  if (state.isSyncing)
-                                    Positioned(
-                                      top: 0,
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Lottie.asset(
-                                              Assets.animationSyncing,
-                                              height: kPadding * 3,
-                                              width: kPadding * 3,
-                                              repeat: true,
-                                            ),
-                                            SizedBox(
-                                              width: kPadding.w,
-                                            ),
-                                            Text(
-                                              'Syncing...',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium,
-                                            ),
-                                          ],
-                                        ),
+                                  ),
+                                if (state.isSyncing)
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Lottie.asset(
+                                            Assets.animationSyncing,
+                                            height: kPadding * 3,
+                                            width: kPadding * 3,
+                                            repeat: true,
+                                          ),
+                                          SizedBox(
+                                            width: kPadding.w,
+                                          ),
+                                          Text(
+                                            'Syncing...',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                        ],
                                       ),
-                                    )
-                                ],
-                              ),
+                                    ),
+                                  )
+                              ],
                             ),
                           ),
                           SizedBox(
@@ -519,6 +404,101 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
           ],
         ),
       );
+  Future<void> _onTimerStopped({
+    required BuildContext context,
+    required Timesheet updatableTimesheet,
+    int? backendId,
+    ExternalTask? externalTask,
+  }) async {
+    final taskDetailsCubit = context.read<TaskDetailsCubit>();
+    final router = context.router;
+    final odooBackends = context
+        .read<AuthCubit>()
+        .state
+        .connectedBackends
+        .getBackendsFilteredByType(BackendTypeEnum.odoo);
+    if (odooBackends.isNotEmpty && backendId != null && externalTask != null) {
+      _syncTimesheet(
+        context: context,
+        timesheet: updatableTimesheet,
+        backendId: backendId,
+      );
+    } else {
+      final result = await _showActionSheet(context);
+      if (result == null || result == _TaskStopAction.cancel) {
+        await taskDetailsCubit.updateTimesheet(
+          updatableTimesheet.copyWith(
+            currentStatus: TimesheetStatusEnum.paused,
+          ),
+        );
+      } else if (result == _TaskStopAction.saveLocally) {
+        if (context.mounted) {
+          await _syncTimesheet(
+            context: context,
+            timesheet: updatableTimesheet,
+          );
+        }
+      } else if (result == _TaskStopAction.mergeWithSyncedProject) {
+        updatableTimesheet = updatableTimesheet.copyWith(
+          currentStatus: TimesheetStatusEnum.paused,
+        );
+        await taskDetailsCubit.updateTimesheet(updatableTimesheet);
+        // Need to write logic for merging task to odoo
+        final oldTaskId = updatableTimesheet.taskId;
+        final oldProjectId = updatableTimesheet.projectId;
+        final didUpdateTask = await router.push(
+          TimesheetRouter(
+            children: [
+              TimesheetMergeRoute(
+                timesheet: updatableTimesheet,
+              ),
+            ],
+          ),
+        );
+        if (context.mounted && didUpdateTask != null) {
+          final latestTimesheet =
+              await taskDetailsCubit.getTimesheetById(updatableTimesheet.id);
+          if (latestTimesheet == null ||
+              latestTimesheet.taskId == null &&
+                  latestTimesheet.projectId != null) {
+            throw Exception(
+              'Timesheet is empty or does not have a valid task',
+            );
+          }
+          if (oldProjectId != null && oldTaskId != null) {
+            await taskDetailsCubit.updateTimesheetsProjectAndTaskIds(
+              oldProjectId: oldProjectId,
+              oldTaskId: oldTaskId,
+              updatedProjectId: latestTimesheet.projectId!,
+              updatedTaskId: latestTimesheet.taskId!,
+            );
+          }
+          final lastestTaskWithProjectExternalData =
+              await taskDetailsCubit.getTaskWithProjectExternalDataByTaskId(
+            latestTimesheet.taskId!,
+          );
+          final backendId = lastestTaskWithProjectExternalData
+              .projectWithExternalData.externalProject?.backendId;
+          if (backendId == null) {
+            throw Exception('Project is not synced yet');
+          }
+          if (context.mounted) {
+            await _syncTimesheet(
+              context: context,
+              timesheet: latestTimesheet,
+              backendId: backendId,
+            );
+            debugPrint(
+                'updated timesheet $didUpdateTask ${latestTimesheet.id}');
+            taskDetailsCubit.taskIdValue = latestTimesheet.taskId!;
+            taskDetailsCubit.loadTaskDetails(
+              showLoading: true,
+            );
+          }
+        }
+      }
+    }
+  }
 }
 
 // class _ActiveTimesheetDetails extends StatelessWidget {
