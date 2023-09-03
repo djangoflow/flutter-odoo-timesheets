@@ -13,7 +13,6 @@ class TaskDetailsState with _$TaskDetailsState {
     /// This is the list of timesheets that are not stopped yet
     required List<TimesheetExternalData> activeTimesheets,
     required bool isLoading,
-    required bool isSyncing,
     Object? error,
   }) = _TaskDetailsState;
 
@@ -22,7 +21,6 @@ class TaskDetailsState with _$TaskDetailsState {
         timesheets: [],
         activeTimesheets: [],
         isLoading: false,
-        isSyncing: false,
         error: null,
       );
 
@@ -31,7 +29,6 @@ class TaskDetailsState with _$TaskDetailsState {
         timesheets: [],
         activeTimesheets: [],
         isLoading: true,
-        isSyncing: false,
         error: null,
       );
 
@@ -45,7 +42,6 @@ class TaskDetailsState with _$TaskDetailsState {
         timesheets: timesheets,
         activeTimesheets: activeTimesheets,
         isLoading: false,
-        isSyncing: true,
         error: null,
       );
 
@@ -59,7 +55,6 @@ class TaskDetailsState with _$TaskDetailsState {
         timesheets: timesheets,
         activeTimesheets: activeTimesheets,
         isLoading: false,
-        isSyncing: false,
         error: null,
       );
 
@@ -74,7 +69,6 @@ class TaskDetailsState with _$TaskDetailsState {
         timesheets: timesheets,
         activeTimesheets: activeTimesheets,
         isLoading: false,
-        isSyncing: false,
         error: error,
       );
 }

@@ -114,9 +114,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
 
   Future<void> updateTimesheet(Timesheet timesheet) async {
     await errorWrapper(() async {
-      if (timesheet.endTime != null) {
-        throw Exception('Timesheet has already ended');
-      }
       await timesheetRepository.update(timesheet);
       final updatedTimesheetWithExternalData =
           await timesheetRepository.getTimesheetExternalDataById(timesheet.id);
@@ -172,9 +169,7 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
     if (timesheet.startTime == null) {
       throw Exception('Timesheet has not started yet');
     }
-    if (timesheet.endTime != null) {
-      throw Exception('Timesheet has already ended');
-    }
+
     await timesheetRepository.update(
       timesheet.copyWith(
         endTime: Value(
@@ -322,34 +317,6 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
         ),
       );
     }
-  }
-
-  // TODO Separate this into [SyncCubit]
-  Future<void> syncTimesheet(int timesheetId, int backendId) async {
-    await errorWrapper(() async {
-      emit(
-        TaskDetailsState.syncing(
-          taskWithProjectExternalData: state.taskWithProjectExternalData!,
-          timesheets: state.timesheets,
-          activeTimesheets: state.activeTimesheets,
-        ),
-      );
-      await _syncTimesheet(timesheetId, backendId);
-      final updatedTimesheetWithExternal =
-          await timesheetRepository.getTimesheetExternalDataById(timesheetId);
-
-      if (updatedTimesheetWithExternal == null) {
-        throw Exception('Updated Timesheet not found');
-      }
-      final taskId = updatedTimesheetWithExternal.timesheet.taskId;
-      if (taskId == null) {
-        throw Exception('Task not found');
-      }
-
-      await loadTaskDetails(
-        showLoading: false,
-      );
-    });
   }
 
   Future errorWrapper(Function callback) async {
