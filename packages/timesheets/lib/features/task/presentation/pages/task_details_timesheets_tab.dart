@@ -423,6 +423,50 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
             content: 'Your timesheet has been successfully saved locally.',
           );
         }
+        if (e is RecordNotFoundError && context.mounted) {
+          final taskDetailsCubit = context.read<TaskDetailsCubit>();
+          final router = context.router;
+          final notFoundModel = e.model;
+          if ([projectModel, taskModel].contains(notFoundModel)) {
+            final result = await _showOdooRecordDeletedAction(
+              context,
+              title:
+                  '${projectModel == notFoundModel ? 'Project' : 'Task'} was deleted from Odoo!',
+            );
+            if (result != null) {
+              if (notFoundModel == projectModel) {
+                switch (result) {
+                  case _TaskStopAction.keepLocally:
+                    await taskDetailsCubit.deleteExternalProject();
+                    await taskDetailsCubit.deleteExternalTask();
+                    await taskDetailsCubit.deleteExternalTimesheets();
+                    taskDetailsCubit.loadTaskDetails();
+                    break;
+                  case _TaskStopAction.delete:
+                    await taskDetailsCubit.deleteProject();
+                    router.pop();
+                    break;
+                  default:
+                }
+              } else {
+                switch (result) {
+                  case _TaskStopAction.keepLocally:
+                    await taskDetailsCubit.deleteExternalTask();
+                    await taskDetailsCubit.deleteExternalTimesheets();
+                    taskDetailsCubit.loadTaskDetails();
+                    break;
+                  case _TaskStopAction.delete:
+                    await taskDetailsCubit.deleteTask();
+                    router.pop();
+                    break;
+                  default:
+                }
+              }
+            }
+          } else {
+            rethrow;
+          }
+        }
         await taskDetailsCubit.loadTaskDetails(showLoading: false);
       }
 
@@ -567,23 +611,25 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
               updatedTaskId: latestTimesheet.taskId!,
             );
           }
-          final lastestTaskWithProjectExternalData =
-              await taskDetailsCubit.getTaskWithProjectExternalDataByTaskId(
-            latestTimesheet.taskId!,
-          );
-          final backendId = lastestTaskWithProjectExternalData
-              .projectWithExternalData.externalProject?.backendId;
-          if (backendId == null) {
-            throw Exception('Project is not synced yet');
-          }
+
+          // final lastestTaskWithProjectExternalData =
+          //     await taskDetailsCubit.getTaskWithProjectExternalDataByTaskId(
+          //   latestTimesheet.taskId!,
+          // );
+          // final backendId = lastestTaskWithProjectExternalData
+          //     .projectWithExternalData.externalProject?.backendId;
+          // if (backendId == null) {
+          //   throw Exception('Project is not synced yet');
+          // }
           if (context.mounted) {
             await _syncTimesheet(
               context: context,
               timesheet: latestTimesheet,
-              backendId: backendId,
+              // backendId: backendId,
             );
-            debugPrint(
-                'updated timesheet $didUpdateTask ${latestTimesheet.id}');
+
+            // debugPrint(
+            //     'updated timesheet $didUpdateTask ${latestTimesheet.id}');
             taskDetailsCubit.taskIdValue = latestTimesheet.taskId!;
             taskDetailsCubit.loadTaskDetails(
               showLoading: true,
