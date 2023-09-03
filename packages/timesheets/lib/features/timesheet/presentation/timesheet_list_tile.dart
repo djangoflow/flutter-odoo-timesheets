@@ -63,39 +63,26 @@ class TimesheetListTile extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          ListTile(
-            leading: leadingBarColor != null
-                ? SizedBox(
-                    height: double.infinity,
-                    child: ColoredBar(
-                      color: leadingBarColor!,
-                    ),
-                  )
-                : null,
-            title: title,
-            horizontalTitleGap: 0,
-            subtitle: subtitle,
-            trailing: TaskTimer.small(
-              disabled: disabled,
-              onTimerStateChange: onTimerStateChange,
-              elapsedTime: elapsedTime,
-              initialTimerStatus: initialTimerStatus,
-              onTimerResume: onTimerResume,
-            ),
-            onTap: onTap,
-          ),
-          if (disabled)
-            Positioned.fill(
-              child: Container(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryContainer
-                    .withOpacity(0.5),
-              ),
-            ),
-        ],
+  Widget build(BuildContext context) => ListTile(
+        leading: leadingBarColor != null
+            ? SizedBox(
+                height: double.infinity,
+                child: ColoredBar(
+                  color: leadingBarColor!,
+                ),
+              )
+            : null,
+        title: title,
+        horizontalTitleGap: 0,
+        subtitle: subtitle,
+        trailing: TaskTimer.small(
+          disabled: disabled,
+          onTimerStateChange: onTimerStateChange,
+          elapsedTime: elapsedTime,
+          initialTimerStatus: initialTimerStatus,
+          onTimerResume: onTimerResume,
+        ),
+        onTap: onTap,
       );
 }
 

@@ -1,3 +1,4 @@
+import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,51 +25,76 @@ class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
         itemBuilder: (context, state, index, projectWithExternalData) {
           final project = projectWithExternalData.project;
 
-          return ListTile(
-            leading: ColoredBar(
-              color: project.color.toColorFromColorIndex,
-            ),
-            title: Row(
-              children: [
-                Icon(
-                  project.isFavorite == true
-                      ? CupertinoIcons.star_fill
-                      : CupertinoIcons.star,
-                ),
-                SizedBox(
-                  width: kPadding.w,
-                ),
-                Expanded(
-                  child: Text(
-                    project.name ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          return AnimateIfVisible(
+            key: ValueKey(project.id),
+            builder: (context, animation) => FadeTransition(
+              opacity: animation,
+              child: Card(
+                margin: EdgeInsets.zero,
+                color: Colors.transparent,
+                elevation: 0,
+                child: ListTile(
+                  leading: ColoredBar(
+                    color: project.color.toColorFromColorIndex,
                   ),
-                ),
-              ],
-            ),
-            subtitle: Text('${project.taskCount ?? 0} Tasks'),
-            onTap: () async {
-              final cubit = context.read<T>();
-              await context.router
-                  .push(ProjectDetailsRoute(projectId: project.id));
+                  title: Row(
+                    children: [
+                      Icon(
+                        project.isFavorite == true
+                            ? CupertinoIcons.star_fill
+                            : CupertinoIcons.star,
+                      ),
+                      SizedBox(
+                        width: kPadding.w,
+                      ),
+                      Expanded(
+                        child: Text(
+                          project.name ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  subtitle: Text('${project.taskCount ?? 0} Tasks'),
+                  onTap: () async {
+                    final cubit = context.read<T>();
+                    await context.router
+                        .push(ProjectDetailsRoute(projectId: project.id));
 
-              cubit.reload();
-            },
+                    cubit.reload(
+                      cubit.state.filter?.copyWith(
+                        offset: 0,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           );
         },
         builder: (context, controller, itemBuilder, itemCount) =>
-            ListView.separated(
-          physics: const AlwaysScrollableScrollPhysics(),
+            AnimateIfVisibleWrapper(
           controller: controller,
-          padding: EdgeInsets.all(
-            kPadding.h * 2,
+          child: RefreshIndicator(
+            onRefresh: () => context.read<T>().reload(
+                  context.read<T>().state.filter?.copyWith(
+                        offset: 0,
+                      ),
+                ),
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: controller,
+              padding: EdgeInsets.all(
+                kPadding.h * 2,
+              ),
+              itemBuilder: itemBuilder,
+              separatorBuilder: (context, index) => SizedBox(
+                height: kPadding.h,
+              ),
+              itemCount: itemCount,
+            ),
           ),
-          itemBuilder: itemBuilder,
-          separatorBuilder: (context, index) => SizedBox(
-            height: kPadding.h,
-          ),
-          itemCount: itemCount,
         ),
       );
 }

@@ -1,3 +1,4 @@
+import 'package:auto_animated/auto_animated.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
         child: ContinuousListViewBlocBuilder<T, TimesheetWithTaskExternalData,
             TimesheetWithTaskExternalListFilter>(
           emptyBuilder: emptyBuilder,
-          withRefreshIndicator: true,
+          // withRefreshIndicator: true,
           loadingBuilder: (context, state) => const SizedBox(),
           itemBuilder: (context, state, index, item) {
             final timesheet = item.timesheetExternalData.timesheet;
@@ -53,125 +54,149 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
             final elapsedTime = timesheet.elapsedTime;
             final theme = Theme.of(context);
 
-            return IconTheme(
-              data: theme.iconTheme.copyWith(
-                size: kPadding.r * 2,
-              ),
-              child: TimesheetListTile(
-                key: ValueKey(timesheet.id),
-                leadingBarColor: project.color.toColorFromColorIndex,
-                title: _ListTileItem(
-                  icon: InkWell(
-                    borderRadius: BorderRadius.circular(kPadding * 1.5),
-                    onTap: () {
-                      context.read<T>().updateTimesheet(
-                            timesheet.copyWith(
-                              isFavorite: !timesheet.isFavorite,
-                            ),
-                          );
-                    },
-                    child: _PaddedIcon(
-                      icon: Icon(
-                        timesheet.isFavorite
-                            ? CupertinoIcons.star_fill
-                            : CupertinoIcons.star,
-                      ),
-                    ),
+            return AnimateIfVisible(
+              key: ValueKey(timesheet.id),
+              builder: (context, animation) => FadeTransition(
+                opacity: animation,
+                child: IconTheme(
+                  data: theme.iconTheme.copyWith(
+                    size: kPadding.r * 2,
                   ),
-                  text: timesheet.name ?? '',
-                  textStyle: theme.textTheme.titleMedium,
-                ),
-                subtitle: Column(
-                  children: [
-                    SizedBox(
-                      height: kPadding.h / 1.5,
-                    ),
-                    _ListTileItem(
-                      icon: const _PaddedIcon(
-                        icon: Icon(
-                          CupertinoIcons.briefcase,
-                        ),
-                      ),
-                      text: project.name ?? '',
-                      maxLines: 1,
-                      // textStyle: const TextStyle(height: 1),
-                    ),
-                    if (task.dateDeadline != null) ...[
-                      SizedBox(
-                        height: kPadding.h / 1.5,
-                      ),
-                      _ListTileItem(
-                        icon: const _PaddedIcon(
-                          icon: Icon(
-                            CupertinoIcons.time,
+                  child: Card(
+                    color: Colors.transparent,
+                    elevation: 0,
+                    margin: EdgeInsets.zero,
+                    child: TimesheetListTile(
+                      leadingBarColor: project.color.toColorFromColorIndex,
+                      title: _ListTileItem(
+                        icon: InkWell(
+                          borderRadius: BorderRadius.circular(kPadding * 1.5),
+                          onTap: () {
+                            context.read<T>().updateTimesheet(
+                                  timesheet.copyWith(
+                                    isFavorite: !timesheet.isFavorite,
+                                  ),
+                                );
+                          },
+                          child: _PaddedIcon(
+                            icon: Icon(
+                              timesheet.isFavorite
+                                  ? CupertinoIcons.star_fill
+                                  : CupertinoIcons.star,
+                            ),
                           ),
                         ),
-                        text: 'Deadline ${task.dateDeadline!.toDateString()}',
-                        textStyle: const TextStyle(height: 1),
+                        text: timesheet.name ?? '',
+                        textStyle: theme.textTheme.titleMedium,
                       ),
-                    ],
-                  ],
-                ),
-                elapsedTime: elapsedTime,
-                initialTimerStatus:
-                    item.timesheetExternalData.timesheet.currentStatus,
-                onTimerStateChange: (context, timerState, tickInterval) async {
-                  final timesheetWithTaskExternalListCubit = context.read<T>();
-                  final isRunning =
-                      timerState.status == TimesheetStatusEnum.running;
-                  final updatableSeconds = (isRunning ? tickInterval : 0);
-                  final startTimeValue =
-                      (isRunning && timesheet.startTime == null)
-                          ? DateTime.now()
-                          : timesheet.startTime;
-
-                  final lastTickedValue =
-                      isRunning ? DateTime.now() : timesheet.lastTicked;
-                  Timesheet updatableTimesheet = timesheet.copyWith(
-                    unitAmount:
-                        Value((elapsedTime + updatableSeconds).toUnitAmount()),
-                    currentStatus: timerState.status,
-                    startTime: Value(startTimeValue),
-                    lastTicked: Value(lastTickedValue),
-                  );
-                  await timesheetWithTaskExternalListCubit.updateTimesheet(
-                    updatableTimesheet,
-                  );
-                },
-                onTimerResume: (context) {
-                  final currentlyElapsedTime = timesheet.elapsedTime;
-                  context.read<TimerCubit>().elapsedTime = Duration(
-                    seconds: currentlyElapsedTime,
-                  );
-                },
-                onTap: () {
-                  if (timesheet.taskId != null) {
-                    context.router.push(
-                      TasksRouter(
+                      subtitle: Column(
                         children: [
-                          TaskDetailsRouter(taskId: timesheet.taskId!),
+                          SizedBox(
+                            height: kPadding.h / 1.5,
+                          ),
+                          _ListTileItem(
+                            icon: const _PaddedIcon(
+                              icon: Icon(
+                                CupertinoIcons.briefcase,
+                              ),
+                            ),
+                            text: project.name ?? '',
+                            maxLines: 1,
+                            // textStyle: const TextStyle(height: 1),
+                          ),
+                          if (task.dateDeadline != null) ...[
+                            SizedBox(
+                              height: kPadding.h / 1.5,
+                            ),
+                            _ListTileItem(
+                              icon: const _PaddedIcon(
+                                icon: Icon(
+                                  CupertinoIcons.time,
+                                ),
+                              ),
+                              text:
+                                  'Deadline ${task.dateDeadline!.toDateString()}',
+                              textStyle: const TextStyle(height: 1),
+                            ),
+                          ],
                         ],
                       ),
-                    );
-                  } else {
-                    throw Exception('Task id is null');
-                  }
-                },
+                      elapsedTime: elapsedTime,
+                      initialTimerStatus:
+                          item.timesheetExternalData.timesheet.currentStatus,
+                      onTimerStateChange:
+                          (context, timerState, tickInterval) async {
+                        final timesheetWithTaskExternalListCubit =
+                            context.read<T>();
+                        final isRunning =
+                            timerState.status == TimesheetStatusEnum.running;
+                        final updatableSeconds = (isRunning ? tickInterval : 0);
+                        final startTimeValue =
+                            (isRunning && timesheet.startTime == null)
+                                ? DateTime.now()
+                                : timesheet.startTime;
+
+                        final lastTickedValue =
+                            isRunning ? DateTime.now() : timesheet.lastTicked;
+                        Timesheet updatableTimesheet = timesheet.copyWith(
+                          unitAmount: Value(
+                              (elapsedTime + updatableSeconds).toUnitAmount()),
+                          currentStatus: timerState.status,
+                          startTime: Value(startTimeValue),
+                          lastTicked: Value(lastTickedValue),
+                        );
+                        await timesheetWithTaskExternalListCubit
+                            .updateTimesheet(
+                          updatableTimesheet,
+                        );
+                      },
+                      onTimerResume: (context) {
+                        final currentlyElapsedTime = timesheet.elapsedTime;
+                        context.read<TimerCubit>().elapsedTime = Duration(
+                          seconds: currentlyElapsedTime,
+                        );
+                      },
+                      onTap: () {
+                        if (timesheet.taskId != null) {
+                          context.router.push(
+                            TasksRouter(
+                              children: [
+                                TaskDetailsRouter(taskId: timesheet.taskId!),
+                              ],
+                            ),
+                          );
+                        } else {
+                          throw Exception('Task id is null');
+                        }
+                      },
+                    ),
+                  ),
+                ),
               ),
             );
           },
           builder: (context, controller, itemBuilder, itemCount) =>
-              ListView.separated(
-            shrinkWrap: false,
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(
-              kPadding.h * 2,
-            ),
+              AnimateIfVisibleWrapper(
             controller: controller,
-            itemBuilder: itemBuilder,
-            itemCount: itemCount,
-            separatorBuilder: (context, index) => SizedBox(
-              height: kPadding.h,
+            child: RefreshIndicator(
+              onRefresh: () => context.read<T>().reload(
+                    context.read<T>().state.filter?.copyWith(
+                          offset: 0,
+                        ),
+                  ),
+              child: ListView.separated(
+                shrinkWrap: false,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.all(
+                  kPadding.h * 2,
+                ),
+                controller: controller,
+                itemBuilder: itemBuilder,
+                itemCount: itemCount,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: kPadding.h,
+                ),
+              ),
             ),
           ),
         ),
