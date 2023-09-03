@@ -49,11 +49,29 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
         ),
       );
 
+  Future<ProjectWithExternalData> getProjectWithExternalDataById(int id) =>
+      projectsDao.getProjectWithExternalDataById(id);
+
+  Future<List<ProjectWithExternalData>> getPaginatedProjectsWithExternalData({
+    int? offset,
+    int? limit,
+    bool? isLocal,
+    String? search,
+    bool? isFavorite,
+  }) =>
+      projectsDao.getPaginatedProjectsWithExternalData(
+        offset: offset,
+        isLocal: isLocal,
+        limit: limit,
+        search: search,
+        isFavorite: isFavorite,
+      );
+
   Future<void> syncWithOdooProjects(
       {required int backendId, required List<OdooProject> odooProjects}) async {
     final odooProjectIds = odooProjects.map((e) => e.id).toList();
     final externalProjects =
-        await externalProjectsDao.getExternalProjectsByIdsAndBackendId(
+        await externalProjectsDao.getExternalProjectsByBackendAndIds(
       backendId: backendId,
       externalIds: odooProjectIds,
     );
@@ -82,6 +100,7 @@ class ProjectRepository extends CrudRepository<Project, ProjectsCompanion> {
               isFavorite: Value(odooProject.isFavorite),
               name: Value(odooProject.name),
               taskCount: Value(odooProject.taskCount),
+              updatedAt: DateTime.now(),
             ),
           );
         }

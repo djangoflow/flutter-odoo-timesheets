@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class AppLogo extends StatelessWidget {
@@ -8,7 +9,8 @@ class AppLogo extends StatelessWidget {
   final double? width;
 
   @override
-  Widget build(BuildContext context) => Assets.appLogoLogo.image(
+  Widget build(BuildContext context) => DecoratedSvgImage(
+        image: Assets.appLogoLogoSvg,
         height: height,
         width: width,
       );

@@ -217,18 +217,20 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
 
     // To access proper context
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final theme = Theme.of(context);
-      setState(() {
-        textStyleAnimation = TextStyleTween(
-          begin: theme.textTheme.titleSmall,
-          end: theme.primaryTextTheme.titleSmall,
-        ).animate(widget.animationController);
+      if (mounted) {
+        final theme = Theme.of(context);
+        setState(() {
+          textStyleAnimation = TextStyleTween(
+            begin: theme.textTheme.titleSmall,
+            end: theme.primaryTextTheme.titleSmall,
+          ).animate(widget.animationController);
 
-        colorAnimation = ColorTween(
-          begin: theme.colorScheme.primary,
-          end: theme.colorScheme.onPrimary,
-        ).animate(widget.animationController);
-      });
+          colorAnimation = ColorTween(
+            begin: theme.colorScheme.onSecondaryContainer,
+            end: theme.colorScheme.onPrimaryContainer,
+          ).animate(widget.animationController);
+        });
+      }
     });
   }
 
@@ -256,77 +258,79 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(kPadding.r * 8),
           color: timerStatus == TimesheetStatusEnum.running
-              ? theme.colorScheme.primary
-              : ElevationOverlay.applySurfaceTint(
-                  theme.colorScheme.primaryContainer,
+              ? theme.colorScheme.primaryContainer
+              : AppColors.getTintedSurfaceColor(
                   theme.colorScheme.surfaceTint,
-                  4,
                 ),
         ),
-        child: Padding(
-          padding: widget.padding ??
-              EdgeInsets.fromLTRB(
-                kPadding.w * 2,
-                kPadding.h,
-                kPadding.w,
-                kPadding.h,
-              ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: kPadding.w * 6,
-                child: textStyleAnimation != null
-                    ? ValueListenableBuilder<TextStyle>(
-                        valueListenable: textStyleAnimation!,
-                        builder: (context, value, child) => Text(
-                          widget.state.duration
-                              .timerString(DurationFormat.minutesSeconds),
-                          style: value,
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: colorAnimation != null
-                    ? ValueListenableBuilder<Color?>(
-                        valueListenable: colorAnimation!,
-                        builder: (context, value, child) => AnimatedIcon(
-                          icon: AnimatedIcons.play_pause,
-                          size: 32.w,
-                          progress: animation,
-                          // animated color based on controller's value, and it should be animated as well
-                          color: value,
-                        ),
-                      )
-                    : const SizedBox(),
-                color: theme.colorScheme.onPrimary,
-                onPressed: widget.disabled
-                    ? null
-                    : () {
-                        final timerCubit = context.read<TimerCubit>();
-                        if (timerStatus == TimesheetStatusEnum.running) {
-                          timerCubit.pauseTimer();
-                        } else if ([
-                          TimesheetStatusEnum.initial,
-                          TimesheetStatusEnum.paused
-                        ].contains(timerStatus)) {
-                          if (timerStatus == TimesheetStatusEnum.initial) {
-                            timerCubit.startTimer();
-                          } else if (timerStatus ==
-                              TimesheetStatusEnum.paused) {
-                            timerCubit.resumeTimer();
-                          }
-                        }
-                      },
-              ),
-            ],
+        child: InkWell(
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kPadding.r * 8),
+          ),
+          onTap: widget.disabled ? null : () => _onPressed(timerStatus),
+          child: Padding(
+            padding: widget.padding ??
+                EdgeInsets.fromLTRB(
+                  kPadding.w * 2,
+                  kPadding.h,
+                  kPadding.w,
+                  kPadding.h,
+                ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: kPadding.w * 6,
+                  child: textStyleAnimation != null
+                      ? ValueListenableBuilder<TextStyle>(
+                          valueListenable: textStyleAnimation!,
+                          builder: (context, value, child) => Text(
+                            widget.state.duration
+                                .timerString(DurationFormat.minutesSeconds),
+                            style: value,
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: colorAnimation != null
+                      ? ValueListenableBuilder<Color?>(
+                          valueListenable: colorAnimation!,
+                          builder: (context, value, child) => AnimatedIcon(
+                            icon: AnimatedIcons.play_pause,
+                            size: 32.w,
+                            progress: animation,
+                            // animated color based on controller's value, and it should be animated as well
+                            color: value,
+                          ),
+                        )
+                      : const SizedBox(),
+                  color: theme.colorScheme.onPrimary,
+                  onPressed:
+                      widget.disabled ? null : () => _onPressed(timerStatus),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _onPressed(TimesheetStatusEnum timerStatus) {
+    final timerCubit = context.read<TimerCubit>();
+    if (timerStatus == TimesheetStatusEnum.running) {
+      timerCubit.pauseTimer();
+    } else if ([TimesheetStatusEnum.initial, TimesheetStatusEnum.paused]
+        .contains(timerStatus)) {
+      if (timerStatus == TimesheetStatusEnum.initial) {
+        timerCubit.startTimer();
+      } else if (timerStatus == TimesheetStatusEnum.paused) {
+        timerCubit.resumeTimer();
+      }
+    }
   }
 }
 
@@ -391,89 +395,74 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
           widget.animationController.reverse();
         }
       },
-      child: Theme(
-        data: theme.copyWith(
-          iconButtonTheme: IconButtonThemeData(
-              style: theme.iconButtonTheme.style?.copyWith(
-            backgroundColor: MaterialStatePropertyAll(
-              ElevationOverlay.applySurfaceTint(
-                theme.colorScheme.primaryContainer,
-                theme.colorScheme.surfaceTint,
-                2,
+      child: IconButtonTheme(
+        data: IconButtonThemeData(
+          style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
+                shape: const MaterialStatePropertyAll(StadiumBorder()),
+                maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
+                minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
+                padding:
+                    const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
               ),
-            ),
-            shape: const MaterialStatePropertyAll(StadiumBorder()),
-            maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
-            minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
-            padding: const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
-          )),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               widget.state.duration
                   .timerString(DurationFormat.hoursMinutesSeconds),
               style: textTheme.displaySmall,
             ),
-            SizedBox(
-              height: kPadding.h,
-            ),
-            Padding(
-              padding: widget.padding ??
-                  EdgeInsets.symmetric(
-                    horizontal: kPadding.w * 2,
-                  ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: AnimatedIcon(
-                      icon: AnimatedIcons.play_pause,
-                      size: 32.w,
-                      progress: animation,
-                      color: theme.colorScheme.primary,
-                    ),
-                    onPressed: widget.disabled
-                        ? null
-                        : () {
-                            final timerCubit = context.read<TimerCubit>();
-                            if (timerStatus == TimesheetStatusEnum.running) {
-                              timerCubit.pauseTimer();
-                            } else if ([
-                              TimesheetStatusEnum.initial,
-                              TimesheetStatusEnum.paused,
-                              TimesheetStatusEnum.pausedByForce,
-                              TimesheetStatusEnum.stopped
-                            ].contains(timerStatus)) {
-                              if (timerStatus == TimesheetStatusEnum.initial) {
-                                timerCubit.startTimer();
-                              } else {
-                                timerCubit.resumeTimer();
-                              }
-                            }
-                          },
-                  ),
-                  SizedBox(
-                    width: kPadding.w * 2,
-                  ),
-                  IconButton(
-                    disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.play_pause,
+                    size: kPadding.w * 3,
+                    progress: animation,
                     color: theme.colorScheme.primary,
-                    icon: Icon(
-                      Icons.stop,
-                      size: kPadding.w * 4,
-                    ),
-                    onPressed: widget.disabled ||
-                            timerStatus == TimesheetStatusEnum.initial
-                        ? null
-                        : () {
-                            final timerCubit = context.read<TimerCubit>();
-                            timerCubit.stopTimer();
-                          },
                   ),
-                ],
-              ),
+                  onPressed: widget.disabled
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          if (timerStatus == TimesheetStatusEnum.running) {
+                            timerCubit.pauseTimer();
+                          } else if ([
+                            TimesheetStatusEnum.initial,
+                            TimesheetStatusEnum.paused,
+                            TimesheetStatusEnum.pausedByForce,
+                            TimesheetStatusEnum.stopped
+                          ].contains(timerStatus)) {
+                            if (timerStatus == TimesheetStatusEnum.initial) {
+                              timerCubit.startTimer();
+                            } else {
+                              timerCubit.resumeTimer();
+                            }
+                          }
+                        },
+                ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
+                IconButton(
+                  disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+                  color: theme.colorScheme.primary,
+                  icon: Icon(
+                    Icons.stop,
+                    size: kPadding.w * 3,
+                  ),
+                  onPressed: widget.disabled ||
+                          timerStatus == TimesheetStatusEnum.initial
+                      ? null
+                      : () {
+                          final timerCubit = context.read<TimerCubit>();
+                          timerCubit.stopTimer();
+                        },
+                ),
+              ],
             ),
           ],
         ),

@@ -1,16 +1,16 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
-import 'timesheet_with_task_external_list_filter.dart';
+export 'timesheet_with_task_external_list_filter.dart';
 
 typedef TimesheetWithTaskExternalListState = Data<
     List<TimesheetWithTaskExternalData>, TimesheetWithTaskExternalListFilter>;
 
 class TimesheetWithTaskExternalListCubit extends ListCubit<
-    TimesheetWithTaskExternalData, TimesheetWithTaskExternalListFilter> {
+    TimesheetWithTaskExternalData,
+    TimesheetWithTaskExternalListFilter> with ActiveStateMixin {
   final TimesheetRepository timesheetRepository;
 
   TimesheetWithTaskExternalListCubit(this.timesheetRepository)
@@ -26,6 +26,10 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
               taskId: filter?.taskId,
               isEndDateNull: filter?.isEndDateNull,
               isProjectLocal: filter?.isProjectLocal,
+              orderBy: filter?.orderingFilters
+                  .map((e) => e.orderingTermBuilder)
+                  .toList(),
+              isFavorite: filter?.isFavorite,
             ),
           ),
         );
@@ -61,10 +65,13 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
 
   // Need to implement this method
   Future<void> updateTimesheet(Timesheet timesheet) async {
+    if (isActive == false) {
+      return;
+    }
     await timesheetRepository.update(timesheet);
     final updatedTimesheet =
         await timesheetRepository.getItemById(timesheet.id);
-    if (updatedTimesheet != null) {
+    if (updatedTimesheet != null && isActive) {
       emit(
         state.copyWith(
           data: state.data!
@@ -82,4 +89,19 @@ class TimesheetWithTaskExternalListCubit extends ListCubit<
       throw Exception('Timesheet not found with id ${timesheet.id}');
     }
   }
+}
+
+class FavoriteTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  FavoriteTimesheetWithTaskExternalListCubit(super.timesheetRepository);
+}
+
+class LocalTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  LocalTimesheetWithTaskExternalListCubit(super.timesheetRepository);
+}
+
+class OdooTimesheetWithTaskExternalListCubit
+    extends TimesheetWithTaskExternalListCubit {
+  OdooTimesheetWithTaskExternalListCubit(super.timesheetRepository);
 }

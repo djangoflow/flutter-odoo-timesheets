@@ -4,7 +4,7 @@ import 'package:timesheets/features/external/external.dart';
 
 part 'external_timesheets_dao.g.dart';
 
-@DriftAccessor(tables: [ExternalTimesheets])
+@DriftAccessor(tables: [ExternalTimesheets, ExternalProjects])
 class ExternalTimesheetsDao extends DatabaseAccessor<AppDatabase>
     with _$ExternalTimesheetsDaoMixin {
   ExternalTimesheetsDao(AppDatabase db) : super(db);
@@ -49,4 +49,25 @@ class ExternalTimesheetsDao extends DatabaseAccessor<AppDatabase>
   Future<void> batchDeleteExternalTimesheets(List<int> ids) => batch((batch) {
         batch.deleteWhere(externalTimesheets, (t) => t.id.isIn(ids));
       });
+
+  Future<List<ExternalTimesheet>> getOrphanedExternalTimesheetsForBackend({
+    required int backendId,
+    required List<int> excludedExternalIds,
+  }) async {
+    final query = select(externalTimesheets).join([
+      innerJoin(
+          timesheets, timesheets.id.equalsExp(externalTimesheets.internalId)),
+      innerJoin(externalProjects,
+          externalProjects.internalId.equalsExp(timesheets.projectId)),
+    ])
+      ..where(externalProjects.backendId.equals(backendId))
+      ..where(externalTimesheets.externalId.isNotIn(excludedExternalIds));
+    final rows = await query.get();
+    final result = rows.map((row) {
+      final externalTimesheet = row.readTable(externalTimesheets);
+      return externalTimesheet;
+    }).toList();
+
+    return result;
+  }
 }

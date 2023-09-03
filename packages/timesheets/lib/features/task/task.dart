@@ -1,4 +1,3 @@
-export '../timesheet/presentation/timesheets_placeholder.dart';
 export 'presentation/task_timer.dart';
 export 'data/daos/tasks_dao.dart';
 export 'blocs/tasks_list_cubit/tasks_list_cubit.dart';
@@ -9,3 +8,5 @@ export 'data/daos/task_with_project_dao.dart';
 export 'data/models/task_with_project_external_data.dart';
 export 'data/database_tables/task.dart';
 export 'data/models/task_with_external_data.dart';
+export 'presentation/placeholders/local_tasks_placeholder.dart';
+export 'presentation/placeholders/odoo_tasks_placeholder.dart';

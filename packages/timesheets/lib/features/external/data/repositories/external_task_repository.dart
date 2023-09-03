@@ -42,4 +42,12 @@ class ExternalTaskRepository
 
   Future<void> batchDeleteExternalTasksByIds(List<int> ids) =>
       externalTasksDao.batchDeleteExternalTasksByIds(ids);
+
+  Future<List<ExternalTask>> getOrphanedExternalTasksForBackend(
+          {required int backendId, required List<int> excludedIds}) =>
+      externalTasksDao.getOrphanedExternalTasksForBackend(
+          backendId: backendId, excludedExternalIds: excludedIds);
+
+  Future<ExternalTask?> getExternalTaskByInternalId(int internalId) =>
+      externalTasksDao.getExternalTaskByInternalId(internalId);
 }

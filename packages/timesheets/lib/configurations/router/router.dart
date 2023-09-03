@@ -39,9 +39,13 @@ class AppRouter extends $AppRouter {
               initial: true,
               children: [
                 AutoRoute(
-                  path: 'synced',
-                  page: SyncedTimesheetsRoute.page,
                   initial: true,
+                  path: 'favorite',
+                  page: FavoriteTimesheetsRoute.page,
+                ),
+                AutoRoute(
+                  path: 'odoo',
+                  page: OdooTimesheetsRoute.page,
                 ),
                 AutoRoute(
                   path: 'local',
@@ -50,16 +54,20 @@ class AppRouter extends $AppRouter {
               ],
             ),
             AutoRoute(
-              page: ProjectsRoute.page,
+              page: ProjectsTabRouter.page,
               path: 'projects',
               children: [
                 AutoRoute(
-                  page: SyncedProjectsRoute.page,
-                  path: 'synced',
+                  page: FavoriteProjectsTab.page,
+                  path: 'favorite',
                   initial: true,
                 ),
                 AutoRoute(
-                  page: LocalProjectsRoute.page,
+                  page: OdooProjectsTab.page,
+                  path: 'odoo',
+                ),
+                AutoRoute(
+                  page: LocalProjectsTab.page,
                   path: 'local',
                 ),
               ],
@@ -67,6 +75,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
           ],
         ),
+        AutoRoute(page: ProjectAddRoute.page, path: '/projects/add'),
         AutoRoute(page: ProjectDetailsRoute.page, path: '/projects/:projectId'),
         AutoRoute(
           page: TimesheetRouter.page,
@@ -88,7 +97,18 @@ class AppRouter extends $AppRouter {
               children: [
                 AutoRoute(
                   path: '',
-                  page: TaskDetailsRoute.page,
+                  page: TaskDetailsTabRouter.page,
+                  children: [
+                    AutoRoute(
+                      initial: true,
+                      page: TaskDetailsTimesheetsTab.page,
+                      path: 'timesheets',
+                    ),
+                    AutoRoute(
+                      page: TaskDetailsDetailsTab.page,
+                      path: 'details',
+                    ),
+                  ],
                 ),
                 // AutoRoute(
                 //   path: 'edit',

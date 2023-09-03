@@ -162,7 +162,7 @@ To enable Deep Links or Universal Links(This is what apple's terminalogy for it)
 
 ```
 
-- Now go to `./web/.well-known` directory. Open `apple-app-site-association` file and replace all the `{team_id}` with your apple development team id. For example if, `team_id = your_team_id` and `bundle_id = com.djangoflow.odoo.timesheets` then `"apps": ["{team_id}.com.djangoflow.odoo.timesheets"]` should become `"apps": ["your_team_id.com.djangoflow.odoo.timesheets"]` After deploying the web app the process is done.
+- Now go to `./web/.well-known` directory. Open `apple-app-site-association` file and replace all the `{team_id}` with your apple development team id. For example if, `team_id = your_team_id` and `bundle_id = com.apexive.timesheet` then `"apps": ["{team_id}.com.apexive.timesheet"]` should become `"apps": ["your_team_id.com.apexive.timesheet"]` After deploying the web app the process is done.
 
 Now you've enabled Deep linking for iOS in your application. Test it by running for example this timesheets project `xcrun simctl openurl booted https://your.domain.com` should open the app in the running simulator if installed.
 

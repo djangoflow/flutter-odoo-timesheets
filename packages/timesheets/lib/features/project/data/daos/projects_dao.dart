@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/features/project/data/database_tables/project.dart';
+import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/task/task.dart';
 
 part 'projects_dao.g.dart';
@@ -94,6 +94,84 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
     return projectsWithTaskCount;
   }
 
+  Future<ProjectWithExternalData> getProjectWithExternalDataById(int id) async {
+    final project = await getProjectById(id);
+    if (project == null) {
+      throw Exception('Project with id $id not found');
+    }
+
+    final externalProject = await (select(externalProjects)
+          ..where((p) => p.internalId.equals(id)))
+        .getSingleOrNull();
+    return ProjectWithExternalData(
+      project: project,
+      externalProject: externalProject,
+    );
+  }
+
+  Future<List<ProjectWithExternalData>> getPaginatedProjectsWithExternalData({
+    int? limit,
+    int? offset,
+    bool? isLocal,
+    String? search,
+    bool? isFavorite,
+  }) async {
+    final query = select(projects);
+
+    if (limit != null && offset != null) {
+      query.limit(limit, offset: offset);
+    }
+    if (search != null && search.isNotEmpty) {
+      query.where((p) => p.name.contains(search));
+    }
+
+    query.orderBy([
+      (p) => OrderingTerm(expression: p.updatedAt, mode: OrderingMode.desc),
+      (p) => OrderingTerm(expression: p.name, mode: OrderingMode.asc),
+    ]);
+
+    if (isFavorite != null) {
+      query.where((p) => p.isFavorite.equals(isFavorite));
+    }
+
+    if (isLocal == true) {
+      // make sure that none of the externalProjects have internalId as the project's ids
+      query.where((projects) {
+        final subquery = selectOnly(externalProjects)
+          ..addColumns([externalProjects.internalId]);
+        return notExistsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(projects.id)));
+      });
+    } else if (isLocal == false) {
+      // fetch only projects that have externalProjects
+      query.where((projects) {
+        final subquery = selectOnly(externalProjects)
+          ..addColumns([externalProjects.internalId]);
+        return existsQuery(subquery
+          ..where(externalProjects.internalId.equalsExp(projects.id)));
+      });
+    }
+
+    final projectsList = await (query)
+        .join([
+          leftOuterJoin(externalProjects,
+              projects.id.equalsExp(externalProjects.internalId)),
+        ])
+        .get()
+        .then((rows) => rows.map(
+              (row) {
+                final project = row.readTable(projects);
+                final externalProject = row.readTableOrNull(externalProjects);
+                return ProjectWithExternalData(
+                  project: project,
+                  externalProject: externalProject,
+                );
+              },
+            ).toList());
+
+    return projectsList;
+  }
+
   Future<int> _getTasksCountForProject(Project project) async {
     final tasksCount = await (select(tasks)
           ..where((t) => t.projectId.equals(project.id)))
@@ -110,11 +188,15 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> batchUpdateProjects(List<Project> projects) async {
     await batch((batch) {
-      batch.insertAll(
-        this.projects,
-        projects,
-        mode: InsertMode.insertOrReplace,
-      );
+      for (final project in projects) {
+        batch.update(
+          this.projects,
+          project.copyWith(
+            updatedAt: DateTime.now(),
+          ),
+          where: (table) => table.id.equals(project.id),
+        );
+      }
     });
   }
 

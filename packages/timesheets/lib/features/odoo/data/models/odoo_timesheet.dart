@@ -16,14 +16,14 @@ class OdooTimesheet with _$OdooTimesheet {
     @JsonKey(name: 'task_id') required List<Object> task,
     @JsonKey(
       name: 'date_time',
-      fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-      toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+      fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull,
     )
     DateTime? startTime,
     @JsonKey(
       name: 'date_time_end',
-      fromJson: OdooNullValueJsonConverter.fromJsonOrNull<DateTime>,
-      toJson: OdooNullValueJsonConverter.toJsonOrNull<DateTime>,
+      fromJson: OdooNullableDateTimeJsonConverter.fromJsonOrNull,
+      toJson: OdooNullableDateTimeJsonConverter.toJsonOrNull,
     )
     DateTime? endTime,
     @JsonKey(name: 'unit_amount') required double unitAmount,

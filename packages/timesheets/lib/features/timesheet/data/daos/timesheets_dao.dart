@@ -102,11 +102,15 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> batchUpdateTimesheets(List<Timesheet> timesheets) async {
     await batch((batch) {
-      batch.insertAll(
-        this.timesheets,
-        timesheets.map((e) => e.copyWith(updatedAt: DateTime.now())).toList(),
-        mode: InsertMode.insertOrReplace,
-      );
+      for (final timesheet in timesheets) {
+        batch.update(
+          this.timesheets,
+          timesheet.copyWith(
+            updatedAt: DateTime.now(),
+          ),
+          where: (table) => table.id.equals(timesheet.id),
+        );
+      }
     });
   }
 
@@ -131,6 +135,8 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     int? taskId,
     bool? isEndDateNull,
     bool? isProjectLocal,
+    List<OrderingTerm Function($TimesheetsTable)>? orderBy,
+    bool? isFavorite,
   }) async {
     assert(isLocal == null || isProjectLocal == null, 'Invalid query');
     final query = select(timesheets);
@@ -144,10 +150,7 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
             mode: OrderingMode.desc,
           ),
 
-      (timesheets) => OrderingTerm(
-            expression: timesheets.createdAt,
-            mode: OrderingMode.desc,
-          ),
+      ...orderBy ?? [],
     ]);
 
     if (taskId != null) {
@@ -162,6 +165,10 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
 
     if (limit != null && offset != null) {
       query.limit(limit, offset: offset);
+    }
+
+    if (isFavorite != null) {
+      query.where((timesheets) => timesheets.isFavorite.equals(isFavorite));
     }
 
     if (isProjectLocal == true) {
@@ -257,8 +264,14 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     final query = select(timesheets)
       ..orderBy([
         (t) => OrderingTerm.desc(
-              t.createdAt,
+              t.currentStatus.equals(
+                TimesheetStatusEnum.running.index,
+              ),
             ),
+        (t) => OrderingTerm(
+              expression: t.createdAt,
+              mode: OrderingMode.asc,
+            )
       ]);
     if (taskId != null) {
       query.where((timesheets) => timesheets.taskId.equals(taskId));

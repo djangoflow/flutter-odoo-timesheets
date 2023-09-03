@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  static Color getTintedSurfaceColor(Color surfaceTintColor,
+          {double elevation = 4}) =>
+      ElevationOverlay.applySurfaceTint(
+        Colors.transparent,
+        surfaceTintColor,
+        elevation,
+      );
+
   /// ColorScheme for dark theme
   static ColorScheme get darkThemeColorScheme => const ColorScheme.dark(
         brightness: Brightness.dark,
@@ -29,6 +37,7 @@ class AppColors {
         background: darkThemeBackground,
         onBackground: darkThemeOnBackground,
         shadow: Colors.transparent,
+        surfaceTint: Colors.white,
       );
 
   /// ColorScheme for light theme
@@ -59,57 +68,59 @@ class AppColors {
         background: lightThemeBackground,
         onBackground: lightThemeOnBackground,
         shadow: Colors.transparent,
+        surfaceTint: Colors.white,
       );
 
   // Dark theme colors
-  static const Color darkThemePrimary = Color(0xffffffff);
-  static const Color darkThemeOnPrimary = Color(0xff000000);
-  static const Color darkThemePrimaryContainer = Color(0xff0C1D4D);
+  static const Color darkThemePrimary = Color(0xff000000);
+  static const Color darkThemeOnPrimary = Color(0xffffffff);
+  static const Color darkThemePrimaryContainer = Color(0xff000000);
   static const Color darkThemeOnPrimaryContainer = Color(0xffffffff);
-  static const Color darkThemeSecondary = Color(0xff00007a);
+  static const Color darkThemeSecondary = Color(0x29ffffff);
   static const Color darkThemeOnSecondary = Color(0xffffffff);
-  static const Color darkThemeSecondaryContainer = Color(0xff00003d);
+  static const Color darkThemeSecondaryContainer = Color(0x3dffffff);
   static const Color darkThemeOnSecondaryContainer = Color(0xffffffff);
-  static const Color darkThemeTertiary = Color(0xff006e6e);
+  static const Color darkThemeTertiary = Color(0x52ffffff);
   static const Color darkThemeOnTertiary = Color(0xffffffff);
-  static const Color darkThemeTertiaryContainer = Color(0xff003737);
+  static const Color darkThemeTertiaryContainer = Color(0x7affffff);
   static const Color darkThemeOnTertiaryContainer = Color(0xffffffff);
-  static const Color darkThemeError = Color(0xff7a0000);
+  static const Color darkThemeError = Color(0xffcc3c21);
   static const Color darkThemeOnError = Color(0xffffffff);
-  static const Color darkThemeErrorContainer = Color(0xff3d0000);
-  static const Color darkThemeOnErrorContainer = Color(0xffffffff);
-  static const Color darkThemeSurface = Color(0xff040A1A);
-  static const Color darkThemeOnSurface = Color(0xffffffff);
-  static const Color darkThemeSurfaceVariant = Color(0xff141414);
-  static const Color darkThemeOnSurfaceVariant = Color(0xff7a7a7a);
-  static const Color darkThemeOutline = Color(0xff292929);
-  static const Color darkThemeOutlinevariant = Color(0xff3d3d3d);
-  static const Color darkThemeBackground = Color(0xff040A1A);
+  static const Color darkThemeErrorContainer = Color(0x52cc3c21);
+  static const Color darkThemeOnErrorContainer = Color(0xffcc3c21);
+  static const Color darkThemeBackground = Color(0xff000000);
   static const Color darkThemeOnBackground = Color(0xffffffff);
+  static const Color darkThemeSurface = Color(0xFF292929);
+  static const Color darkThemeOnSurface = Color(0xffffffff);
+  static const Color darkThemeSurfaceVariant = Color(0xff000000);
+  static const Color darkThemeOnSurfaceVariant = Color(0xffffffff);
+  static const Color darkThemeOutline = Color(0x29ffffff);
+  static const Color darkThemeOutlinevariant = Color(0x7affffff);
 
   // Light theme colors
-  static const Color lightThemePrimary = Color(0xff000000);
-  static const Color lightThemeOnPrimary = Color(0xffffffff);
-  static const Color lightThemePrimaryContainer = Color(0xffebebeb);
+  static const Color lightThemePrimary = Color(0xffffffff);
+  static const Color lightThemeOnPrimary = Color(0xff000000);
+  static const Color lightThemePrimaryContainer = Color(0xffffffff);
   static const Color lightThemeOnPrimaryContainer = Color(0xff000000);
-  static const Color lightThemeSecondary = Color(0xff0000ff);
+  static const Color lightThemeSecondary = Color(0x29ffffff);
   static const Color lightThemeOnSecondary = Color(0xffffffff);
-  static const Color lightThemeSecondaryContainer = Color(0xff8585ff);
+  static const Color lightThemeSecondaryContainer = Color(0x29ffffff);
   static const Color lightThemeOnSecondaryContainer = Color(0xffffffff);
-  static const Color lightThemeTertiary = Color(0xff00e6e6);
-  static const Color lightThemeOnTertiary = Color(0xffffffff);
-  static const Color lightThemeTertiaryContainer = Color(0xff85f3f3);
-  static const Color lightThemeOnTertiaryContainer = Color(0xffffffff);
-  static const Color lightThemeError = Color(0xffff0000);
+  static const Color lightThemeTertiary = Color(0x52ffffff);
+  static const Color lightThemeOnTertiary = Color(0xff000000);
+  static const Color lightThemeTertiaryContainer = Color(0x52ffffff);
+  static const Color lightThemeOnTertiaryContainer = Color(0xff000000);
+  static const Color lightThemeSurface = Color(0xFF214ECC);
+  static const Color lightThemeOnSurface = Color(0xffffffff);
+  static const Color lightThemeSurfaceVariant = Color(0xFF0C1D4D);
+  static const Color lightThemeOnSurfaceVariant = Color(0xffffffff);
+  static const Color lightThemeBackground = Color(0xFF214ECC);
+  static const Color lightThemeOnBackground = Color(0xffffffff);
+  // as the design one does not look good against blue, so I decided to use vivid yellow
+  static const Color lightThemeError = Color(0xFFFFA500);
   static const Color lightThemeOnError = Color(0xffffffff);
-  static const Color lightThemeErrorContainer = Color(0xffff8585);
-  static const Color lightThemeOnErrorContainer = Color(0xffffffff);
-  static const Color lightThemeSurface = Color(0xffffffff);
-  static const Color lightThemeOnSurface = Color(0xff000000);
-  static const Color lightThemeSurfaceVariant = Color(0xffebebeb);
-  static const Color lightThemeOnSurfaceVariant = Color(0xff858585);
-  static const Color lightThemeOutline = Color(0xffebebeb);
-  static const Color lightThemeOutlinevariant = Color(0xffd6d6d6);
-  static const Color lightThemeOnBackground = Color(0xff000000);
-  static const Color lightThemeBackground = Color(0xffffffff);
+  static const Color lightThemeErrorContainer = Color(0x52cc3c21);
+  static const Color lightThemeOnErrorContainer = Color(0xffcc3c21);
+  static const Color lightThemeOutline = Color(0x29ffffff);
+  static const Color lightThemeOutlinevariant = Color(0x7affffff);
 }

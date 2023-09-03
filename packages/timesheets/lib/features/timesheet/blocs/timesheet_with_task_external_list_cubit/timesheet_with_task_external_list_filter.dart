@@ -1,5 +1,8 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:list_bloc/list_bloc.dart';
+import 'package:timesheets/features/app/app.dart';
 
 part 'timesheet_with_task_external_list_filter.freezed.dart';
 part 'timesheet_with_task_external_list_filter.g.dart';
@@ -18,6 +21,13 @@ class TimesheetWithTaskExternalListFilter
     int? taskId,
     bool? isEndDateNull,
     bool? isProjectLocal,
+    @JsonKey(
+      includeFromJson: false,
+      includeToJson: false,
+    )
+    @Default([])
+    List<OrderingFilter<$TimesheetsTable>> orderingFilters,
+    bool? isFavorite,
   }) = _TimesheetWithTaskExternalListFilter;
 
   factory TimesheetWithTaskExternalListFilter.fromJson(

@@ -135,11 +135,14 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<void> batchUpdateTasks(List<Task> tasks) async {
     await batch((batch) {
-      batch.insertAll(
-        this.tasks,
-        tasks,
-        mode: InsertMode.insertOrReplace,
-      );
+      for (final task in tasks) {
+        batch.update(
+            this.tasks,
+            task.copyWith(
+              updatedAt: DateTime.now(),
+            ),
+            where: (t) => t.id.equals(task.id));
+      }
     });
   }
 

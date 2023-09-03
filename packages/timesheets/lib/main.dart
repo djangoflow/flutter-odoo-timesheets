@@ -24,14 +24,13 @@ Future<void> main() async {
       DjangoflowAppSnackbar.showError(errorMessage);
     },
     rootWidgetBuilder: (appBuilder) async {
+      Paint.enableDithering = true;
       String? initialDeepLink;
       final appLinksRepository = AppLinksRepository();
       if (!kIsWeb) {
         initialDeepLink = (await appLinksRepository.getInitialLink())?.path;
       }
-      AppCubit.initialState = const AppState(
-        themeMode: ThemeMode.dark,
-      );
+
       // initialize router
       final router = AppRouter();
 

@@ -1,13 +1,13 @@
 {
     "webcredentials": {
-        "apps": ["{team_id}.com.djangoflow.odoo.timesheets"]
+        "apps": ["{team_id}.com.apexive.timesheet"]
     },
     "applinks": {
         "apps": [],
         "details": [{
-            "appID": "{team_id}.com.djangoflow.odoo.timesheets",
+            "appID": "{team_id}.com.apexive.timesheet",
             "paths": ["*"],
-            "appIDs": ["{team_id}.com.djangoflow.odoo.timesheets"],
+            "appIDs": ["{team_id}.com.apexive.timesheet"],
             "components": [{
                 "/": "/*"
             }]

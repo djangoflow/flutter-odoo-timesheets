@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
@@ -40,35 +41,51 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           ),
         ),
         popupProps: PopupProps.menu(
+          menuProps: const MenuProps(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
           showSearchBox: true,
           isFilterOnline: true,
+          fit: FlexFit.loose,
           loadingBuilder: (context, searchKey) =>
               const LinearProgressIndicator(),
           searchDelay: const Duration(milliseconds: searchDelayMs),
           emptyBuilder: emptyBuilder,
           itemBuilder: (context, item, isSelected) => Padding(
             padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
-            child: ListTile(
-              title: Text(
-                itemAsString?.call(item) ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              selected: isSelected,
+            child: Column(
+              children: [
+                Divider(
+                  height: kPadding.h / 8,
+                ),
+                ListTile(
+                  tileColor: Colors.transparent,
+                  title: Text(
+                    itemAsString?.call(item) ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  selected: isSelected,
+                ),
+              ],
             ),
           ),
-          containerBuilder: (context, popupWidget) => Card(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            elevation: 0,
+          containerBuilder: (context, popupWidget) => GlassContainer(
+            blur: kDefaultBlur,
+            shadowStrength: 0,
+            shape: BoxShape.rectangle,
+            color: AppColors.getTintedSurfaceColor(
+                Theme.of(context).colorScheme.surfaceTint),
+            borderRadius: BorderRadius.all(
+              Radius.circular(kPadding.r * 1),
+            ),
             child: popupWidget,
           ),
-          searchFieldProps: TextFieldProps(
+          searchFieldProps: const TextFieldProps(
             decoration: InputDecoration(
               hintText: 'Search',
-              label: const Text('Search'),
-              border: const OutlineInputBorder(),
-              filled: true,
-              fillColor: Theme.of(context).colorScheme.surface,
+              label: Text('Search'),
             ),
           ),
         ),
