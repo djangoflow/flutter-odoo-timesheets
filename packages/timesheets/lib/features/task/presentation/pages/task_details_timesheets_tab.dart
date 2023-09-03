@@ -619,7 +619,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
     ExternalTask? externalTask,
   }) async {
     final taskDetailsCubit = context.read<TaskDetailsCubit>();
-    final router = context.router;
+
     final odooBackends = context
         .read<AuthCubit>()
         .state
