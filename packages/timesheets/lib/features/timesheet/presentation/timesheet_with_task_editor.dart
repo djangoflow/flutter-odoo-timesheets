@@ -66,39 +66,11 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final group = fb.group(
-      {
-        projectControlName: FormControl<ProjectWithExternalData>(
-          value: project,
-          disabled: disableProjectTaskSelection == true ? true : false,
-          validators: [
-            Validators.required,
-          ],
-        ),
-        taskControlName: FormControl<Task>(
-          value: task,
-          disabled: disableProjectTaskSelection == true ? true : false,
-          validators: [
-            Validators.required,
-          ],
-        ),
-        descriptionControlName: FormControl<String>(
-          value: description,
-          validators: [
-            Validators.required,
-          ],
-        ),
-        isFavoriteControlName: FormControl<bool>(
-          value: isFavorite ?? false,
-        ),
-      },
-    );
     final projectSuggestionBoxController = SuggestionsBoxController();
     final taskSuggestionBoxController = SuggestionsBoxController();
     return ReactiveFormBuilder(
-      form: () => group,
+      form: () => _formGroup,
       builder: (context, formGroup, child) {
-        print(formGroup.control(taskControlName).value);
         final formListView = GestureDetector(
           onTap: () => formGroup.unfocus(),
           child: ListView(

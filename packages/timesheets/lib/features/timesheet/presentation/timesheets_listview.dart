@@ -205,8 +205,7 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
 
 class _ListTileItem extends StatelessWidget {
   const _ListTileItem(
-      {super.key,
-      required this.text,
+      {required this.text,
       required this.icon,
       this.textStyle,
       this.maxLines = 1});
@@ -233,7 +232,7 @@ class _ListTileItem extends StatelessWidget {
 }
 
 class _PaddedIcon extends StatelessWidget {
-  const _PaddedIcon({super.key, required this.icon});
+  const _PaddedIcon({required this.icon});
   final Icon icon;
   @override
   Widget build(BuildContext context) => Padding(
