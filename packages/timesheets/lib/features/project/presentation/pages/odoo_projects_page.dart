@@ -36,11 +36,13 @@ class OdooProjectsTabPage extends StatelessWidget implements AutoRouteWrapper {
           return OdooProjectsPlaceHolder(
             message: isAuthenticated
                 ? 'Create projects in odoo and re-synchronize the app to get started'
-                : 'Syncrhonize with odoo to get started',
+                : 'Re-sync with odoo to get started',
             onGetStarted: () async {
               final odooProjectListCubit = context.read<OdooProjectListCubit>();
               if (isAuthenticated) {
-                // TODO sync projects
+                final tabsRouter = context.router.root
+                    .innerRouterOf(HomeTabRouter.name) as TabsRouter?;
+                tabsRouter?.setActiveIndex(2);
               } else {
                 final result = await context.router.push(OdooLoginRoute());
                 if (result != null && result is bool && result == true) {
