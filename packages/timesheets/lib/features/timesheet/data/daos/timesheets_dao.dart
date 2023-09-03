@@ -264,8 +264,14 @@ class TimesheetsDao extends DatabaseAccessor<AppDatabase>
     final query = select(timesheets)
       ..orderBy([
         (t) => OrderingTerm.desc(
-              t.createdAt,
+              t.currentStatus.equals(
+                TimesheetStatusEnum.running.index,
+              ),
             ),
+        (t) => OrderingTerm(
+              expression: t.createdAt,
+              mode: OrderingMode.asc,
+            )
       ]);
     if (taskId != null) {
       query.where((timesheets) => timesheets.taskId.equals(taskId));
