@@ -41,52 +41,55 @@ class ProjectsTabRouterPage extends StatelessWidget
           OdooProjectsTab(),
           LocalProjectsTab(),
         ],
-        builder: (context, child, tabController) => GradientScaffold(
-          appBar: AppBar(
-            title: const Text('Projects'),
-            scrolledUnderElevation: 0,
-            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  if (tabController.index == 0) {
-                    context.router
-                        .push(
-                      ProjectAddRoute(
-                        isInitiallyFavorite: true,
-                      ),
-                    )
-                        .then((value) {
-                      if (value == true) {
-                        context.read<FavoriteProjectListCubit>().load();
-                        DjangoflowAppSnackbar.showInfo('Added successfully');
-                      }
-                    });
-                  } else if (tabController.index == 1) {
-                    context.router.push(
-                      ProjectAddRoute(),
-                    );
-                  }
+        builder: (context, child, tabController) => IconButtonTheme(
+          data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
+          child: GradientScaffold(
+            appBar: AppBar(
+              title: const Text('Projects'),
+              scrolledUnderElevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    if (tabController.index == 0) {
+                      context.router
+                          .push(
+                        ProjectAddRoute(
+                          isInitiallyFavorite: true,
+                        ),
+                      )
+                          .then((value) {
+                        if (value == true) {
+                          context.read<FavoriteProjectListCubit>().load();
+                          DjangoflowAppSnackbar.showInfo('Added successfully');
+                        }
+                      });
+                    } else if (tabController.index == 1) {
+                      context.router.push(
+                        ProjectAddRoute(),
+                      );
+                    }
 
-                  // TODO auto reload after adding project
-                },
-                icon: const Icon(CupertinoIcons.add),
-              ),
-              SizedBox(
-                width: kPadding.w * 2,
-              ),
-            ],
-            centerTitle: false,
-            bottom: TabBar(
-              controller: tabController,
-              tabs: const [
-                Tab(text: 'Favorites'),
-                Tab(text: 'Odoo'),
-                Tab(text: 'Local'),
+                    // TODO auto reload after adding project
+                  },
+                  icon: const Icon(CupertinoIcons.add),
+                ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
               ],
+              centerTitle: false,
+              bottom: TabBar(
+                controller: tabController,
+                tabs: const [
+                  Tab(text: 'Favorites'),
+                  Tab(text: 'Odoo'),
+                  Tab(text: 'Local'),
+                ],
+              ),
             ),
+            body: child,
           ),
-          body: child,
         ),
       );
 }

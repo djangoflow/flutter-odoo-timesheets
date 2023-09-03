@@ -44,92 +44,97 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
           OdooTimesheetsRoute(),
           LocalTimesheetsRoute(),
         ],
-        builder: (context, child, tabController) => GradientScaffold(
-          appBar: AppBar(
-            title: const Text('Timesheets'),
-            scrolledUnderElevation: 0,
-            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  AppModalSheet.show(
-                    context: context,
-                    child: FilterSelector<$TimesheetsTable>(
-                      onFilterChanged: (f) {
-                        context
-                            .read<TabbedOrderingFilterCubit<$TimesheetsTable>>()
-                            .updateFilter(tabController.index, f);
-                      },
-                      initialFilter: context
+        builder: (context, child, tabController) => IconButtonTheme(
+          data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
+          child: GradientScaffold(
+            appBar: AppBar(
+              title: const Text('Timesheets'),
+              scrolledUnderElevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    AppModalSheet.show(
+                      context: context,
+                      child: FilterSelector<$TimesheetsTable>(
+                        onFilterChanged: (f) {
+                          context
                               .read<
                                   TabbedOrderingFilterCubit<$TimesheetsTable>>()
-                              .getFilterForTab(
-                                tabController.index,
-                              ) ??
+                              .updateFilter(tabController.index, f);
+                        },
+                        initialFilter: context
+                                .read<
+                                    TabbedOrderingFilterCubit<
+                                        $TimesheetsTable>>()
+                                .getFilterForTab(
+                                  tabController.index,
+                                ) ??
+                            TimesheetRecentFirstFilter(),
+                        availableFilters: [
                           TimesheetRecentFirstFilter(),
-                      availableFilters: [
-                        TimesheetRecentFirstFilter(),
-                        TimesheetOldestFirstFilter(),
-                      ],
-                    ),
-                  );
-                },
-                icon: const Icon(CupertinoIcons.arrow_up_down),
-              ),
-              IconButton(
-                onPressed: () async {
-                  final router = context.router;
-                  TimesheetWithTaskExternalListCubit? cubit;
-                  PageRouteInfo? route;
-                  switch (tabController.index) {
-                    case 0:
-                      route = TimesheetAddRoute(
-                        isInitiallyFavorite: true,
-                      );
-                      cubit = context
-                          .read<FavoriteTimesheetWithTaskExternalListCubit>();
-                      break;
-                    case 1:
-                      route = TimesheetAddRoute(
-                        disableLocalProjectTaskSelection: true,
-                      );
-                      cubit = context
-                          .read<OdooTimesheetWithTaskExternalListCubit>();
-                      break;
-                    case 2:
-                      route = TimesheetAddRoute();
-                      cubit = context
-                          .read<LocalTimesheetWithTaskExternalListCubit>();
-                      break;
-                    default:
-                      break;
-                  }
-                  if (route != null) {
-                    final result =
-                        await router.push(TimesheetRouter(children: [route]));
-                    if (result != null && result is bool && result == true) {
-                      cubit?.reload();
+                          TimesheetOldestFirstFilter(),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(CupertinoIcons.arrow_up_down),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    final router = context.router;
+                    TimesheetWithTaskExternalListCubit? cubit;
+                    PageRouteInfo? route;
+                    switch (tabController.index) {
+                      case 0:
+                        route = TimesheetAddRoute(
+                          isInitiallyFavorite: true,
+                        );
+                        cubit = context
+                            .read<FavoriteTimesheetWithTaskExternalListCubit>();
+                        break;
+                      case 1:
+                        route = TimesheetAddRoute(
+                          disableLocalProjectTaskSelection: true,
+                        );
+                        cubit = context
+                            .read<OdooTimesheetWithTaskExternalListCubit>();
+                        break;
+                      case 2:
+                        route = TimesheetAddRoute();
+                        cubit = context
+                            .read<LocalTimesheetWithTaskExternalListCubit>();
+                        break;
+                      default:
+                        break;
                     }
-                  }
-                },
-                icon: const Icon(CupertinoIcons.add),
-              ),
-              SizedBox(
-                width: kPadding.w * 2,
-              ),
-            ],
-            centerTitle: false,
-            bottom: TabBar(
-              controller: tabController,
-              indicatorSize: TabBarIndicatorSize.label,
-              tabs: const [
-                Tab(text: 'Favorites'),
-                Tab(text: 'Odoo'),
-                Tab(text: 'Local'),
+                    if (route != null) {
+                      final result =
+                          await router.push(TimesheetRouter(children: [route]));
+                      if (result != null && result is bool && result == true) {
+                        cubit?.reload();
+                      }
+                    }
+                  },
+                  icon: const Icon(CupertinoIcons.add),
+                ),
+                SizedBox(
+                  width: kPadding.w * 2,
+                ),
               ],
+              centerTitle: false,
+              bottom: TabBar(
+                controller: tabController,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: const [
+                  Tab(text: 'Favorites'),
+                  Tab(text: 'Odoo'),
+                  Tab(text: 'Local'),
+                ],
+              ),
             ),
+            body: child,
           ),
-          body: child,
         ),
       );
 }
