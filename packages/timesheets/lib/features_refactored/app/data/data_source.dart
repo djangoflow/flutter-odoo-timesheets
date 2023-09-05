@@ -1,10 +1,4 @@
-import 'package:timesheets/features_refactored/app/data/data_source.dart';
-
-abstract class Repository<T> {
-  final DataSource<T> dataSource;
-
-  Repository({required this.dataSource});
-
+abstract class DataSource<T> {
   Future<T?> getById(int id);
   Future<List<T>> getAll();
   Future<int> insert(T entity);
