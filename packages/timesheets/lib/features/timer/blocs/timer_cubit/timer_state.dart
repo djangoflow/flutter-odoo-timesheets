@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timesheet/data/database_tables/timesheet.dart';
 
 part 'timer_state.freezed.dart';
 

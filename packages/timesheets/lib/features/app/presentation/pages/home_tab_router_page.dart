@@ -52,8 +52,8 @@ class HomeTabRouterPage extends StatelessWidget {
             );
           },
           routes: const [
-            TimesheetsRoute(),
-            ProjectsTabRouter(),
+            // TimesheetsRoute(),
+            // ProjectsTabRouter(),
             SettingsRoute(),
           ],
         ),

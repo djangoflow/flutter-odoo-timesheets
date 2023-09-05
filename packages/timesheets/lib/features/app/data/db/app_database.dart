@@ -7,11 +7,10 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/features/project/project.dart';
-// import 'package:timesheets/features/app/data/db/schema_versions.dart';
-import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/external/data/database_tables/backend.dart';
+import 'package:timesheets/features/project/data/database_tables/project.dart';
+import 'package:timesheets/features/task/data/database_tables/task.dart';
+import 'package:timesheets/features/timesheet/data/database_tables/timesheet.dart';
 
 part 'app_database.g.dart';
 
@@ -21,19 +20,8 @@ part 'app_database.g.dart';
     Tasks,
     Backends,
     Timesheets,
-    ExternalProjects,
-    ExternalTasks,
-    ExternalTimesheets,
   ],
-  daos: [
-    ProjectsDao,
-    TasksDao,
-    BackendsDao,
-    TimesheetsDao,
-    ExternalProjectsDao,
-    ExternalTasksDao,
-    ExternalTimesheetsDao,
-  ],
+  daos: [],
 )
 class AppDatabase extends _$AppDatabase {
   // we tell the database where to store the data with this constructor

@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/project/data/database_tables/project.dart';
-import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/task/data/database_tables/task.dart';
 
 class Timesheets extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -33,4 +32,13 @@ class Timesheets extends Table {
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+/// Timesheet status enum. If you add a new status, make sure to add it to the end of the list.
+enum TimesheetStatusEnum {
+  initial,
+  running,
+  pausedByForce,
+  paused,
+  stopped,
 }

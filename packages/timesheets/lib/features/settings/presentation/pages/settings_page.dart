@@ -10,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
-import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
+
 import 'package:timesheets/utils/utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
@@ -89,115 +87,115 @@ class SettingsPage extends StatelessWidget {
                       height: kPadding.h,
                     ),
                     const SectionTitle(title: 'Synchronizations'),
-                    SyncCubitProvider(
-                      child: BlocBuilder<AuthCubit, AuthState>(
-                        builder: (context, state) {
-                          final children = state.connectedBackends
-                              .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                              .map((backend) => DefaultActionController(
-                                    child: LinearProgressBuilder(
-                                      action: (_) async {
-                                        final result = await AppModalSheet.show<
-                                            _BackendSyncOptionsEnum>(
-                                          context: context,
-                                          child: SafeArea(
-                                            bottom: true,
-                                            child: _BackendSyncOptions(
-                                              backend: backend,
-                                            ),
-                                          ),
-                                        );
-                                        if (context.mounted) {
-                                          final syncCubit =
-                                              context.read<SyncCubit>();
-                                          switch (result) {
-                                            case _BackendSyncOptionsEnum.unlink:
-                                              await _disconnectBackend(
-                                                  context, backend);
-                                              break;
-                                            case _BackendSyncOptionsEnum.resync:
-                                              await syncCubit
-                                                  .syncData(backend.id);
-                                              break;
-                                            default:
-                                              break;
-                                          }
-                                        }
-                                      },
-                                      builder: (context, action, error) =>
-                                          ListTile(
-                                        key: ValueKey(backend.id),
-                                        title: RichText(
-                                          text: TextSpan(
-                                            text: 'Odoo',
-                                            style: theme
-                                                .listTileTheme.titleTextStyle,
-                                            children: [
-                                              if (backend.serverUrl != null)
-                                                TextSpan(
-                                                  text:
-                                                      ' (${backend.serverUrl})',
-                                                  style: theme
-                                                      .textTheme.labelSmall
-                                                      ?.copyWith(
-                                                    color: theme.colorScheme
-                                                        .onSurfaceVariant,
-                                                  ),
-                                                )
-                                            ],
-                                          ),
-                                        ),
-                                        subtitle: Text(backend.email ?? ''),
-                                        // TODO Enable later with proper testing
-                                        // leading: Builder(
-                                        //   builder: (context) =>
-                                        //       CircularProgressBuilder(
-                                        //     action: (_) async {
-                                        //       await context
-                                        //           .read<SyncCubit>()
-                                        //           .syncData(backend.id);
-                                        //     },
-                                        //     builder: (context, action, error) =>
-                                        //         IconButton(
-                                        //       icon: const Icon(Icons.sync),
-                                        //       onPressed: action,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        trailing: Icon(
-                                          Icons.chevron_right,
-                                          size: kPadding.w * 4,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                        // Logout
-                                        onTap: action,
-                                      ),
-                                    ),
-                                  ))
-                              .toList();
+                    // SyncCubitProvider(
+                    //   child: BlocBuilder<AuthCubit, AuthState>(
+                    //     builder: (context, state) {
+                    //       final children = state.connectedBackends
+                    //           .getBackendsFilteredByType(BackendTypeEnum.odoo)
+                    //           .map((backend) => DefaultActionController(
+                    //                 child: LinearProgressBuilder(
+                    //                   action: (_) async {
+                    //                     final result = await AppModalSheet.show<
+                    //                         _BackendSyncOptionsEnum>(
+                    //                       context: context,
+                    //                       child: SafeArea(
+                    //                         bottom: true,
+                    //                         child: _BackendSyncOptions(
+                    //                           backend: backend,
+                    //                         ),
+                    //                       ),
+                    //                     );
+                    //                     if (context.mounted) {
+                    //                       final syncCubit =
+                    //                           context.read<SyncCubit>();
+                    //                       switch (result) {
+                    //                         case _BackendSyncOptionsEnum.unlink:
+                    //                           await _disconnectBackend(
+                    //                               context, backend);
+                    //                           break;
+                    //                         case _BackendSyncOptionsEnum.resync:
+                    //                           await syncCubit
+                    //                               .syncData(backend.id);
+                    //                           break;
+                    //                         default:
+                    //                           break;
+                    //                       }
+                    //                     }
+                    //                   },
+                    //                   builder: (context, action, error) =>
+                    //                       ListTile(
+                    //                     key: ValueKey(backend.id),
+                    //                     title: RichText(
+                    //                       text: TextSpan(
+                    //                         text: 'Odoo',
+                    //                         style: theme
+                    //                             .listTileTheme.titleTextStyle,
+                    //                         children: [
+                    //                           if (backend.serverUrl != null)
+                    //                             TextSpan(
+                    //                               text:
+                    //                                   ' (${backend.serverUrl})',
+                    //                               style: theme
+                    //                                   .textTheme.labelSmall
+                    //                                   ?.copyWith(
+                    //                                 color: theme.colorScheme
+                    //                                     .onSurfaceVariant,
+                    //                               ),
+                    //                             )
+                    //                         ],
+                    //                       ),
+                    //                     ),
+                    //                     subtitle: Text(backend.email ?? ''),
+                    //                     // TODO Enable later with proper testing
+                    //                     // leading: Builder(
+                    //                     //   builder: (context) =>
+                    //                     //       CircularProgressBuilder(
+                    //                     //     action: (_) async {
+                    //                     //       await context
+                    //                     //           .read<SyncCubit>()
+                    //                     //           .syncData(backend.id);
+                    //                     //     },
+                    //                     //     builder: (context, action, error) =>
+                    //                     //         IconButton(
+                    //                     //       icon: const Icon(Icons.sync),
+                    //                     //       onPressed: action,
+                    //                     //     ),
+                    //                     //   ),
+                    //                     // ),
+                    //                     trailing: Icon(
+                    //                       Icons.chevron_right,
+                    //                       size: kPadding.w * 4,
+                    //                       color: theme.colorScheme.onSurface,
+                    //                     ),
+                    //                     // Logout
+                    //                     onTap: action,
+                    //                   ),
+                    //                 ),
+                    //               ))
+                    //           .toList();
 
-                          return Column(
-                            children: [
-                              ...children,
-                              const SizedBox(
-                                height: kPadding,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('Add Odoo account'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      onTap: () => context.router.push(
-                        OdooLoginRoute(),
-                      ),
-                    ),
+                    //       return Column(
+                    //         children: [
+                    //           ...children,
+                    //           const SizedBox(
+                    //             height: kPadding,
+                    //           ),
+                    //         ],
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // ListTile(
+                    //   title: const Text('Add Odoo account'),
+                    //   trailing: Icon(
+                    //     Icons.chevron_right,
+                    //     size: kPadding.w * 4,
+                    //     color: theme.colorScheme.onSurface,
+                    //   ),
+                    //   onTap: () => context.router.push(
+                    //     OdooLoginRoute(),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: kPadding.h * 2,
                     ),
@@ -278,41 +276,41 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Future<void> _disconnectBackend(BuildContext context, Backend backend) async {
-    final authCubit = context.read<AuthCubit>();
-    final syncCubit = context.read<SyncCubit>();
-    final router = context.router;
-    final result = await showCupertinoDialog<bool?>(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: const Text('Disconnect from Odoo?'),
-        content: const Text(
-          'You will be logged out from Odoo and lose synchronization.',
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: Text('Cancel',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                )),
-            onPressed: () => context.router.pop(false),
-          ),
-          CupertinoDialogAction(
-            isDestructiveAction: true,
-            child: const Text('Disconnect'),
-            onPressed: () {
-              context.router.pop(true);
-            },
-          ),
-        ],
-      ),
-    );
-    if (result == true) {
-      await syncCubit.removeData(backend.id);
-      await authCubit.logout(backend);
-      router.pop();
-    }
-  }
+  // Future<void> _disconnectBackend(BuildContext context, Backend backend) async {
+  //   final authCubit = context.read<AuthCubit>();
+  //   final syncCubit = context.read<SyncCubit>();
+  //   final router = context.router;
+  //   final result = await showCupertinoDialog<bool?>(
+  //     context: context,
+  //     builder: (context) => CupertinoAlertDialog(
+  //       title: const Text('Disconnect from Odoo?'),
+  //       content: const Text(
+  //         'You will be logged out from Odoo and lose synchronization.',
+  //       ),
+  //       actions: [
+  //         CupertinoDialogAction(
+  //           child: Text('Cancel',
+  //               style: TextStyle(
+  //                 color: Theme.of(context).colorScheme.onPrimary,
+  //               )),
+  //           onPressed: () => context.router.pop(false),
+  //         ),
+  //         CupertinoDialogAction(
+  //           isDestructiveAction: true,
+  //           child: const Text('Disconnect'),
+  //           onPressed: () {
+  //             context.router.pop(true);
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  //   if (result == true) {
+  //     await syncCubit.removeData(backend.id);
+  //     await authCubit.logout(backend);
+  //     router.pop();
+  //   }
+  // }
 }
 
 class _BackendSyncOptions extends StatelessWidget {

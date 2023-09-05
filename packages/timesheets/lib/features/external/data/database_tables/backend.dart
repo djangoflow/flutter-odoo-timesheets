@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:timesheets/features/external/external.dart';
 
 class Backends extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -16,4 +15,9 @@ class Backends extends Table {
   TextColumn get token => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+enum BackendTypeEnum {
+  drift,
+  odoo,
 }

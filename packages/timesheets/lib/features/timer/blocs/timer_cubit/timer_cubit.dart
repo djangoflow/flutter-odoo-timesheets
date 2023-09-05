@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timesheet/data/database_tables/timesheet.dart';
 
 import 'timer_state.dart';
 

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/project/data/database_tables/project.dart';
 
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
