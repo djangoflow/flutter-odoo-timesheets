@@ -63,7 +63,7 @@ dependencies:
       url: https://github.com/djangoflow/dart-xmlrpc.git
   lottie: ^2.4.0
   drift_db_viewer: ^2.0.0
-  
+    
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,5 @@
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/external/external.dart';
+import 'package:timesheets/features/external/data/database_tables/backend.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
 extension BackendListExtensions on List<Backend> {

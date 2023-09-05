@@ -1,5 +1,5 @@
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timesheet/data/database_tables/timesheet.dart';
 
 extension TimesheetListExtension on List<Timesheet> {
   // bool get hasUnsyncedTimesheets =>
