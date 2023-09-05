@@ -1,4 +1,0 @@
-enum BackendTypeEnum {
-  odoo,
-  github,
-}
