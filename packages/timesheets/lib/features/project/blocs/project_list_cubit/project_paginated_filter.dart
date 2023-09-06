@@ -15,6 +15,7 @@ class ProjectPaginatedFilter
   const factory ProjectPaginatedFilter({
     @Default(25) int limit,
     @Default(0) int offset,
+    bool? isFavorite,
   }) = _ProjectPaginatedFilter;
 
   factory ProjectPaginatedFilter.fromJson(
