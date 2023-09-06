@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timesheets/features/in_memory_backend/in_memory_backend.dart';
 
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -28,6 +29,9 @@ class TimesheetsAppBuilder extends AppBuilder {
           repositoryProviders: [
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
+            ),
+            RepositoryProvider<InMemoryBackend>(
+              create: (context) => InMemoryBackend(),
             ),
           ],
           providers: [
