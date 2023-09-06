@@ -14,7 +14,11 @@ class InMemoryTaskRepository implements TaskRepository {
     const uuid = Uuid();
 
     // assign id
-    final updatedItem = item.copyWith(id: uuid.v4().hashCode);
+    final updatedItem = item.copyWith(
+      id: uuid.v4().hashCode,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
     _backend.tasks.add(updatedItem);
     // return id
     return Future.value(updatedItem.id);
@@ -55,6 +59,8 @@ class InMemoryTaskRepository implements TaskRepository {
     if (index == -1) {
       throw Exception('Item not found');
     }
-    _backend.tasks[index] = item;
+    _backend.tasks[index] = item.copyWith(
+      updatedAt: DateTime.now(),
+    );
   }
 }
