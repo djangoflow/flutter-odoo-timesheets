@@ -9,6 +9,7 @@ import 'typography.dart';
 export 'colors.dart';
 export 'size_constants.dart';
 export 'typography.dart';
+export 'odoo_colors.dart';
 
 class AppTheme {
   static const double _buttonRadius = 10;
