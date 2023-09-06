@@ -22,8 +22,26 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: HomeTabRouter.page,
           path: '/',
-          children: const [],
+          children: [
+            AutoRoute(
+              initial: true,
+              page: ProjectsTabRouter.page,
+              path: 'projects',
+              children: [
+                AutoRoute(
+                  page: FavoriteProjectsTab.page,
+                  path: 'favorite',
+                  initial: true,
+                ),
+                AutoRoute(
+                  page: LocalProjectsTab.page,
+                  path: 'local',
+                ),
+              ],
+            ),
+          ],
         ),
+        AutoRoute(page: ProjectAddRoute.page, path: '/projects/add'),
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];
 }
