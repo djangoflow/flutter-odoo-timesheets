@@ -19,21 +19,6 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FMDB (>= 2.7.5)
-  - sqlite3 (3.41.2):
-    - sqlite3/common (= 3.41.2)
-  - sqlite3/common (3.41.2)
-  - sqlite3/fts5 (3.41.2):
-    - sqlite3/common
-  - sqlite3/perf-threadsafe (3.41.2):
-    - sqlite3/common
-  - sqlite3/rtree (3.41.2):
-    - sqlite3/common
-  - sqlite3_flutter_libs (0.0.1):
-    - Flutter
-    - sqlite3 (~> 3.41.2)
-    - sqlite3/fts5
-    - sqlite3/perf-threadsafe
-    - sqlite3/rtree
   - url_launcher_ios (0.0.1):
     - Flutter
   - video_player_avfoundation (0.0.1):
@@ -52,7 +37,6 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
@@ -61,7 +45,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
-    - sqlite3
 
 EXTERNAL SOURCES:
   app_links:
@@ -80,8 +63,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  sqlite3_flutter_libs:
-    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
@@ -101,8 +82,6 @@ SPEC CHECKSUMS:
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
   path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  sqlite3: fd89671d969f3e73efe503ce203e28b016b58f68
-  sqlite3_flutter_libs: 04ba0d14a04335a2fbf9a331e8664f401fbccdd5
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
