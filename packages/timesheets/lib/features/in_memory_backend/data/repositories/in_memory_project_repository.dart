@@ -1,10 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/project/blocs/project_paginated_filter.dart';
-import 'package:timesheets/features/project/data/models/project.dart';
+import 'package:timesheets/features/project/project.dart';
 
-class InMemoryProjectRepository
-    implements CrudRepository<Project, ProjectPaginatedFilter> {
+class InMemoryProjectRepository implements ProjectRepository {
   final List<Project> _projects = [];
 
   @override

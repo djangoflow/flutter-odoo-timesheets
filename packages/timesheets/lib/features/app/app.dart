@@ -18,3 +18,4 @@ export 'presentation/filter_selector.dart';
 export 'presentation/app_glass_container.dart';
 export 'presentation/app_reactive_typeahead.dart';
 export 'data/models/options.dart';
+export 'blocs/crud_list_cubit/crud_list_cubit.dart';
