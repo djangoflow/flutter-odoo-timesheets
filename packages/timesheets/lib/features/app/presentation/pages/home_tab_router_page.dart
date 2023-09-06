@@ -31,11 +31,11 @@ class HomeTabRouterPage extends StatelessWidget {
                   currentIndex: tabsRouter.activeIndex,
                   onTap: tabsRouter.setActiveIndex,
                   items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(CupertinoIcons.clock),
-                      activeIcon: Icon(CupertinoIcons.clock_fill),
-                      label: 'Timers',
-                    ),
+                    // BottomNavigationBarItem(
+                    //   icon: Icon(CupertinoIcons.clock),
+                    //   activeIcon: Icon(CupertinoIcons.clock_fill),
+                    //   label: 'Timers',
+                    // ),
                     BottomNavigationBarItem(
                       icon: Icon(CupertinoIcons.briefcase),
                       activeIcon: Icon(CupertinoIcons.briefcase_fill),
@@ -53,7 +53,7 @@ class HomeTabRouterPage extends StatelessWidget {
           },
           routes: const [
             // TimesheetsRoute(),
-            // ProjectsTabRouter(),
+            ProjectsTabRouter(),
             // SettingsRoute(),
           ],
         ),
