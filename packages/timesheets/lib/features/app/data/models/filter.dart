@@ -1,13 +1,13 @@
-import 'package:drift/drift.dart';
+// import 'package:drift/drift.dart';
 
-class OrderingFilter<T> {
-  final String slug;
-  final String label;
+// class OrderingFilter<T> {
+//   final String slug;
+//   final String label;
 
-  final OrderingTerm Function(T) orderingTermBuilder;
-  const OrderingFilter({
-    required this.label,
-    required this.orderingTermBuilder,
-    required this.slug,
-  });
-}
+//   final OrderingTerm Function(T) orderingTermBuilder;
+//   const OrderingFilter({
+//     required this.label,
+//     required this.orderingTermBuilder,
+//     required this.slug,
+//   });
+// }

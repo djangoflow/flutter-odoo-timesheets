@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_app_links/djangoflow_app_links.dart';
 import 'package:flutter/foundation.dart';
@@ -15,9 +14,7 @@ Future<void> main() async {
     onException: (exception, stackTrace) {
       debugPrint('Exception Caught -- $exception');
       String errorMessage = exception.toString();
-      if (exception is DioException) {
-        errorMessage = exception.message ?? 'Something went wrong!';
-      }
+
       DjangoflowAppSnackbar.showError(errorMessage);
     },
     rootWidgetBuilder: (appBuilder) async {
