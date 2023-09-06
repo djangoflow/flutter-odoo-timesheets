@@ -4,7 +4,7 @@ import 'package:timesheets/features/task/data/database_tables/task.dart';
 
 class Timesheets extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text().nullable()();
+  TextColumn get description => text().nullable()();
 
   IntColumn get projectId => integer()
       .nullable()

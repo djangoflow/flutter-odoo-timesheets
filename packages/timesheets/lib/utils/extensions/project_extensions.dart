@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:timesheets/features/app/data/db/app_database.dart';
 
-import '../data/entities/project_entity.dart';
+import '../../features_refactored/project/data/entities/project_entity.dart';
 
 extension ProjectToProjectEntityExtensions on Project {
   ProjectEntity toProjectEntity() => ProjectEntity(

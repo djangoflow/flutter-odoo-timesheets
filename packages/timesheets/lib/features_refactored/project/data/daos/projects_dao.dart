@@ -3,7 +3,7 @@ import 'package:timesheets/features/app/data/db/app_database.dart';
 import 'package:timesheets/features/project/data/database_tables/project.dart';
 import 'package:timesheets/features_refactored/app/data/dao.dart';
 
-part 'project_dao.g.dart';
+part 'projects_dao.g.dart';
 
 @DriftAccessor(tables: [Projects])
 class ProjectsDao extends DatabaseAccessor<AppDatabase>

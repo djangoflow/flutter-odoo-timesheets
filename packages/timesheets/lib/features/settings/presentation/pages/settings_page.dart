@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:timesheets/features_refactored/project/data/entities/project_entity.dart';
+import 'package:timesheets/features_refactored/project/data/repositories/project_repository.dart';
 
 import 'package:timesheets/utils/utils.dart';
 
@@ -86,6 +88,21 @@ class SettingsPage extends StatelessWidget {
                     SizedBox(
                       height: kPadding.h,
                     ),
+                    ElevatedButton(
+                        onPressed: () {
+                          final projectRepository =
+                              context.read<ProjectRepository>();
+
+                          projectRepository.insert(ProjectEntity(
+                            active: true,
+                            color: 1,
+                            isFavorite: true,
+                            name: 'Test Project',
+                            taskCount: 0,
+                            taskIds: [],
+                          ));
+                        },
+                        child: Text('Test')),
                     const SectionTitle(title: 'Synchronizations'),
                     // SyncCubitProvider(
                     //   child: BlocBuilder<AuthCubit, AuthState>(

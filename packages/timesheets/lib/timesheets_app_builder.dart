@@ -8,8 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features_refactored/project/data/daos/project_dao.dart';
-import 'package:timesheets/features_refactored/project/data/data_sources/project_drift_source.dart';
+import 'package:timesheets/features_refactored/project/data/daos/projects_dao.dart';
+import 'package:timesheets/features_refactored/project/data/data_sources/project_drift_data_source.dart';
 import 'package:timesheets/features_refactored/project/data/repositories/project_repository.dart';
 
 import 'package:visibility_detector/visibility_detector.dart';
