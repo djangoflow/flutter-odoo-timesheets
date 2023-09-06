@@ -1,13 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:uuid/uuid.dart';
 
 class InMemoryProjectRepository implements ProjectRepository {
   final List<Project> _projects = [];
 
   @override
   Future<int> createItem(Project item) {
+    const uuid = Uuid();
+
     // assign id
-    final updatedItem = item.copyWith(id: _projects.length);
+    final updatedItem = item.copyWith(id: uuid.v4().hashCode);
     _projects.add(updatedItem);
     // return id
     return Future.value(updatedItem.id);
