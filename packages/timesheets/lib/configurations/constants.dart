@@ -13,25 +13,6 @@ const animationDurationLong = Duration(milliseconds: 500);
 
 const apexiveUrl = 'https://apexive.com/';
 
-// odoo related
-
-///This endpoint provides meta-calls which don’t require authentication.
-const commonEndpoint = 'xmlrpc/2/common';
-
-///It is used to call methods of odoo models. Require authentication.
-const objectEndpoint = 'xmlrpc/2/object';
-
-///Used to get db list
-const dbEndpoint = 'xmlrpc/db';
-
-const rpcFunction = 'execute_kw';
-const rpcAuthenticationFunction = 'authenticate';
-
-const projectModel = 'project.project';
-const taskModel = 'project.task';
-const usersModel = 'res.users';
-const timesheetModel = 'account.analytic.line';
-
 //Odoo fields
 const offsetKey = 'offset';
 const limitKey = 'limit';
@@ -53,3 +34,7 @@ const descriptionControlName = 'description';
 const isFavoriteControlName = 'isFavorite';
 const colorControlName = 'color';
 const searchDelayMs = 500;
+
+// list cubit related
+const defaultLimit = 50;
+const defaultOffset = 0;

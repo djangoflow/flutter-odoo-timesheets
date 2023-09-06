@@ -1,9 +1,10 @@
-abstract class CrudRepository<M, C> {
-  const CrudRepository();
-  Future<List<M>> getPaginatedItems({int? offset = 0, int limit = 50});
-  Future<List<M>> getItems();
-  Future<int> create(C companion);
-  Future<void> update(M entity);
-  Future<int> delete(M entity);
-  Future<M?> getItemById(int id);
+import 'package:list_bloc/list_bloc.dart';
+
+abstract class CrudRepository<T, F extends OffsetLimitFilter> {
+  Future<List<T>> getPaginatedItems([F? filter]);
+  Future<List<T>> getAllItems();
+  Future<int> createItem(T item);
+  Future<void> updateItem(T item);
+  Future<int> deleteItem(int id);
+  Future<T?> getItemById(int id);
 }

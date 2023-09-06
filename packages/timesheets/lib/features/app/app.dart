@@ -14,7 +14,6 @@ export 'presentation/empty_placeholder.dart';
 export 'presentation/gradient_scaffold.dart';
 export 'presentation/decorated_svg_image.dart';
 export 'presentation/app_modal_sheet.dart';
-export 'data/models/filter.dart';
 export 'presentation/filter_selector.dart';
 export 'presentation/app_glass_container.dart';
 export 'presentation/app_reactive_typeahead.dart';
