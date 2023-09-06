@@ -1,7 +1,4 @@
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
-
-import 'odoo_auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
 export 'route_parser.dart';

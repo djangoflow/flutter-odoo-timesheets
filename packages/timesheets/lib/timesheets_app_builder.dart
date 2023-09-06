@@ -6,12 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features_refactored/project/data/daos/projects_drift_dao.dart';
-import 'package:timesheets/features_refactored/project/data/data_sources/project_drift_data_source.dart';
-import 'package:timesheets/features_refactored/project/data/repositories/project_repository.dart';
-
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'configurations/router/route_observer.dart';
@@ -32,41 +26,8 @@ class TimesheetsAppBuilder extends AppBuilder {
                 animationDurationShort;
           },
           repositoryProviders: [
-            RepositoryProvider<AppDatabase>(create: (_) => AppDatabase()),
             RepositoryProvider<AppLinksRepository>.value(
               value: appLinksRepository,
-            ),
-            RepositoryProvider<OdooXmlRpcClient>(
-              create: (context) => OdooXmlRpcClient(),
-            ),
-            RepositoryProvider<OdooAuthenticationRepository>(
-              create: (context) => OdooAuthenticationRepository(
-                context.read<OdooXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<OdooTimesheetRepository>(
-              create: (context) => OdooTimesheetRepository(
-                context.read<OdooXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<OdooProjectRepository>(
-              create: (context) => OdooProjectRepository(
-                context.read<OdooXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<OdooTaskRepository>(
-              create: (context) => OdooTaskRepository(
-                context.read<OdooXmlRpcClient>(),
-              ),
-            ),
-            RepositoryProvider<ProjectRepository>(
-              create: (context) => ProjectRepository(
-                ProjectDriftDataSource(
-                  dao: ProjectsDriftDao(
-                    context.read<AppDatabase>(),
-                  ),
-                ),
-              ),
             ),
           ],
           providers: [

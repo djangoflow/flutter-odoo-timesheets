@@ -5,7 +5,6 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_app_links/djangoflow_app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'timesheets_app_builder.dart';
 import 'configurations/configurations.dart';
@@ -18,8 +17,6 @@ Future<void> main() async {
       String errorMessage = exception.toString();
       if (exception is DioException) {
         errorMessage = exception.message ?? 'Something went wrong!';
-      } else if (exception is OdooRepositoryException) {
-        errorMessage = exception.message;
       }
       DjangoflowAppSnackbar.showError(errorMessage);
     },
