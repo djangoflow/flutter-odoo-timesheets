@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:timesheets/features/odoo/data/repositories/odoo_authentication_repository.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features_refactored/project/data/daos/projects_dao.dart';
+import 'package:timesheets/features_refactored/project/data/daos/projects_drift_dao.dart';
 import 'package:timesheets/features_refactored/project/data/data_sources/project_drift_data_source.dart';
 import 'package:timesheets/features_refactored/project/data/repositories/project_repository.dart';
 
@@ -62,7 +62,7 @@ class TimesheetsAppBuilder extends AppBuilder {
             RepositoryProvider<ProjectRepository>(
               create: (context) => ProjectRepository(
                 ProjectDriftDataSource(
-                  dao: ProjectsDao(
+                  dao: ProjectsDriftDao(
                     context.read<AppDatabase>(),
                   ),
                 ),

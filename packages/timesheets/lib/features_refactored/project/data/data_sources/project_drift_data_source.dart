@@ -1,11 +1,10 @@
-import 'package:timesheets/features/app/data/db/app_database.dart';
-import 'package:timesheets/features_refactored/app/data/dao.dart';
-import 'package:timesheets/features_refactored/app/data/data_source.dart';
+import 'package:timesheets/features_refactored/project/data/daos/projects_drift_dao.dart';
+import 'package:timesheets/features_refactored/project/data/data_sources/project_data_source.dart';
 import 'package:timesheets/features_refactored/project/data/entities/project_entity.dart';
 import 'package:timesheets/utils/extensions/project_extensions.dart';
 
-class ProjectDriftDataSource implements DataSource<ProjectEntity> {
-  final Dao<Project, ProjectsCompanion> dao;
+class ProjectDriftDataSource implements ProjectDataSource {
+  final ProjectsDriftDao dao;
 
   ProjectDriftDataSource({required this.dao});
   @override
@@ -23,7 +22,7 @@ class ProjectDriftDataSource implements DataSource<ProjectEntity> {
 
   @override
   Future<List<ProjectEntity>> getPaginatedItems(
-          {int? offset, int? limit, String? search}) =>
+          {int? offset, int? limit, String? search, bool? isFavorite}) =>
       dao
           .getPaginatedEntities(offset: offset, limit: limit, search: search)
           .then(

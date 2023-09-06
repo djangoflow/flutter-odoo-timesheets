@@ -1,9 +1,9 @@
-import 'package:timesheets/features_refactored/app/data/data_source.dart';
 import 'package:timesheets/features_refactored/app/data/repository.dart';
+import 'package:timesheets/features_refactored/project/data/data_sources/project_data_source.dart';
 import 'package:timesheets/features_refactored/project/data/entities/project_entity.dart';
 
 class ProjectRepository implements Repository<ProjectEntity> {
-  final DataSource<ProjectEntity> _dataSource;
+  final ProjectDataSource _dataSource;
 
   ProjectRepository(this._dataSource);
   @override
@@ -17,9 +17,9 @@ class ProjectRepository implements Repository<ProjectEntity> {
 
   @override
   Future<List<ProjectEntity>> getPaginatedItems(
-          {int? offset, int? limit, String? search}) =>
+          {int? offset, int? limit, String? search, bool? isFavorite}) =>
       dataSource.getPaginatedItems(
-          offset: offset, limit: limit, search: search);
+          offset: offset, limit: limit, search: search, isFavorite: isFavorite);
 
   @override
   Future<int> insert(ProjectEntity entity) => dataSource.insert(entity);
@@ -28,5 +28,5 @@ class ProjectRepository implements Repository<ProjectEntity> {
   Future<bool> update(ProjectEntity entity) => dataSource.update(entity);
 
   @override
-  DataSource<ProjectEntity> get dataSource => _dataSource;
+  ProjectDataSource get dataSource => _dataSource;
 }
