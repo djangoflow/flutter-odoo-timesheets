@@ -22,9 +22,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: HomeTabRouter.page,
           path: '/',
-          children: [
-            AutoRoute(page: SettingsRoute.page, path: 'settings'),
-          ],
+          children: [],
         ),
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];
