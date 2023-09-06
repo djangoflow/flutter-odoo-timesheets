@@ -3,7 +3,7 @@ import 'package:timesheets/features_refactored/app/data/dao.dart';
 import 'package:timesheets/features_refactored/app/data/data_source.dart';
 
 import 'package:timesheets/features_refactored/task/data/entities/task_entity.dart';
-import 'package:timesheets/features_refactored/task/extensions/task_extensions.dart';
+import 'package:timesheets/utils/utils.dart';
 
 class TaskDriftDataSource implements DataSource<TaskEntity> {
   final Dao<Task, TasksCompanion> dao;
