@@ -9,7 +9,7 @@ part 'project.g.dart';
 class Project with _$Project {
   const Project._();
   const factory Project({
-    required int id,
+    int? id,
     String? name,
     bool? active,
     int? color,
