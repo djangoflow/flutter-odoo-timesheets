@@ -18,7 +18,7 @@ class Timesheet with _$Timesheet {
     @JsonKey(name: 'unit_amount') double? unitAmount,
 
     /// [FOR LOCALLY USE ONLY] Indicates the current status of the timesheet
-    @JsonKey(name: 'timer_state') TimerStateEnum? timerState,
+    @JsonKey(name: 'timer_state') TimerStatus? timerState,
 
     /// [FOR LOCALLY USE ONLY] Indicates the last time timer ticked/was running
     /// Needed for total spent time calculation
