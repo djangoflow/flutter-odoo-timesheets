@@ -1,6 +1,7 @@
 import 'package:timesheets/features/in_memory_backend/data/repositories/in_memory_task_repository.dart';
 import 'package:timesheets/features/in_memory_backend/in_memory_backend.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/task/blocs/task_data_cubit/task_data_filter.dart';
 import 'package:timesheets/features/task/data/models/task_with_project.dart';
 import 'package:timesheets/features/task/task.dart';
 
@@ -13,9 +14,13 @@ class InMemoryTaskWithProjectRepository implements TaskWithProjectRepository {
   final InMemoryProjectRepository projectRepository;
 
   @override
-  Future<int> createItem(TaskWithProject item) {
-    final task = item.task;
-    return taskRepository.createItem(task);
+  Future<TaskWithProject> createItem(TaskWithProject item) async {
+    final task = await taskRepository.createItem(item.task);
+
+    return TaskWithProject(
+      project: item.project,
+      task: task,
+    );
   }
 
   @override
@@ -29,18 +34,15 @@ class InMemoryTaskWithProjectRepository implements TaskWithProjectRepository {
       taskRepository.getAllItems().then(_toTaskWithProjectList);
 
   @override
-  Future<TaskWithProject?> getItemById(int id) async {
-    final task = await taskRepository.getItemById(id);
-    Project? project;
-    if (task != null) {
-      project = await projectRepository.getItemById(task.projectId);
-      return TaskWithProject(
-        project: project,
-        task: task,
-      );
-    } else {
-      return null;
-    }
+  Future<TaskWithProject> getItemById([TaskDataFilter? filter]) async {
+    final task = await taskRepository.getItemById(filter);
+
+    final project = await projectRepository
+        .getItemById(ProjectDataFilter(id: task.projectId));
+    return TaskWithProject(
+      project: project,
+      task: task,
+    );
   }
 
   @override
@@ -60,15 +62,15 @@ class InMemoryTaskWithProjectRepository implements TaskWithProjectRepository {
       Iterable<Task> tasks) async {
     final taskWithProjectList = <TaskWithProject>[];
     for (final task in tasks) {
-      final project = await projectRepository.getItemById(task.projectId);
-      if (project != null) {
-        taskWithProjectList.add(
-          TaskWithProject(
-            project: project,
-            task: task,
-          ),
-        );
-      }
+      final project = await projectRepository
+          .getItemById(ProjectDataFilter(id: task.projectId));
+
+      taskWithProjectList.add(
+        TaskWithProject(
+          project: project,
+          task: task,
+        ),
+      );
     }
 
     return taskWithProjectList;

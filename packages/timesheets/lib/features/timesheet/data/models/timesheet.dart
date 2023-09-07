@@ -9,7 +9,7 @@ part 'timesheet.g.dart';
 @freezed
 class Timesheet with _$Timesheet {
   const factory Timesheet({
-    required int id,
+    int? id,
     String? description,
     @JsonKey(name: 'project_id') required int projectId,
     @JsonKey(name: 'task_id') required int taskId,
@@ -18,7 +18,7 @@ class Timesheet with _$Timesheet {
     @JsonKey(name: 'unit_amount') double? unitAmount,
 
     /// [FOR LOCALLY USE ONLY] Indicates the current status of the timesheet
-    @JsonKey(name: 'timer_state') TimerStatus? timerState,
+    @JsonKey(name: 'timer_state') TimerStatus? timerStatus,
 
     /// [FOR LOCALLY USE ONLY] Indicates the last time timer ticked/was running
     /// Needed for total spent time calculation

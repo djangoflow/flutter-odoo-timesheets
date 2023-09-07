@@ -18,6 +18,7 @@ class TimesheetPaginationFilter
     int? projectId,
     int? taskId,
     bool? isFavorite,
+    bool? isEndDateNull,
   }) = _TimesheetPaginationFilter;
 
   factory TimesheetPaginationFilter.fromJson(

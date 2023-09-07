@@ -1,5 +1,5 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
 
-abstract class ProjectRepository
-    extends CrudRepository<Project, ProjectPaginationFilter> {}
+abstract class ProjectRepository extends CrudRepository<Project,
+    ProjectPaginationFilter, ProjectDataFilter> {}

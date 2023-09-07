@@ -1,26 +1,34 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:timesheets/features/in_memory_backend/data/repositories/in_memory_timesheet_repository.dart';
 import 'package:timesheets/features/in_memory_backend/in_memory_backend.dart';
+import 'package:timesheets/features/task/blocs/task_data_cubit/task_data_filter.dart';
+import 'package:timesheets/features/timesheet/blocs/timesheet_data_cubit/timesheet_data_filter.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 import 'in_memory_task_with_project_repositroy.dart';
 
-class InMemoryTimesheetWithTaskRepository
+class InMemoryTimesheetWithTaskProjectRepository
     implements TimesheetWithTaskProjectRepository {
   final InMemoryTimesheetRepository timesheetRepository;
   final InMemoryTaskWithProjectRepository taskWithProjectRepository;
 
-  InMemoryTimesheetWithTaskRepository({required InMemoryBackend backend})
+  InMemoryTimesheetWithTaskProjectRepository({required InMemoryBackend backend})
       : timesheetRepository = InMemoryTimesheetRepository(backend: backend),
         taskWithProjectRepository =
             InMemoryTaskWithProjectRepository(backend: backend);
 
   @override
-  Future<int> createItem(TimesheetWithTaskProject item) =>
-      timesheetRepository.createItem(
-        item.timesheet,
-      );
+  Future<TimesheetWithTaskProject> createItem(
+      TimesheetWithTaskProject item) async {
+    final timesheet = await timesheetRepository.createItem(
+      item.timesheet,
+    );
+
+    return TimesheetWithTaskProject(
+      timesheet: timesheet,
+      taskWithProject: item.taskWithProject,
+    );
+  }
 
   @override
   Future<int> deleteItem(int id) => timesheetRepository.deleteItem(id);
@@ -35,27 +43,20 @@ class InMemoryTimesheetWithTaskRepository
   }
 
   @override
-  Future<TimesheetWithTaskProject?> getItemById(int id) async {
-    final timesheet = await timesheetRepository.getItemById(id);
-
-    if (timesheet == null) {
-      return null;
-    } else {
-      if (timesheet.taskId == null) {
-        return null;
-      }
-
-      final taskWithProject =
-          await taskWithProjectRepository.getItemById(timesheet.taskId);
-      if (taskWithProject == null) {
-        return null;
-      } else {
-        return TimesheetWithTaskProject(
-          timesheet: timesheet,
-          taskWithProject: taskWithProject,
-        );
-      }
+  Future<TimesheetWithTaskProject> getItemById(
+      [TimesheetDataFilter? filter]) async {
+    if (filter == null) {
+      throw Exception('DataFilter is null');
     }
+    final timesheet = await timesheetRepository.getItemById(filter);
+
+    final taskWithProject = await taskWithProjectRepository
+        .getItemById(TaskDataFilter(id: timesheet.taskId));
+
+    return TimesheetWithTaskProject(
+      timesheet: timesheet,
+      taskWithProject: taskWithProject,
+    );
   }
 
   @override
@@ -79,11 +80,8 @@ class InMemoryTimesheetWithTaskRepository
       Iterable<Timesheet> timesheets) async {
     final timesheetsWithTaskProject = <TimesheetWithTaskProject>[];
     for (final timesheet in timesheets) {
-      if (timesheet.taskId == null) {
-        continue;
-      }
-      final taskWithProject =
-          await taskWithProjectRepository.getItemById(timesheet.taskId);
+      final taskWithProject = await taskWithProjectRepository
+          .getItemById(TaskDataFilter(id: timesheet.taskId));
       if (taskWithProject != null) {
         timesheetsWithTaskProject.add(
           TimesheetWithTaskProject(

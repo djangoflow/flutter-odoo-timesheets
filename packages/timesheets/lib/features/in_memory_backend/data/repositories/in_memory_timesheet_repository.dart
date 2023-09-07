@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:timesheets/features/in_memory_backend/in_memory_backend.dart';
+import 'package:timesheets/features/timesheet/blocs/timesheet_data_cubit/timesheet_data_filter.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,7 +11,7 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
       : _backend = backend;
 
   @override
-  Future<int> createItem(Timesheet item) {
+  Future<Timesheet> createItem(Timesheet item) {
     const uuid = Uuid();
 
     // assign id
@@ -21,7 +22,7 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
     );
     _backend.timesheets.add(updatedItem);
     // return id
-    return Future.value(updatedItem.id);
+    return Future.value(updatedItem);
   }
 
   @override
@@ -35,9 +36,15 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
   Future<List<Timesheet>> getAllItems() => Future.value(_backend.timesheets);
 
   @override
-  Future<Timesheet?> getItemById(int id) => Future.value(
-        _backend.timesheets.firstWhereOrNull((element) => element.id == id),
-      );
+  Future<Timesheet> getItemById([TimesheetDataFilter? filter]) {
+    if (filter == null) {
+      throw Exception('DataFilter is null');
+    }
+    return Future.value(
+      _backend.timesheets
+          .firstWhereOrNull((element) => element.id == filter.id),
+    );
+  }
 
   @override
   Future<List<Timesheet>> getPaginatedItems(

@@ -17,6 +17,7 @@ class TaskPaginationFilter
     @Default(0) int offset,
     int? projectId,
     bool? isFavorite,
+    String? search,
   }) = _TaskPaginationFilter;
 
   factory TaskPaginationFilter.fromJson(

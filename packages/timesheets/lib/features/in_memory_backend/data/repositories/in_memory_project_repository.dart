@@ -10,7 +10,7 @@ class InMemoryProjectRepository implements ProjectRepository {
       : _backend = backend;
 
   @override
-  Future<int> createItem(Project item) {
+  Future<Project> createItem(Project item) {
     const uuid = Uuid();
 
     // assign id
@@ -21,7 +21,7 @@ class InMemoryProjectRepository implements ProjectRepository {
     );
     _backend.projects.add(updatedItem);
     // return id
-    return Future.value(updatedItem.id);
+    return Future.value(updatedItem);
   }
 
   @override
@@ -34,15 +34,33 @@ class InMemoryProjectRepository implements ProjectRepository {
   Future<List<Project>> getAllItems() => Future.value(_backend.projects);
 
   @override
-  Future<Project?> getItemById(int id) => Future.value(
-        _backend.projects.firstWhereOrNull((element) => element.id == id),
-      );
+  Future<Project> getItemById([ProjectDataFilter? filter]) {
+    if (filter == null) {
+      throw Exception('DataFilter is null');
+    }
+    final project = _backend.projects
+        .firstWhereOrNull((element) => element.id == filter.id);
+    if (project == null) {
+      throw Exception('Project not found');
+    }
+    return Future.value(project);
+  }
 
   @override
   Future<List<Project>> getPaginatedItems(
       [ProjectPaginationFilter? filter]) async {
-    final projects = _backend.projects
-        .skip(filter?.offset ?? ProjectPaginationFilter.kPageSize);
+    final projects = _backend.projects.where((element) {
+      if (filter?.search != null && filter!.search!.isNotEmpty) {
+        if (element.name == null) {
+          return false;
+        }
+        return element.name!.toLowerCase().contains(
+              filter.search!.toLowerCase(),
+            );
+      }
+
+      return true;
+    }).skip(filter?.offset ?? ProjectPaginationFilter.kPageSize);
     if (filter?.limit != null) {
       return projects.take(filter!.limit).toList();
     }

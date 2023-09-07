@@ -1,20 +1,19 @@
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 
-class CrudListCubit<T, F extends OffsetLimitFilter, DF extends ByIdFilter>
-    extends ListCubit<T, F> {
-  CrudListCubit({required this.repository})
-      : super(repository.getPaginatedItems);
+class CrudDataCubit<T, F extends OffsetLimitFilter, DF extends ByIdFilter>
+    extends DataCubit<T, DF> {
+  CrudDataCubit({required this.repository}) : super(repository.getItemById);
 
   final CrudRepository<T, F, DF> repository;
 
-  Future<T> createItem(T item) async {
+  Future<T?> createItem(T item) async {
     final updatedItem = await repository.createItem(item);
 
     if (updatedItem != null) {
       emit(
         state.copyWith(
-          data: [...state.data ?? [], updatedItem],
+          data: updatedItem,
         ),
       );
     }
@@ -24,11 +23,10 @@ class CrudListCubit<T, F extends OffsetLimitFilter, DF extends ByIdFilter>
 
   Future<void> updateItem(T item) async {
     await repository.updateItem(item);
-    reload();
+    load();
   }
 
   Future<void> deleteItem(int id) async {
     await repository.deleteItem(id);
-    reload();
   }
 }

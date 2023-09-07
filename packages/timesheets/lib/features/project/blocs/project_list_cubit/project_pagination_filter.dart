@@ -16,6 +16,7 @@ class ProjectPaginationFilter
     @Default(50) int limit,
     @Default(0) int offset,
     bool? isFavorite,
+    String? search,
   }) = _ProjectPaginationFilter;
 
   factory ProjectPaginationFilter.fromJson(

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:timesheets/features/in_memory_backend/in_memory_backend.dart';
+import 'package:timesheets/features/task/blocs/task_data_cubit/task_data_filter.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,7 +11,7 @@ class InMemoryTaskRepository implements TaskRepository {
       : _backend = backend;
 
   @override
-  Future<int> createItem(Task item) {
+  Future<Task> createItem(Task item) {
     const uuid = Uuid();
 
     // assign id
@@ -21,7 +22,7 @@ class InMemoryTaskRepository implements TaskRepository {
     );
     _backend.tasks.add(updatedItem);
     // return id
-    return Future.value(updatedItem.id);
+    return Future.value(updatedItem);
   }
 
   @override
@@ -35,9 +36,20 @@ class InMemoryTaskRepository implements TaskRepository {
   Future<List<Task>> getAllItems() => Future.value(_backend.tasks);
 
   @override
-  Future<Task?> getItemById(int id) => Future.value(
-        _backend.tasks.firstWhereOrNull((element) => element.id == id),
-      );
+  Future<Task> getItemById([TaskDataFilter? filter]) {
+    if (filter == null) {
+      throw Exception('DataFilter is null');
+    }
+
+    final task =
+        _backend.tasks.firstWhereOrNull((element) => element.id == filter.id);
+
+    if (task == null) {
+      throw Exception('Task not found');
+    } else {
+      return Future.value(task);
+    }
+  }
 
   @override
   Future<List<Task>> getPaginatedItems([TaskPaginationFilter? filter]) async {
@@ -45,6 +57,17 @@ class InMemoryTaskRepository implements TaskRepository {
       if (filter?.projectId != null) {
         return item.projectId == filter!.projectId;
       }
+      return true;
+    }).where((element) {
+      if (filter?.search != null && filter!.search!.isNotEmpty) {
+        if (element.name == null) {
+          return false;
+        }
+        return element.name!.toLowerCase().contains(
+              filter.search!.toLowerCase(),
+            );
+      }
+
       return true;
     }).skip(filter?.offset ?? TaskPaginationFilter.kPageSize);
     if (filter?.limit != null) {
