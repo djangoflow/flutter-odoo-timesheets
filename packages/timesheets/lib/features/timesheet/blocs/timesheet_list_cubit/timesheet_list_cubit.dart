@@ -1,8 +1,8 @@
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
-class ProjectListCubit
+class TimesheetListCubit
     extends CrudListCubit<Timesheet, TimesheetPaginatedFilter> {
   // Plug in InMemoryRepository or RemoteRepository etc here
-  ProjectListCubit({required super.repository});
+  TimesheetListCubit({required super.repository});
 }
