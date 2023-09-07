@@ -24,11 +24,9 @@ class CrudListCubit<T, F extends OffsetLimitFilter, DF extends ByIdFilter>
 
   Future<void> updateItem(T item) async {
     await repository.updateItem(item);
-    reload();
   }
 
   Future<void> deleteItem(int id) async {
     await repository.deleteItem(id);
-    reload();
   }
 }
