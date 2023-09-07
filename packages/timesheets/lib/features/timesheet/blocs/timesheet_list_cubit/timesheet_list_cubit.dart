@@ -6,3 +6,11 @@ class TimesheetListCubit
   // Plug in InMemoryRepository or RemoteRepository etc here
   TimesheetListCubit({required super.repository});
 }
+
+class FavoriteTimesheetListCubit extends TimesheetListCubit {
+  FavoriteTimesheetListCubit({required super.repository});
+}
+
+class LocalTimesheetListCubit extends TimesheetListCubit {
+  LocalTimesheetListCubit({required super.repository});
+}
