@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 class TimesheetListTile extends StatelessWidget {

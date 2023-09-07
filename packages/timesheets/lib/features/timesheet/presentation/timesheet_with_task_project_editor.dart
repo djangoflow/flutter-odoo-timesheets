@@ -275,14 +275,13 @@ class TimesheetWithTaskProjectEditor extends StatelessWidget {
                                                   active: true,
                                                 ),
                                               );
-                                              if (createdTask != null) {
-                                                formGroup
-                                                    .control(taskControlName)
-                                                    .value = createdTask;
-                                                taskListCubit.reload();
-                                                taskSuggestionBoxController
-                                                    .close();
-                                              }
+
+                                              formGroup
+                                                  .control(taskControlName)
+                                                  .value = createdTask;
+                                              taskListCubit.reload();
+                                              taskSuggestionBoxController
+                                                  .close();
                                             },
                                 ),
                               );

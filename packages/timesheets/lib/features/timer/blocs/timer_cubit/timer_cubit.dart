@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'timer_state.dart';
+import 'package:timesheets/features/timer/timer.dart' hide Timer;
 
 export 'timer_state.dart';
 
@@ -24,7 +23,7 @@ class TimerCubit extends Cubit<TimerState> {
     emit(TimerState.running(_elapsedTime ?? Duration.zero));
     _timer = Timer.periodic(tickDuration, (_) {
       // should check as sometimes the timer is not cancelled in time
-      if (state.status == TimerState.running) {
+      if (state.status == TimerStatus.running) {
         _elapsedTime ??= Duration.zero;
         _elapsedTime = _elapsedTime! + tickDuration;
 
