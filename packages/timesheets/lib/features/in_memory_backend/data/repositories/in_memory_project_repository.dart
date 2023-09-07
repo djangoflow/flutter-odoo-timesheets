@@ -60,4 +60,8 @@ class InMemoryProjectRepository implements ProjectRepository {
       updatedAt: DateTime.now(),
     );
   }
+
+  @override
+  Future<bool> exists(int id) =>
+      Future.value(_backend.projects.any((element) => element.id == id));
 }

@@ -7,4 +7,5 @@ abstract class CrudRepository<T, F extends OffsetLimitFilter> {
   Future<void> updateItem(T item);
   Future<int> deleteItem(int id);
   Future<T?> getItemById(int id);
+  Future<bool> exists(int id);
 }

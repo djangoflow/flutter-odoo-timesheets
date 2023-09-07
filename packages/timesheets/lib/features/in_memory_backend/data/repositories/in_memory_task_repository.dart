@@ -63,4 +63,8 @@ class InMemoryTaskRepository implements TaskRepository {
       updatedAt: DateTime.now(),
     );
   }
+
+  @override
+  Future<bool> exists(int id) =>
+      Future.value(_backend.tasks.any((element) => element.id == id));
 }

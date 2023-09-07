@@ -72,4 +72,8 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
       updatedAt: DateTime.now(),
     );
   }
+
+  @override
+  Future<bool> exists(int id) =>
+      Future.value(_backend.timesheets.any((element) => element.id == id));
 }
