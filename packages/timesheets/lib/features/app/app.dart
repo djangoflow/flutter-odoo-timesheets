@@ -21,3 +21,4 @@ export 'data/models/options.dart';
 export 'blocs/crud_list_cubit/crud_list_cubit.dart';
 export 'blocs/crud_data_cubit/by_id_filter.dart';
 export 'blocs/crud_data_cubit/crud_data_cubit.dart';
+export 'blocs/expansion_list_cubit/expansion_list_cubit.dart';
