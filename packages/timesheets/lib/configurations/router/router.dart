@@ -24,7 +24,22 @@ class AppRouter extends $AppRouter {
           path: '/',
           children: [
             AutoRoute(
+              page: TimesheetsTabRouter.page,
+              path: 'timesheets',
               initial: true,
+              children: [
+                AutoRoute(
+                  initial: true,
+                  path: 'favorite',
+                  page: FavoriteTimesheetsTab.page,
+                ),
+                AutoRoute(
+                  path: 'local',
+                  page: LocalTimesheetsTab.page,
+                ),
+              ],
+            ),
+            AutoRoute(
               page: ProjectsTabRouter.page,
               path: 'projects',
               children: [
@@ -42,6 +57,13 @@ class AppRouter extends $AppRouter {
           ],
         ),
         AutoRoute(page: ProjectAddRoute.page, path: '/projects/add'),
+        AutoRoute(
+          page: TimesheetsRouter.page,
+          path: '/timesheets',
+          children: [
+            AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
+          ],
+        ),
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];
 }

@@ -19,3 +19,5 @@ export 'presentation/app_glass_container.dart';
 export 'presentation/app_reactive_typeahead.dart';
 export 'data/models/options.dart';
 export 'blocs/crud_list_cubit/crud_list_cubit.dart';
+export 'blocs/crud_data_cubit/by_id_filter.dart';
+export 'blocs/crud_data_cubit/crud_data_cubit.dart';
