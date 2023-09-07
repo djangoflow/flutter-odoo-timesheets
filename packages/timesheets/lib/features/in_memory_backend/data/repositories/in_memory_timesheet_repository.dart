@@ -59,6 +59,13 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
           hasMatchedFilter = false;
         }
       }
+      if (filter?.isEndDateNull != null) {
+        if (filter!.isEndDateNull == true) {
+          hasMatchedFilter = item.endTime == null;
+        } else {
+          hasMatchedFilter = item.endTime != null;
+        }
+      }
 
       return hasMatchedFilter;
     }).skip(filter?.offset ?? TimesheetPaginationFilter.kPageSize);
