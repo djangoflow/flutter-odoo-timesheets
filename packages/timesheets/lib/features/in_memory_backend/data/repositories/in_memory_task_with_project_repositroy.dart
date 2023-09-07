@@ -45,7 +45,7 @@ class InMemoryTaskWithProjectRepository implements TaskWithProjectRepository {
 
   @override
   Future<List<TaskWithProject>> getPaginatedItems(
-      [TaskPaginatedFilter? filter]) async {
+      [TaskPaginationFilter? filter]) async {
     final tasks = await taskRepository.getPaginatedItems(filter);
     return _toTaskWithProjectList(tasks);
   }

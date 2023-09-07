@@ -60,7 +60,7 @@ class InMemoryTimesheetWithTaskRepository
 
   @override
   Future<List<TimesheetWithTaskProject>> getPaginatedItems(
-      [TimesheetPaginatedFilter? filter]) async {
+      [TimesheetPaginationFilter? filter]) async {
     final timesheets = await timesheetRepository.getPaginatedItems(filter);
     final timesheetsWithTask = await _toTimesheetWithTasks(timesheets);
 

@@ -41,7 +41,7 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
 
   @override
   Future<List<Timesheet>> getPaginatedItems(
-      [TimesheetPaginatedFilter? filter]) async {
+      [TimesheetPaginationFilter? filter]) async {
     final items = _backend.timesheets.where((item) {
       bool hasMatchedFilter = true;
       if (filter?.projectId != null || filter?.taskId != null) {
@@ -54,7 +54,7 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
       }
 
       return hasMatchedFilter;
-    }).skip(filter?.offset ?? TimesheetPaginatedFilter.kPageSize);
+    }).skip(filter?.offset ?? TimesheetPaginationFilter.kPageSize);
     if (filter?.limit != null) {
       return items.take(filter!.limit).toList();
     }

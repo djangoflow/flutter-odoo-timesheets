@@ -18,7 +18,7 @@ class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      ContinuousListViewBlocBuilder<T, Project, ProjectPaginatedFilter>(
+      ContinuousListViewBlocBuilder<T, Project, ProjectPaginationFilter>(
         withRefreshIndicator: true,
         emptyBuilder: emptyBuilder,
         loadingBuilder: (context, state) => const SizedBox(),

@@ -2,8 +2,8 @@ import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
 
-typedef ProjectListCubitType = CrudListCubit<Project, ProjectPaginatedFilter>;
-typedef ProjectListCubitState = Data<List<Project>, ProjectPaginatedFilter>;
+typedef ProjectListCubitType = CrudListCubit<Project, ProjectPaginationFilter>;
+typedef ProjectListCubitState = Data<List<Project>, ProjectPaginationFilter>;
 
 class ProjectListCubit extends ProjectListCubitType {
   // Plug in InMemoryRepository or RemoteRepository etc here

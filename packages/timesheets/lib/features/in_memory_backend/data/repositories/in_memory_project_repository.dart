@@ -40,9 +40,9 @@ class InMemoryProjectRepository implements ProjectRepository {
 
   @override
   Future<List<Project>> getPaginatedItems(
-      [ProjectPaginatedFilter? filter]) async {
+      [ProjectPaginationFilter? filter]) async {
     final projects = _backend.projects
-        .skip(filter?.offset ?? ProjectPaginatedFilter.kPageSize);
+        .skip(filter?.offset ?? ProjectPaginationFilter.kPageSize);
     if (filter?.limit != null) {
       return projects.take(filter!.limit).toList();
     }

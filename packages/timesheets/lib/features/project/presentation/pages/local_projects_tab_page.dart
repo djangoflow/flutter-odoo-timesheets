@@ -11,7 +11,7 @@ class LocalProjectsTabPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     context.read<LocalProjectListCubit>().load(
-          const ProjectPaginatedFilter(),
+          const ProjectPaginationFilter(),
         );
     return this;
   }

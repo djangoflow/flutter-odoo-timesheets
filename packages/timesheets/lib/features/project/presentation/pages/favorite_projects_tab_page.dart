@@ -11,7 +11,7 @@ class FavoriteProjectsTabPage extends StatelessWidget
   @override
   Widget wrappedRoute(BuildContext context) {
     context.read<FavoriteProjectListCubit>().load(
-          const ProjectPaginatedFilter(
+          const ProjectPaginationFilter(
             isFavorite: true,
           ),
         );

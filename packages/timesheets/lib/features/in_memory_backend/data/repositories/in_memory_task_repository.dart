@@ -40,13 +40,13 @@ class InMemoryTaskRepository implements TaskRepository {
       );
 
   @override
-  Future<List<Task>> getPaginatedItems([TaskPaginatedFilter? filter]) async {
+  Future<List<Task>> getPaginatedItems([TaskPaginationFilter? filter]) async {
     final items = _backend.tasks.where((item) {
       if (filter?.projectId != null) {
         return item.projectId == filter!.projectId;
       }
       return true;
-    }).skip(filter?.offset ?? TaskPaginatedFilter.kPageSize);
+    }).skip(filter?.offset ?? TaskPaginationFilter.kPageSize);
     if (filter?.limit != null) {
       return items.take(filter!.limit).toList();
     }
