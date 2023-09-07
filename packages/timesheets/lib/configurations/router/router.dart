@@ -64,6 +64,33 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
           ],
         ),
+        AutoRoute(
+          page: TasksRouter.page,
+          path: '/tasks',
+          children: [
+            AutoRoute(
+              path: ':id',
+              page: TaskDetailsRouter.page,
+              children: [
+                AutoRoute(
+                  path: '',
+                  page: TaskDetailsTabRouter.page,
+                  children: [
+                    AutoRoute(
+                      initial: true,
+                      page: TaskDetailsTimesheetsTab.page,
+                      path: 'timesheets',
+                    ),
+                    AutoRoute(
+                      page: TaskDetailsDetailsTab.page,
+                      path: 'details',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
         AutoRoute(path: '*', page: UnknownRouteRoute.page),
       ];
 }

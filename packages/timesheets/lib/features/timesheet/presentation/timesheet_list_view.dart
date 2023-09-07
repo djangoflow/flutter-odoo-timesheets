@@ -142,13 +142,13 @@ class TimesheetListView<T extends TimesheetWithTaskProjectListCubit>
                       );
                     },
                     onTap: () {
-                      // context.router.push(
-                      //   TasksRouter(
-                      //     children: [
-                      //       TaskDetailsRouter(taskId: timesheet.taskId),
-                      //     ],
-                      //   ),
-                      // );
+                      context.router.push(
+                        TasksRouter(
+                          children: [
+                            TaskDetailsRouter(taskId: timesheet.taskId),
+                          ],
+                        ),
+                      );
                     },
                   ),
                 ),
