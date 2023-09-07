@@ -9,3 +9,4 @@ export 'presentation/placeholders/local_timesheets_placeholder.dart';
 export 'presentation/timesheet_list_tile.dart';
 export 'presentation/timesheet_list_view.dart';
 export 'presentation/timesheet_with_task_project_editor.dart';
+export 'presentation/timesheet_expansion_tile.dart';
