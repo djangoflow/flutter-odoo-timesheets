@@ -19,12 +19,12 @@ import 'package:timesheets/features/timesheet/timesheet.dart';
 class TimesheetAddPage extends StatelessWidget {
   const TimesheetAddPage({
     Key? key,
-    this.taskWithProjectExternalData,
+    this.taskWithProject,
     this.disableProjectTaskSelection,
     this.isInitiallyFavorite,
     this.disableLocalProjectTaskSelection,
   }) : super(key: key);
-  final TaskWithProject? taskWithProjectExternalData;
+  final TaskWithProject? taskWithProject;
 
   final bool? disableLocalProjectTaskSelection;
 
@@ -52,8 +52,8 @@ class TimesheetAddPage extends StatelessWidget {
           body: TimesheetWithTaskProjectEditor(
             // showOnlySyncedTaskAndProjects: disableLocalProjectTaskSelection,
             disableProjectTaskSelection: disableProjectTaskSelection,
-            project: taskWithProjectExternalData?.project,
-            task: taskWithProjectExternalData?.task,
+            project: taskWithProject?.project,
+            task: taskWithProject?.task,
             isFavorite: isInitiallyFavorite,
             builder: (context, form, formListView) => Column(
               children: [
