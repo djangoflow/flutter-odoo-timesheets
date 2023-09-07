@@ -158,10 +158,7 @@ class TimesheetListView<T extends TimesheetWithTaskProjectListCubit>
         },
         builder: (context, controller, itemBuilder, itemCount) =>
             AnimateIfVisibleWrapper(
-          controller: controller
-            ..addListener(() {
-              print(controller.position.extentAfter);
-            }),
+          controller: controller,
           child: RefreshIndicator(
             onRefresh: () => context.read<T>().reload(
                   context.read<T>().state.filter?.copyWith(
@@ -170,7 +167,7 @@ class TimesheetListView<T extends TimesheetWithTaskProjectListCubit>
                 ),
             child: ListView.separated(
               shrinkWrap: false,
-              // physics: const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.all(
                 kPadding.h * 2,
               ),
