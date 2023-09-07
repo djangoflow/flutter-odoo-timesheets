@@ -7,9 +7,10 @@ import 'package:timesheets/utils/utils.dart';
 typedef TimesheetWithTaskProjectListCubitState
     = Data<List<TimesheetWithTaskProject>, TimesheetPaginationFilter>;
 
-class TimesheetWithTaskProjectListCubit
-    extends CrudListCubit<TimesheetWithTaskProject, TimesheetPaginationFilter, TimesheetDataFilter>
-    with ActiveStateMixin {
+class TimesheetWithTaskProjectListCubit extends CrudListCubit<
+    TimesheetWithTaskProject,
+    TimesheetPaginationFilter,
+    TimesheetDataFilter> with ActiveStateMixin {
   // Plug in InMemoryRepository or RemoteRepository etc here
   TimesheetWithTaskProjectListCubit({required super.repository});
 }
