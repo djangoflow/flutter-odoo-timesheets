@@ -53,24 +53,36 @@ class ProjectsTabRouterPage extends StatelessWidget
               backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
               actions: [
                 IconButton(
-                  onPressed: () {
-                    if (tabController.index == 0) {
-                      context.router
-                          .push(
-                        ProjectAddRoute(
+                  onPressed: () async {
+                    ProjectListCubit? cubit;
+                    PageRouteInfo? routeToPush;
+
+                    switch (tabController.index) {
+                      case 0:
+                        cubit = context.read<FavoriteProjectListCubit>();
+                        routeToPush = ProjectAddRoute(
                           isInitiallyFavorite: true,
-                        ),
-                      )
-                          .then((value) {
-                        if (value == true) {
-                          context.read<FavoriteProjectListCubit>().load();
-                          DjangoflowAppSnackbar.showInfo('Added successfully');
-                        }
-                      });
-                    } else if (tabController.index == 1) {
-                      context.router.push(
-                        ProjectAddRoute(),
-                      );
+                        );
+                        break;
+                      case 1:
+                        cubit = context.read<LocalProjectListCubit>();
+                        routeToPush = ProjectAddRoute();
+                        break;
+                      default:
+                    }
+
+                    if (routeToPush != null) {
+                      final result = await context.router.push(routeToPush);
+
+                      if (result != null && result is bool && result == true) {
+                        cubit?.reload(
+                          cubit.state.filter?.copyWith(offset: 0),
+                        );
+
+                        DjangoflowAppSnackbar.showInfo(
+                          'Project added successfully',
+                        );
+                      }
                     }
                   },
                   icon: const Icon(CupertinoIcons.add),
