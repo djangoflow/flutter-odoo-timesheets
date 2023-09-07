@@ -100,7 +100,9 @@ class TimesheetsTabRouterPage extends StatelessWidget
                       final result = await router
                           .push(TimesheetsRouter(children: [route]));
                       if (result != null && result is bool && result == true) {
-                        cubit?.reload();
+                        cubit?.reload(cubit.state.filter?.copyWith(
+                          offset: 0,
+                        ));
                       }
                     }
                   },
