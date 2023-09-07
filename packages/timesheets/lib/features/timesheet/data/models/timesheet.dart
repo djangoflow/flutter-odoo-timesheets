@@ -11,8 +11,8 @@ class Timesheet with _$Timesheet {
   const factory Timesheet({
     required int id,
     String? description,
-    @JsonKey(name: 'project_id') int? projectId,
-    @JsonKey(name: 'task_id') int? taskId,
+    @JsonKey(name: 'project_id') required int projectId,
+    @JsonKey(name: 'task_id') required int taskId,
     @JsonKey(name: 'start_time') DateTime? startTime,
     @JsonKey(name: 'end_time') DateTime? endTime,
     @JsonKey(name: 'unit_amount') double? unitAmount,
