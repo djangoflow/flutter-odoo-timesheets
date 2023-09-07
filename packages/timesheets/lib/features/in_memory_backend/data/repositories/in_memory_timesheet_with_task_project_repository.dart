@@ -69,8 +69,14 @@ class InMemoryTimesheetWithTaskProjectRepository
   }
 
   @override
-  Future<void> updateItem(TimesheetWithTaskProject item) async {
-    await timesheetRepository.updateItem(item.timesheet);
+  Future<TimesheetWithTaskProject> updateItem(
+      TimesheetWithTaskProject item) async {
+    final updatedTimesheet =
+        await timesheetRepository.updateItem(item.timesheet);
+
+    return item.copyWith(
+      timesheet: updatedTimesheet,
+    );
   }
 
   @override

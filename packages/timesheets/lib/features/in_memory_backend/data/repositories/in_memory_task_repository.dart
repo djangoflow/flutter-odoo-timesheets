@@ -77,7 +77,7 @@ class InMemoryTaskRepository implements TaskRepository {
   }
 
   @override
-  Future<void> updateItem(Task item) async {
+  Future<Task> updateItem(Task item) async {
     final index = _backend.tasks.indexWhere((element) => element.id == item.id);
     if (index == -1) {
       throw Exception('Item not found');
@@ -85,6 +85,8 @@ class InMemoryTaskRepository implements TaskRepository {
     _backend.tasks[index] = item.copyWith(
       updatedAt: DateTime.now(),
     );
+
+    return _backend.tasks[index];
   }
 
   @override

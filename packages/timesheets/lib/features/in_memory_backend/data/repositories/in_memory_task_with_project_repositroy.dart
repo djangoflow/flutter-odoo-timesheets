@@ -53,9 +53,12 @@ class InMemoryTaskWithProjectRepository implements TaskWithProjectRepository {
   }
 
   @override
-  Future<void> updateItem(TaskWithProject item) {
+  Future<TaskWithProject> updateItem(TaskWithProject item) async {
     final task = item.task;
-    return taskRepository.updateItem(task);
+    final updatedTask = await taskRepository.updateItem(task);
+    return item.copyWith(
+      task: updatedTask,
+    );
   }
 
   Future<List<TaskWithProject>> _toTaskWithProjectList(

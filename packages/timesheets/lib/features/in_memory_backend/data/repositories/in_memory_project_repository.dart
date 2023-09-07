@@ -68,7 +68,7 @@ class InMemoryProjectRepository implements ProjectRepository {
   }
 
   @override
-  Future<void> updateItem(Project item) async {
+  Future<Project> updateItem(Project item) async {
     final index =
         _backend.projects.indexWhere((element) => element.id == item.id);
     if (index == -1) {
@@ -77,6 +77,8 @@ class InMemoryProjectRepository implements ProjectRepository {
     _backend.projects[index] = item.copyWith(
       updatedAt: DateTime.now(),
     );
+
+    return _backend.projects[index];
   }
 
   @override

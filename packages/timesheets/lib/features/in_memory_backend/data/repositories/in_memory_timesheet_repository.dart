@@ -69,7 +69,7 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
   }
 
   @override
-  Future<void> updateItem(Timesheet item) async {
+  Future<Timesheet> updateItem(Timesheet item) async {
     final index =
         _backend.timesheets.indexWhere((element) => element.id == item.id);
     if (index == -1) {
@@ -78,6 +78,8 @@ class InMemoryTimesheetRepository implements TimesheetRepository {
     _backend.timesheets[index] = item.copyWith(
       updatedAt: DateTime.now(),
     );
+
+    return _backend.timesheets[index];
   }
 
   @override

@@ -8,7 +8,7 @@ abstract class CrudRepository<T, F extends OffsetLimitFilter,
   Future<List<T>> getPaginatedItems([F? filter]);
   Future<List<T>> getAllItems();
   Future<T> createItem(T item);
-  Future<void> updateItem(T item);
+  Future<T> updateItem(T item);
   Future<int> deleteItem(int id);
   Future<T> getItemById([DF? filter]);
   Future<bool> exists(int id);
