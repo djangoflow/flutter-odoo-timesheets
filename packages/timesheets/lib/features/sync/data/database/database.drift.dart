@@ -2,10 +2,9 @@
 import 'package:drift/drift.dart' as i0;
 import 'package:djangoflow_sync_drift_odoo/src/database/database.drift.dart'
     as i1;
-import 'package:sync_foundation_test/features/sync/data/database/database.drift.dart'
+import 'package:timesheets/features/sync/data/database/database.drift.dart'
     as i2;
-import 'package:sync_foundation_test/features/sync/data/database/database.dart'
-    as i3;
+import 'package:timesheets/features/sync/data/database/database.dart' as i3;
 import 'package:drift/src/runtime/query_builder/query_builder.dart' as i4;
 import 'package:drift/internal/modular.dart' as i5;
 
@@ -13,12 +12,11 @@ abstract class $AppDatabase extends i0.GeneratedDatabase {
   $AppDatabase(i0.QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final i1.$SyncBackendsTable syncBackends = i1.$SyncBackendsTable(this);
-  late final i2.$FlightAircraftsTable flightAircrafts =
-      i2.$FlightAircraftsTable(this);
-  late final i2.$FlightAerodromesTable flightAerodromes =
-      i2.$FlightAerodromesTable(this);
-  late final i2.$FlightFlightsTable flightFlights =
-      i2.$FlightFlightsTable(this);
+  late final i2.$ProjectProjectsTable projectProjects =
+      i2.$ProjectProjectsTable(this);
+  late final i2.$ProjectTasksTable projectTasks = i2.$ProjectTasksTable(this);
+  late final i2.$AnalyticLinesTable analyticLines =
+      i2.$AnalyticLinesTable(this);
   late final i1.$SyncRegistriesTable syncRegistries =
       i1.$SyncRegistriesTable(this);
   @override
@@ -27,9 +25,9 @@ abstract class $AppDatabase extends i0.GeneratedDatabase {
   @override
   List<i0.DatabaseSchemaEntity> get allSchemaEntities => [
         syncBackends,
-        flightAircrafts,
-        flightAerodromes,
-        flightFlights,
+        projectProjects,
+        projectTasks,
+        analyticLines,
         syncRegistries
       ];
   @override
@@ -55,22 +53,22 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   i1.$$SyncBackendsTableTableManager get syncBackends =>
       i1.$$SyncBackendsTableTableManager(_db, _db.syncBackends);
-  i2.$$FlightAircraftsTableTableManager get flightAircrafts =>
-      i2.$$FlightAircraftsTableTableManager(_db, _db.flightAircrafts);
-  i2.$$FlightAerodromesTableTableManager get flightAerodromes =>
-      i2.$$FlightAerodromesTableTableManager(_db, _db.flightAerodromes);
-  i2.$$FlightFlightsTableTableManager get flightFlights =>
-      i2.$$FlightFlightsTableTableManager(_db, _db.flightFlights);
+  i2.$$ProjectProjectsTableTableManager get projectProjects =>
+      i2.$$ProjectProjectsTableTableManager(_db, _db.projectProjects);
+  i2.$$ProjectTasksTableTableManager get projectTasks =>
+      i2.$$ProjectTasksTableTableManager(_db, _db.projectTasks);
+  i2.$$AnalyticLinesTableTableManager get analyticLines =>
+      i2.$$AnalyticLinesTableTableManager(_db, _db.analyticLines);
   i1.$$SyncRegistriesTableTableManager get syncRegistries =>
       i1.$$SyncRegistriesTableTableManager(_db, _db.syncRegistries);
 }
 
-class $FlightFlightsTable extends i3.FlightFlights
-    with i0.TableInfo<$FlightFlightsTable, i2.FlightFlight> {
+class $AnalyticLinesTable extends i3.AnalyticLines
+    with i0.TableInfo<$AnalyticLinesTable, i2.AnalyticLine> {
   @override
   final i0.GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FlightFlightsTable(this.attachedDatabase, [this._alias]);
+  $AnalyticLinesTable(this.attachedDatabase, [this._alias]);
   static const i0.VerificationMeta _idMeta = const i0.VerificationMeta('id');
   @override
   late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
@@ -111,39 +109,36 @@ class $FlightFlightsTable extends i3.FlightFlights
       requiredDuringInsert: true,
       defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
           'REFERENCES sync_backends (id)'));
-  static const i0.VerificationMeta _aircraftIdMeta =
-      const i0.VerificationMeta('aircraftId');
-  @override
-  late final i0.GeneratedColumn<int> aircraftId = i0.GeneratedColumn<int>(
-      'aircraft_id', aliasedName, false,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
-          'REFERENCES flight_aircrafts (id) ON DELETE RESTRICT'));
-  static const i0.VerificationMeta _arrivalIdMeta =
-      const i0.VerificationMeta('arrivalId');
-  @override
-  late final i0.GeneratedColumn<int> arrivalId = i0.GeneratedColumn<int>(
-      'arrival_id', aliasedName, false,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
-          'REFERENCES flight_aerodromes (id) ON DELETE RESTRICT'));
-  static const i0.VerificationMeta _departureIdMeta =
-      const i0.VerificationMeta('departureId');
-  @override
-  late final i0.GeneratedColumn<int> departureId = i0.GeneratedColumn<int>(
-      'departure_id', aliasedName, false,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
-          'REFERENCES flight_aerodromes (id) ON DELETE RESTRICT'));
   static const i0.VerificationMeta _dateMeta =
       const i0.VerificationMeta('date');
   @override
   late final i0.GeneratedColumn<DateTime> date = i0.GeneratedColumn<DateTime>(
-      'date', aliasedName, true,
-      type: i0.DriftSqlType.dateTime, requiredDuringInsert: false);
+      'date', aliasedName, false,
+      type: i0.DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const i0.VerificationMeta _nameMeta =
+      const i0.VerificationMeta('name');
+  @override
+  late final i0.GeneratedColumn<String> name = i0.GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: i0.DriftSqlType.string, requiredDuringInsert: true);
+  static const i0.VerificationMeta _projectIdMeta =
+      const i0.VerificationMeta('projectId');
+  @override
+  late final i0.GeneratedColumn<int> projectId = i0.GeneratedColumn<int>(
+      'project_id', aliasedName, false,
+      type: i0.DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+          'REFERENCES project_projects (id) ON DELETE RESTRICT'));
+  static const i0.VerificationMeta _taskIdMeta =
+      const i0.VerificationMeta('taskId');
+  @override
+  late final i0.GeneratedColumn<int> taskId = i0.GeneratedColumn<int>(
+      'task_id', aliasedName, false,
+      type: i0.DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+          'REFERENCES project_tasks (id) ON DELETE RESTRICT'));
   @override
   List<i0.GeneratedColumn> get $columns => [
         id,
@@ -151,19 +146,19 @@ class $FlightFlightsTable extends i3.FlightFlights
         writeDate,
         isMarkedAsDeleted,
         backendId,
-        aircraftId,
-        arrivalId,
-        departureId,
-        date
+        date,
+        name,
+        projectId,
+        taskId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'flight_flights';
+  static const String $name = 'analytic_lines';
   @override
   i0.VerificationContext validateIntegrity(
-      i0.Insertable<i2.FlightFlight> instance,
+      i0.Insertable<i2.AnalyticLine> instance,
       {bool isInserting = false}) {
     final context = i0.VerificationContext();
     final data = instance.toColumns(true);
@@ -196,31 +191,29 @@ class $FlightFlightsTable extends i3.FlightFlights
     } else if (isInserting) {
       context.missing(_backendIdMeta);
     }
-    if (data.containsKey('aircraft_id')) {
-      context.handle(
-          _aircraftIdMeta,
-          aircraftId.isAcceptableOrUnknown(
-              data['aircraft_id']!, _aircraftIdMeta));
-    } else if (isInserting) {
-      context.missing(_aircraftIdMeta);
-    }
-    if (data.containsKey('arrival_id')) {
-      context.handle(_arrivalIdMeta,
-          arrivalId.isAcceptableOrUnknown(data['arrival_id']!, _arrivalIdMeta));
-    } else if (isInserting) {
-      context.missing(_arrivalIdMeta);
-    }
-    if (data.containsKey('departure_id')) {
-      context.handle(
-          _departureIdMeta,
-          departureId.isAcceptableOrUnknown(
-              data['departure_id']!, _departureIdMeta));
-    } else if (isInserting) {
-      context.missing(_departureIdMeta);
-    }
     if (data.containsKey('date')) {
       context.handle(
           _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
     }
     return context;
   }
@@ -228,9 +221,9 @@ class $FlightFlightsTable extends i3.FlightFlights
   @override
   Set<i0.GeneratedColumn> get $primaryKey => {id};
   @override
-  i2.FlightFlight map(Map<String, dynamic> data, {String? tablePrefix}) {
+  i2.AnalyticLine map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return i2.FlightFlight(
+    return i2.AnalyticLine(
       id: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.int, data['${effectivePrefix}id'])!,
       createDate: attachedDatabase.typeMapping.read(
@@ -241,44 +234,44 @@ class $FlightFlightsTable extends i3.FlightFlights
           data['${effectivePrefix}is_marked_as_deleted'])!,
       backendId: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.string, data['${effectivePrefix}backend_id'])!,
-      aircraftId: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.int, data['${effectivePrefix}aircraft_id'])!,
-      arrivalId: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.int, data['${effectivePrefix}arrival_id'])!,
-      departureId: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.int, data['${effectivePrefix}departure_id'])!,
       date: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.dateTime, data['${effectivePrefix}date']),
+          .read(i0.DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      name: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}name'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}project_id'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}task_id'])!,
     );
   }
 
   @override
-  $FlightFlightsTable createAlias(String alias) {
-    return $FlightFlightsTable(attachedDatabase, alias);
+  $AnalyticLinesTable createAlias(String alias) {
+    return $AnalyticLinesTable(attachedDatabase, alias);
   }
 }
 
-class FlightFlight extends i0.DataClass
-    implements i0.Insertable<i2.FlightFlight> {
+class AnalyticLine extends i0.DataClass
+    implements i0.Insertable<i2.AnalyticLine> {
   final int id;
   final DateTime createDate;
   final DateTime writeDate;
   final bool isMarkedAsDeleted;
   final String backendId;
-  final int aircraftId;
-  final int arrivalId;
-  final int departureId;
-  final DateTime? date;
-  const FlightFlight(
+  final DateTime date;
+  final String name;
+  final int projectId;
+  final int taskId;
+  const AnalyticLine(
       {required this.id,
       required this.createDate,
       required this.writeDate,
       required this.isMarkedAsDeleted,
       required this.backendId,
-      required this.aircraftId,
-      required this.arrivalId,
-      required this.departureId,
-      this.date});
+      required this.date,
+      required this.name,
+      required this.projectId,
+      required this.taskId});
   @override
   Map<String, i0.Expression> toColumns(bool nullToAbsent) {
     final map = <String, i0.Expression>{};
@@ -287,44 +280,40 @@ class FlightFlight extends i0.DataClass
     map['write_date'] = i0.Variable<DateTime>(writeDate);
     map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted);
     map['backend_id'] = i0.Variable<String>(backendId);
-    map['aircraft_id'] = i0.Variable<int>(aircraftId);
-    map['arrival_id'] = i0.Variable<int>(arrivalId);
-    map['departure_id'] = i0.Variable<int>(departureId);
-    if (!nullToAbsent || date != null) {
-      map['date'] = i0.Variable<DateTime>(date);
-    }
+    map['date'] = i0.Variable<DateTime>(date);
+    map['name'] = i0.Variable<String>(name);
+    map['project_id'] = i0.Variable<int>(projectId);
+    map['task_id'] = i0.Variable<int>(taskId);
     return map;
   }
 
-  i2.FlightFlightsCompanion toCompanion(bool nullToAbsent) {
-    return i2.FlightFlightsCompanion(
+  i2.AnalyticLinesCompanion toCompanion(bool nullToAbsent) {
+    return i2.AnalyticLinesCompanion(
       id: i0.Value(id),
       createDate: i0.Value(createDate),
       writeDate: i0.Value(writeDate),
       isMarkedAsDeleted: i0.Value(isMarkedAsDeleted),
       backendId: i0.Value(backendId),
-      aircraftId: i0.Value(aircraftId),
-      arrivalId: i0.Value(arrivalId),
-      departureId: i0.Value(departureId),
-      date: date == null && nullToAbsent
-          ? const i0.Value.absent()
-          : i0.Value(date),
+      date: i0.Value(date),
+      name: i0.Value(name),
+      projectId: i0.Value(projectId),
+      taskId: i0.Value(taskId),
     );
   }
 
-  factory FlightFlight.fromJson(Map<String, dynamic> json,
+  factory AnalyticLine.fromJson(Map<String, dynamic> json,
       {i0.ValueSerializer? serializer}) {
     serializer ??= i0.driftRuntimeOptions.defaultSerializer;
-    return FlightFlight(
+    return AnalyticLine(
       id: serializer.fromJson<int>(json['id']),
       createDate: serializer.fromJson<DateTime>(json['createDate']),
       writeDate: serializer.fromJson<DateTime>(json['writeDate']),
       isMarkedAsDeleted: serializer.fromJson<bool>(json['isMarkedAsDeleted']),
       backendId: serializer.fromJson<String>(json['backendId']),
-      aircraftId: serializer.fromJson<int>(json['aircraftId']),
-      arrivalId: serializer.fromJson<int>(json['arrivalId']),
-      departureId: serializer.fromJson<int>(json['departureId']),
-      date: serializer.fromJson<DateTime?>(json['date']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      name: serializer.fromJson<String>(json['name']),
+      projectId: serializer.fromJson<int>(json['projectId']),
+      taskId: serializer.fromJson<int>(json['taskId']),
     );
   }
   @override
@@ -336,36 +325,36 @@ class FlightFlight extends i0.DataClass
       'writeDate': serializer.toJson<DateTime>(writeDate),
       'isMarkedAsDeleted': serializer.toJson<bool>(isMarkedAsDeleted),
       'backendId': serializer.toJson<String>(backendId),
-      'aircraftId': serializer.toJson<int>(aircraftId),
-      'arrivalId': serializer.toJson<int>(arrivalId),
-      'departureId': serializer.toJson<int>(departureId),
-      'date': serializer.toJson<DateTime?>(date),
+      'date': serializer.toJson<DateTime>(date),
+      'name': serializer.toJson<String>(name),
+      'projectId': serializer.toJson<int>(projectId),
+      'taskId': serializer.toJson<int>(taskId),
     };
   }
 
-  i2.FlightFlight copyWith(
+  i2.AnalyticLine copyWith(
           {int? id,
           DateTime? createDate,
           DateTime? writeDate,
           bool? isMarkedAsDeleted,
           String? backendId,
-          int? aircraftId,
-          int? arrivalId,
-          int? departureId,
-          i0.Value<DateTime?> date = const i0.Value.absent()}) =>
-      i2.FlightFlight(
+          DateTime? date,
+          String? name,
+          int? projectId,
+          int? taskId}) =>
+      i2.AnalyticLine(
         id: id ?? this.id,
         createDate: createDate ?? this.createDate,
         writeDate: writeDate ?? this.writeDate,
         isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
         backendId: backendId ?? this.backendId,
-        aircraftId: aircraftId ?? this.aircraftId,
-        arrivalId: arrivalId ?? this.arrivalId,
-        departureId: departureId ?? this.departureId,
-        date: date.present ? date.value : this.date,
+        date: date ?? this.date,
+        name: name ?? this.name,
+        projectId: projectId ?? this.projectId,
+        taskId: taskId ?? this.taskId,
       );
-  FlightFlight copyWithCompanion(i2.FlightFlightsCompanion data) {
-    return FlightFlight(
+  AnalyticLine copyWithCompanion(i2.AnalyticLinesCompanion data) {
+    return AnalyticLine(
       id: data.id.present ? data.id.value : this.id,
       createDate:
           data.createDate.present ? data.createDate.value : this.createDate,
@@ -374,96 +363,95 @@ class FlightFlight extends i0.DataClass
           ? data.isMarkedAsDeleted.value
           : this.isMarkedAsDeleted,
       backendId: data.backendId.present ? data.backendId.value : this.backendId,
-      aircraftId:
-          data.aircraftId.present ? data.aircraftId.value : this.aircraftId,
-      arrivalId: data.arrivalId.present ? data.arrivalId.value : this.arrivalId,
-      departureId:
-          data.departureId.present ? data.departureId.value : this.departureId,
       date: data.date.present ? data.date.value : this.date,
+      name: data.name.present ? data.name.value : this.name,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('FlightFlight(')
+    return (StringBuffer('AnalyticLine(')
           ..write('id: $id, ')
           ..write('createDate: $createDate, ')
           ..write('writeDate: $writeDate, ')
           ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
           ..write('backendId: $backendId, ')
-          ..write('aircraftId: $aircraftId, ')
-          ..write('arrivalId: $arrivalId, ')
-          ..write('departureId: $departureId, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('name: $name, ')
+          ..write('projectId: $projectId, ')
+          ..write('taskId: $taskId')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, createDate, writeDate, isMarkedAsDeleted,
-      backendId, aircraftId, arrivalId, departureId, date);
+      backendId, date, name, projectId, taskId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is i2.FlightFlight &&
+      (other is i2.AnalyticLine &&
           other.id == this.id &&
           other.createDate == this.createDate &&
           other.writeDate == this.writeDate &&
           other.isMarkedAsDeleted == this.isMarkedAsDeleted &&
           other.backendId == this.backendId &&
-          other.aircraftId == this.aircraftId &&
-          other.arrivalId == this.arrivalId &&
-          other.departureId == this.departureId &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.name == this.name &&
+          other.projectId == this.projectId &&
+          other.taskId == this.taskId);
 }
 
-class FlightFlightsCompanion extends i0.UpdateCompanion<i2.FlightFlight> {
+class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
   final i0.Value<int> id;
   final i0.Value<DateTime> createDate;
   final i0.Value<DateTime> writeDate;
   final i0.Value<bool> isMarkedAsDeleted;
   final i0.Value<String> backendId;
-  final i0.Value<int> aircraftId;
-  final i0.Value<int> arrivalId;
-  final i0.Value<int> departureId;
-  final i0.Value<DateTime?> date;
-  const FlightFlightsCompanion({
+  final i0.Value<DateTime> date;
+  final i0.Value<String> name;
+  final i0.Value<int> projectId;
+  final i0.Value<int> taskId;
+  const AnalyticLinesCompanion({
     this.id = const i0.Value.absent(),
     this.createDate = const i0.Value.absent(),
     this.writeDate = const i0.Value.absent(),
     this.isMarkedAsDeleted = const i0.Value.absent(),
     this.backendId = const i0.Value.absent(),
-    this.aircraftId = const i0.Value.absent(),
-    this.arrivalId = const i0.Value.absent(),
-    this.departureId = const i0.Value.absent(),
     this.date = const i0.Value.absent(),
+    this.name = const i0.Value.absent(),
+    this.projectId = const i0.Value.absent(),
+    this.taskId = const i0.Value.absent(),
   });
-  FlightFlightsCompanion.insert({
+  AnalyticLinesCompanion.insert({
     this.id = const i0.Value.absent(),
     required DateTime createDate,
     required DateTime writeDate,
     this.isMarkedAsDeleted = const i0.Value.absent(),
     required String backendId,
-    required int aircraftId,
-    required int arrivalId,
-    required int departureId,
-    this.date = const i0.Value.absent(),
+    required DateTime date,
+    required String name,
+    required int projectId,
+    required int taskId,
   })  : createDate = i0.Value(createDate),
         writeDate = i0.Value(writeDate),
         backendId = i0.Value(backendId),
-        aircraftId = i0.Value(aircraftId),
-        arrivalId = i0.Value(arrivalId),
-        departureId = i0.Value(departureId);
-  static i0.Insertable<i2.FlightFlight> custom({
+        date = i0.Value(date),
+        name = i0.Value(name),
+        projectId = i0.Value(projectId),
+        taskId = i0.Value(taskId);
+  static i0.Insertable<i2.AnalyticLine> custom({
     i0.Expression<int>? id,
     i0.Expression<DateTime>? createDate,
     i0.Expression<DateTime>? writeDate,
     i0.Expression<bool>? isMarkedAsDeleted,
     i0.Expression<String>? backendId,
-    i0.Expression<int>? aircraftId,
-    i0.Expression<int>? arrivalId,
-    i0.Expression<int>? departureId,
     i0.Expression<DateTime>? date,
+    i0.Expression<String>? name,
+    i0.Expression<int>? projectId,
+    i0.Expression<int>? taskId,
   }) {
     return i0.RawValuesInsertable({
       if (id != null) 'id': id,
@@ -471,33 +459,33 @@ class FlightFlightsCompanion extends i0.UpdateCompanion<i2.FlightFlight> {
       if (writeDate != null) 'write_date': writeDate,
       if (isMarkedAsDeleted != null) 'is_marked_as_deleted': isMarkedAsDeleted,
       if (backendId != null) 'backend_id': backendId,
-      if (aircraftId != null) 'aircraft_id': aircraftId,
-      if (arrivalId != null) 'arrival_id': arrivalId,
-      if (departureId != null) 'departure_id': departureId,
       if (date != null) 'date': date,
+      if (name != null) 'name': name,
+      if (projectId != null) 'project_id': projectId,
+      if (taskId != null) 'task_id': taskId,
     });
   }
 
-  i2.FlightFlightsCompanion copyWith(
+  i2.AnalyticLinesCompanion copyWith(
       {i0.Value<int>? id,
       i0.Value<DateTime>? createDate,
       i0.Value<DateTime>? writeDate,
       i0.Value<bool>? isMarkedAsDeleted,
       i0.Value<String>? backendId,
-      i0.Value<int>? aircraftId,
-      i0.Value<int>? arrivalId,
-      i0.Value<int>? departureId,
-      i0.Value<DateTime?>? date}) {
-    return i2.FlightFlightsCompanion(
+      i0.Value<DateTime>? date,
+      i0.Value<String>? name,
+      i0.Value<int>? projectId,
+      i0.Value<int>? taskId}) {
+    return i2.AnalyticLinesCompanion(
       id: id ?? this.id,
       createDate: createDate ?? this.createDate,
       writeDate: writeDate ?? this.writeDate,
       isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
       backendId: backendId ?? this.backendId,
-      aircraftId: aircraftId ?? this.aircraftId,
-      arrivalId: arrivalId ?? this.arrivalId,
-      departureId: departureId ?? this.departureId,
       date: date ?? this.date,
+      name: name ?? this.name,
+      projectId: projectId ?? this.projectId,
+      taskId: taskId ?? this.taskId,
     );
   }
 
@@ -519,66 +507,66 @@ class FlightFlightsCompanion extends i0.UpdateCompanion<i2.FlightFlight> {
     if (backendId.present) {
       map['backend_id'] = i0.Variable<String>(backendId.value);
     }
-    if (aircraftId.present) {
-      map['aircraft_id'] = i0.Variable<int>(aircraftId.value);
-    }
-    if (arrivalId.present) {
-      map['arrival_id'] = i0.Variable<int>(arrivalId.value);
-    }
-    if (departureId.present) {
-      map['departure_id'] = i0.Variable<int>(departureId.value);
-    }
     if (date.present) {
       map['date'] = i0.Variable<DateTime>(date.value);
+    }
+    if (name.present) {
+      map['name'] = i0.Variable<String>(name.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = i0.Variable<int>(projectId.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = i0.Variable<int>(taskId.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('FlightFlightsCompanion(')
+    return (StringBuffer('AnalyticLinesCompanion(')
           ..write('id: $id, ')
           ..write('createDate: $createDate, ')
           ..write('writeDate: $writeDate, ')
           ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
           ..write('backendId: $backendId, ')
-          ..write('aircraftId: $aircraftId, ')
-          ..write('arrivalId: $arrivalId, ')
-          ..write('departureId: $departureId, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('name: $name, ')
+          ..write('projectId: $projectId, ')
+          ..write('taskId: $taskId')
           ..write(')'))
         .toString();
   }
 }
 
-typedef $$FlightFlightsTableCreateCompanionBuilder = i2.FlightFlightsCompanion
+typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
     Function({
   i0.Value<int> id,
   required DateTime createDate,
   required DateTime writeDate,
   i0.Value<bool> isMarkedAsDeleted,
   required String backendId,
-  required int aircraftId,
-  required int arrivalId,
-  required int departureId,
-  i0.Value<DateTime?> date,
+  required DateTime date,
+  required String name,
+  required int projectId,
+  required int taskId,
 });
-typedef $$FlightFlightsTableUpdateCompanionBuilder = i2.FlightFlightsCompanion
+typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
     Function({
   i0.Value<int> id,
   i0.Value<DateTime> createDate,
   i0.Value<DateTime> writeDate,
   i0.Value<bool> isMarkedAsDeleted,
   i0.Value<String> backendId,
-  i0.Value<int> aircraftId,
-  i0.Value<int> arrivalId,
-  i0.Value<int> departureId,
-  i0.Value<DateTime?> date,
+  i0.Value<DateTime> date,
+  i0.Value<String> name,
+  i0.Value<int> projectId,
+  i0.Value<int> taskId,
 });
 
-class $$FlightFlightsTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$FlightFlightsTable> {
-  $$FlightFlightsTableFilterComposer(super.$state);
+class $$AnalyticLinesTableFilterComposer
+    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
+  $$AnalyticLinesTableFilterComposer(super.$state);
   i0.ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -604,6 +592,11 @@ class $$FlightFlightsTableFilterComposer
       builder: (column, joinBuilders) =>
           i0.ColumnFilters(column, joinBuilders: joinBuilders));
 
+  i0.ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
   i1.$$SyncBackendsTableFilterComposer get backendId {
     final i1.$$SyncBackendsTableFilterComposer composer =
         $state.composerBuilder(
@@ -622,68 +615,48 @@ class $$FlightFlightsTableFilterComposer
     return composer;
   }
 
-  i2.$$FlightAircraftsTableFilterComposer get aircraftId {
-    final i2.$$FlightAircraftsTableFilterComposer composer = $state
+  i2.$$ProjectProjectsTableFilterComposer get projectId {
+    final i2.$$ProjectProjectsTableFilterComposer composer = $state
         .composerBuilder(
             composer: this,
-            getCurrentColumn: (t) => t.aircraftId,
+            getCurrentColumn: (t) => t.projectId,
             referencedTable: i5.ReadDatabaseContainer($state
                     .db)
-                .resultSet<i2.$FlightAircraftsTable>('flight_aircrafts'),
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder,
                     parentComposers) =>
-                i2.$$FlightAircraftsTableFilterComposer(i0.ComposerState(
+                i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
                     $state.db,
                     i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAircraftsTable>('flight_aircrafts'),
+                        .resultSet<i2.$ProjectProjectsTable>('project_projects'),
                     joinBuilder,
                     parentComposers)));
     return composer;
   }
 
-  i2.$$FlightAerodromesTableFilterComposer get arrivalId {
-    final i2.$$FlightAerodromesTableFilterComposer composer =
+  i2.$$ProjectTasksTableFilterComposer get taskId {
+    final i2.$$ProjectTasksTableFilterComposer composer =
         $state.composerBuilder(
             composer: this,
-            getCurrentColumn: (t) => t.arrivalId,
+            getCurrentColumn: (t) => t.taskId,
             referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$FlightAerodromesTable>('flight_aerodromes'),
+                .resultSet<i2.$ProjectTasksTable>('project_tasks'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
-                i2.$$FlightAerodromesTableFilterComposer(i0.ComposerState(
+                i2.$$ProjectTasksTableFilterComposer(i0.ComposerState(
                     $state.db,
                     i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAerodromesTable>(
-                            'flight_aerodromes'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$FlightAerodromesTableFilterComposer get departureId {
-    final i2.$$FlightAerodromesTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.departureId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$FlightAerodromesTable>('flight_aerodromes'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$FlightAerodromesTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAerodromesTable>(
-                            'flight_aerodromes'),
+                        .resultSet<i2.$ProjectTasksTable>('project_tasks'),
                     joinBuilder,
                     parentComposers)));
     return composer;
   }
 }
 
-class $$FlightFlightsTableOrderingComposer
-    extends i0.OrderingComposer<i0.GeneratedDatabase, i2.$FlightFlightsTable> {
-  $$FlightFlightsTableOrderingComposer(super.$state);
+class $$AnalyticLinesTableOrderingComposer
+    extends i0.OrderingComposer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
+  $$AnalyticLinesTableOrderingComposer(super.$state);
   i0.ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -709,6 +682,11 @@ class $$FlightFlightsTableOrderingComposer
       builder: (column, joinBuilders) =>
           i0.ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  i0.ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
   i1.$$SyncBackendsTableOrderingComposer get backendId {
     final i1.$$SyncBackendsTableOrderingComposer composer =
         $state.composerBuilder(
@@ -727,88 +705,67 @@ class $$FlightFlightsTableOrderingComposer
     return composer;
   }
 
-  i2.$$FlightAircraftsTableOrderingComposer get aircraftId {
-    final i2.$$FlightAircraftsTableOrderingComposer composer =
+  i2.$$ProjectProjectsTableOrderingComposer get projectId {
+    final i2.$$ProjectProjectsTableOrderingComposer composer =
         $state.composerBuilder(
             composer: this,
-            getCurrentColumn: (t) => t.aircraftId,
+            getCurrentColumn: (t) => t.projectId,
             referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$FlightAircraftsTable>('flight_aircrafts'),
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
-                i2.$$FlightAircraftsTableOrderingComposer(i0.ComposerState(
+                i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
                     $state.db,
                     i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAircraftsTable>(
-                            'flight_aircrafts'),
+                        .resultSet<i2.$ProjectProjectsTable>(
+                            'project_projects'),
                     joinBuilder,
                     parentComposers)));
     return composer;
   }
 
-  i2.$$FlightAerodromesTableOrderingComposer get arrivalId {
-    final i2.$$FlightAerodromesTableOrderingComposer composer =
+  i2.$$ProjectTasksTableOrderingComposer get taskId {
+    final i2.$$ProjectTasksTableOrderingComposer composer =
         $state.composerBuilder(
             composer: this,
-            getCurrentColumn: (t) => t.arrivalId,
+            getCurrentColumn: (t) => t.taskId,
             referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$FlightAerodromesTable>('flight_aerodromes'),
+                .resultSet<i2.$ProjectTasksTable>('project_tasks'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
-                i2.$$FlightAerodromesTableOrderingComposer(i0.ComposerState(
+                i2.$$ProjectTasksTableOrderingComposer(i0.ComposerState(
                     $state.db,
                     i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAerodromesTable>(
-                            'flight_aerodromes'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$FlightAerodromesTableOrderingComposer get departureId {
-    final i2.$$FlightAerodromesTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.departureId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$FlightAerodromesTable>('flight_aerodromes'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$FlightAerodromesTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$FlightAerodromesTable>(
-                            'flight_aerodromes'),
+                        .resultSet<i2.$ProjectTasksTable>('project_tasks'),
                     joinBuilder,
                     parentComposers)));
     return composer;
   }
 }
 
-class $$FlightFlightsTableTableManager extends i0.RootTableManager<
+class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
     i0.GeneratedDatabase,
-    i2.$FlightFlightsTable,
-    i2.FlightFlight,
-    i2.$$FlightFlightsTableFilterComposer,
-    i2.$$FlightFlightsTableOrderingComposer,
-    $$FlightFlightsTableCreateCompanionBuilder,
-    $$FlightFlightsTableUpdateCompanionBuilder,
+    i2.$AnalyticLinesTable,
+    i2.AnalyticLine,
+    i2.$$AnalyticLinesTableFilterComposer,
+    i2.$$AnalyticLinesTableOrderingComposer,
+    $$AnalyticLinesTableCreateCompanionBuilder,
+    $$AnalyticLinesTableUpdateCompanionBuilder,
     (
-      i2.FlightFlight,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightFlightsTable,
-          i2.FlightFlight>
+      i2.AnalyticLine,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
+          i2.AnalyticLine>
     ),
-    i2.FlightFlight,
-    i0.PrefetchHooks Function(
-        {bool backendId, bool aircraftId, bool arrivalId, bool departureId})> {
-  $$FlightFlightsTableTableManager(
-      i0.GeneratedDatabase db, i2.$FlightFlightsTable table)
+    i2.AnalyticLine,
+    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})> {
+  $$AnalyticLinesTableTableManager(
+      i0.GeneratedDatabase db, i2.$AnalyticLinesTable table)
       : super(i0.TableManagerState(
           db: db,
           table: table,
           filteringComposer: i2
-              .$$FlightFlightsTableFilterComposer(i0.ComposerState(db, table)),
-          orderingComposer: i2.$$FlightFlightsTableOrderingComposer(
+              .$$AnalyticLinesTableFilterComposer(i0.ComposerState(db, table)),
+          orderingComposer: i2.$$AnalyticLinesTableOrderingComposer(
               i0.ComposerState(db, table)),
           updateCompanionCallback: ({
             i0.Value<int> id = const i0.Value.absent(),
@@ -816,21 +773,21 @@ class $$FlightFlightsTableTableManager extends i0.RootTableManager<
             i0.Value<DateTime> writeDate = const i0.Value.absent(),
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
             i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<int> aircraftId = const i0.Value.absent(),
-            i0.Value<int> arrivalId = const i0.Value.absent(),
-            i0.Value<int> departureId = const i0.Value.absent(),
-            i0.Value<DateTime?> date = const i0.Value.absent(),
+            i0.Value<DateTime> date = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<int> projectId = const i0.Value.absent(),
+            i0.Value<int> taskId = const i0.Value.absent(),
           }) =>
-              i2.FlightFlightsCompanion(
+              i2.AnalyticLinesCompanion(
             id: id,
             createDate: createDate,
             writeDate: writeDate,
             isMarkedAsDeleted: isMarkedAsDeleted,
             backendId: backendId,
-            aircraftId: aircraftId,
-            arrivalId: arrivalId,
-            departureId: departureId,
             date: date,
+            name: name,
+            projectId: projectId,
+            taskId: taskId,
           ),
           createCompanionCallback: ({
             i0.Value<int> id = const i0.Value.absent(),
@@ -838,21 +795,21 @@ class $$FlightFlightsTableTableManager extends i0.RootTableManager<
             required DateTime writeDate,
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
             required String backendId,
-            required int aircraftId,
-            required int arrivalId,
-            required int departureId,
-            i0.Value<DateTime?> date = const i0.Value.absent(),
+            required DateTime date,
+            required String name,
+            required int projectId,
+            required int taskId,
           }) =>
-              i2.FlightFlightsCompanion.insert(
+              i2.AnalyticLinesCompanion.insert(
             id: id,
             createDate: createDate,
             writeDate: writeDate,
             isMarkedAsDeleted: isMarkedAsDeleted,
             backendId: backendId,
-            aircraftId: aircraftId,
-            arrivalId: arrivalId,
-            departureId: departureId,
             date: date,
+            name: name,
+            projectId: projectId,
+            taskId: taskId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
@@ -861,29 +818,28 @@ class $$FlightFlightsTableTableManager extends i0.RootTableManager<
         ));
 }
 
-typedef $$FlightFlightsTableProcessedTableManager = i0.ProcessedTableManager<
+typedef $$AnalyticLinesTableProcessedTableManager = i0.ProcessedTableManager<
     i0.GeneratedDatabase,
-    i2.$FlightFlightsTable,
-    i2.FlightFlight,
-    i2.$$FlightFlightsTableFilterComposer,
-    i2.$$FlightFlightsTableOrderingComposer,
-    $$FlightFlightsTableCreateCompanionBuilder,
-    $$FlightFlightsTableUpdateCompanionBuilder,
+    i2.$AnalyticLinesTable,
+    i2.AnalyticLine,
+    i2.$$AnalyticLinesTableFilterComposer,
+    i2.$$AnalyticLinesTableOrderingComposer,
+    $$AnalyticLinesTableCreateCompanionBuilder,
+    $$AnalyticLinesTableUpdateCompanionBuilder,
     (
-      i2.FlightFlight,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightFlightsTable,
-          i2.FlightFlight>
+      i2.AnalyticLine,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
+          i2.AnalyticLine>
     ),
-    i2.FlightFlight,
-    i0.PrefetchHooks Function(
-        {bool backendId, bool aircraftId, bool arrivalId, bool departureId})>;
+    i2.AnalyticLine,
+    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})>;
 
-class $FlightAircraftsTable extends i3.FlightAircrafts
-    with i0.TableInfo<$FlightAircraftsTable, i2.FlightAircraft> {
+class $ProjectProjectsTable extends i3.ProjectProjects
+    with i0.TableInfo<$ProjectProjectsTable, i2.ProjectProject> {
   @override
   final i0.GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FlightAircraftsTable(this.attachedDatabase, [this._alias]);
+  $ProjectProjectsTable(this.attachedDatabase, [this._alias]);
   static const i0.VerificationMeta _idMeta = const i0.VerificationMeta('id');
   @override
   late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
@@ -924,577 +880,67 @@ class $FlightAircraftsTable extends i3.FlightAircrafts
       requiredDuringInsert: true,
       defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
           'REFERENCES sync_backends (id)'));
-  static const i0.VerificationMeta _registrationMeta =
-      const i0.VerificationMeta('registration');
+  static const i0.VerificationMeta _activeMeta =
+      const i0.VerificationMeta('active');
   @override
-  late final i0.GeneratedColumn<String> registration =
-      i0.GeneratedColumn<String>('registration', aliasedName, true,
-          type: i0.DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<i0.GeneratedColumn> get $columns =>
-      [id, createDate, writeDate, isMarkedAsDeleted, backendId, registration];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'flight_aircrafts';
-  @override
-  i0.VerificationContext validateIntegrity(
-      i0.Insertable<i2.FlightAircraft> instance,
-      {bool isInserting = false}) {
-    final context = i0.VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('create_date')) {
-      context.handle(
-          _createDateMeta,
-          createDate.isAcceptableOrUnknown(
-              data['create_date']!, _createDateMeta));
-    } else if (isInserting) {
-      context.missing(_createDateMeta);
-    }
-    if (data.containsKey('write_date')) {
-      context.handle(_writeDateMeta,
-          writeDate.isAcceptableOrUnknown(data['write_date']!, _writeDateMeta));
-    } else if (isInserting) {
-      context.missing(_writeDateMeta);
-    }
-    if (data.containsKey('is_marked_as_deleted')) {
-      context.handle(
-          _isMarkedAsDeletedMeta,
-          isMarkedAsDeleted.isAcceptableOrUnknown(
-              data['is_marked_as_deleted']!, _isMarkedAsDeletedMeta));
-    }
-    if (data.containsKey('backend_id')) {
-      context.handle(_backendIdMeta,
-          backendId.isAcceptableOrUnknown(data['backend_id']!, _backendIdMeta));
-    } else if (isInserting) {
-      context.missing(_backendIdMeta);
-    }
-    if (data.containsKey('registration')) {
-      context.handle(
-          _registrationMeta,
-          registration.isAcceptableOrUnknown(
-              data['registration']!, _registrationMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<i0.GeneratedColumn> get $primaryKey => {id};
-  @override
-  i2.FlightAircraft map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return i2.FlightAircraft(
-      id: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.int, data['${effectivePrefix}id'])!,
-      createDate: attachedDatabase.typeMapping.read(
-          i0.DriftSqlType.dateTime, data['${effectivePrefix}create_date'])!,
-      writeDate: attachedDatabase.typeMapping.read(
-          i0.DriftSqlType.dateTime, data['${effectivePrefix}write_date'])!,
-      isMarkedAsDeleted: attachedDatabase.typeMapping.read(i0.DriftSqlType.bool,
-          data['${effectivePrefix}is_marked_as_deleted'])!,
-      backendId: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.string, data['${effectivePrefix}backend_id'])!,
-      registration: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.string, data['${effectivePrefix}registration']),
-    );
-  }
-
-  @override
-  $FlightAircraftsTable createAlias(String alias) {
-    return $FlightAircraftsTable(attachedDatabase, alias);
-  }
-}
-
-class FlightAircraft extends i0.DataClass
-    implements i0.Insertable<i2.FlightAircraft> {
-  final int id;
-  final DateTime createDate;
-  final DateTime writeDate;
-  final bool isMarkedAsDeleted;
-  final String backendId;
-  final String? registration;
-  const FlightAircraft(
-      {required this.id,
-      required this.createDate,
-      required this.writeDate,
-      required this.isMarkedAsDeleted,
-      required this.backendId,
-      this.registration});
-  @override
-  Map<String, i0.Expression> toColumns(bool nullToAbsent) {
-    final map = <String, i0.Expression>{};
-    map['id'] = i0.Variable<int>(id);
-    map['create_date'] = i0.Variable<DateTime>(createDate);
-    map['write_date'] = i0.Variable<DateTime>(writeDate);
-    map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted);
-    map['backend_id'] = i0.Variable<String>(backendId);
-    if (!nullToAbsent || registration != null) {
-      map['registration'] = i0.Variable<String>(registration);
-    }
-    return map;
-  }
-
-  i2.FlightAircraftsCompanion toCompanion(bool nullToAbsent) {
-    return i2.FlightAircraftsCompanion(
-      id: i0.Value(id),
-      createDate: i0.Value(createDate),
-      writeDate: i0.Value(writeDate),
-      isMarkedAsDeleted: i0.Value(isMarkedAsDeleted),
-      backendId: i0.Value(backendId),
-      registration: registration == null && nullToAbsent
-          ? const i0.Value.absent()
-          : i0.Value(registration),
-    );
-  }
-
-  factory FlightAircraft.fromJson(Map<String, dynamic> json,
-      {i0.ValueSerializer? serializer}) {
-    serializer ??= i0.driftRuntimeOptions.defaultSerializer;
-    return FlightAircraft(
-      id: serializer.fromJson<int>(json['id']),
-      createDate: serializer.fromJson<DateTime>(json['createDate']),
-      writeDate: serializer.fromJson<DateTime>(json['writeDate']),
-      isMarkedAsDeleted: serializer.fromJson<bool>(json['isMarkedAsDeleted']),
-      backendId: serializer.fromJson<String>(json['backendId']),
-      registration: serializer.fromJson<String?>(json['registration']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({i0.ValueSerializer? serializer}) {
-    serializer ??= i0.driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'createDate': serializer.toJson<DateTime>(createDate),
-      'writeDate': serializer.toJson<DateTime>(writeDate),
-      'isMarkedAsDeleted': serializer.toJson<bool>(isMarkedAsDeleted),
-      'backendId': serializer.toJson<String>(backendId),
-      'registration': serializer.toJson<String?>(registration),
-    };
-  }
-
-  i2.FlightAircraft copyWith(
-          {int? id,
-          DateTime? createDate,
-          DateTime? writeDate,
-          bool? isMarkedAsDeleted,
-          String? backendId,
-          i0.Value<String?> registration = const i0.Value.absent()}) =>
-      i2.FlightAircraft(
-        id: id ?? this.id,
-        createDate: createDate ?? this.createDate,
-        writeDate: writeDate ?? this.writeDate,
-        isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
-        backendId: backendId ?? this.backendId,
-        registration:
-            registration.present ? registration.value : this.registration,
-      );
-  FlightAircraft copyWithCompanion(i2.FlightAircraftsCompanion data) {
-    return FlightAircraft(
-      id: data.id.present ? data.id.value : this.id,
-      createDate:
-          data.createDate.present ? data.createDate.value : this.createDate,
-      writeDate: data.writeDate.present ? data.writeDate.value : this.writeDate,
-      isMarkedAsDeleted: data.isMarkedAsDeleted.present
-          ? data.isMarkedAsDeleted.value
-          : this.isMarkedAsDeleted,
-      backendId: data.backendId.present ? data.backendId.value : this.backendId,
-      registration: data.registration.present
-          ? data.registration.value
-          : this.registration,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FlightAircraft(')
-          ..write('id: $id, ')
-          ..write('createDate: $createDate, ')
-          ..write('writeDate: $writeDate, ')
-          ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
-          ..write('backendId: $backendId, ')
-          ..write('registration: $registration')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id, createDate, writeDate, isMarkedAsDeleted, backendId, registration);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is i2.FlightAircraft &&
-          other.id == this.id &&
-          other.createDate == this.createDate &&
-          other.writeDate == this.writeDate &&
-          other.isMarkedAsDeleted == this.isMarkedAsDeleted &&
-          other.backendId == this.backendId &&
-          other.registration == this.registration);
-}
-
-class FlightAircraftsCompanion extends i0.UpdateCompanion<i2.FlightAircraft> {
-  final i0.Value<int> id;
-  final i0.Value<DateTime> createDate;
-  final i0.Value<DateTime> writeDate;
-  final i0.Value<bool> isMarkedAsDeleted;
-  final i0.Value<String> backendId;
-  final i0.Value<String?> registration;
-  const FlightAircraftsCompanion({
-    this.id = const i0.Value.absent(),
-    this.createDate = const i0.Value.absent(),
-    this.writeDate = const i0.Value.absent(),
-    this.isMarkedAsDeleted = const i0.Value.absent(),
-    this.backendId = const i0.Value.absent(),
-    this.registration = const i0.Value.absent(),
-  });
-  FlightAircraftsCompanion.insert({
-    this.id = const i0.Value.absent(),
-    required DateTime createDate,
-    required DateTime writeDate,
-    this.isMarkedAsDeleted = const i0.Value.absent(),
-    required String backendId,
-    this.registration = const i0.Value.absent(),
-  })  : createDate = i0.Value(createDate),
-        writeDate = i0.Value(writeDate),
-        backendId = i0.Value(backendId);
-  static i0.Insertable<i2.FlightAircraft> custom({
-    i0.Expression<int>? id,
-    i0.Expression<DateTime>? createDate,
-    i0.Expression<DateTime>? writeDate,
-    i0.Expression<bool>? isMarkedAsDeleted,
-    i0.Expression<String>? backendId,
-    i0.Expression<String>? registration,
-  }) {
-    return i0.RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createDate != null) 'create_date': createDate,
-      if (writeDate != null) 'write_date': writeDate,
-      if (isMarkedAsDeleted != null) 'is_marked_as_deleted': isMarkedAsDeleted,
-      if (backendId != null) 'backend_id': backendId,
-      if (registration != null) 'registration': registration,
-    });
-  }
-
-  i2.FlightAircraftsCompanion copyWith(
-      {i0.Value<int>? id,
-      i0.Value<DateTime>? createDate,
-      i0.Value<DateTime>? writeDate,
-      i0.Value<bool>? isMarkedAsDeleted,
-      i0.Value<String>? backendId,
-      i0.Value<String?>? registration}) {
-    return i2.FlightAircraftsCompanion(
-      id: id ?? this.id,
-      createDate: createDate ?? this.createDate,
-      writeDate: writeDate ?? this.writeDate,
-      isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
-      backendId: backendId ?? this.backendId,
-      registration: registration ?? this.registration,
-    );
-  }
-
-  @override
-  Map<String, i0.Expression> toColumns(bool nullToAbsent) {
-    final map = <String, i0.Expression>{};
-    if (id.present) {
-      map['id'] = i0.Variable<int>(id.value);
-    }
-    if (createDate.present) {
-      map['create_date'] = i0.Variable<DateTime>(createDate.value);
-    }
-    if (writeDate.present) {
-      map['write_date'] = i0.Variable<DateTime>(writeDate.value);
-    }
-    if (isMarkedAsDeleted.present) {
-      map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted.value);
-    }
-    if (backendId.present) {
-      map['backend_id'] = i0.Variable<String>(backendId.value);
-    }
-    if (registration.present) {
-      map['registration'] = i0.Variable<String>(registration.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FlightAircraftsCompanion(')
-          ..write('id: $id, ')
-          ..write('createDate: $createDate, ')
-          ..write('writeDate: $writeDate, ')
-          ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
-          ..write('backendId: $backendId, ')
-          ..write('registration: $registration')
-          ..write(')'))
-        .toString();
-  }
-}
-
-typedef $$FlightAircraftsTableCreateCompanionBuilder
-    = i2.FlightAircraftsCompanion Function({
-  i0.Value<int> id,
-  required DateTime createDate,
-  required DateTime writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  required String backendId,
-  i0.Value<String?> registration,
-});
-typedef $$FlightAircraftsTableUpdateCompanionBuilder
-    = i2.FlightAircraftsCompanion Function({
-  i0.Value<int> id,
-  i0.Value<DateTime> createDate,
-  i0.Value<DateTime> writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  i0.Value<String> backendId,
-  i0.Value<String?> registration,
-});
-
-class $$FlightAircraftsTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$FlightAircraftsTable> {
-  $$FlightAircraftsTableFilterComposer(super.$state);
-  i0.ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get registration => $state.composableBuilder(
-      column: $state.table.registration,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableFilterComposer get backendId {
-    final i1.$$SyncBackendsTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$FlightAircraftsTableOrderingComposer extends i0
-    .OrderingComposer<i0.GeneratedDatabase, i2.$FlightAircraftsTable> {
-  $$FlightAircraftsTableOrderingComposer(super.$state);
-  i0.ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get registration => $state.composableBuilder(
-      column: $state.table.registration,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableOrderingComposer get backendId {
-    final i1.$$SyncBackendsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i5.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$FlightAircraftsTableTableManager extends i0.RootTableManager<
-    i0.GeneratedDatabase,
-    i2.$FlightAircraftsTable,
-    i2.FlightAircraft,
-    i2.$$FlightAircraftsTableFilterComposer,
-    i2.$$FlightAircraftsTableOrderingComposer,
-    $$FlightAircraftsTableCreateCompanionBuilder,
-    $$FlightAircraftsTableUpdateCompanionBuilder,
-    (
-      i2.FlightAircraft,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightAircraftsTable,
-          i2.FlightAircraft>
-    ),
-    i2.FlightAircraft,
-    i0.PrefetchHooks Function({bool backendId})> {
-  $$FlightAircraftsTableTableManager(
-      i0.GeneratedDatabase db, i2.$FlightAircraftsTable table)
-      : super(i0.TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: i2.$$FlightAircraftsTableFilterComposer(
-              i0.ComposerState(db, table)),
-          orderingComposer: i2.$$FlightAircraftsTableOrderingComposer(
-              i0.ComposerState(db, table)),
-          updateCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
-            i0.Value<DateTime> createDate = const i0.Value.absent(),
-            i0.Value<DateTime> writeDate = const i0.Value.absent(),
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<String?> registration = const i0.Value.absent(),
-          }) =>
-              i2.FlightAircraftsCompanion(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            registration: registration,
-          ),
-          createCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
-            required DateTime createDate,
-            required DateTime writeDate,
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            required String backendId,
-            i0.Value<String?> registration = const i0.Value.absent(),
-          }) =>
-              i2.FlightAircraftsCompanion.insert(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            registration: registration,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$FlightAircraftsTableProcessedTableManager = i0.ProcessedTableManager<
-    i0.GeneratedDatabase,
-    i2.$FlightAircraftsTable,
-    i2.FlightAircraft,
-    i2.$$FlightAircraftsTableFilterComposer,
-    i2.$$FlightAircraftsTableOrderingComposer,
-    $$FlightAircraftsTableCreateCompanionBuilder,
-    $$FlightAircraftsTableUpdateCompanionBuilder,
-    (
-      i2.FlightAircraft,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightAircraftsTable,
-          i2.FlightAircraft>
-    ),
-    i2.FlightAircraft,
-    i0.PrefetchHooks Function({bool backendId})>;
-
-class $FlightAerodromesTable extends i3.FlightAerodromes
-    with i0.TableInfo<$FlightAerodromesTable, i2.FlightAerodrome> {
-  @override
-  final i0.GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $FlightAerodromesTable(this.attachedDatabase, [this._alias]);
-  static const i0.VerificationMeta _idMeta = const i0.VerificationMeta('id');
-  @override
-  late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: i0.DriftSqlType.int,
+  late final i0.GeneratedColumn<bool> active = i0.GeneratedColumn<bool>(
+      'active', aliasedName, false,
+      type: i0.DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints:
-          i0.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const i0.VerificationMeta _createDateMeta =
-      const i0.VerificationMeta('createDate');
+          i0.GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
+      defaultValue: const i4.Constant(true));
+  static const i0.VerificationMeta _isFavoriteMeta =
+      const i0.VerificationMeta('isFavorite');
   @override
-  late final i0.GeneratedColumn<DateTime> createDate =
-      i0.GeneratedColumn<DateTime>('create_date', aliasedName, false,
-          type: i0.DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const i0.VerificationMeta _writeDateMeta =
-      const i0.VerificationMeta('writeDate');
-  @override
-  late final i0.GeneratedColumn<DateTime> writeDate =
-      i0.GeneratedColumn<DateTime>('write_date', aliasedName, false,
-          type: i0.DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const i0.VerificationMeta _isMarkedAsDeletedMeta =
-      const i0.VerificationMeta('isMarkedAsDeleted');
-  @override
-  late final i0.GeneratedColumn<bool> isMarkedAsDeleted =
-      i0.GeneratedColumn<bool>('is_marked_as_deleted', aliasedName, false,
-          type: i0.DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
-              'CHECK ("is_marked_as_deleted" IN (0, 1))'),
-          defaultValue: const i4.Constant(false));
-  static const i0.VerificationMeta _backendIdMeta =
-      const i0.VerificationMeta('backendId');
-  @override
-  late final i0.GeneratedColumn<String> backendId = i0.GeneratedColumn<String>(
-      'backend_id', aliasedName, false,
-      type: i0.DriftSqlType.string,
-      requiredDuringInsert: true,
+  late final i0.GeneratedColumn<bool> isFavorite = i0.GeneratedColumn<bool>(
+      'is_favorite', aliasedName, false,
+      type: i0.DriftSqlType.bool,
+      requiredDuringInsert: false,
       defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
-          'REFERENCES sync_backends (id)'));
+          'CHECK ("is_favorite" IN (0, 1))'),
+      defaultValue: const i4.Constant(false));
+  static const i0.VerificationMeta _colorMeta =
+      const i0.VerificationMeta('color');
+  @override
+  late final i0.GeneratedColumn<int> color = i0.GeneratedColumn<int>(
+      'color', aliasedName, true,
+      type: i0.DriftSqlType.int, requiredDuringInsert: false);
   static const i0.VerificationMeta _nameMeta =
       const i0.VerificationMeta('name');
   @override
   late final i0.GeneratedColumn<String> name = i0.GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: i0.DriftSqlType.string, requiredDuringInsert: false);
-  static const i0.VerificationMeta _icaoMeta =
-      const i0.VerificationMeta('icao');
+      'name', aliasedName, false,
+      type: i0.DriftSqlType.string, requiredDuringInsert: true);
+  static const i0.VerificationMeta _taskCountMeta =
+      const i0.VerificationMeta('taskCount');
   @override
-  late final i0.GeneratedColumn<String> icao = i0.GeneratedColumn<String>(
-      'icao', aliasedName, true,
-      type: i0.DriftSqlType.string, requiredDuringInsert: false);
+  late final i0.GeneratedColumn<int> taskCount = i0.GeneratedColumn<int>(
+      'task_count', aliasedName, false,
+      type: i0.DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const i4.Constant(0));
   @override
-  List<i0.GeneratedColumn> get $columns =>
-      [id, createDate, writeDate, isMarkedAsDeleted, backendId, name, icao];
+  List<i0.GeneratedColumn> get $columns => [
+        id,
+        createDate,
+        writeDate,
+        isMarkedAsDeleted,
+        backendId,
+        active,
+        isFavorite,
+        color,
+        name,
+        taskCount
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'flight_aerodromes';
+  static const String $name = 'project_projects';
   @override
   i0.VerificationContext validateIntegrity(
-      i0.Insertable<i2.FlightAerodrome> instance,
+      i0.Insertable<i2.ProjectProject> instance,
       {bool isInserting = false}) {
     final context = i0.VerificationContext();
     final data = instance.toColumns(true);
@@ -1527,13 +973,29 @@ class $FlightAerodromesTable extends i3.FlightAerodromes
     } else if (isInserting) {
       context.missing(_backendIdMeta);
     }
+    if (data.containsKey('active')) {
+      context.handle(_activeMeta,
+          active.isAcceptableOrUnknown(data['active']!, _activeMeta));
+    }
+    if (data.containsKey('is_favorite')) {
+      context.handle(
+          _isFavoriteMeta,
+          isFavorite.isAcceptableOrUnknown(
+              data['is_favorite']!, _isFavoriteMeta));
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('icao')) {
-      context.handle(
-          _icaoMeta, icao.isAcceptableOrUnknown(data['icao']!, _icaoMeta));
+    if (data.containsKey('task_count')) {
+      context.handle(_taskCountMeta,
+          taskCount.isAcceptableOrUnknown(data['task_count']!, _taskCountMeta));
     }
     return context;
   }
@@ -1541,9 +1003,9 @@ class $FlightAerodromesTable extends i3.FlightAerodromes
   @override
   Set<i0.GeneratedColumn> get $primaryKey => {id};
   @override
-  i2.FlightAerodrome map(Map<String, dynamic> data, {String? tablePrefix}) {
+  i2.ProjectProject map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return i2.FlightAerodrome(
+    return i2.ProjectProject(
       id: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.int, data['${effectivePrefix}id'])!,
       createDate: attachedDatabase.typeMapping.read(
@@ -1554,36 +1016,48 @@ class $FlightAerodromesTable extends i3.FlightAerodromes
           data['${effectivePrefix}is_marked_as_deleted'])!,
       backendId: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.string, data['${effectivePrefix}backend_id'])!,
+      active: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.bool, data['${effectivePrefix}active'])!,
+      isFavorite: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.bool, data['${effectivePrefix}is_favorite'])!,
+      color: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}color']),
       name: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.string, data['${effectivePrefix}name']),
-      icao: attachedDatabase.typeMapping
-          .read(i0.DriftSqlType.string, data['${effectivePrefix}icao']),
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}name'])!,
+      taskCount: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}task_count'])!,
     );
   }
 
   @override
-  $FlightAerodromesTable createAlias(String alias) {
-    return $FlightAerodromesTable(attachedDatabase, alias);
+  $ProjectProjectsTable createAlias(String alias) {
+    return $ProjectProjectsTable(attachedDatabase, alias);
   }
 }
 
-class FlightAerodrome extends i0.DataClass
-    implements i0.Insertable<i2.FlightAerodrome> {
+class ProjectProject extends i0.DataClass
+    implements i0.Insertable<i2.ProjectProject> {
   final int id;
   final DateTime createDate;
   final DateTime writeDate;
   final bool isMarkedAsDeleted;
   final String backendId;
-  final String? name;
-  final String? icao;
-  const FlightAerodrome(
+  final bool active;
+  final bool isFavorite;
+  final int? color;
+  final String name;
+  final int taskCount;
+  const ProjectProject(
       {required this.id,
       required this.createDate,
       required this.writeDate,
       required this.isMarkedAsDeleted,
       required this.backendId,
-      this.name,
-      this.icao});
+      required this.active,
+      required this.isFavorite,
+      this.color,
+      required this.name,
+      required this.taskCount});
   @override
   Map<String, i0.Expression> toColumns(bool nullToAbsent) {
     final map = <String, i0.Expression>{};
@@ -1592,42 +1066,47 @@ class FlightAerodrome extends i0.DataClass
     map['write_date'] = i0.Variable<DateTime>(writeDate);
     map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted);
     map['backend_id'] = i0.Variable<String>(backendId);
-    if (!nullToAbsent || name != null) {
-      map['name'] = i0.Variable<String>(name);
+    map['active'] = i0.Variable<bool>(active);
+    map['is_favorite'] = i0.Variable<bool>(isFavorite);
+    if (!nullToAbsent || color != null) {
+      map['color'] = i0.Variable<int>(color);
     }
-    if (!nullToAbsent || icao != null) {
-      map['icao'] = i0.Variable<String>(icao);
-    }
+    map['name'] = i0.Variable<String>(name);
+    map['task_count'] = i0.Variable<int>(taskCount);
     return map;
   }
 
-  i2.FlightAerodromesCompanion toCompanion(bool nullToAbsent) {
-    return i2.FlightAerodromesCompanion(
+  i2.ProjectProjectsCompanion toCompanion(bool nullToAbsent) {
+    return i2.ProjectProjectsCompanion(
       id: i0.Value(id),
       createDate: i0.Value(createDate),
       writeDate: i0.Value(writeDate),
       isMarkedAsDeleted: i0.Value(isMarkedAsDeleted),
       backendId: i0.Value(backendId),
-      name: name == null && nullToAbsent
+      active: i0.Value(active),
+      isFavorite: i0.Value(isFavorite),
+      color: color == null && nullToAbsent
           ? const i0.Value.absent()
-          : i0.Value(name),
-      icao: icao == null && nullToAbsent
-          ? const i0.Value.absent()
-          : i0.Value(icao),
+          : i0.Value(color),
+      name: i0.Value(name),
+      taskCount: i0.Value(taskCount),
     );
   }
 
-  factory FlightAerodrome.fromJson(Map<String, dynamic> json,
+  factory ProjectProject.fromJson(Map<String, dynamic> json,
       {i0.ValueSerializer? serializer}) {
     serializer ??= i0.driftRuntimeOptions.defaultSerializer;
-    return FlightAerodrome(
+    return ProjectProject(
       id: serializer.fromJson<int>(json['id']),
       createDate: serializer.fromJson<DateTime>(json['createDate']),
       writeDate: serializer.fromJson<DateTime>(json['writeDate']),
       isMarkedAsDeleted: serializer.fromJson<bool>(json['isMarkedAsDeleted']),
       backendId: serializer.fromJson<String>(json['backendId']),
-      name: serializer.fromJson<String?>(json['name']),
-      icao: serializer.fromJson<String?>(json['icao']),
+      active: serializer.fromJson<bool>(json['active']),
+      isFavorite: serializer.fromJson<bool>(json['isFavorite']),
+      color: serializer.fromJson<int?>(json['color']),
+      name: serializer.fromJson<String>(json['name']),
+      taskCount: serializer.fromJson<int>(json['taskCount']),
     );
   }
   @override
@@ -1639,30 +1118,39 @@ class FlightAerodrome extends i0.DataClass
       'writeDate': serializer.toJson<DateTime>(writeDate),
       'isMarkedAsDeleted': serializer.toJson<bool>(isMarkedAsDeleted),
       'backendId': serializer.toJson<String>(backendId),
-      'name': serializer.toJson<String?>(name),
-      'icao': serializer.toJson<String?>(icao),
+      'active': serializer.toJson<bool>(active),
+      'isFavorite': serializer.toJson<bool>(isFavorite),
+      'color': serializer.toJson<int?>(color),
+      'name': serializer.toJson<String>(name),
+      'taskCount': serializer.toJson<int>(taskCount),
     };
   }
 
-  i2.FlightAerodrome copyWith(
+  i2.ProjectProject copyWith(
           {int? id,
           DateTime? createDate,
           DateTime? writeDate,
           bool? isMarkedAsDeleted,
           String? backendId,
-          i0.Value<String?> name = const i0.Value.absent(),
-          i0.Value<String?> icao = const i0.Value.absent()}) =>
-      i2.FlightAerodrome(
+          bool? active,
+          bool? isFavorite,
+          i0.Value<int?> color = const i0.Value.absent(),
+          String? name,
+          int? taskCount}) =>
+      i2.ProjectProject(
         id: id ?? this.id,
         createDate: createDate ?? this.createDate,
         writeDate: writeDate ?? this.writeDate,
         isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
         backendId: backendId ?? this.backendId,
-        name: name.present ? name.value : this.name,
-        icao: icao.present ? icao.value : this.icao,
+        active: active ?? this.active,
+        isFavorite: isFavorite ?? this.isFavorite,
+        color: color.present ? color.value : this.color,
+        name: name ?? this.name,
+        taskCount: taskCount ?? this.taskCount,
       );
-  FlightAerodrome copyWithCompanion(i2.FlightAerodromesCompanion data) {
-    return FlightAerodrome(
+  ProjectProject copyWithCompanion(i2.ProjectProjectsCompanion data) {
+    return ProjectProject(
       id: data.id.present ? data.id.value : this.id,
       createDate:
           data.createDate.present ? data.createDate.value : this.createDate,
@@ -1671,77 +1159,100 @@ class FlightAerodrome extends i0.DataClass
           ? data.isMarkedAsDeleted.value
           : this.isMarkedAsDeleted,
       backendId: data.backendId.present ? data.backendId.value : this.backendId,
+      active: data.active.present ? data.active.value : this.active,
+      isFavorite:
+          data.isFavorite.present ? data.isFavorite.value : this.isFavorite,
+      color: data.color.present ? data.color.value : this.color,
       name: data.name.present ? data.name.value : this.name,
-      icao: data.icao.present ? data.icao.value : this.icao,
+      taskCount: data.taskCount.present ? data.taskCount.value : this.taskCount,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('FlightAerodrome(')
+    return (StringBuffer('ProjectProject(')
           ..write('id: $id, ')
           ..write('createDate: $createDate, ')
           ..write('writeDate: $writeDate, ')
           ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
           ..write('backendId: $backendId, ')
+          ..write('active: $active, ')
+          ..write('isFavorite: $isFavorite, ')
+          ..write('color: $color, ')
           ..write('name: $name, ')
-          ..write('icao: $icao')
+          ..write('taskCount: $taskCount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, createDate, writeDate, isMarkedAsDeleted, backendId, name, icao);
+  int get hashCode => Object.hash(id, createDate, writeDate, isMarkedAsDeleted,
+      backendId, active, isFavorite, color, name, taskCount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is i2.FlightAerodrome &&
+      (other is i2.ProjectProject &&
           other.id == this.id &&
           other.createDate == this.createDate &&
           other.writeDate == this.writeDate &&
           other.isMarkedAsDeleted == this.isMarkedAsDeleted &&
           other.backendId == this.backendId &&
+          other.active == this.active &&
+          other.isFavorite == this.isFavorite &&
+          other.color == this.color &&
           other.name == this.name &&
-          other.icao == this.icao);
+          other.taskCount == this.taskCount);
 }
 
-class FlightAerodromesCompanion extends i0.UpdateCompanion<i2.FlightAerodrome> {
+class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
   final i0.Value<int> id;
   final i0.Value<DateTime> createDate;
   final i0.Value<DateTime> writeDate;
   final i0.Value<bool> isMarkedAsDeleted;
   final i0.Value<String> backendId;
-  final i0.Value<String?> name;
-  final i0.Value<String?> icao;
-  const FlightAerodromesCompanion({
+  final i0.Value<bool> active;
+  final i0.Value<bool> isFavorite;
+  final i0.Value<int?> color;
+  final i0.Value<String> name;
+  final i0.Value<int> taskCount;
+  const ProjectProjectsCompanion({
     this.id = const i0.Value.absent(),
     this.createDate = const i0.Value.absent(),
     this.writeDate = const i0.Value.absent(),
     this.isMarkedAsDeleted = const i0.Value.absent(),
     this.backendId = const i0.Value.absent(),
+    this.active = const i0.Value.absent(),
+    this.isFavorite = const i0.Value.absent(),
+    this.color = const i0.Value.absent(),
     this.name = const i0.Value.absent(),
-    this.icao = const i0.Value.absent(),
+    this.taskCount = const i0.Value.absent(),
   });
-  FlightAerodromesCompanion.insert({
+  ProjectProjectsCompanion.insert({
     this.id = const i0.Value.absent(),
     required DateTime createDate,
     required DateTime writeDate,
     this.isMarkedAsDeleted = const i0.Value.absent(),
     required String backendId,
-    this.name = const i0.Value.absent(),
-    this.icao = const i0.Value.absent(),
+    this.active = const i0.Value.absent(),
+    this.isFavorite = const i0.Value.absent(),
+    this.color = const i0.Value.absent(),
+    required String name,
+    this.taskCount = const i0.Value.absent(),
   })  : createDate = i0.Value(createDate),
         writeDate = i0.Value(writeDate),
-        backendId = i0.Value(backendId);
-  static i0.Insertable<i2.FlightAerodrome> custom({
+        backendId = i0.Value(backendId),
+        name = i0.Value(name);
+  static i0.Insertable<i2.ProjectProject> custom({
     i0.Expression<int>? id,
     i0.Expression<DateTime>? createDate,
     i0.Expression<DateTime>? writeDate,
     i0.Expression<bool>? isMarkedAsDeleted,
     i0.Expression<String>? backendId,
+    i0.Expression<bool>? active,
+    i0.Expression<bool>? isFavorite,
+    i0.Expression<int>? color,
     i0.Expression<String>? name,
-    i0.Expression<String>? icao,
+    i0.Expression<int>? taskCount,
   }) {
     return i0.RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1749,27 +1260,36 @@ class FlightAerodromesCompanion extends i0.UpdateCompanion<i2.FlightAerodrome> {
       if (writeDate != null) 'write_date': writeDate,
       if (isMarkedAsDeleted != null) 'is_marked_as_deleted': isMarkedAsDeleted,
       if (backendId != null) 'backend_id': backendId,
+      if (active != null) 'active': active,
+      if (isFavorite != null) 'is_favorite': isFavorite,
+      if (color != null) 'color': color,
       if (name != null) 'name': name,
-      if (icao != null) 'icao': icao,
+      if (taskCount != null) 'task_count': taskCount,
     });
   }
 
-  i2.FlightAerodromesCompanion copyWith(
+  i2.ProjectProjectsCompanion copyWith(
       {i0.Value<int>? id,
       i0.Value<DateTime>? createDate,
       i0.Value<DateTime>? writeDate,
       i0.Value<bool>? isMarkedAsDeleted,
       i0.Value<String>? backendId,
-      i0.Value<String?>? name,
-      i0.Value<String?>? icao}) {
-    return i2.FlightAerodromesCompanion(
+      i0.Value<bool>? active,
+      i0.Value<bool>? isFavorite,
+      i0.Value<int?>? color,
+      i0.Value<String>? name,
+      i0.Value<int>? taskCount}) {
+    return i2.ProjectProjectsCompanion(
       id: id ?? this.id,
       createDate: createDate ?? this.createDate,
       writeDate: writeDate ?? this.writeDate,
       isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
       backendId: backendId ?? this.backendId,
+      active: active ?? this.active,
+      isFavorite: isFavorite ?? this.isFavorite,
+      color: color ?? this.color,
       name: name ?? this.name,
-      icao: icao ?? this.icao,
+      taskCount: taskCount ?? this.taskCount,
     );
   }
 
@@ -1791,54 +1311,72 @@ class FlightAerodromesCompanion extends i0.UpdateCompanion<i2.FlightAerodrome> {
     if (backendId.present) {
       map['backend_id'] = i0.Variable<String>(backendId.value);
     }
+    if (active.present) {
+      map['active'] = i0.Variable<bool>(active.value);
+    }
+    if (isFavorite.present) {
+      map['is_favorite'] = i0.Variable<bool>(isFavorite.value);
+    }
+    if (color.present) {
+      map['color'] = i0.Variable<int>(color.value);
+    }
     if (name.present) {
       map['name'] = i0.Variable<String>(name.value);
     }
-    if (icao.present) {
-      map['icao'] = i0.Variable<String>(icao.value);
+    if (taskCount.present) {
+      map['task_count'] = i0.Variable<int>(taskCount.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('FlightAerodromesCompanion(')
+    return (StringBuffer('ProjectProjectsCompanion(')
           ..write('id: $id, ')
           ..write('createDate: $createDate, ')
           ..write('writeDate: $writeDate, ')
           ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
           ..write('backendId: $backendId, ')
+          ..write('active: $active, ')
+          ..write('isFavorite: $isFavorite, ')
+          ..write('color: $color, ')
           ..write('name: $name, ')
-          ..write('icao: $icao')
+          ..write('taskCount: $taskCount')
           ..write(')'))
         .toString();
   }
 }
 
-typedef $$FlightAerodromesTableCreateCompanionBuilder
-    = i2.FlightAerodromesCompanion Function({
+typedef $$ProjectProjectsTableCreateCompanionBuilder
+    = i2.ProjectProjectsCompanion Function({
   i0.Value<int> id,
   required DateTime createDate,
   required DateTime writeDate,
   i0.Value<bool> isMarkedAsDeleted,
   required String backendId,
-  i0.Value<String?> name,
-  i0.Value<String?> icao,
+  i0.Value<bool> active,
+  i0.Value<bool> isFavorite,
+  i0.Value<int?> color,
+  required String name,
+  i0.Value<int> taskCount,
 });
-typedef $$FlightAerodromesTableUpdateCompanionBuilder
-    = i2.FlightAerodromesCompanion Function({
+typedef $$ProjectProjectsTableUpdateCompanionBuilder
+    = i2.ProjectProjectsCompanion Function({
   i0.Value<int> id,
   i0.Value<DateTime> createDate,
   i0.Value<DateTime> writeDate,
   i0.Value<bool> isMarkedAsDeleted,
   i0.Value<String> backendId,
-  i0.Value<String?> name,
-  i0.Value<String?> icao,
+  i0.Value<bool> active,
+  i0.Value<bool> isFavorite,
+  i0.Value<int?> color,
+  i0.Value<String> name,
+  i0.Value<int> taskCount,
 });
 
-class $$FlightAerodromesTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$FlightAerodromesTable> {
-  $$FlightAerodromesTableFilterComposer(super.$state);
+class $$ProjectProjectsTableFilterComposer
+    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
+  $$ProjectProjectsTableFilterComposer(super.$state);
   i0.ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1856,6 +1394,21 @@ class $$FlightAerodromesTableFilterComposer
 
   i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
       column: $state.table.isMarkedAsDeleted,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<bool> get active => $state.composableBuilder(
+      column: $state.table.active,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<bool> get isFavorite => $state.composableBuilder(
+      column: $state.table.isFavorite,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<int> get color => $state.composableBuilder(
+      column: $state.table.color,
       builder: (column, joinBuilders) =>
           i0.ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1864,8 +1417,8 @@ class $$FlightAerodromesTableFilterComposer
       builder: (column, joinBuilders) =>
           i0.ColumnFilters(column, joinBuilders: joinBuilders));
 
-  i0.ColumnFilters<String> get icao => $state.composableBuilder(
-      column: $state.table.icao,
+  i0.ColumnFilters<int> get taskCount => $state.composableBuilder(
+      column: $state.table.taskCount,
       builder: (column, joinBuilders) =>
           i0.ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1888,9 +1441,9 @@ class $$FlightAerodromesTableFilterComposer
   }
 }
 
-class $$FlightAerodromesTableOrderingComposer extends i0
-    .OrderingComposer<i0.GeneratedDatabase, i2.$FlightAerodromesTable> {
-  $$FlightAerodromesTableOrderingComposer(super.$state);
+class $$ProjectProjectsTableOrderingComposer extends i0
+    .OrderingComposer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
+  $$ProjectProjectsTableOrderingComposer(super.$state);
   i0.ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1911,13 +1464,28 @@ class $$FlightAerodromesTableOrderingComposer extends i0
       builder: (column, joinBuilders) =>
           i0.ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  i0.ColumnOrderings<bool> get active => $state.composableBuilder(
+      column: $state.table.active,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<bool> get isFavorite => $state.composableBuilder(
+      column: $state.table.isFavorite,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<int> get color => $state.composableBuilder(
+      column: $state.table.color,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
   i0.ColumnOrderings<String> get name => $state.composableBuilder(
       column: $state.table.name,
       builder: (column, joinBuilders) =>
           i0.ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  i0.ColumnOrderings<String> get icao => $state.composableBuilder(
-      column: $state.table.icao,
+  i0.ColumnOrderings<int> get taskCount => $state.composableBuilder(
+      column: $state.table.taskCount,
       builder: (column, joinBuilders) =>
           i0.ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -1940,29 +1508,29 @@ class $$FlightAerodromesTableOrderingComposer extends i0
   }
 }
 
-class $$FlightAerodromesTableTableManager extends i0.RootTableManager<
+class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
     i0.GeneratedDatabase,
-    i2.$FlightAerodromesTable,
-    i2.FlightAerodrome,
-    i2.$$FlightAerodromesTableFilterComposer,
-    i2.$$FlightAerodromesTableOrderingComposer,
-    $$FlightAerodromesTableCreateCompanionBuilder,
-    $$FlightAerodromesTableUpdateCompanionBuilder,
+    i2.$ProjectProjectsTable,
+    i2.ProjectProject,
+    i2.$$ProjectProjectsTableFilterComposer,
+    i2.$$ProjectProjectsTableOrderingComposer,
+    $$ProjectProjectsTableCreateCompanionBuilder,
+    $$ProjectProjectsTableUpdateCompanionBuilder,
     (
-      i2.FlightAerodrome,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightAerodromesTable,
-          i2.FlightAerodrome>
+      i2.ProjectProject,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
+          i2.ProjectProject>
     ),
-    i2.FlightAerodrome,
+    i2.ProjectProject,
     i0.PrefetchHooks Function({bool backendId})> {
-  $$FlightAerodromesTableTableManager(
-      i0.GeneratedDatabase db, i2.$FlightAerodromesTable table)
+  $$ProjectProjectsTableTableManager(
+      i0.GeneratedDatabase db, i2.$ProjectProjectsTable table)
       : super(i0.TableManagerState(
           db: db,
           table: table,
-          filteringComposer: i2.$$FlightAerodromesTableFilterComposer(
+          filteringComposer: i2.$$ProjectProjectsTableFilterComposer(
               i0.ComposerState(db, table)),
-          orderingComposer: i2.$$FlightAerodromesTableOrderingComposer(
+          orderingComposer: i2.$$ProjectProjectsTableOrderingComposer(
               i0.ComposerState(db, table)),
           updateCompanionCallback: ({
             i0.Value<int> id = const i0.Value.absent(),
@@ -1970,17 +1538,23 @@ class $$FlightAerodromesTableTableManager extends i0.RootTableManager<
             i0.Value<DateTime> writeDate = const i0.Value.absent(),
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
             i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<String?> name = const i0.Value.absent(),
-            i0.Value<String?> icao = const i0.Value.absent(),
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<int> taskCount = const i0.Value.absent(),
           }) =>
-              i2.FlightAerodromesCompanion(
+              i2.ProjectProjectsCompanion(
             id: id,
             createDate: createDate,
             writeDate: writeDate,
             isMarkedAsDeleted: isMarkedAsDeleted,
             backendId: backendId,
+            active: active,
+            isFavorite: isFavorite,
+            color: color,
             name: name,
-            icao: icao,
+            taskCount: taskCount,
           ),
           createCompanionCallback: ({
             i0.Value<int> id = const i0.Value.absent(),
@@ -1988,17 +1562,23 @@ class $$FlightAerodromesTableTableManager extends i0.RootTableManager<
             required DateTime writeDate,
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
             required String backendId,
-            i0.Value<String?> name = const i0.Value.absent(),
-            i0.Value<String?> icao = const i0.Value.absent(),
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            required String name,
+            i0.Value<int> taskCount = const i0.Value.absent(),
           }) =>
-              i2.FlightAerodromesCompanion.insert(
+              i2.ProjectProjectsCompanion.insert(
             id: id,
             createDate: createDate,
             writeDate: writeDate,
             isMarkedAsDeleted: isMarkedAsDeleted,
             backendId: backendId,
+            active: active,
+            isFavorite: isFavorite,
+            color: color,
             name: name,
-            icao: icao,
+            taskCount: taskCount,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
@@ -2007,18 +1587,1002 @@ class $$FlightAerodromesTableTableManager extends i0.RootTableManager<
         ));
 }
 
-typedef $$FlightAerodromesTableProcessedTableManager = i0.ProcessedTableManager<
+typedef $$ProjectProjectsTableProcessedTableManager = i0.ProcessedTableManager<
     i0.GeneratedDatabase,
-    i2.$FlightAerodromesTable,
-    i2.FlightAerodrome,
-    i2.$$FlightAerodromesTableFilterComposer,
-    i2.$$FlightAerodromesTableOrderingComposer,
-    $$FlightAerodromesTableCreateCompanionBuilder,
-    $$FlightAerodromesTableUpdateCompanionBuilder,
+    i2.$ProjectProjectsTable,
+    i2.ProjectProject,
+    i2.$$ProjectProjectsTableFilterComposer,
+    i2.$$ProjectProjectsTableOrderingComposer,
+    $$ProjectProjectsTableCreateCompanionBuilder,
+    $$ProjectProjectsTableUpdateCompanionBuilder,
     (
-      i2.FlightAerodrome,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$FlightAerodromesTable,
-          i2.FlightAerodrome>
+      i2.ProjectProject,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
+          i2.ProjectProject>
     ),
-    i2.FlightAerodrome,
+    i2.ProjectProject,
     i0.PrefetchHooks Function({bool backendId})>;
+
+class $ProjectTasksTable extends i3.ProjectTasks
+    with i0.TableInfo<$ProjectTasksTable, i2.ProjectTask> {
+  @override
+  final i0.GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectTasksTable(this.attachedDatabase, [this._alias]);
+  static const i0.VerificationMeta _idMeta = const i0.VerificationMeta('id');
+  @override
+  late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: i0.DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          i0.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const i0.VerificationMeta _createDateMeta =
+      const i0.VerificationMeta('createDate');
+  @override
+  late final i0.GeneratedColumn<DateTime> createDate =
+      i0.GeneratedColumn<DateTime>('create_date', aliasedName, false,
+          type: i0.DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const i0.VerificationMeta _writeDateMeta =
+      const i0.VerificationMeta('writeDate');
+  @override
+  late final i0.GeneratedColumn<DateTime> writeDate =
+      i0.GeneratedColumn<DateTime>('write_date', aliasedName, false,
+          type: i0.DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const i0.VerificationMeta _isMarkedAsDeletedMeta =
+      const i0.VerificationMeta('isMarkedAsDeleted');
+  @override
+  late final i0.GeneratedColumn<bool> isMarkedAsDeleted =
+      i0.GeneratedColumn<bool>('is_marked_as_deleted', aliasedName, false,
+          type: i0.DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+              'CHECK ("is_marked_as_deleted" IN (0, 1))'),
+          defaultValue: const i4.Constant(false));
+  static const i0.VerificationMeta _backendIdMeta =
+      const i0.VerificationMeta('backendId');
+  @override
+  late final i0.GeneratedColumn<String> backendId = i0.GeneratedColumn<String>(
+      'backend_id', aliasedName, false,
+      type: i0.DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+          'REFERENCES sync_backends (id)'));
+  static const i0.VerificationMeta _activeMeta =
+      const i0.VerificationMeta('active');
+  @override
+  late final i0.GeneratedColumn<bool> active = i0.GeneratedColumn<bool>(
+      'active', aliasedName, false,
+      type: i0.DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          i0.GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
+      defaultValue: const i4.Constant(true));
+  static const i0.VerificationMeta _colorMeta =
+      const i0.VerificationMeta('color');
+  @override
+  late final i0.GeneratedColumn<int> color = i0.GeneratedColumn<int>(
+      'color', aliasedName, true,
+      type: i0.DriftSqlType.int, requiredDuringInsert: false);
+  static const i0.VerificationMeta _dateDeadlineMeta =
+      const i0.VerificationMeta('dateDeadline');
+  @override
+  late final i0.GeneratedColumn<DateTime> dateDeadline =
+      i0.GeneratedColumn<DateTime>('date_deadline', aliasedName, true,
+          type: i0.DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const i0.VerificationMeta _dateEndMeta =
+      const i0.VerificationMeta('dateEnd');
+  @override
+  late final i0.GeneratedColumn<DateTime> dateEnd =
+      i0.GeneratedColumn<DateTime>('date_end', aliasedName, true,
+          type: i0.DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const i0.VerificationMeta _descriptionMeta =
+      const i0.VerificationMeta('description');
+  @override
+  late final i0.GeneratedColumn<String> description =
+      i0.GeneratedColumn<String>('description', aliasedName, true,
+          type: i0.DriftSqlType.string, requiredDuringInsert: false);
+  static const i0.VerificationMeta _nameMeta =
+      const i0.VerificationMeta('name');
+  @override
+  late final i0.GeneratedColumn<String> name = i0.GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: i0.DriftSqlType.string, requiredDuringInsert: true);
+  static const i0.VerificationMeta _priorityMeta =
+      const i0.VerificationMeta('priority');
+  @override
+  late final i0.GeneratedColumn<String> priority = i0.GeneratedColumn<String>(
+      'priority', aliasedName, true,
+      type: i0.DriftSqlType.string, requiredDuringInsert: false);
+  static const i0.VerificationMeta _projectIdMeta =
+      const i0.VerificationMeta('projectId');
+  @override
+  late final i0.GeneratedColumn<int> projectId = i0.GeneratedColumn<int>(
+      'project_id', aliasedName, false,
+      type: i0.DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+          'REFERENCES project_projects (id) ON DELETE RESTRICT'));
+  @override
+  List<i0.GeneratedColumn> get $columns => [
+        id,
+        createDate,
+        writeDate,
+        isMarkedAsDeleted,
+        backendId,
+        active,
+        color,
+        dateDeadline,
+        dateEnd,
+        description,
+        name,
+        priority,
+        projectId
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project_tasks';
+  @override
+  i0.VerificationContext validateIntegrity(
+      i0.Insertable<i2.ProjectTask> instance,
+      {bool isInserting = false}) {
+    final context = i0.VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('create_date')) {
+      context.handle(
+          _createDateMeta,
+          createDate.isAcceptableOrUnknown(
+              data['create_date']!, _createDateMeta));
+    } else if (isInserting) {
+      context.missing(_createDateMeta);
+    }
+    if (data.containsKey('write_date')) {
+      context.handle(_writeDateMeta,
+          writeDate.isAcceptableOrUnknown(data['write_date']!, _writeDateMeta));
+    } else if (isInserting) {
+      context.missing(_writeDateMeta);
+    }
+    if (data.containsKey('is_marked_as_deleted')) {
+      context.handle(
+          _isMarkedAsDeletedMeta,
+          isMarkedAsDeleted.isAcceptableOrUnknown(
+              data['is_marked_as_deleted']!, _isMarkedAsDeletedMeta));
+    }
+    if (data.containsKey('backend_id')) {
+      context.handle(_backendIdMeta,
+          backendId.isAcceptableOrUnknown(data['backend_id']!, _backendIdMeta));
+    } else if (isInserting) {
+      context.missing(_backendIdMeta);
+    }
+    if (data.containsKey('active')) {
+      context.handle(_activeMeta,
+          active.isAcceptableOrUnknown(data['active']!, _activeMeta));
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
+    if (data.containsKey('date_deadline')) {
+      context.handle(
+          _dateDeadlineMeta,
+          dateDeadline.isAcceptableOrUnknown(
+              data['date_deadline']!, _dateDeadlineMeta));
+    }
+    if (data.containsKey('date_end')) {
+      context.handle(_dateEndMeta,
+          dateEnd.isAcceptableOrUnknown(data['date_end']!, _dateEndMeta));
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<i0.GeneratedColumn> get $primaryKey => {id};
+  @override
+  i2.ProjectTask map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return i2.ProjectTask(
+      id: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createDate: attachedDatabase.typeMapping.read(
+          i0.DriftSqlType.dateTime, data['${effectivePrefix}create_date'])!,
+      writeDate: attachedDatabase.typeMapping.read(
+          i0.DriftSqlType.dateTime, data['${effectivePrefix}write_date'])!,
+      isMarkedAsDeleted: attachedDatabase.typeMapping.read(i0.DriftSqlType.bool,
+          data['${effectivePrefix}is_marked_as_deleted'])!,
+      backendId: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}backend_id'])!,
+      active: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.bool, data['${effectivePrefix}active'])!,
+      color: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}color']),
+      dateDeadline: attachedDatabase.typeMapping.read(
+          i0.DriftSqlType.dateTime, data['${effectivePrefix}date_deadline']),
+      dateEnd: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.dateTime, data['${effectivePrefix}date_end']),
+      description: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}description']),
+      name: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}name'])!,
+      priority: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.string, data['${effectivePrefix}priority']),
+      projectId: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.int, data['${effectivePrefix}project_id'])!,
+    );
+  }
+
+  @override
+  $ProjectTasksTable createAlias(String alias) {
+    return $ProjectTasksTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectTask extends i0.DataClass
+    implements i0.Insertable<i2.ProjectTask> {
+  final int id;
+  final DateTime createDate;
+  final DateTime writeDate;
+  final bool isMarkedAsDeleted;
+  final String backendId;
+  final bool active;
+  final int? color;
+  final DateTime? dateDeadline;
+  final DateTime? dateEnd;
+  final String? description;
+  final String name;
+  final String? priority;
+  final int projectId;
+  const ProjectTask(
+      {required this.id,
+      required this.createDate,
+      required this.writeDate,
+      required this.isMarkedAsDeleted,
+      required this.backendId,
+      required this.active,
+      this.color,
+      this.dateDeadline,
+      this.dateEnd,
+      this.description,
+      required this.name,
+      this.priority,
+      required this.projectId});
+  @override
+  Map<String, i0.Expression> toColumns(bool nullToAbsent) {
+    final map = <String, i0.Expression>{};
+    map['id'] = i0.Variable<int>(id);
+    map['create_date'] = i0.Variable<DateTime>(createDate);
+    map['write_date'] = i0.Variable<DateTime>(writeDate);
+    map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted);
+    map['backend_id'] = i0.Variable<String>(backendId);
+    map['active'] = i0.Variable<bool>(active);
+    if (!nullToAbsent || color != null) {
+      map['color'] = i0.Variable<int>(color);
+    }
+    if (!nullToAbsent || dateDeadline != null) {
+      map['date_deadline'] = i0.Variable<DateTime>(dateDeadline);
+    }
+    if (!nullToAbsent || dateEnd != null) {
+      map['date_end'] = i0.Variable<DateTime>(dateEnd);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = i0.Variable<String>(description);
+    }
+    map['name'] = i0.Variable<String>(name);
+    if (!nullToAbsent || priority != null) {
+      map['priority'] = i0.Variable<String>(priority);
+    }
+    map['project_id'] = i0.Variable<int>(projectId);
+    return map;
+  }
+
+  i2.ProjectTasksCompanion toCompanion(bool nullToAbsent) {
+    return i2.ProjectTasksCompanion(
+      id: i0.Value(id),
+      createDate: i0.Value(createDate),
+      writeDate: i0.Value(writeDate),
+      isMarkedAsDeleted: i0.Value(isMarkedAsDeleted),
+      backendId: i0.Value(backendId),
+      active: i0.Value(active),
+      color: color == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(color),
+      dateDeadline: dateDeadline == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(dateDeadline),
+      dateEnd: dateEnd == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(dateEnd),
+      description: description == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(description),
+      name: i0.Value(name),
+      priority: priority == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(priority),
+      projectId: i0.Value(projectId),
+    );
+  }
+
+  factory ProjectTask.fromJson(Map<String, dynamic> json,
+      {i0.ValueSerializer? serializer}) {
+    serializer ??= i0.driftRuntimeOptions.defaultSerializer;
+    return ProjectTask(
+      id: serializer.fromJson<int>(json['id']),
+      createDate: serializer.fromJson<DateTime>(json['createDate']),
+      writeDate: serializer.fromJson<DateTime>(json['writeDate']),
+      isMarkedAsDeleted: serializer.fromJson<bool>(json['isMarkedAsDeleted']),
+      backendId: serializer.fromJson<String>(json['backendId']),
+      active: serializer.fromJson<bool>(json['active']),
+      color: serializer.fromJson<int?>(json['color']),
+      dateDeadline: serializer.fromJson<DateTime?>(json['dateDeadline']),
+      dateEnd: serializer.fromJson<DateTime?>(json['dateEnd']),
+      description: serializer.fromJson<String?>(json['description']),
+      name: serializer.fromJson<String>(json['name']),
+      priority: serializer.fromJson<String?>(json['priority']),
+      projectId: serializer.fromJson<int>(json['projectId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({i0.ValueSerializer? serializer}) {
+    serializer ??= i0.driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createDate': serializer.toJson<DateTime>(createDate),
+      'writeDate': serializer.toJson<DateTime>(writeDate),
+      'isMarkedAsDeleted': serializer.toJson<bool>(isMarkedAsDeleted),
+      'backendId': serializer.toJson<String>(backendId),
+      'active': serializer.toJson<bool>(active),
+      'color': serializer.toJson<int?>(color),
+      'dateDeadline': serializer.toJson<DateTime?>(dateDeadline),
+      'dateEnd': serializer.toJson<DateTime?>(dateEnd),
+      'description': serializer.toJson<String?>(description),
+      'name': serializer.toJson<String>(name),
+      'priority': serializer.toJson<String?>(priority),
+      'projectId': serializer.toJson<int>(projectId),
+    };
+  }
+
+  i2.ProjectTask copyWith(
+          {int? id,
+          DateTime? createDate,
+          DateTime? writeDate,
+          bool? isMarkedAsDeleted,
+          String? backendId,
+          bool? active,
+          i0.Value<int?> color = const i0.Value.absent(),
+          i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
+          i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
+          i0.Value<String?> description = const i0.Value.absent(),
+          String? name,
+          i0.Value<String?> priority = const i0.Value.absent(),
+          int? projectId}) =>
+      i2.ProjectTask(
+        id: id ?? this.id,
+        createDate: createDate ?? this.createDate,
+        writeDate: writeDate ?? this.writeDate,
+        isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
+        backendId: backendId ?? this.backendId,
+        active: active ?? this.active,
+        color: color.present ? color.value : this.color,
+        dateDeadline:
+            dateDeadline.present ? dateDeadline.value : this.dateDeadline,
+        dateEnd: dateEnd.present ? dateEnd.value : this.dateEnd,
+        description: description.present ? description.value : this.description,
+        name: name ?? this.name,
+        priority: priority.present ? priority.value : this.priority,
+        projectId: projectId ?? this.projectId,
+      );
+  ProjectTask copyWithCompanion(i2.ProjectTasksCompanion data) {
+    return ProjectTask(
+      id: data.id.present ? data.id.value : this.id,
+      createDate:
+          data.createDate.present ? data.createDate.value : this.createDate,
+      writeDate: data.writeDate.present ? data.writeDate.value : this.writeDate,
+      isMarkedAsDeleted: data.isMarkedAsDeleted.present
+          ? data.isMarkedAsDeleted.value
+          : this.isMarkedAsDeleted,
+      backendId: data.backendId.present ? data.backendId.value : this.backendId,
+      active: data.active.present ? data.active.value : this.active,
+      color: data.color.present ? data.color.value : this.color,
+      dateDeadline: data.dateDeadline.present
+          ? data.dateDeadline.value
+          : this.dateDeadline,
+      dateEnd: data.dateEnd.present ? data.dateEnd.value : this.dateEnd,
+      description:
+          data.description.present ? data.description.value : this.description,
+      name: data.name.present ? data.name.value : this.name,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectTask(')
+          ..write('id: $id, ')
+          ..write('createDate: $createDate, ')
+          ..write('writeDate: $writeDate, ')
+          ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
+          ..write('backendId: $backendId, ')
+          ..write('active: $active, ')
+          ..write('color: $color, ')
+          ..write('dateDeadline: $dateDeadline, ')
+          ..write('dateEnd: $dateEnd, ')
+          ..write('description: $description, ')
+          ..write('name: $name, ')
+          ..write('priority: $priority, ')
+          ..write('projectId: $projectId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      createDate,
+      writeDate,
+      isMarkedAsDeleted,
+      backendId,
+      active,
+      color,
+      dateDeadline,
+      dateEnd,
+      description,
+      name,
+      priority,
+      projectId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is i2.ProjectTask &&
+          other.id == this.id &&
+          other.createDate == this.createDate &&
+          other.writeDate == this.writeDate &&
+          other.isMarkedAsDeleted == this.isMarkedAsDeleted &&
+          other.backendId == this.backendId &&
+          other.active == this.active &&
+          other.color == this.color &&
+          other.dateDeadline == this.dateDeadline &&
+          other.dateEnd == this.dateEnd &&
+          other.description == this.description &&
+          other.name == this.name &&
+          other.priority == this.priority &&
+          other.projectId == this.projectId);
+}
+
+class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
+  final i0.Value<int> id;
+  final i0.Value<DateTime> createDate;
+  final i0.Value<DateTime> writeDate;
+  final i0.Value<bool> isMarkedAsDeleted;
+  final i0.Value<String> backendId;
+  final i0.Value<bool> active;
+  final i0.Value<int?> color;
+  final i0.Value<DateTime?> dateDeadline;
+  final i0.Value<DateTime?> dateEnd;
+  final i0.Value<String?> description;
+  final i0.Value<String> name;
+  final i0.Value<String?> priority;
+  final i0.Value<int> projectId;
+  const ProjectTasksCompanion({
+    this.id = const i0.Value.absent(),
+    this.createDate = const i0.Value.absent(),
+    this.writeDate = const i0.Value.absent(),
+    this.isMarkedAsDeleted = const i0.Value.absent(),
+    this.backendId = const i0.Value.absent(),
+    this.active = const i0.Value.absent(),
+    this.color = const i0.Value.absent(),
+    this.dateDeadline = const i0.Value.absent(),
+    this.dateEnd = const i0.Value.absent(),
+    this.description = const i0.Value.absent(),
+    this.name = const i0.Value.absent(),
+    this.priority = const i0.Value.absent(),
+    this.projectId = const i0.Value.absent(),
+  });
+  ProjectTasksCompanion.insert({
+    this.id = const i0.Value.absent(),
+    required DateTime createDate,
+    required DateTime writeDate,
+    this.isMarkedAsDeleted = const i0.Value.absent(),
+    required String backendId,
+    this.active = const i0.Value.absent(),
+    this.color = const i0.Value.absent(),
+    this.dateDeadline = const i0.Value.absent(),
+    this.dateEnd = const i0.Value.absent(),
+    this.description = const i0.Value.absent(),
+    required String name,
+    this.priority = const i0.Value.absent(),
+    required int projectId,
+  })  : createDate = i0.Value(createDate),
+        writeDate = i0.Value(writeDate),
+        backendId = i0.Value(backendId),
+        name = i0.Value(name),
+        projectId = i0.Value(projectId);
+  static i0.Insertable<i2.ProjectTask> custom({
+    i0.Expression<int>? id,
+    i0.Expression<DateTime>? createDate,
+    i0.Expression<DateTime>? writeDate,
+    i0.Expression<bool>? isMarkedAsDeleted,
+    i0.Expression<String>? backendId,
+    i0.Expression<bool>? active,
+    i0.Expression<int>? color,
+    i0.Expression<DateTime>? dateDeadline,
+    i0.Expression<DateTime>? dateEnd,
+    i0.Expression<String>? description,
+    i0.Expression<String>? name,
+    i0.Expression<String>? priority,
+    i0.Expression<int>? projectId,
+  }) {
+    return i0.RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createDate != null) 'create_date': createDate,
+      if (writeDate != null) 'write_date': writeDate,
+      if (isMarkedAsDeleted != null) 'is_marked_as_deleted': isMarkedAsDeleted,
+      if (backendId != null) 'backend_id': backendId,
+      if (active != null) 'active': active,
+      if (color != null) 'color': color,
+      if (dateDeadline != null) 'date_deadline': dateDeadline,
+      if (dateEnd != null) 'date_end': dateEnd,
+      if (description != null) 'description': description,
+      if (name != null) 'name': name,
+      if (priority != null) 'priority': priority,
+      if (projectId != null) 'project_id': projectId,
+    });
+  }
+
+  i2.ProjectTasksCompanion copyWith(
+      {i0.Value<int>? id,
+      i0.Value<DateTime>? createDate,
+      i0.Value<DateTime>? writeDate,
+      i0.Value<bool>? isMarkedAsDeleted,
+      i0.Value<String>? backendId,
+      i0.Value<bool>? active,
+      i0.Value<int?>? color,
+      i0.Value<DateTime?>? dateDeadline,
+      i0.Value<DateTime?>? dateEnd,
+      i0.Value<String?>? description,
+      i0.Value<String>? name,
+      i0.Value<String?>? priority,
+      i0.Value<int>? projectId}) {
+    return i2.ProjectTasksCompanion(
+      id: id ?? this.id,
+      createDate: createDate ?? this.createDate,
+      writeDate: writeDate ?? this.writeDate,
+      isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
+      backendId: backendId ?? this.backendId,
+      active: active ?? this.active,
+      color: color ?? this.color,
+      dateDeadline: dateDeadline ?? this.dateDeadline,
+      dateEnd: dateEnd ?? this.dateEnd,
+      description: description ?? this.description,
+      name: name ?? this.name,
+      priority: priority ?? this.priority,
+      projectId: projectId ?? this.projectId,
+    );
+  }
+
+  @override
+  Map<String, i0.Expression> toColumns(bool nullToAbsent) {
+    final map = <String, i0.Expression>{};
+    if (id.present) {
+      map['id'] = i0.Variable<int>(id.value);
+    }
+    if (createDate.present) {
+      map['create_date'] = i0.Variable<DateTime>(createDate.value);
+    }
+    if (writeDate.present) {
+      map['write_date'] = i0.Variable<DateTime>(writeDate.value);
+    }
+    if (isMarkedAsDeleted.present) {
+      map['is_marked_as_deleted'] = i0.Variable<bool>(isMarkedAsDeleted.value);
+    }
+    if (backendId.present) {
+      map['backend_id'] = i0.Variable<String>(backendId.value);
+    }
+    if (active.present) {
+      map['active'] = i0.Variable<bool>(active.value);
+    }
+    if (color.present) {
+      map['color'] = i0.Variable<int>(color.value);
+    }
+    if (dateDeadline.present) {
+      map['date_deadline'] = i0.Variable<DateTime>(dateDeadline.value);
+    }
+    if (dateEnd.present) {
+      map['date_end'] = i0.Variable<DateTime>(dateEnd.value);
+    }
+    if (description.present) {
+      map['description'] = i0.Variable<String>(description.value);
+    }
+    if (name.present) {
+      map['name'] = i0.Variable<String>(name.value);
+    }
+    if (priority.present) {
+      map['priority'] = i0.Variable<String>(priority.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = i0.Variable<int>(projectId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectTasksCompanion(')
+          ..write('id: $id, ')
+          ..write('createDate: $createDate, ')
+          ..write('writeDate: $writeDate, ')
+          ..write('isMarkedAsDeleted: $isMarkedAsDeleted, ')
+          ..write('backendId: $backendId, ')
+          ..write('active: $active, ')
+          ..write('color: $color, ')
+          ..write('dateDeadline: $dateDeadline, ')
+          ..write('dateEnd: $dateEnd, ')
+          ..write('description: $description, ')
+          ..write('name: $name, ')
+          ..write('priority: $priority, ')
+          ..write('projectId: $projectId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+typedef $$ProjectTasksTableCreateCompanionBuilder = i2.ProjectTasksCompanion
+    Function({
+  i0.Value<int> id,
+  required DateTime createDate,
+  required DateTime writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  required String backendId,
+  i0.Value<bool> active,
+  i0.Value<int?> color,
+  i0.Value<DateTime?> dateDeadline,
+  i0.Value<DateTime?> dateEnd,
+  i0.Value<String?> description,
+  required String name,
+  i0.Value<String?> priority,
+  required int projectId,
+});
+typedef $$ProjectTasksTableUpdateCompanionBuilder = i2.ProjectTasksCompanion
+    Function({
+  i0.Value<int> id,
+  i0.Value<DateTime> createDate,
+  i0.Value<DateTime> writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  i0.Value<String> backendId,
+  i0.Value<bool> active,
+  i0.Value<int?> color,
+  i0.Value<DateTime?> dateDeadline,
+  i0.Value<DateTime?> dateEnd,
+  i0.Value<String?> description,
+  i0.Value<String> name,
+  i0.Value<String?> priority,
+  i0.Value<int> projectId,
+});
+
+class $$ProjectTasksTableFilterComposer
+    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
+  $$ProjectTasksTableFilterComposer(super.$state);
+  i0.ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<DateTime> get createDate => $state.composableBuilder(
+      column: $state.table.createDate,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<DateTime> get writeDate => $state.composableBuilder(
+      column: $state.table.writeDate,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
+      column: $state.table.isMarkedAsDeleted,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<bool> get active => $state.composableBuilder(
+      column: $state.table.active,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<int> get color => $state.composableBuilder(
+      column: $state.table.color,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<DateTime> get dateDeadline => $state.composableBuilder(
+      column: $state.table.dateDeadline,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<DateTime> get dateEnd => $state.composableBuilder(
+      column: $state.table.dateEnd,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<String> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i1.$$SyncBackendsTableFilterComposer get backendId {
+    final i1.$$SyncBackendsTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.backendId,
+            referencedTable: i5.ReadDatabaseContainer($state.db)
+                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
+                    $state.db,
+                    i5.ReadDatabaseContainer($state.db)
+                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableFilterComposer get projectId {
+    final i2.$$ProjectProjectsTableFilterComposer composer = $state
+        .composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.projectId,
+            referencedTable: i5.ReadDatabaseContainer($state
+                    .db)
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    parentComposers) =>
+                i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
+                    $state.db,
+                    i5.ReadDatabaseContainer($state.db)
+                        .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+}
+
+class $$ProjectTasksTableOrderingComposer
+    extends i0.OrderingComposer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
+  $$ProjectTasksTableOrderingComposer(super.$state);
+  i0.ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<DateTime> get createDate => $state.composableBuilder(
+      column: $state.table.createDate,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<DateTime> get writeDate => $state.composableBuilder(
+      column: $state.table.writeDate,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $state.composableBuilder(
+      column: $state.table.isMarkedAsDeleted,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<bool> get active => $state.composableBuilder(
+      column: $state.table.active,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<int> get color => $state.composableBuilder(
+      column: $state.table.color,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<DateTime> get dateDeadline => $state.composableBuilder(
+      column: $state.table.dateDeadline,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<DateTime> get dateEnd => $state.composableBuilder(
+      column: $state.table.dateEnd,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<String> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i1.$$SyncBackendsTableOrderingComposer get backendId {
+    final i1.$$SyncBackendsTableOrderingComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.backendId,
+            referencedTable: i5.ReadDatabaseContainer($state.db)
+                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
+                    $state.db,
+                    i5.ReadDatabaseContainer($state.db)
+                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableOrderingComposer get projectId {
+    final i2.$$ProjectProjectsTableOrderingComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.projectId,
+            referencedTable: i5.ReadDatabaseContainer($state.db)
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
+                    $state.db,
+                    i5.ReadDatabaseContainer($state.db)
+                        .resultSet<i2.$ProjectProjectsTable>(
+                            'project_projects'),
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+}
+
+class $$ProjectTasksTableTableManager extends i0.RootTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectTasksTable,
+    i2.ProjectTask,
+    i2.$$ProjectTasksTableFilterComposer,
+    i2.$$ProjectTasksTableOrderingComposer,
+    $$ProjectTasksTableCreateCompanionBuilder,
+    $$ProjectTasksTableUpdateCompanionBuilder,
+    (
+      i2.ProjectTask,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
+          i2.ProjectTask>
+    ),
+    i2.ProjectTask,
+    i0.PrefetchHooks Function({bool backendId, bool projectId})> {
+  $$ProjectTasksTableTableManager(
+      i0.GeneratedDatabase db, i2.$ProjectTasksTable table)
+      : super(i0.TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              i2.$$ProjectTasksTableFilterComposer(i0.ComposerState(db, table)),
+          orderingComposer: i2
+              .$$ProjectTasksTableOrderingComposer(i0.ComposerState(db, table)),
+          updateCompanionCallback: ({
+            i0.Value<int> id = const i0.Value.absent(),
+            i0.Value<DateTime> createDate = const i0.Value.absent(),
+            i0.Value<DateTime> writeDate = const i0.Value.absent(),
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            i0.Value<String> backendId = const i0.Value.absent(),
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
+            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
+            i0.Value<String?> description = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<String?> priority = const i0.Value.absent(),
+            i0.Value<int> projectId = const i0.Value.absent(),
+          }) =>
+              i2.ProjectTasksCompanion(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            color: color,
+            dateDeadline: dateDeadline,
+            dateEnd: dateEnd,
+            description: description,
+            name: name,
+            priority: priority,
+            projectId: projectId,
+          ),
+          createCompanionCallback: ({
+            i0.Value<int> id = const i0.Value.absent(),
+            required DateTime createDate,
+            required DateTime writeDate,
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            required String backendId,
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
+            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
+            i0.Value<String?> description = const i0.Value.absent(),
+            required String name,
+            i0.Value<String?> priority = const i0.Value.absent(),
+            required int projectId,
+          }) =>
+              i2.ProjectTasksCompanion.insert(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            color: color,
+            dateDeadline: dateDeadline,
+            dateEnd: dateEnd,
+            description: description,
+            name: name,
+            priority: priority,
+            projectId: projectId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProjectTasksTableProcessedTableManager = i0.ProcessedTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectTasksTable,
+    i2.ProjectTask,
+    i2.$$ProjectTasksTableFilterComposer,
+    i2.$$ProjectTasksTableOrderingComposer,
+    $$ProjectTasksTableCreateCompanionBuilder,
+    $$ProjectTasksTableUpdateCompanionBuilder,
+    (
+      i2.ProjectTask,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
+          i2.ProjectTask>
+    ),
+    i2.ProjectTask,
+    i0.PrefetchHooks Function({bool backendId, bool projectId})>;

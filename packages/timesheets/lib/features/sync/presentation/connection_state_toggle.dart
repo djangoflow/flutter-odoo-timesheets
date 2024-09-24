@@ -8,10 +8,8 @@ class ConnectionStateToggle extends StatelessWidget {
   const ConnectionStateToggle({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ConnectionStateProvider>(
-      builder: (context, provider, child) {
-        return SwitchListTile(
+  Widget build(BuildContext context) => Consumer<ConnectionStateProvider>(
+        builder: (context, provider, child) => SwitchListTile(
           title: const Text('Online Mode'),
           value: provider.isOnline,
           onChanged: (value) {
@@ -22,8 +20,6 @@ class ConnectionStateToggle extends StatelessWidget {
                       'Connection state set to: ${value ? "Online" : "Offline"}')),
             );
           },
-        );
-      },
-    );
-  }
+        ),
+      );
 }

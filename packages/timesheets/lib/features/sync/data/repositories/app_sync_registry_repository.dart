@@ -1,6 +1,7 @@
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
 import 'package:drift/drift.dart';
-import 'package:sync_foundation_test/features/sync/data/database/database.dart';
+
+import '../database/database.dart';
 
 class AppSyncRegistryRepository extends SyncRegistryRepository {
   final AppDatabase database;
@@ -75,21 +76,19 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
 
   @override
   Future<List<SyncRegistry>> getPendingSyncRecords(
-      String backendId, String modelName) {
-    return (database.select(database.syncRegistries)
-          ..where((tbl) =>
-              tbl.backendId.equals(backendId) &
-              tbl.modelName.equals(modelName) &
-              tbl.pendingSync.equals(true)))
-        .get();
-  }
+          String backendId, String modelName) =>
+      (database.select(database.syncRegistries)
+            ..where((tbl) =>
+                tbl.backendId.equals(backendId) &
+                tbl.modelName.equals(modelName) &
+                tbl.pendingSync.equals(true)))
+          .get();
 
   @override
-  Future<void> markSyncComplete(int syncRegistryId) {
-    return (database.update(database.syncRegistries)
-          ..where((tbl) => tbl.id.equals(syncRegistryId)))
-        .write(const SyncRegistriesCompanion(pendingSync: Value(false)));
-  }
+  Future<void> markSyncComplete(int syncRegistryId) =>
+      (database.update(database.syncRegistries)
+            ..where((tbl) => tbl.id.equals(syncRegistryId)))
+          .write(const SyncRegistriesCompanion(pendingSync: Value(false)));
 
   @override
   Future<String> registerBackend(String id, String type) async {
@@ -127,9 +126,8 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
   }
 
   @override
-  Future<List<SyncRegistry>> getAllRegistries(String modelName) {
-    return (database.select(database.syncRegistries)
-          ..where((tbl) => tbl.modelName.equals(modelName)))
-        .get();
-  }
+  Future<List<SyncRegistry>> getAllRegistries(String modelName) =>
+      (database.select(database.syncRegistries)
+            ..where((tbl) => tbl.modelName.equals(modelName)))
+          .get();
 }
