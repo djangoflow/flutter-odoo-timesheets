@@ -1,37 +1,55 @@
-import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/utils/utils.dart';
+import 'package:djangoflow_odoo_auth/djangoflow_odoo_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import 'router.dart';
 
-class OdooAuthGuard extends AutoRouteGuard {
-  final AuthCubit authCubit;
+class AuthGuard extends AutoRouteGuard {
+  final DjangoflowOdooAuthCubit authCubit;
 
-  OdooAuthGuard(this.authCubit);
-
+  AuthGuard({required this.authCubit});
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) {
-    // the navigation is paused until resolver.next() is called with either
-    // true to resume/continue navigation or false to abort navigation
-    if (authCubit.state.connectedBackends
-        .getBackendsFilteredByType(BackendTypeEnum.odoo)
-        .isNotEmpty) {
-      // if user is authenticated we continue
-      resolver.next(true);
+  Future<void> onNavigation(
+    NavigationResolver resolver,
+    StackRouter router,
+  ) async {
+    debugPrint(resolver.routeName);
+    final unGuardedRouteNames =
+        ([LogInRouter.name, SplashRoute.name, LoginRoute.name]);
+
+    if (authCubit.state.session == null) {
+      if (unGuardedRouteNames.contains(resolver.routeName)) {
+        resolver.next();
+      } else {
+        await resolver.redirect(
+          LogInRouter(
+            onLoginSuccess: (p0) {
+              resolver.resolveNext(
+                true,
+                reevaluateNext: false,
+              );
+            },
+            children: const [
+              LoginRoute(),
+            ],
+          ),
+          onFailure: (failure) => resolver.next(false),
+        );
+
+        if (!resolver.isResolved) {
+          resolver.next(false);
+        }
+      }
     } else {
-      // we redirect the user to our login page
-      // tip: use resolver.redirect to have the redirected route
-      // automatically removed from the stack when the resolver is completed
-      resolver.redirect(
-        OdooLoginRoute(
-          onLoginSuccess: (success) {
-            // if success == true the navigation will be resumed
-            // else it will be aborted
-            resolver.next(success);
-          },
-        ),
-        onFailure: (failure) => resolver.next(false),
-      );
+      if (unGuardedRouteNames.contains(resolver.routeName)) {
+        if (resolver.routeName == SplashRoute.name) {
+          resolver.next();
+        } else {
+          resolver.next(false);
+          router.push(const HomeTabRouter());
+        }
+      } else {
+        resolver.next();
+      }
     }
   }
 }
