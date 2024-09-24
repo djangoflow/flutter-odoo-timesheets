@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_app_links/djangoflow_app_links.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:timesheets/features/odoo/odoo.dart';
 
 import 'timesheets_app_builder.dart';
@@ -24,7 +23,6 @@ Future<void> main() async {
       DjangoflowAppSnackbar.showError(errorMessage);
     },
     rootWidgetBuilder: (appBuilder) async {
-      Paint.enableDithering = true;
       String? initialDeepLink;
       final appLinksRepository = AppLinksRepository();
       if (!kIsWeb) {
