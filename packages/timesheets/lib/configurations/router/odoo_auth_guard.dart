@@ -3,34 +3,30 @@ import 'package:flutter/foundation.dart';
 
 import 'router.dart';
 
-class AuthGuard extends AutoRouteGuard {
+class OdooAuthGuard extends AutoRouteGuard {
   final DjangoflowOdooAuthCubit authCubit;
 
-  AuthGuard({required this.authCubit});
+  OdooAuthGuard({required this.authCubit});
   @override
   Future<void> onNavigation(
     NavigationResolver resolver,
     StackRouter router,
   ) async {
     debugPrint(resolver.routeName);
-    final unGuardedRouteNames =
-        ([LogInRouter.name, SplashRoute.name, LoginRoute.name]);
+    final unGuardedRouteNames = ([OdooLoginRoute.name, SplashRoute.name]);
 
     if (authCubit.state.session == null) {
       if (unGuardedRouteNames.contains(resolver.routeName)) {
         resolver.next();
       } else {
         await resolver.redirect(
-          LogInRouter(
+          OdooLoginRoute(
             onLoginSuccess: (p0) {
               resolver.resolveNext(
                 true,
                 reevaluateNext: false,
               );
             },
-            children: const [
-              LoginRoute(),
-            ],
           ),
           onFailure: (failure) => resolver.next(false),
         );

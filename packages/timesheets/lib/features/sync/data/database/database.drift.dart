@@ -4,9 +4,10 @@ import 'package:djangoflow_sync_drift_odoo/src/database/database.drift.dart'
     as i1;
 import 'package:timesheets/features/sync/data/database/database.drift.dart'
     as i2;
-import 'package:timesheets/features/sync/data/database/database.dart' as i3;
-import 'package:drift/src/runtime/query_builder/query_builder.dart' as i4;
-import 'package:drift/internal/modular.dart' as i5;
+import 'package:timesheets/features/timer/data/models/timer_status.dart' as i3;
+import 'package:timesheets/features/sync/data/database/database.dart' as i4;
+import 'package:drift/src/runtime/query_builder/query_builder.dart' as i5;
+import 'package:drift/internal/modular.dart' as i6;
 
 abstract class $AppDatabase extends i0.GeneratedDatabase {
   $AppDatabase(i0.QueryExecutor e) : super(e);
@@ -28,7 +29,14 @@ abstract class $AppDatabase extends i0.GeneratedDatabase {
         projectProjects,
         projectTasks,
         analyticLines,
-        syncRegistries
+        syncRegistries,
+        i2.analyticLinesProjectTask,
+        i2.analyticLinesStatus,
+        i2.analyticLinesFavorite,
+        i2.projectProjectsName,
+        i2.projectProjectsFavorite,
+        i2.projectTasksProject,
+        i2.projectTasksName
       ];
   @override
   i0.StreamQueryUpdateRules get streamUpdateRules =>
@@ -63,7 +71,7 @@ class $AppDatabaseManager {
       i1.$$SyncRegistriesTableTableManager(_db, _db.syncRegistries);
 }
 
-class $AnalyticLinesTable extends i3.AnalyticLines
+class $AnalyticLinesTable extends i4.AnalyticLines
     with i0.TableInfo<$AnalyticLinesTable, i2.AnalyticLine> {
   @override
   final i0.GeneratedDatabase attachedDatabase;
@@ -73,11 +81,7 @@ class $AnalyticLinesTable extends i3.AnalyticLines
   @override
   late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          i0.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      type: i0.DriftSqlType.int, requiredDuringInsert: true);
   static const i0.VerificationMeta _createDateMeta =
       const i0.VerificationMeta('createDate');
   @override
@@ -99,7 +103,7 @@ class $AnalyticLinesTable extends i3.AnalyticLines
           requiredDuringInsert: false,
           defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
               'CHECK ("is_marked_as_deleted" IN (0, 1))'),
-          defaultValue: const i4.Constant(false));
+          defaultValue: const i5.Constant(false));
   static const i0.VerificationMeta _backendIdMeta =
       const i0.VerificationMeta('backendId');
   @override
@@ -139,6 +143,39 @@ class $AnalyticLinesTable extends i3.AnalyticLines
       requiredDuringInsert: true,
       defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
           'REFERENCES project_tasks (id) ON DELETE RESTRICT'));
+  static const i0.VerificationMeta _unitAmountMeta =
+      const i0.VerificationMeta('unitAmount');
+  @override
+  late final i0.GeneratedColumn<double> unitAmount = i0.GeneratedColumn<double>(
+      'unit_amount', aliasedName, true,
+      type: i0.DriftSqlType.double, requiredDuringInsert: false);
+  static const i0.VerificationMeta _currentStatusMeta =
+      const i0.VerificationMeta('currentStatus');
+  @override
+  late final i0.GeneratedColumnWithTypeConverter<i3.TimerStatus, int>
+      currentStatus = i0.GeneratedColumn<int>(
+              'current_status', aliasedName, false,
+              type: i0.DriftSqlType.int,
+              requiredDuringInsert: false,
+              clientDefault: () => i3.TimerStatus.initial.index)
+          .withConverter<i3.TimerStatus>(
+              i2.$AnalyticLinesTable.$convertercurrentStatus);
+  static const i0.VerificationMeta _lastTickedMeta =
+      const i0.VerificationMeta('lastTicked');
+  @override
+  late final i0.GeneratedColumn<DateTime> lastTicked =
+      i0.GeneratedColumn<DateTime>('last_ticked', aliasedName, true,
+          type: i0.DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const i0.VerificationMeta _isFavoriteMeta =
+      const i0.VerificationMeta('isFavorite');
+  @override
+  late final i0.GeneratedColumn<bool> isFavorite = i0.GeneratedColumn<bool>(
+      'is_favorite', aliasedName, false,
+      type: i0.DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_favorite" IN (0, 1))'),
+      defaultValue: const i5.Constant(false));
   @override
   List<i0.GeneratedColumn> get $columns => [
         id,
@@ -149,7 +186,11 @@ class $AnalyticLinesTable extends i3.AnalyticLines
         date,
         name,
         projectId,
-        taskId
+        taskId,
+        unitAmount,
+        currentStatus,
+        lastTicked,
+        isFavorite
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -164,6 +205,8 @@ class $AnalyticLinesTable extends i3.AnalyticLines
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('create_date')) {
       context.handle(
@@ -215,11 +258,30 @@ class $AnalyticLinesTable extends i3.AnalyticLines
     } else if (isInserting) {
       context.missing(_taskIdMeta);
     }
+    if (data.containsKey('unit_amount')) {
+      context.handle(
+          _unitAmountMeta,
+          unitAmount.isAcceptableOrUnknown(
+              data['unit_amount']!, _unitAmountMeta));
+    }
+    context.handle(_currentStatusMeta, const i0.VerificationResult.success());
+    if (data.containsKey('last_ticked')) {
+      context.handle(
+          _lastTickedMeta,
+          lastTicked.isAcceptableOrUnknown(
+              data['last_ticked']!, _lastTickedMeta));
+    }
+    if (data.containsKey('is_favorite')) {
+      context.handle(
+          _isFavoriteMeta,
+          isFavorite.isAcceptableOrUnknown(
+              data['is_favorite']!, _isFavoriteMeta));
+    }
     return context;
   }
 
   @override
-  Set<i0.GeneratedColumn> get $primaryKey => {id};
+  Set<i0.GeneratedColumn> get $primaryKey => {backendId, id};
   @override
   i2.AnalyticLine map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -242,6 +304,15 @@ class $AnalyticLinesTable extends i3.AnalyticLines
           .read(i0.DriftSqlType.int, data['${effectivePrefix}project_id'])!,
       taskId: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.int, data['${effectivePrefix}task_id'])!,
+      unitAmount: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.double, data['${effectivePrefix}unit_amount']),
+      currentStatus: i2.$AnalyticLinesTable.$convertercurrentStatus.fromSql(
+          attachedDatabase.typeMapping.read(
+              i0.DriftSqlType.int, data['${effectivePrefix}current_status'])!),
+      lastTicked: attachedDatabase.typeMapping.read(
+          i0.DriftSqlType.dateTime, data['${effectivePrefix}last_ticked']),
+      isFavorite: attachedDatabase.typeMapping
+          .read(i0.DriftSqlType.bool, data['${effectivePrefix}is_favorite'])!,
     );
   }
 
@@ -249,6 +320,10 @@ class $AnalyticLinesTable extends i3.AnalyticLines
   $AnalyticLinesTable createAlias(String alias) {
     return $AnalyticLinesTable(attachedDatabase, alias);
   }
+
+  static i0.JsonTypeConverter2<i3.TimerStatus, int, int>
+      $convertercurrentStatus =
+      const i0.EnumIndexConverter<i3.TimerStatus>(i3.TimerStatus.values);
 }
 
 class AnalyticLine extends i0.DataClass
@@ -262,6 +337,10 @@ class AnalyticLine extends i0.DataClass
   final String name;
   final int projectId;
   final int taskId;
+  final double? unitAmount;
+  final i3.TimerStatus currentStatus;
+  final DateTime? lastTicked;
+  final bool isFavorite;
   const AnalyticLine(
       {required this.id,
       required this.createDate,
@@ -271,7 +350,11 @@ class AnalyticLine extends i0.DataClass
       required this.date,
       required this.name,
       required this.projectId,
-      required this.taskId});
+      required this.taskId,
+      this.unitAmount,
+      required this.currentStatus,
+      this.lastTicked,
+      required this.isFavorite});
   @override
   Map<String, i0.Expression> toColumns(bool nullToAbsent) {
     final map = <String, i0.Expression>{};
@@ -284,6 +367,17 @@ class AnalyticLine extends i0.DataClass
     map['name'] = i0.Variable<String>(name);
     map['project_id'] = i0.Variable<int>(projectId);
     map['task_id'] = i0.Variable<int>(taskId);
+    if (!nullToAbsent || unitAmount != null) {
+      map['unit_amount'] = i0.Variable<double>(unitAmount);
+    }
+    {
+      map['current_status'] = i0.Variable<int>(
+          i2.$AnalyticLinesTable.$convertercurrentStatus.toSql(currentStatus));
+    }
+    if (!nullToAbsent || lastTicked != null) {
+      map['last_ticked'] = i0.Variable<DateTime>(lastTicked);
+    }
+    map['is_favorite'] = i0.Variable<bool>(isFavorite);
     return map;
   }
 
@@ -298,6 +392,14 @@ class AnalyticLine extends i0.DataClass
       name: i0.Value(name),
       projectId: i0.Value(projectId),
       taskId: i0.Value(taskId),
+      unitAmount: unitAmount == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(unitAmount),
+      currentStatus: i0.Value(currentStatus),
+      lastTicked: lastTicked == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(lastTicked),
+      isFavorite: i0.Value(isFavorite),
     );
   }
 
@@ -314,6 +416,11 @@ class AnalyticLine extends i0.DataClass
       name: serializer.fromJson<String>(json['name']),
       projectId: serializer.fromJson<int>(json['projectId']),
       taskId: serializer.fromJson<int>(json['taskId']),
+      unitAmount: serializer.fromJson<double?>(json['unitAmount']),
+      currentStatus: i2.$AnalyticLinesTable.$convertercurrentStatus
+          .fromJson(serializer.fromJson<int>(json['currentStatus'])),
+      lastTicked: serializer.fromJson<DateTime?>(json['lastTicked']),
+      isFavorite: serializer.fromJson<bool>(json['isFavorite']),
     );
   }
   @override
@@ -329,6 +436,11 @@ class AnalyticLine extends i0.DataClass
       'name': serializer.toJson<String>(name),
       'projectId': serializer.toJson<int>(projectId),
       'taskId': serializer.toJson<int>(taskId),
+      'unitAmount': serializer.toJson<double?>(unitAmount),
+      'currentStatus': serializer.toJson<int>(
+          i2.$AnalyticLinesTable.$convertercurrentStatus.toJson(currentStatus)),
+      'lastTicked': serializer.toJson<DateTime?>(lastTicked),
+      'isFavorite': serializer.toJson<bool>(isFavorite),
     };
   }
 
@@ -341,7 +453,11 @@ class AnalyticLine extends i0.DataClass
           DateTime? date,
           String? name,
           int? projectId,
-          int? taskId}) =>
+          int? taskId,
+          i0.Value<double?> unitAmount = const i0.Value.absent(),
+          i3.TimerStatus? currentStatus,
+          i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
+          bool? isFavorite}) =>
       i2.AnalyticLine(
         id: id ?? this.id,
         createDate: createDate ?? this.createDate,
@@ -352,6 +468,10 @@ class AnalyticLine extends i0.DataClass
         name: name ?? this.name,
         projectId: projectId ?? this.projectId,
         taskId: taskId ?? this.taskId,
+        unitAmount: unitAmount.present ? unitAmount.value : this.unitAmount,
+        currentStatus: currentStatus ?? this.currentStatus,
+        lastTicked: lastTicked.present ? lastTicked.value : this.lastTicked,
+        isFavorite: isFavorite ?? this.isFavorite,
       );
   AnalyticLine copyWithCompanion(i2.AnalyticLinesCompanion data) {
     return AnalyticLine(
@@ -367,6 +487,15 @@ class AnalyticLine extends i0.DataClass
       name: data.name.present ? data.name.value : this.name,
       projectId: data.projectId.present ? data.projectId.value : this.projectId,
       taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      unitAmount:
+          data.unitAmount.present ? data.unitAmount.value : this.unitAmount,
+      currentStatus: data.currentStatus.present
+          ? data.currentStatus.value
+          : this.currentStatus,
+      lastTicked:
+          data.lastTicked.present ? data.lastTicked.value : this.lastTicked,
+      isFavorite:
+          data.isFavorite.present ? data.isFavorite.value : this.isFavorite,
     );
   }
 
@@ -381,14 +510,30 @@ class AnalyticLine extends i0.DataClass
           ..write('date: $date, ')
           ..write('name: $name, ')
           ..write('projectId: $projectId, ')
-          ..write('taskId: $taskId')
+          ..write('taskId: $taskId, ')
+          ..write('unitAmount: $unitAmount, ')
+          ..write('currentStatus: $currentStatus, ')
+          ..write('lastTicked: $lastTicked, ')
+          ..write('isFavorite: $isFavorite')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createDate, writeDate, isMarkedAsDeleted,
-      backendId, date, name, projectId, taskId);
+  int get hashCode => Object.hash(
+      id,
+      createDate,
+      writeDate,
+      isMarkedAsDeleted,
+      backendId,
+      date,
+      name,
+      projectId,
+      taskId,
+      unitAmount,
+      currentStatus,
+      lastTicked,
+      isFavorite);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -401,7 +546,11 @@ class AnalyticLine extends i0.DataClass
           other.date == this.date &&
           other.name == this.name &&
           other.projectId == this.projectId &&
-          other.taskId == this.taskId);
+          other.taskId == this.taskId &&
+          other.unitAmount == this.unitAmount &&
+          other.currentStatus == this.currentStatus &&
+          other.lastTicked == this.lastTicked &&
+          other.isFavorite == this.isFavorite);
 }
 
 class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
@@ -414,6 +563,11 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
   final i0.Value<String> name;
   final i0.Value<int> projectId;
   final i0.Value<int> taskId;
+  final i0.Value<double?> unitAmount;
+  final i0.Value<i3.TimerStatus> currentStatus;
+  final i0.Value<DateTime?> lastTicked;
+  final i0.Value<bool> isFavorite;
+  final i0.Value<int> rowid;
   const AnalyticLinesCompanion({
     this.id = const i0.Value.absent(),
     this.createDate = const i0.Value.absent(),
@@ -424,9 +578,14 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     this.name = const i0.Value.absent(),
     this.projectId = const i0.Value.absent(),
     this.taskId = const i0.Value.absent(),
+    this.unitAmount = const i0.Value.absent(),
+    this.currentStatus = const i0.Value.absent(),
+    this.lastTicked = const i0.Value.absent(),
+    this.isFavorite = const i0.Value.absent(),
+    this.rowid = const i0.Value.absent(),
   });
   AnalyticLinesCompanion.insert({
-    this.id = const i0.Value.absent(),
+    required int id,
     required DateTime createDate,
     required DateTime writeDate,
     this.isMarkedAsDeleted = const i0.Value.absent(),
@@ -435,7 +594,13 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     required String name,
     required int projectId,
     required int taskId,
-  })  : createDate = i0.Value(createDate),
+    this.unitAmount = const i0.Value.absent(),
+    this.currentStatus = const i0.Value.absent(),
+    this.lastTicked = const i0.Value.absent(),
+    this.isFavorite = const i0.Value.absent(),
+    this.rowid = const i0.Value.absent(),
+  })  : id = i0.Value(id),
+        createDate = i0.Value(createDate),
         writeDate = i0.Value(writeDate),
         backendId = i0.Value(backendId),
         date = i0.Value(date),
@@ -452,6 +617,11 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     i0.Expression<String>? name,
     i0.Expression<int>? projectId,
     i0.Expression<int>? taskId,
+    i0.Expression<double>? unitAmount,
+    i0.Expression<int>? currentStatus,
+    i0.Expression<DateTime>? lastTicked,
+    i0.Expression<bool>? isFavorite,
+    i0.Expression<int>? rowid,
   }) {
     return i0.RawValuesInsertable({
       if (id != null) 'id': id,
@@ -463,6 +633,11 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       if (name != null) 'name': name,
       if (projectId != null) 'project_id': projectId,
       if (taskId != null) 'task_id': taskId,
+      if (unitAmount != null) 'unit_amount': unitAmount,
+      if (currentStatus != null) 'current_status': currentStatus,
+      if (lastTicked != null) 'last_ticked': lastTicked,
+      if (isFavorite != null) 'is_favorite': isFavorite,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -475,7 +650,12 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       i0.Value<DateTime>? date,
       i0.Value<String>? name,
       i0.Value<int>? projectId,
-      i0.Value<int>? taskId}) {
+      i0.Value<int>? taskId,
+      i0.Value<double?>? unitAmount,
+      i0.Value<i3.TimerStatus>? currentStatus,
+      i0.Value<DateTime?>? lastTicked,
+      i0.Value<bool>? isFavorite,
+      i0.Value<int>? rowid}) {
     return i2.AnalyticLinesCompanion(
       id: id ?? this.id,
       createDate: createDate ?? this.createDate,
@@ -486,6 +666,11 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       name: name ?? this.name,
       projectId: projectId ?? this.projectId,
       taskId: taskId ?? this.taskId,
+      unitAmount: unitAmount ?? this.unitAmount,
+      currentStatus: currentStatus ?? this.currentStatus,
+      lastTicked: lastTicked ?? this.lastTicked,
+      isFavorite: isFavorite ?? this.isFavorite,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -519,6 +704,23 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     if (taskId.present) {
       map['task_id'] = i0.Variable<int>(taskId.value);
     }
+    if (unitAmount.present) {
+      map['unit_amount'] = i0.Variable<double>(unitAmount.value);
+    }
+    if (currentStatus.present) {
+      map['current_status'] = i0.Variable<int>(i2
+          .$AnalyticLinesTable.$convertercurrentStatus
+          .toSql(currentStatus.value));
+    }
+    if (lastTicked.present) {
+      map['last_ticked'] = i0.Variable<DateTime>(lastTicked.value);
+    }
+    if (isFavorite.present) {
+      map['is_favorite'] = i0.Variable<bool>(isFavorite.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = i0.Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -533,7 +735,12 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
           ..write('date: $date, ')
           ..write('name: $name, ')
           ..write('projectId: $projectId, ')
-          ..write('taskId: $taskId')
+          ..write('taskId: $taskId, ')
+          ..write('unitAmount: $unitAmount, ')
+          ..write('currentStatus: $currentStatus, ')
+          ..write('lastTicked: $lastTicked, ')
+          ..write('isFavorite: $isFavorite, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -541,7 +748,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
 
 typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
     Function({
-  i0.Value<int> id,
+  required int id,
   required DateTime createDate,
   required DateTime writeDate,
   i0.Value<bool> isMarkedAsDeleted,
@@ -550,6 +757,11 @@ typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
   required String name,
   required int projectId,
   required int taskId,
+  i0.Value<double?> unitAmount,
+  i0.Value<i3.TimerStatus> currentStatus,
+  i0.Value<DateTime?> lastTicked,
+  i0.Value<bool> isFavorite,
+  i0.Value<int> rowid,
 });
 typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
     Function({
@@ -562,6 +774,11 @@ typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
   i0.Value<String> name,
   i0.Value<int> projectId,
   i0.Value<int> taskId,
+  i0.Value<double?> unitAmount,
+  i0.Value<i3.TimerStatus> currentStatus,
+  i0.Value<DateTime?> lastTicked,
+  i0.Value<bool> isFavorite,
+  i0.Value<int> rowid,
 });
 
 class $$AnalyticLinesTableFilterComposer
@@ -597,18 +814,40 @@ class $$AnalyticLinesTableFilterComposer
       builder: (column, joinBuilders) =>
           i0.ColumnFilters(column, joinBuilders: joinBuilders));
 
+  i0.ColumnFilters<double> get unitAmount => $state.composableBuilder(
+      column: $state.table.unitAmount,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnWithTypeConverterFilters<i3.TimerStatus, i3.TimerStatus, int>
+      get currentStatus => $state.composableBuilder(
+          column: $state.table.currentStatus,
+          builder: (column, joinBuilders) => i0.ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<DateTime> get lastTicked => $state.composableBuilder(
+      column: $state.table.lastTicked,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
+  i0.ColumnFilters<bool> get isFavorite => $state.composableBuilder(
+      column: $state.table.isFavorite,
+      builder: (column, joinBuilders) =>
+          i0.ColumnFilters(column, joinBuilders: joinBuilders));
+
   i1.$$SyncBackendsTableFilterComposer get backendId {
     final i1.$$SyncBackendsTableFilterComposer composer =
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -620,7 +859,7 @@ class $$AnalyticLinesTableFilterComposer
         .composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.projectId,
-            referencedTable: i5.ReadDatabaseContainer($state
+            referencedTable: i6.ReadDatabaseContainer($state
                     .db)
                 .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
@@ -628,7 +867,7 @@ class $$AnalyticLinesTableFilterComposer
                     parentComposers) =>
                 i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectProjectsTable>('project_projects'),
                     joinBuilder,
                     parentComposers)));
@@ -640,13 +879,13 @@ class $$AnalyticLinesTableFilterComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.taskId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i2.$ProjectTasksTable>('project_tasks'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i2.$$ProjectTasksTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectTasksTable>('project_tasks'),
                     joinBuilder,
                     parentComposers)));
@@ -687,18 +926,38 @@ class $$AnalyticLinesTableOrderingComposer
       builder: (column, joinBuilders) =>
           i0.ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  i0.ColumnOrderings<double> get unitAmount => $state.composableBuilder(
+      column: $state.table.unitAmount,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<int> get currentStatus => $state.composableBuilder(
+      column: $state.table.currentStatus,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<DateTime> get lastTicked => $state.composableBuilder(
+      column: $state.table.lastTicked,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  i0.ColumnOrderings<bool> get isFavorite => $state.composableBuilder(
+      column: $state.table.isFavorite,
+      builder: (column, joinBuilders) =>
+          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
+
   i1.$$SyncBackendsTableOrderingComposer get backendId {
     final i1.$$SyncBackendsTableOrderingComposer composer =
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -710,13 +969,13 @@ class $$AnalyticLinesTableOrderingComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.projectId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectProjectsTable>(
                             'project_projects'),
                     joinBuilder,
@@ -729,13 +988,13 @@ class $$AnalyticLinesTableOrderingComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.taskId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i2.$ProjectTasksTable>('project_tasks'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i2.$$ProjectTasksTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectTasksTable>('project_tasks'),
                     joinBuilder,
                     parentComposers)));
@@ -777,6 +1036,11 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             i0.Value<String> name = const i0.Value.absent(),
             i0.Value<int> projectId = const i0.Value.absent(),
             i0.Value<int> taskId = const i0.Value.absent(),
+            i0.Value<double?> unitAmount = const i0.Value.absent(),
+            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
+            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.AnalyticLinesCompanion(
             id: id,
@@ -788,9 +1052,14 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             name: name,
             projectId: projectId,
             taskId: taskId,
+            unitAmount: unitAmount,
+            currentStatus: currentStatus,
+            lastTicked: lastTicked,
+            isFavorite: isFavorite,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
+            required int id,
             required DateTime createDate,
             required DateTime writeDate,
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
@@ -799,6 +1068,11 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             required String name,
             required int projectId,
             required int taskId,
+            i0.Value<double?> unitAmount = const i0.Value.absent(),
+            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
+            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.AnalyticLinesCompanion.insert(
             id: id,
@@ -810,6 +1084,11 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             name: name,
             projectId: projectId,
             taskId: taskId,
+            unitAmount: unitAmount,
+            currentStatus: currentStatus,
+            lastTicked: lastTicked,
+            isFavorite: isFavorite,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
@@ -834,7 +1113,7 @@ typedef $$AnalyticLinesTableProcessedTableManager = i0.ProcessedTableManager<
     i2.AnalyticLine,
     i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})>;
 
-class $ProjectProjectsTable extends i3.ProjectProjects
+class $ProjectProjectsTable extends i4.ProjectProjects
     with i0.TableInfo<$ProjectProjectsTable, i2.ProjectProject> {
   @override
   final i0.GeneratedDatabase attachedDatabase;
@@ -844,11 +1123,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
   @override
   late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          i0.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      type: i0.DriftSqlType.int, requiredDuringInsert: true);
   static const i0.VerificationMeta _createDateMeta =
       const i0.VerificationMeta('createDate');
   @override
@@ -870,7 +1145,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
           requiredDuringInsert: false,
           defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
               'CHECK ("is_marked_as_deleted" IN (0, 1))'),
-          defaultValue: const i4.Constant(false));
+          defaultValue: const i5.Constant(false));
   static const i0.VerificationMeta _backendIdMeta =
       const i0.VerificationMeta('backendId');
   @override
@@ -889,7 +1164,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
       requiredDuringInsert: false,
       defaultConstraints:
           i0.GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
-      defaultValue: const i4.Constant(true));
+      defaultValue: const i5.Constant(true));
   static const i0.VerificationMeta _isFavoriteMeta =
       const i0.VerificationMeta('isFavorite');
   @override
@@ -899,7 +1174,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
       requiredDuringInsert: false,
       defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
           'CHECK ("is_favorite" IN (0, 1))'),
-      defaultValue: const i4.Constant(false));
+      defaultValue: const i5.Constant(false));
   static const i0.VerificationMeta _colorMeta =
       const i0.VerificationMeta('color');
   @override
@@ -919,7 +1194,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
       'task_count', aliasedName, false,
       type: i0.DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const i4.Constant(0));
+      defaultValue: const i5.Constant(0));
   @override
   List<i0.GeneratedColumn> get $columns => [
         id,
@@ -946,6 +1221,8 @@ class $ProjectProjectsTable extends i3.ProjectProjects
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('create_date')) {
       context.handle(
@@ -1001,7 +1278,7 @@ class $ProjectProjectsTable extends i3.ProjectProjects
   }
 
   @override
-  Set<i0.GeneratedColumn> get $primaryKey => {id};
+  Set<i0.GeneratedColumn> get $primaryKey => {backendId, id};
   @override
   i2.ProjectProject map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1215,6 +1492,7 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
   final i0.Value<int?> color;
   final i0.Value<String> name;
   final i0.Value<int> taskCount;
+  final i0.Value<int> rowid;
   const ProjectProjectsCompanion({
     this.id = const i0.Value.absent(),
     this.createDate = const i0.Value.absent(),
@@ -1226,9 +1504,10 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
     this.color = const i0.Value.absent(),
     this.name = const i0.Value.absent(),
     this.taskCount = const i0.Value.absent(),
+    this.rowid = const i0.Value.absent(),
   });
   ProjectProjectsCompanion.insert({
-    this.id = const i0.Value.absent(),
+    required int id,
     required DateTime createDate,
     required DateTime writeDate,
     this.isMarkedAsDeleted = const i0.Value.absent(),
@@ -1238,7 +1517,9 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
     this.color = const i0.Value.absent(),
     required String name,
     this.taskCount = const i0.Value.absent(),
-  })  : createDate = i0.Value(createDate),
+    this.rowid = const i0.Value.absent(),
+  })  : id = i0.Value(id),
+        createDate = i0.Value(createDate),
         writeDate = i0.Value(writeDate),
         backendId = i0.Value(backendId),
         name = i0.Value(name);
@@ -1253,6 +1534,7 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
     i0.Expression<int>? color,
     i0.Expression<String>? name,
     i0.Expression<int>? taskCount,
+    i0.Expression<int>? rowid,
   }) {
     return i0.RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1265,6 +1547,7 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
       if (color != null) 'color': color,
       if (name != null) 'name': name,
       if (taskCount != null) 'task_count': taskCount,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -1278,7 +1561,8 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
       i0.Value<bool>? isFavorite,
       i0.Value<int?>? color,
       i0.Value<String>? name,
-      i0.Value<int>? taskCount}) {
+      i0.Value<int>? taskCount,
+      i0.Value<int>? rowid}) {
     return i2.ProjectProjectsCompanion(
       id: id ?? this.id,
       createDate: createDate ?? this.createDate,
@@ -1290,6 +1574,7 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
       color: color ?? this.color,
       name: name ?? this.name,
       taskCount: taskCount ?? this.taskCount,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -1326,6 +1611,9 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
     if (taskCount.present) {
       map['task_count'] = i0.Variable<int>(taskCount.value);
     }
+    if (rowid.present) {
+      map['rowid'] = i0.Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -1341,7 +1629,8 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
           ..write('isFavorite: $isFavorite, ')
           ..write('color: $color, ')
           ..write('name: $name, ')
-          ..write('taskCount: $taskCount')
+          ..write('taskCount: $taskCount, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1349,7 +1638,7 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
 
 typedef $$ProjectProjectsTableCreateCompanionBuilder
     = i2.ProjectProjectsCompanion Function({
-  i0.Value<int> id,
+  required int id,
   required DateTime createDate,
   required DateTime writeDate,
   i0.Value<bool> isMarkedAsDeleted,
@@ -1359,6 +1648,7 @@ typedef $$ProjectProjectsTableCreateCompanionBuilder
   i0.Value<int?> color,
   required String name,
   i0.Value<int> taskCount,
+  i0.Value<int> rowid,
 });
 typedef $$ProjectProjectsTableUpdateCompanionBuilder
     = i2.ProjectProjectsCompanion Function({
@@ -1372,6 +1662,7 @@ typedef $$ProjectProjectsTableUpdateCompanionBuilder
   i0.Value<int?> color,
   i0.Value<String> name,
   i0.Value<int> taskCount,
+  i0.Value<int> rowid,
 });
 
 class $$ProjectProjectsTableFilterComposer
@@ -1427,13 +1718,13 @@ class $$ProjectProjectsTableFilterComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -1494,13 +1785,13 @@ class $$ProjectProjectsTableOrderingComposer extends i0
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -1543,6 +1834,7 @@ class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
             i0.Value<int?> color = const i0.Value.absent(),
             i0.Value<String> name = const i0.Value.absent(),
             i0.Value<int> taskCount = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.ProjectProjectsCompanion(
             id: id,
@@ -1555,9 +1847,10 @@ class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
             color: color,
             name: name,
             taskCount: taskCount,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
+            required int id,
             required DateTime createDate,
             required DateTime writeDate,
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
@@ -1567,6 +1860,7 @@ class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
             i0.Value<int?> color = const i0.Value.absent(),
             required String name,
             i0.Value<int> taskCount = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.ProjectProjectsCompanion.insert(
             id: id,
@@ -1579,6 +1873,7 @@ class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
             color: color,
             name: name,
             taskCount: taskCount,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
@@ -1603,7 +1898,7 @@ typedef $$ProjectProjectsTableProcessedTableManager = i0.ProcessedTableManager<
     i2.ProjectProject,
     i0.PrefetchHooks Function({bool backendId})>;
 
-class $ProjectTasksTable extends i3.ProjectTasks
+class $ProjectTasksTable extends i4.ProjectTasks
     with i0.TableInfo<$ProjectTasksTable, i2.ProjectTask> {
   @override
   final i0.GeneratedDatabase attachedDatabase;
@@ -1613,11 +1908,7 @@ class $ProjectTasksTable extends i3.ProjectTasks
   @override
   late final i0.GeneratedColumn<int> id = i0.GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: i0.DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          i0.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      type: i0.DriftSqlType.int, requiredDuringInsert: true);
   static const i0.VerificationMeta _createDateMeta =
       const i0.VerificationMeta('createDate');
   @override
@@ -1639,7 +1930,7 @@ class $ProjectTasksTable extends i3.ProjectTasks
           requiredDuringInsert: false,
           defaultConstraints: i0.GeneratedColumn.constraintIsAlways(
               'CHECK ("is_marked_as_deleted" IN (0, 1))'),
-          defaultValue: const i4.Constant(false));
+          defaultValue: const i5.Constant(false));
   static const i0.VerificationMeta _backendIdMeta =
       const i0.VerificationMeta('backendId');
   @override
@@ -1658,7 +1949,7 @@ class $ProjectTasksTable extends i3.ProjectTasks
       requiredDuringInsert: false,
       defaultConstraints:
           i0.GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
-      defaultValue: const i4.Constant(true));
+      defaultValue: const i5.Constant(true));
   static const i0.VerificationMeta _colorMeta =
       const i0.VerificationMeta('color');
   @override
@@ -1733,6 +2024,8 @@ class $ProjectTasksTable extends i3.ProjectTasks
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('create_date')) {
       context.handle(
@@ -1804,7 +2097,7 @@ class $ProjectTasksTable extends i3.ProjectTasks
   }
 
   @override
-  Set<i0.GeneratedColumn> get $primaryKey => {id};
+  Set<i0.GeneratedColumn> get $primaryKey => {backendId, id};
   @override
   i2.ProjectTask map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2091,6 +2384,7 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
   final i0.Value<String> name;
   final i0.Value<String?> priority;
   final i0.Value<int> projectId;
+  final i0.Value<int> rowid;
   const ProjectTasksCompanion({
     this.id = const i0.Value.absent(),
     this.createDate = const i0.Value.absent(),
@@ -2105,9 +2399,10 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
     this.name = const i0.Value.absent(),
     this.priority = const i0.Value.absent(),
     this.projectId = const i0.Value.absent(),
+    this.rowid = const i0.Value.absent(),
   });
   ProjectTasksCompanion.insert({
-    this.id = const i0.Value.absent(),
+    required int id,
     required DateTime createDate,
     required DateTime writeDate,
     this.isMarkedAsDeleted = const i0.Value.absent(),
@@ -2120,7 +2415,9 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
     required String name,
     this.priority = const i0.Value.absent(),
     required int projectId,
-  })  : createDate = i0.Value(createDate),
+    this.rowid = const i0.Value.absent(),
+  })  : id = i0.Value(id),
+        createDate = i0.Value(createDate),
         writeDate = i0.Value(writeDate),
         backendId = i0.Value(backendId),
         name = i0.Value(name),
@@ -2139,6 +2436,7 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
     i0.Expression<String>? name,
     i0.Expression<String>? priority,
     i0.Expression<int>? projectId,
+    i0.Expression<int>? rowid,
   }) {
     return i0.RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2154,6 +2452,7 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
       if (name != null) 'name': name,
       if (priority != null) 'priority': priority,
       if (projectId != null) 'project_id': projectId,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -2170,7 +2469,8 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
       i0.Value<String?>? description,
       i0.Value<String>? name,
       i0.Value<String?>? priority,
-      i0.Value<int>? projectId}) {
+      i0.Value<int>? projectId,
+      i0.Value<int>? rowid}) {
     return i2.ProjectTasksCompanion(
       id: id ?? this.id,
       createDate: createDate ?? this.createDate,
@@ -2185,6 +2485,7 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
       name: name ?? this.name,
       priority: priority ?? this.priority,
       projectId: projectId ?? this.projectId,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -2230,6 +2531,9 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
     if (projectId.present) {
       map['project_id'] = i0.Variable<int>(projectId.value);
     }
+    if (rowid.present) {
+      map['rowid'] = i0.Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -2248,7 +2552,8 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
           ..write('description: $description, ')
           ..write('name: $name, ')
           ..write('priority: $priority, ')
-          ..write('projectId: $projectId')
+          ..write('projectId: $projectId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -2256,7 +2561,7 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
 
 typedef $$ProjectTasksTableCreateCompanionBuilder = i2.ProjectTasksCompanion
     Function({
-  i0.Value<int> id,
+  required int id,
   required DateTime createDate,
   required DateTime writeDate,
   i0.Value<bool> isMarkedAsDeleted,
@@ -2269,6 +2574,7 @@ typedef $$ProjectTasksTableCreateCompanionBuilder = i2.ProjectTasksCompanion
   required String name,
   i0.Value<String?> priority,
   required int projectId,
+  i0.Value<int> rowid,
 });
 typedef $$ProjectTasksTableUpdateCompanionBuilder = i2.ProjectTasksCompanion
     Function({
@@ -2285,6 +2591,7 @@ typedef $$ProjectTasksTableUpdateCompanionBuilder = i2.ProjectTasksCompanion
   i0.Value<String> name,
   i0.Value<String?> priority,
   i0.Value<int> projectId,
+  i0.Value<int> rowid,
 });
 
 class $$ProjectTasksTableFilterComposer
@@ -2350,13 +2657,13 @@ class $$ProjectTasksTableFilterComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -2368,7 +2675,7 @@ class $$ProjectTasksTableFilterComposer
         .composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.projectId,
-            referencedTable: i5.ReadDatabaseContainer($state
+            referencedTable: i6.ReadDatabaseContainer($state
                     .db)
                 .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
@@ -2376,7 +2683,7 @@ class $$ProjectTasksTableFilterComposer
                     parentComposers) =>
                 i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectProjectsTable>('project_projects'),
                     joinBuilder,
                     parentComposers)));
@@ -2447,13 +2754,13 @@ class $$ProjectTasksTableOrderingComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.backendId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i1.$SyncBackendsTable>('sync_backends'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i1.$SyncBackendsTable>('sync_backends'),
                     joinBuilder,
                     parentComposers)));
@@ -2465,13 +2772,13 @@ class $$ProjectTasksTableOrderingComposer
         $state.composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.projectId,
-            referencedTable: i5.ReadDatabaseContainer($state.db)
+            referencedTable: i6.ReadDatabaseContainer($state.db)
                 .resultSet<i2.$ProjectProjectsTable>('project_projects'),
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder, parentComposers) =>
                 i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
                     $state.db,
-                    i5.ReadDatabaseContainer($state.db)
+                    i6.ReadDatabaseContainer($state.db)
                         .resultSet<i2.$ProjectProjectsTable>(
                             'project_projects'),
                     joinBuilder,
@@ -2518,6 +2825,7 @@ class $$ProjectTasksTableTableManager extends i0.RootTableManager<
             i0.Value<String> name = const i0.Value.absent(),
             i0.Value<String?> priority = const i0.Value.absent(),
             i0.Value<int> projectId = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.ProjectTasksCompanion(
             id: id,
@@ -2533,9 +2841,10 @@ class $$ProjectTasksTableTableManager extends i0.RootTableManager<
             name: name,
             priority: priority,
             projectId: projectId,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
+            required int id,
             required DateTime createDate,
             required DateTime writeDate,
             i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
@@ -2548,6 +2857,7 @@ class $$ProjectTasksTableTableManager extends i0.RootTableManager<
             required String name,
             i0.Value<String?> priority = const i0.Value.absent(),
             required int projectId,
+            i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.ProjectTasksCompanion.insert(
             id: id,
@@ -2563,6 +2873,7 @@ class $$ProjectTasksTableTableManager extends i0.RootTableManager<
             name: name,
             priority: priority,
             projectId: projectId,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
@@ -2586,3 +2897,17 @@ typedef $$ProjectTasksTableProcessedTableManager = i0.ProcessedTableManager<
     ),
     i2.ProjectTask,
     i0.PrefetchHooks Function({bool backendId, bool projectId})>;
+i0.Index get analyticLinesProjectTask => i0.Index('analytic_lines_project_task',
+    'CREATE INDEX analytic_lines_project_task ON analytic_lines (project_id, task_id)');
+i0.Index get analyticLinesStatus => i0.Index('analytic_lines_status',
+    'CREATE INDEX analytic_lines_status ON analytic_lines (current_status)');
+i0.Index get analyticLinesFavorite => i0.Index('analytic_lines_favorite',
+    'CREATE INDEX analytic_lines_favorite ON analytic_lines (is_favorite)');
+i0.Index get projectProjectsName => i0.Index('project_projects_name',
+    'CREATE INDEX project_projects_name ON project_projects (name)');
+i0.Index get projectProjectsFavorite => i0.Index('project_projects_favorite',
+    'CREATE INDEX project_projects_favorite ON project_projects (is_favorite)');
+i0.Index get projectTasksProject => i0.Index('project_tasks_project',
+    'CREATE INDEX project_tasks_project ON project_tasks (project_id)');
+i0.Index get projectTasksName => i0.Index('project_tasks_name',
+    'CREATE INDEX project_tasks_name ON project_tasks (name)');

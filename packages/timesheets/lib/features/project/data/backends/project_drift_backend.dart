@@ -33,4 +33,45 @@ class ProjectDriftBackend
         writeDate: driftModel.writeDate,
         isMarkedAsDeleted: driftModel.isMarkedAsDeleted,
       );
+
+  @override
+  Future<List<ProjectModel>> getAll({
+    List<int>? ids,
+    DateTime? since,
+    int? limit,
+    int? offset,
+    bool? isFavorite,
+    String? search,
+    bool? showMarkedAsDeleted,
+  }) async {
+    final database = super.database as AppDatabase;
+    final query = database.select(database.projectProjects)
+      ..where((tbl) => tbl.backendId.equals(backendId));
+    if (ids != null && ids.isNotEmpty) {
+      query.where((tbl) => tbl.id.isIn(ids));
+    }
+    if (since != null) {
+      query.where((tbl) => tbl.writeDate.isBiggerThanValue(since));
+    }
+    if (limit != null) {
+      query.limit(limit, offset: offset);
+    }
+    if (isFavorite != null) {
+      query.where((tbl) => tbl.isFavorite.equals(isFavorite));
+    }
+    if (search != null) {
+      query.where((tbl) => tbl.name.like('%$search%'));
+    }
+
+    if (showMarkedAsDeleted == false) {
+      query.where((tbl) => tbl.isMarkedAsDeleted.equals(false));
+    }
+
+    query.orderBy([
+      (t) => OrderingTerm(expression: t.writeDate, mode: OrderingMode.desc)
+    ]);
+
+    final results = await query.get();
+    return results.map((row) => convertToModel(row)).toList();
+  }
 }

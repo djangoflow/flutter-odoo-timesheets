@@ -34,4 +34,42 @@ class TaskDriftBackend
         writeDate: driftModel.writeDate,
         isMarkedAsDeleted: driftModel.isMarkedAsDeleted,
       );
+
+  @override
+  Future<List<TaskModel>> getAll({
+    List<int>? ids,
+    DateTime? since,
+    int? projectId,
+    String? search,
+    int? limit,
+    int? offset,
+  }) async {
+    final query = database.select(table)
+      ..where((tbl) => tbl.backendId.equals(backendId));
+
+    if (ids != null && ids.isNotEmpty) {
+      query.where((tbl) => tbl.id.isIn(ids));
+    }
+    if (since != null) {
+      query.where((tbl) => tbl.writeDate.isBiggerThanValue(since));
+    }
+    if (projectId != null) {
+      query.where((tbl) => tbl.projectId.equals(projectId));
+    }
+
+    if (search != null && search.isNotEmpty) {
+      query.where((tbl) => tbl.name.like('%$search%'));
+    }
+
+    if (limit != null) {
+      query.limit(limit, offset: offset);
+    }
+
+    query.orderBy([
+      (t) => OrderingTerm(expression: t.writeDate, mode: OrderingMode.desc)
+    ]);
+
+    final results = await query.get();
+    return results.map((row) => convertToModel(row)).toList();
+  }
 }

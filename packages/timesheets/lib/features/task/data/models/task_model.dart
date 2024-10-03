@@ -2,7 +2,9 @@
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
 import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:drift/drift.dart';
+import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/sync/sync.dart';
+import 'package:timesheets/utils/utils.dart';
 
 class TaskModel extends SyncModel implements OdooModel, DriftModel {
   @override
@@ -15,6 +17,7 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
   final String name;
   final String? priority;
   final int projectId;
+  final ProjectModel? project;
   @override
   final DateTime createDate;
   @override
@@ -35,6 +38,7 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
     required this.createDate,
     required this.writeDate,
     this.isMarkedAsDeleted,
+    this.project,
   });
 
   @override
@@ -51,6 +55,7 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
         'create_date': createDate.toIso8601String(),
         'write_date': writeDate.toIso8601String(),
         'is_marked_as_deleted': isMarkedAsDeleted,
+        'project': project?.toJson(),
       };
 
   @override
@@ -77,6 +82,8 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
         name: Value(name),
         priority: Value(priority),
         projectId: Value(projectId),
+        createDate: Value(createDate),
+        writeDate: Value(writeDate),
       );
 
   @override
@@ -93,6 +100,7 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
     DateTime? createDate,
     DateTime? writeDate,
     bool? isMarkedAsDeleted,
+    ProjectModel? project,
   }) =>
       TaskModel(
         id: id ?? this.id,
@@ -107,24 +115,34 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
         createDate: createDate ?? this.createDate,
         writeDate: writeDate ?? this.writeDate,
         isMarkedAsDeleted: isMarkedAsDeleted ?? this.isMarkedAsDeleted,
+        project: project ?? this.project,
       );
 
   factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
         id: json['id'],
         active: json['active'],
         color: json['color'],
-        dateDeadline: json['date_deadline'] != null
-            ? DateTime.parse(json['date_deadline'])
+        dateDeadline:
+            json['date_deadline'] != null && json['date_deadline'] is! bool
+                ? DateTime.parse(json['date_deadline'])
+                : null,
+        dateEnd: json['date_end'] != null && json['date_end'] is! bool
+            ? DateTime.parse(json['date_end'])
             : null,
-        dateEnd:
-            json['date_end'] != null ? DateTime.parse(json['date_end']) : null,
-        description: json['description'],
+        description: json['description'] != null && json['description'] is! bool
+            ? json['description']
+            : null,
         name: json['name'],
-        priority: json['priority'],
-        projectId: json['project_id'],
+        priority: json['priority'] != null && json['priority'] is! bool
+            ? json['priority']
+            : null,
+        projectId: extractRelationalId(json['project_id']) as int,
         createDate: DateTime.parse(json['create_date']),
         writeDate: DateTime.parse(json['write_date']),
         isMarkedAsDeleted: json['is_marked_as_deleted'],
+        project: json['project'] != null
+            ? ProjectModel.fromJson(json['project'])
+            : null,
       );
 
   static const List<String> odooFields = [
@@ -137,6 +155,8 @@ class TaskModel extends SyncModel implements OdooModel, DriftModel {
     'name',
     'priority',
     'project_id',
+    'create_date',
+    'write_date',
   ];
 
   static const String odooModelName = 'project.task';

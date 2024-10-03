@@ -1,4 +1,5 @@
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
+import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:drift/drift.dart';
 
 import '../database/database.dart';
@@ -17,49 +18,54 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
     DateTime? recordDeletedAt,
     bool pendingSync = true,
   }) async {
-    // Check if the registry exists
-    final existingRegistry = await (database.select(database.syncRegistries)
-          ..where((tbl) =>
-              tbl.modelName.equals(modelName) &
-              tbl.modelRecordId.equals(modelRecordId) &
-              tbl.backendId.equals(backendId)))
-        .getSingleOrNull();
-
-    if (existingRegistry != null) {
-      // Update existing registry
-      await (database.update(database.syncRegistries)
+    logger.d(
+        'Upserting registry for $modelName $modelRecordId pending = $pendingSync');
+    database.transaction(() async {
+      // Check if the registry exists
+      final existingRegistry = await (database.select(database.syncRegistries)
             ..where((tbl) =>
                 tbl.modelName.equals(modelName) &
                 tbl.modelRecordId.equals(modelRecordId) &
                 tbl.backendId.equals(backendId)))
-          .write(
-        SyncRegistriesCompanion(
-          recordWriteDate: Value(recordWriteDate),
-          recordDeletedAt: Value(recordDeletedAt),
-          updatedAt: Value(DateTime.timestamp()),
-          pendingSync: Value(pendingSync),
-        ),
-      );
-    } else {
-      // Insert new registry
-      await database.into(database.syncRegistries).insert(
-            SyncRegistriesCompanion.insert(
-              modelName: modelName,
-              modelRecordId: modelRecordId,
-              backendId: backendId,
-              recordWriteDate: recordWriteDate,
-              recordDeletedAt: Value(recordDeletedAt),
-              updatedAt: DateTime.timestamp(),
-              createdAt: DateTime.timestamp(),
-              pendingSync: Value(pendingSync),
-            ),
-          );
-    }
+          .getSingleOrNull();
+
+      if (existingRegistry != null) {
+        // Update existing registry
+        await (database.update(database.syncRegistries)
+              ..where((tbl) =>
+                  tbl.modelName.equals(modelName) &
+                  tbl.modelRecordId.equals(modelRecordId) &
+                  tbl.backendId.equals(backendId)))
+            .write(
+          SyncRegistriesCompanion(
+            recordWriteDate: Value(recordWriteDate),
+            recordDeletedAt: Value(recordDeletedAt),
+            updatedAt: Value(DateTime.timestamp()),
+            pendingSync: Value(pendingSync),
+          ),
+        );
+      } else {
+        // Insert new registry
+        await database.into(database.syncRegistries).insert(
+              SyncRegistriesCompanion.insert(
+                modelName: modelName,
+                modelRecordId: modelRecordId,
+                backendId: backendId,
+                recordWriteDate: recordWriteDate,
+                recordDeletedAt: Value(recordDeletedAt),
+                updatedAt: DateTime.timestamp(),
+                createdAt: DateTime.timestamp(),
+                pendingSync: Value(pendingSync),
+              ),
+            );
+      }
+    });
   }
 
   @override
   Future<void> batchUpsertRegistry(
       List<SyncRegistriesCompanion> syncRegistries) async {
+    logger.d('Batch upserting registries');
     await database.transaction(() async {
       for (final registry in syncRegistries) {
         await upsertRegistry(
@@ -76,13 +82,18 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
 
   @override
   Future<List<SyncRegistry>> getPendingSyncRecords(
-          String backendId, String modelName) =>
-      (database.select(database.syncRegistries)
-            ..where((tbl) =>
-                tbl.backendId.equals(backendId) &
-                tbl.modelName.equals(modelName) &
-                tbl.pendingSync.equals(true)))
-          .get();
+      String backendId, String modelName,
+      {List<int>? recordIds}) {
+    final query = (database.select(database.syncRegistries)
+      ..where((tbl) =>
+          tbl.backendId.equals(backendId) &
+          tbl.modelName.equals(modelName) &
+          tbl.pendingSync.equals(true)));
+    if (recordIds != null) {
+      query.where((tbl) => tbl.modelRecordId.isIn(recordIds));
+    }
+    return query.get();
+  }
 
   @override
   Future<void> markSyncComplete(int syncRegistryId) =>
@@ -92,13 +103,14 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
 
   @override
   Future<String> registerBackend(String id, String type) async {
-    await database.into(database.syncBackends).insertOnConflictUpdate(
-          SyncBackendsCompanion(
-            id: Value(id),
-            type: Value(type),
-          ),
-        );
-    return id;
+    throw UnimplementedError();
+    // await database.into(database.syncBackends).insertOnConflictUpdate(
+    //       SyncBackendsCompanion(
+    //         id: Value(id),
+    //         type: Value(type),
+    //       ),
+    //     );
+    // return id;
   }
 
   @override

@@ -21,4 +21,44 @@ class ProjectOdooBackend extends OdooBackend<ProjectModel> {
 
   @override
   String get modelName => ProjectModel.odooModelName;
+
+  @override
+  Future<List<ProjectModel>> getAll({
+    List<int>? ids,
+    DateTime? since,
+    int? limit,
+    int? offset,
+    bool? isFavorite,
+    String? search,
+  }) async {
+    final domain = <List<dynamic>>[
+      ['active', '=', true],
+    ];
+    if (ids != null && ids.isNotEmpty) {
+      domain.add(['id', 'in', ids]);
+    }
+    if (since != null) {
+      domain.add(['write_date', '>', since.toIso8601String()]);
+    }
+    if (isFavorite != null) {
+      domain.add(['is_favorite', '=', isFavorite]);
+    }
+    if (search != null && search.isNotEmpty) {
+      domain.add(['name', 'ilike', search]);
+    }
+
+    final records = await odooClient.callKw({
+      'model': modelName,
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'fields': getFields(),
+        if (domain.isNotEmpty) 'domain': domain,
+        if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
+      },
+    });
+
+    return deserializeListResponse(records as List);
+  }
 }

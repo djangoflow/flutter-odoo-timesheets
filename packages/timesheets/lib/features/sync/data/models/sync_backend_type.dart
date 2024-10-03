@@ -1,0 +1,1 @@
+enum SyncBackendTypes { odoo, drift }

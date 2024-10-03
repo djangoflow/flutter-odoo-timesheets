@@ -62,6 +62,8 @@ class ProjectModel extends SyncModel implements OdooModel, DriftModel {
         color: Value(color),
         name: Value(name),
         taskCount: Value(taskCount),
+        createDate: Value(createDate),
+        writeDate: Value(writeDate),
       );
 
   @override
