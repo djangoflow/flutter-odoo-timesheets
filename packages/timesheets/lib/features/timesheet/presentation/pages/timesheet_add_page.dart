@@ -94,7 +94,7 @@ class TimesheetAddPage extends StatelessWidget {
         date: DateTime.timestamp(),
         id: DateTime.timestamp().millisecondsSinceEpoch,
         writeDate: DateTime.timestamp(),
-        currentStatus: TimerStatus.paused,
+        currentStatus: TimerStatus.running,
         lastTicked: DateTime.timestamp(),
         isFavorite: isFavorite,
       ),
