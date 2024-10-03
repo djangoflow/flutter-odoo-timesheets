@@ -1,26 +1,24 @@
+import 'package:djangoflow_odoo_auth/djangoflow_odoo_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
+import 'package:odoo_rpc/odoo_rpc.dart';
 
-class LoginListener extends BlocListener<AuthCubit, AuthState> {
+class LoginListener
+    extends BlocListener<DjangoflowOdooAuthCubit, DjangoflowOdooAuthState> {
   LoginListener({
-    Key? key,
-    void Function(BuildContext context, List<Backend> connectedBackends)?
-        onLogin,
+    super.key,
+    void Function(BuildContext context, OdooSession? odooSession)? onLogin,
     void Function(BuildContext context)? onLogout,
-    Widget? child,
+    super.child,
   }) : super(
-            key: key,
-            listener: (context, authState) =>
-                authState.connectedBackends.isNotEmpty
-                    ? onLogin?.call(context, authState.connectedBackends)
-                    : onLogout?.call(context),
-            child: child,
-            // Since AutoLogin will trigger a state change for isLoading
-            // we need to listen to it as well as
-            // And user state is preserverd in HydratedBloc
-            // and only it will not trigger listener when autologin used
-            listenWhen: (prev, next) =>
-                (next.connectedBackends != prev.connectedBackends));
+          listener: (context, authState) =>
+              authState.status == AuthStatus.authenticated
+                  ? onLogin?.call(context, authState.session)
+                  : onLogout?.call(context),
+          // Since AutoLogin will trigger a state change for isLoading
+          // we need to listen to it as well as
+          // And user state is preserverd in HydratedBloc
+          // and only it will not trigger listener when autologin used
+          listenWhen: (prev, next) => (next.session != prev.session),
+        );
 }

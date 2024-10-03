@@ -1,5 +1,5 @@
 import 'package:auto_animated/auto_animated.dart';
-import 'package:drift/drift.dart' hide Column;
+import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,25 +7,26 @@ import 'package:flutter_list_bloc/flutter_list_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/sync/sync.dart';
 import 'package:timesheets/features/timer/timer.dart';
 
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
-class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
+class TimesheetListView<
+        T extends SyncableListCubit<TimesheetModel, TimesheetListFilter>>
     extends StatelessWidget {
   const TimesheetListView({
     super.key,
     required this.emptyBuilder,
   });
 
-  final Widget Function(
-          BuildContext context, TimesheetWithTaskExternalListState state)
+  final Widget Function(BuildContext context, TimesheetListState state)
       emptyBuilder;
   @override
   Widget build(BuildContext context) => BlocListener<
-          TabbedOrderingFilterCubit<$TimesheetsTable>,
-          Map<int, OrderingFilter<$TimesheetsTable>>>(
+          TabbedOrderingFilterCubit<$AnalyticLinesTable>,
+          Map<int, OrderingFilter<$AnalyticLinesTable>>>(
         listener: (context, state) {
           final tabsRouter = context.tabsRouter;
 
@@ -33,27 +34,25 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
           if (currentFilter != null) {
             final cubit = context.read<T>();
             final f = cubit.state.filter;
-            cubit.reload(
-              f?.copyWith(
-                orderingFilters: [currentFilter],
-              ),
-            );
+            // TODO fix this
+            // cubit.reload(
+            //   f?.copyWith(
+            //     orderingFilters: [currentFilter],
+            //   ),
+            // );
           }
         },
-        child: ContinuousListViewBlocBuilder<T, TimesheetWithTaskExternalData,
-            TimesheetWithTaskExternalListFilter>(
+        child: ContinuousListViewBlocBuilder<T, TimesheetModel,
+            TimesheetListFilter>(
           emptyBuilder: emptyBuilder,
           // withRefreshIndicator: true,
           loadingBuilder: (context, state) => const SizedBox(),
-          itemBuilder: (context, state, index, item) {
-            final timesheet = item.timesheetExternalData.timesheet;
-            final project = item
-                .taskWithProjectExternalData.projectWithExternalData.project;
-            final task =
-                item.taskWithProjectExternalData.taskWithExternalData.task;
+          itemBuilder: (context, state, index, timesheet) {
+            final project = timesheet.project;
+            final task = timesheet.task;
             final elapsedTime = timesheet.elapsedTime;
             final theme = Theme.of(context);
-
+            logger.d('timesheet: ${timesheet.unitAmount}');
             return AnimateIfVisible(
               key: ValueKey(timesheet.id),
               builder: (context, animation) => FadeTransition(
@@ -67,16 +66,20 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                     elevation: 0,
                     margin: EdgeInsets.zero,
                     child: TimesheetListTile(
-                      leadingBarColor: project.color.toColorFromColorIndex,
+                      leadingBarColor: project?.color.toColorFromColorIndex,
                       title: _ListTileItem(
                         icon: InkWell(
                           borderRadius: BorderRadius.circular(kPadding * 1.5),
-                          onTap: () {
-                            context.read<T>().updateTimesheet(
-                                  timesheet.copyWith(
-                                    isFavorite: !timesheet.isFavorite,
-                                  ),
-                                );
+                          onTap: () async {
+                            final cubit = context.read<T>();
+                            final updatedItem = await cubit.updateItem(
+                              timesheet.copyWith(
+                                isFavorite: !timesheet.isFavorite,
+                              ),
+                            );
+                            if (updatedItem.isFavorite == false) {
+                              cubit.removeLocally(updatedItem);
+                            }
                           },
                           child: _PaddedIcon(
                             icon: Icon(
@@ -86,7 +89,7 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                             ),
                           ),
                         ),
-                        text: timesheet.name ?? '',
+                        text: timesheet.name,
                         textStyle: theme.textTheme.titleMedium,
                       ),
                       subtitle: Column(
@@ -100,11 +103,11 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                                 CupertinoIcons.briefcase,
                               ),
                             ),
-                            text: project.name ?? '',
+                            text: project?.name ?? '',
                             maxLines: 1,
                             // textStyle: const TextStyle(height: 1),
                           ),
-                          if (task.dateDeadline != null) ...[
+                          if (task?.dateDeadline != null) ...[
                             SizedBox(
                               height: kPadding.h / 1.5,
                             ),
@@ -115,40 +118,50 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                                 ),
                               ),
                               text:
-                                  'Deadline ${task.dateDeadline!.toDateString()}',
+                                  'Deadline ${task?.dateDeadline!.toDateString()}',
                               textStyle: const TextStyle(height: 1),
                             ),
                           ],
                         ],
                       ),
                       elapsedTime: elapsedTime,
-                      initialTimerStatus:
-                          item.timesheetExternalData.timesheet.currentStatus,
+                      initialTimerStatus: timesheet.currentStatus,
                       onTimerStateChange:
                           (context, timerState, tickInterval) async {
-                        final timesheetWithTaskExternalListCubit =
-                            context.read<T>();
-                        final isRunning =
-                            timerState.status == TimesheetStatusEnum.running;
-                        final updatableSeconds = (isRunning ? tickInterval : 0);
-                        final startTimeValue =
-                            (isRunning && timesheet.startTime == null)
-                                ? DateTime.now()
-                                : timesheet.startTime;
+                        final timesheetListCubit = context.read<T>();
+                        final effectiveTimeSheet = timesheetListCubit.state.data
+                            ?.firstWhere(
+                                (element) => element.id == timesheet.id);
 
-                        final lastTickedValue =
-                            isRunning ? DateTime.now() : timesheet.lastTicked;
-                        Timesheet updatableTimesheet = timesheet.copyWith(
-                          unitAmount: Value(
-                              (elapsedTime + updatableSeconds).toUnitAmount()),
+                        final isRunning =
+                            timerState.status == TimerStatus.running;
+                        final lastTickedValue = isRunning
+                            ? DateTime.timestamp()
+                            : effectiveTimeSheet!.lastTicked;
+
+                        // Calculate the newly elapsed time
+                        final newlyElapsedSeconds = tickInterval;
+
+                        // Add the newly elapsed time to the last recorded unitAmount
+                        final updatedUnitAmount =
+                            (effectiveTimeSheet!.unitAmount ?? 0) +
+                                newlyElapsedSeconds.toUnitAmount();
+                        logger.d(
+                            'newlyElapsedSeconds: ${DateTime.timestamp().difference(lastTickedValue!).inSeconds}');
+                        TimesheetModel updatableTimesheet =
+                            effectiveTimeSheet.copyWith(
+                          unitAmount: updatedUnitAmount,
                           currentStatus: timerState.status,
-                          startTime: Value(startTimeValue),
-                          lastTicked: Value(lastTickedValue),
+                          lastTicked: lastTickedValue,
                         );
-                        await timesheetWithTaskExternalListCubit
-                            .updateTimesheet(
-                          updatableTimesheet,
-                        );
+                        logger.d(
+                            'Updating timesheet: ${updatableTimesheet.unitAmount}');
+
+                        final updatedTimesheet = await timesheetListCubit
+                            .updateItem(updatableTimesheet,
+                                shouldUpdateSecondaryOnly: true);
+                        logger.d(
+                            'Updated timesheet: ${updatedTimesheet.unitAmount}');
                       },
                       onTimerResume: (context) {
                         final currentlyElapsedTime = timesheet.elapsedTime;
@@ -157,17 +170,13 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
                         );
                       },
                       onTap: () {
-                        if (timesheet.taskId != null) {
-                          context.router.push(
-                            TasksRouter(
-                              children: [
-                                TaskDetailsRouter(taskId: timesheet.taskId!),
-                              ],
-                            ),
-                          );
-                        } else {
-                          throw Exception('Task id is null');
-                        }
+                        context.router.push(
+                          TasksRouter(
+                            children: [
+                              TaskDetailsRouter(taskId: timesheet.taskId),
+                            ],
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -178,7 +187,7 @@ class TimesheetListView<T extends TimesheetWithTaskExternalListCubit>
           builder: (context, controller, itemBuilder, itemCount) =>
               AnimateIfVisibleWrapper(
             controller: controller,
-            child: RefreshIndicator(
+            child: ParticleRefreshIndicator(
               onRefresh: () => context.read<T>().reload(
                     context.read<T>().state.filter?.copyWith(
                           offset: 0,

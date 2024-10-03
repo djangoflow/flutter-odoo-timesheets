@@ -1,5 +1,4 @@
 import 'package:djangoflow_app/djangoflow_app.dart';
-import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,21 +7,21 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
-import 'package:timesheets/features/timesheet/data/repositories/timesheets_repository.dart';
-
-import 'package:timesheets/features/timesheet/presentation/timesheet_with_task_editor.dart';
 import 'package:timesheets/features/task/task.dart';
+import 'package:timesheets/features/timer/timer.dart';
+
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage()
 class TimesheetAddPage extends StatelessWidget {
   const TimesheetAddPage({
-    Key? key,
-    this.taskWithProjectExternalData,
+    super.key,
+    this.task,
     this.disableProjectTaskSelection,
     this.isInitiallyFavorite,
     this.disableLocalProjectTaskSelection,
-  }) : super(key: key);
-  final TaskWithProjectExternalData? taskWithProjectExternalData;
+  });
+  final TaskModel? task;
 
   final bool? disableLocalProjectTaskSelection;
 
@@ -43,8 +42,7 @@ class TimesheetAddPage extends StatelessWidget {
         body: TimesheetWithTaskEditor(
           showOnlySyncedTaskAndProjects: disableLocalProjectTaskSelection,
           disableProjectTaskSelection: disableProjectTaskSelection,
-          project: taskWithProjectExternalData?.projectWithExternalData,
-          task: taskWithProjectExternalData?.taskWithExternalData.task,
+          task: task,
           isFavorite: isInitiallyFavorite,
           builder: (context, form, formListView) => Column(
             children: [
@@ -58,7 +56,7 @@ class TimesheetAddPage extends StatelessWidget {
                       onSuccess: () async {
                         final router = context.router;
                         DjangoflowAppSnackbar.showInfo('Added successfully');
-                        await router.pop(true);
+                        await router.maybePop(true);
                       },
                       action: (_) =>
                           _addTimesheet(context: context, form: form),
@@ -81,20 +79,24 @@ class TimesheetAddPage extends StatelessWidget {
 
   Future<void> _addTimesheet(
       {required BuildContext context, required FormGroup form}) async {
-    final project =
-        (form.control(projectControlName).value as ProjectWithExternalData)
-            .project;
-    final task = form.control(taskControlName).value as Task;
+    final project = (form.control(projectControlName).value as ProjectModel);
+    final task = form.control(taskControlName).value as TaskModel;
     final description = form.control(descriptionControlName).value as String;
     final isFavorite = form.control(isFavoriteControlName).value as bool;
-    final timesheetRepository = context.read<TimesheetRepository>();
+    final timesheetRepository = context.read<TimesheetRelationalRepository>();
 
     await timesheetRepository.create(
-      TimesheetsCompanion(
-        projectId: Value(project.id),
-        taskId: Value(task.id),
-        name: Value(description),
-        isFavorite: Value(isFavorite),
+      TimesheetModel(
+        projectId: project.id,
+        taskId: task.id,
+        name: description,
+        createDate: DateTime.timestamp(),
+        date: DateTime.timestamp(),
+        id: DateTime.timestamp().millisecondsSinceEpoch,
+        writeDate: DateTime.timestamp(),
+        currentStatus: TimerStatus.paused,
+        lastTicked: DateTime.timestamp(),
+        isFavorite: isFavorite,
       ),
     );
   }

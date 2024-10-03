@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
+import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class ProjectEditor extends StatelessWidget {
@@ -16,7 +16,7 @@ class ProjectEditor extends StatelessWidget {
     this.isFavorite,
   });
 
-  final Project? project;
+  final ProjectModel? project;
 
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
   final bool? isFavorite;
@@ -33,7 +33,8 @@ class ProjectEditor extends StatelessWidget {
             ],
           ),
           colorControlName: FormControl<OdooColors>(
-            value: project?.color.toOdooColorFromColorIndex ?? OdooColors.white,
+            value:
+                project?.color.toOdooColorFromColorIndex ?? OdooColors.noColor,
           ),
           isFavoriteControlName: FormControl<bool>(
             value: isFavorite ?? false,

@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,8 +7,8 @@ import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
 import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/sync/sync.dart';
 import 'package:timesheets/features/task/task.dart';
 
 class TimesheetWithTaskEditor extends StatelessWidget {
@@ -18,16 +17,15 @@ class TimesheetWithTaskEditor extends StatelessWidget {
     this.description,
     required this.builder,
     this.task,
-    this.project,
     this.additionalChildrenBuilder,
     this.showOnlySyncedTaskAndProjects,
     this.disableProjectTaskSelection,
     this.isFavorite,
   });
 
-  final Task? task;
+  final TaskModel? task;
   final String? description;
-  final ProjectWithExternalData? project;
+
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
   final bool? showOnlySyncedTaskAndProjects;
   final bool? disableProjectTaskSelection;
@@ -38,14 +36,14 @@ class TimesheetWithTaskEditor extends StatelessWidget {
 
   FormGroup get _formGroup => fb.group(
         {
-          projectControlName: FormControl<ProjectWithExternalData>(
-            value: project,
+          projectControlName: FormControl<ProjectModel>(
+            value: task?.project,
             disabled: disableProjectTaskSelection == true ? true : false,
             validators: [
               Validators.required,
             ],
           ),
-          taskControlName: FormControl<Task>(
+          taskControlName: FormControl<TaskModel>(
             value: task,
             disabled: disableProjectTaskSelection == true ? true : false,
             validators: [
@@ -68,304 +66,66 @@ class TimesheetWithTaskEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     final projectSuggestionBoxController = SuggestionsBoxController();
     final taskSuggestionBoxController = SuggestionsBoxController();
-    return ReactiveFormBuilder(
-      form: () => _formGroup,
-      builder: (context, formGroup, child) {
-        final formListView = GestureDetector(
-          onTap: () => formGroup.unfocus(),
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: kPadding.h * 2,
-              vertical: kPadding.w * 2,
-            ),
-            shrinkWrap: true,
-            children: [
-              SizedBox(
-                height: kPadding.h * 2,
+    return MultiSyncProvider(
+      configs: [
+        SyncProviderConfig<ProjectModel, ProjectRepository>(
+          odooModelName: ProjectModel.odooModelName,
+          repositoryBuilder: (context) => context.read<ProjectRepository>(),
+        ),
+        SyncProviderConfig<TaskModel, TaskRepository>(
+          odooModelName: TaskModel.odooModelName,
+          repositoryBuilder: (context) => context.read<TaskRepository>(),
+        ),
+      ],
+      builder: (context, backendId) => ReactiveFormBuilder(
+        form: () => _formGroup,
+        builder: (context, formGroup, child) {
+          final formListView = GestureDetector(
+            onTap: () => formGroup.unfocus(),
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: kPadding.h * 2,
+                vertical: kPadding.w * 2,
               ),
-              BlocProvider<ProjectListCubit>(
-                create: (context) => ProjectListCubit(
-                  context.read<ProjectRepository>(),
-                )..load(
-                    ProjectListFilter(
-                      isLocal:
-                          showOnlySyncedTaskAndProjects == true ? false : null,
-                    ),
-                  ),
-                child: BlocBuilder<ProjectListCubit, ProjectListState>(
-                  builder: (context, state) {
-                    if (state is Loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    return AppReactiveTypeAhead<ProjectWithExternalData,
-                        ProjectWithExternalData>(
-                      formControlName: projectControlName,
-                      suggestionsBoxController: projectSuggestionBoxController,
-                      inputDecoration: InputDecoration(
-                        labelText: 'Project',
-                        hintText: 'Select Project',
-                        suffixIcon: ReactiveValueListenableBuilder(
-                          formControlName: projectControlName,
-                          builder: (context, control, child) {
-                            final projectWithExternalData =
-                                control.value as ProjectWithExternalData?;
-
-                            if (projectWithExternalData == null) {
-                              return const SizedBox();
-                            } else {
-                              return Icon(
-                                projectWithExternalData.externalProject != null
-                                    ? CupertinoIcons.cloud_fill
-                                    : CupertinoIcons.floppy_disk,
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      emptyBuilder: (_, textEditingController) =>
-                          AppGlassContainer(
-                        child: _EmptyItem(
-                          label: 'Project',
-                          searchTerm: textEditingController.value.text,
-                          onCreatePressed: showOnlySyncedTaskAndProjects == true
-                              ? null
-                              : () async {
-                                  final projectListCubit =
-                                      context.read<ProjectListCubit>();
-                                  final createdProject =
-                                      await projectListCubit.createProject(
-                                    ProjectsCompanion(
-                                      name: Value(
-                                        textEditingController.value.text,
-                                      ),
-                                      taskCount: const Value(0),
-                                      active: const Value(true),
-                                    ),
-                                  );
-                                  if (createdProject != null) {
-                                    formGroup
-                                        .control(projectControlName)
-                                        .value = ProjectWithExternalData(
-                                      project: createdProject,
-                                    );
-                                    projectListCubit.reload();
-                                    projectSuggestionBoxController.close();
-                                  }
-                                },
-                        ),
-                      ),
-                      validationMessages: {
-                        ValidationMessage.required: (_) =>
-                            'Please select project',
-                      },
-                      stringify: (value) => value.project.name ?? '',
-                      suggestionsCallback: (String searchTerm) async {
-                        if (searchTerm.isNotEmpty) {
-                          final projectListCubit =
-                              context.read<ProjectListCubit>();
-                          final result = await projectListCubit.loader(
-                            state.filter?.copyWith(
-                              search: searchTerm,
-                            ),
-                          );
-
-                          return result;
-                        }
-
-                        return state.data ?? [];
-                      },
-                      itemBuilder: (context, itemData) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
-                        child: ListTile(
-                          tileColor: Colors.transparent,
-                          title: Text(
-                            itemData.project.name ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Icon(
-                            itemData.externalProject != null
-                                ? CupertinoIcons.cloud_fill
-                                : CupertinoIcons.floppy_disk,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: kPadding.h * 2),
-              ReactiveValueListenableBuilder<ProjectWithExternalData>(
-                formControlName: projectControlName,
-                builder: (context, control, child) {
-                  final projectWithExternalData = control.value;
-                  final project = projectWithExternalData?.project;
-
-                  if (project != null) {
-                    return RepositoryProvider(
-                      key: ObjectKey(project),
-                      create: (context) => OdooTaskRepository(
-                        context.read<OdooXmlRpcClient>(),
-                      ),
-                      child: BlocProvider<TaskListCubit>(
-                        create: (context) => TaskListCubit(
-                          odooTimesheetRepository:
-                              context.read<OdooTimesheetRepository>(),
-                          taskRepository: context.read<TaskRepository>(),
-                        )..load(
-                            TaskListFilter(
-                              projectId: project.id,
-                            ),
-                          ),
-                        child: BlocBuilder<
-                            TaskListCubit,
-                            Data<List<TaskWithProjectExternalData>,
-                                TaskListFilter>>(
-                          builder: (context, state) {
-                            if (state is Loading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-
-                            return AppReactiveTypeAhead<Task, Task>(
-                              formControlName: taskControlName,
-                              suggestionsBoxController:
-                                  taskSuggestionBoxController,
-                              stringify: (task) => task.name ?? '',
-                              inputDecoration: const InputDecoration(
-                                labelText: 'Task',
-                                hintText: 'Select task',
-                              ),
-                              validationMessages: {
-                                ValidationMessage.required: (_) =>
-                                    'Please select task',
-                              },
-                              itemBuilder: (context, task) => ListTile(
-                                tileColor: Colors.transparent,
-                                title: Text(
-                                  task.name ?? '',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              suggestionsCallback: (searchTerm) async {
-                                if (searchTerm.isNotEmpty) {
-                                  final taskListCubit =
-                                      context.read<TaskListCubit>();
-                                  return (await taskListCubit.loader(
-                                    state.filter?.copyWith(search: searchTerm),
-                                  ))
-                                      .map((e) => e.taskWithExternalData.task)
-                                      .toList();
-                                }
-
-                                return state.data
-                                        ?.map(
-                                            (e) => e.taskWithExternalData.task)
-                                        .toList() ??
-                                    [];
-                              },
-                              emptyBuilder: (_, textEditingController) {
-                                final searchTerm =
-                                    textEditingController.value.text;
-
-                                return AppGlassContainer(
-                                  child: _EmptyItem(
-                                    label: 'Task',
-                                    searchTerm: searchTerm,
-                                    onCreatePressed:
-                                        showOnlySyncedTaskAndProjects == true
-                                            ? null
-                                            : () async {
-                                                final taskListCubit = context
-                                                    .read<TaskListCubit>();
-                                                final createdTask =
-                                                    await taskListCubit
-                                                        .createTask(
-                                                  TasksCompanion(
-                                                    name: Value(searchTerm),
-                                                    projectId:
-                                                        Value(project.id),
-                                                    active: const Value(true),
-                                                  ),
-                                                );
-                                                if (createdTask != null) {
-                                                  formGroup
-                                                      .control(taskControlName)
-                                                      .value = createdTask;
-                                                  taskListCubit.reload();
-                                                  taskSuggestionBoxController
-                                                      .close();
-                                                }
-                                              },
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  }
-                  return const Offstage();
-                },
-              ),
-              SizedBox(height: kPadding.h * 2),
-              ReactiveTextField(
-                formControlName: descriptionControlName,
-                textInputAction: TextInputAction.newline,
-                textCapitalization: TextCapitalization.none,
-                keyboardType: TextInputType.multiline,
-                autofocus: disableProjectTaskSelection == true,
-                maxLines: 3,
-                minLines: 1,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Description',
-                  labelText: 'Description',
-                ),
-                validationMessages: {
-                  ValidationMessage.required: (_) => 'Description is required',
-                },
-                onSubmitted: (_) {
-                  if (!formGroup.valid) {
-                    formGroup.markAsTouched();
-                  }
-                },
-              ),
-              if (disableProjectTaskSelection == true) ...[
+              shrinkWrap: true,
+              children: [
                 SizedBox(
-                  height: kPadding.h,
+                  height: kPadding.h * 2,
                 ),
-                const Text('Just enter a description and start to work!'),
-              ],
-              SizedBox(
-                height: kPadding.h * 2,
-              ),
-              Row(
-                children: [
-                  ReactiveCheckbox(
-                    formControlName: isFavoriteControlName,
-                  ),
+                _ProjectSelector(
+                  projectSuggestionBoxController:
+                      projectSuggestionBoxController,
+                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+                ),
+                SizedBox(height: kPadding.h * 2),
+                _TaskSelector(
+                  taskSuggestionBoxController: taskSuggestionBoxController,
+                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+                ),
+                SizedBox(height: kPadding.h * 2),
+                _DescriptionField(
+                  disableProjectTaskSelection:
+                      disableProjectTaskSelection == true,
+                ),
+                if (disableProjectTaskSelection == true) ...[
                   SizedBox(
-                    width: kPadding.w,
+                    height: kPadding.h,
                   ),
-                  Text(
-                    'Make Favorite',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  )
+                  const Text('Just enter a description and start to work!'),
                 ],
-              ),
-              if (additionalChildrenBuilder != null)
-                ...additionalChildrenBuilder!(context),
-            ],
-          ),
-        );
+                SizedBox(
+                  height: kPadding.h * 2,
+                ),
+                const _IsFavoriteCheckbox(),
+                if (additionalChildrenBuilder != null)
+                  ...additionalChildrenBuilder!(context),
+              ],
+            ),
+          );
 
-        return builder(context, formGroup, formListView);
-      },
+          return builder(context, formGroup, formListView);
+        },
+      ),
     );
   }
 }
@@ -439,4 +199,349 @@ class _EmptyItem extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ProjectSelector extends StatelessWidget {
+  const _ProjectSelector({
+    required this.projectSuggestionBoxController,
+    this.showOnlySyncedTaskAndProjects,
+  });
+
+  final SuggestionsBoxController projectSuggestionBoxController;
+  final bool? showOnlySyncedTaskAndProjects;
+
+  @override
+  Widget build(BuildContext context) => BlocProvider<ProjectListCubit>(
+        create: (context) => ProjectListCubit(
+          context.read<ProjectRepository>(),
+        )..load(
+            const ProjectListFilter(),
+          ),
+        child: BlocConsumer<ProjectListCubit, ProjectListState>(
+          listenWhen: (previous, current) => previous.data != current.data,
+          listener: (context, state) {
+            if (state.data != null) {
+              context.syncCubitFor<ProjectModel>().loadPendingSyncRegistries(
+                    ids: state.data!.map((e) => e.id).toList(),
+                  );
+            }
+          },
+          builder: (context, state) {
+            if (state is Loading) {
+              return const Center(
+                child: ParticleLoadingIndicator(),
+              );
+            }
+
+            final pendingProjectSyncRecords = context
+                .watch<SyncCubit<ProjectModel>>()
+                .state
+                .pendingSyncRecordIds;
+            return AppReactiveTypeAhead<ProjectModel, ProjectModel>(
+              formControlName: projectControlName,
+              suggestionsBoxController: projectSuggestionBoxController,
+              inputDecoration: InputDecoration(
+                labelText: 'Project',
+                hintText: 'Select Project',
+                suffixIcon: ReactiveValueListenableBuilder(
+                  formControlName: projectControlName,
+                  builder: (context, control, child) {
+                    final project = control.value as ProjectModel?;
+
+                    if (project == null) {
+                      return const SizedBox();
+                    } else {
+                      return StorageIcon(
+                        !(pendingProjectSyncRecords?.contains(project.id) ??
+                            true),
+                      );
+                    }
+                  },
+                ),
+              ),
+              emptyBuilder: (_, textEditingController) => AppGlassContainer(
+                child: _EmptyItem(
+                  label: 'Project',
+                  searchTerm: textEditingController.value.text,
+                  onCreatePressed: showOnlySyncedTaskAndProjects == true
+                      ? null
+                      : () => _onProjectCreate(
+                            context: context,
+                            name: textEditingController.value.text,
+                          ),
+                ),
+              ),
+              validationMessages: {
+                ValidationMessage.required: (_) => 'Please select project',
+              },
+              stringify: (value) => value.name,
+              suggestionsCallback: (String searchTerm) async {
+                if (searchTerm.isNotEmpty) {
+                  final projectListCubit = context.read<ProjectListCubit>();
+                  final result = await projectListCubit.loader(
+                    state.filter?.copyWith(
+                      search: searchTerm,
+                    ),
+                  );
+
+                  return result;
+                }
+
+                return state.data ?? [];
+              },
+              itemBuilder: (context, itemData) => Padding(
+                key: ValueKey(itemData.id),
+                padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
+                child: ListTile(
+                  tileColor: Colors.transparent,
+                  title: Text(
+                    itemData.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: StorageIcon(
+                    !(pendingProjectSyncRecords?.contains(itemData.id) ?? true),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+
+  Future<void> _onProjectCreate({
+    required BuildContext context,
+    required String name,
+  }) async {
+    final projectListCubit = context.read<ProjectListCubit>();
+    final formGroup = ReactiveForm.of(context) as FormGroup;
+    final createdProject = await projectListCubit.createItem(
+      ProjectModel(
+        name: name,
+        active: true,
+        id: DateTime.timestamp().millisecondsSinceEpoch,
+        isFavorite: false,
+        taskCount: 0,
+        createDate: DateTime.timestamp(),
+        writeDate: DateTime.timestamp(),
+      ),
+    );
+    if (createdProject != null) {
+      formGroup.control(projectControlName).value = createdProject;
+      projectListCubit.reload();
+      projectSuggestionBoxController.close();
+    }
+  }
+}
+
+class _TaskSelector extends StatefulWidget {
+  const _TaskSelector({
+    required this.taskSuggestionBoxController,
+    this.showOnlySyncedTaskAndProjects,
+  });
+  final SuggestionsBoxController taskSuggestionBoxController;
+  final bool? showOnlySyncedTaskAndProjects;
+
+  @override
+  State<_TaskSelector> createState() => _TaskSelectorState();
+}
+
+class _TaskSelectorState extends State<_TaskSelector> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final formGroup = (ReactiveForm.of(context) as FormGroup);
+
+    formGroup.control(projectControlName).valueChanges.listen((event) {
+      final taskControl = formGroup.control(taskControlName);
+      taskControl.value = null;
+      taskControl.markAsUntouched();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      ReactiveValueListenableBuilder<ProjectModel>(
+        formControlName: projectControlName,
+        builder: (context, control, child) {
+          final project = control.value;
+
+          if (project != null) {
+            return BlocProvider<TaskListCubit>(
+              key: ValueKey(project.id),
+              create: (context) => TaskListCubit(
+                context.read<TaskRepository>(),
+              )..load(
+                  TaskListFilter(
+                    projectId: project.id,
+                  ),
+                ),
+              child: BlocConsumer<TaskListCubit, TaskListState>(
+                listenWhen: (previous, current) =>
+                    previous.data != current.data,
+                listener: (context, state) {
+                  if (state.data != null) {
+                    context.syncCubitFor<TaskModel>().loadPendingSyncRegistries(
+                          ids: state.data!.map((e) => e.id).toList(),
+                        );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is Loading) {
+                    return const Center(
+                      child: ParticleLoadingIndicator(),
+                    );
+                  }
+                  final pendingTaskSyncRecords = context
+                      .watch<SyncCubit<TaskModel>>()
+                      .state
+                      .pendingSyncRecordIds;
+                  return AppReactiveTypeAhead<TaskModel, TaskModel>(
+                    formControlName: taskControlName,
+                    suggestionsBoxController:
+                        widget.taskSuggestionBoxController,
+                    stringify: (task) => task.name,
+                    inputDecoration: InputDecoration(
+                      labelText: 'Task',
+                      hintText: 'Select task',
+                      suffixIcon: ReactiveValueListenableBuilder(
+                        formControlName: taskControlName,
+                        builder: (context, control, child) {
+                          final task = control.value as TaskModel?;
+
+                          if (task == null) {
+                            return const SizedBox();
+                          } else {
+                            return StorageIcon(
+                              !(pendingTaskSyncRecords?.contains(task.id) ??
+                                  true),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    validationMessages: {
+                      ValidationMessage.required: (_) => 'Please select task',
+                    },
+                    itemBuilder: (context, task) => ListTile(
+                      key: ValueKey(task.id),
+                      tileColor: Colors.transparent,
+                      title: Text(
+                        task.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: StorageIcon(
+                        !(pendingTaskSyncRecords?.contains(task.id) ?? true),
+                      ),
+                    ),
+                    suggestionsCallback: (searchTerm) async {
+                      if (searchTerm.isNotEmpty) {
+                        final taskListCubit = context.read<TaskListCubit>();
+                        return (await taskListCubit.loader(
+                          state.filter?.copyWith(search: searchTerm),
+                        ));
+                      }
+
+                      return state.data ?? [];
+                    },
+                    emptyBuilder: (_, textEditingController) {
+                      final searchTerm = textEditingController.value.text;
+
+                      return AppGlassContainer(
+                        child: _EmptyItem(
+                          label: 'Task',
+                          searchTerm: searchTerm,
+                          onCreatePressed:
+                              widget.showOnlySyncedTaskAndProjects == true
+                                  ? null
+                                  : () => _onTaskCreate(
+                                        context: context,
+                                        project: project,
+                                        searchTerm: searchTerm,
+                                      ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          }
+          return const Offstage();
+        },
+      );
+
+  Future<void> _onTaskCreate({
+    required BuildContext context,
+    required ProjectModel project,
+    required String searchTerm,
+  }) async {
+    final taskListCubit = context.read<TaskListCubit>();
+    final formGroup = ReactiveForm.of(context) as FormGroup;
+    final createdTask = await taskListCubit.createItem(
+      TaskModel(
+        name: searchTerm,
+        projectId: project.id,
+        active: true,
+        id: DateTime.timestamp().millisecondsSinceEpoch,
+        createDate: DateTime.timestamp(),
+        writeDate: DateTime.timestamp(),
+      ),
+    );
+    if (createdTask != null) {
+      formGroup.control(taskControlName).value = createdTask;
+      taskListCubit.reload();
+      widget.taskSuggestionBoxController.close();
+    }
+  }
+}
+
+class _DescriptionField extends StatelessWidget {
+  const _DescriptionField({this.disableProjectTaskSelection});
+  final bool? disableProjectTaskSelection;
+
+  @override
+  Widget build(BuildContext context) => ReactiveTextField(
+        formControlName: descriptionControlName,
+        textInputAction: TextInputAction.newline,
+        textCapitalization: TextCapitalization.none,
+        keyboardType: TextInputType.multiline,
+        autofocus: disableProjectTaskSelection == true,
+        maxLines: 3,
+        minLines: 1,
+        decoration: const InputDecoration(
+          hintText: 'Enter Description',
+          labelText: 'Description',
+        ),
+        validationMessages: {
+          ValidationMessage.required: (_) => 'Description is required',
+        },
+        onSubmitted: (_) {
+          final formGroup = ReactiveForm.of(context) as FormGroup;
+          if (!formGroup.valid) {
+            formGroup.markAsTouched();
+          }
+        },
+      );
+}
+
+class _IsFavoriteCheckbox extends StatelessWidget {
+  const _IsFavoriteCheckbox();
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          ReactiveCheckbox(
+            formControlName: isFavoriteControlName,
+          ),
+          SizedBox(
+            width: kPadding.w,
+          ),
+          Text(
+            'Make Favorite',
+            style: Theme.of(context).textTheme.bodyLarge,
+          )
+        ],
+      );
 }

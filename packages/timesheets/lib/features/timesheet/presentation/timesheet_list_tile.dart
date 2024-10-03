@@ -3,8 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
-import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timer/timer.dart';
 
 class TimesheetListTile extends StatelessWidget {
   const TimesheetListTile({
@@ -25,7 +24,7 @@ class TimesheetListTile extends StatelessWidget {
 
   /// In seconds
   final int? elapsedTime;
-  final TimesheetStatusEnum? initialTimerStatus;
+  final TimerStatus? initialTimerStatus;
   final VoidCallback? onTap;
   final Color? leadingBarColor;
   final void Function(

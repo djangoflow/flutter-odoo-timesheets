@@ -11,13 +11,11 @@ class TaskDetailsTabRouterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
         builder: (context, child, tabController) =>
-            BlocBuilder<TaskDetailsCubit, TaskDetailsState>(
+            BlocBuilder<TaskRelationalDataCubit, TaskDataState>(
           builder: (context, state) => GradientScaffold(
             appBar: AppBar(
               title: Text(
-                state.taskWithProjectExternalData?.taskWithExternalData.task
-                        .name ??
-                    '',
+                state.data?.name ?? '',
               ),
               scrolledUnderElevation: 0,
               backgroundColor: Theme.of(context).colorScheme.surfaceVariant,

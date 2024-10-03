@@ -4,8 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
+import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/sync/sync.dart';
 import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/utils/utils.dart';
 
@@ -17,44 +20,57 @@ class TaskDetailsDetailsTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocBuilder<TaskDetailsCubit, TaskDetailsState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            final project = state
-                .taskWithProjectExternalData?.projectWithExternalData.project;
-            final task =
-                state.taskWithProjectExternalData?.taskWithExternalData.task;
-            final hasExternalTask = state.taskWithProjectExternalData
-                    ?.taskWithExternalData.externalTask !=
-                null;
-            final hasExternalProject = state.taskWithProjectExternalData
-                    ?.projectWithExternalData.externalProject !=
-                null;
+      SyncProvider<ProjectModel, ProjectRepository>(
+          odooModelName: ProjectModel.odooModelName,
+          builder: (context, backendId) =>
+              SyncProvider<TaskModel, TaskRelationalRepository>(
+                odooModelName: TaskModel.odooModelName,
+                builder: (context, backendId) =>
+                    BlocBuilder<TaskRelationalDataCubit, TaskDataState>(
+                  builder: (context, state) {
+                    if (state is Loading) {
+                      return const ParticleLoadingIndicator();
+                    } else {
+                      final project = state.data?.project;
+                      final task = state.data;
+                      if (backendId != null && state.data != null) {
+                        context
+                            .read<SyncCubit<TaskModel>>()
+                            .loadPendingSyncRegistries(
+                          ids: [state.data!.id],
+                        );
+                        if (state.data?.projectId != null) {
+                          context
+                              .read<SyncCubit<ProjectModel>>()
+                              .loadPendingSyncRegistries(
+                            ids: [state.data!.projectId],
+                          );
+                        }
+                      }
 
-            return ListView(
-              padding: EdgeInsets.all(kPadding.h * 2),
-              children: [
-                if (project != null && task != null)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: kPadding.h),
-                    child: _TaskDetailsCard(
-                      project: project,
-                      task: task,
-                      hasExternalTask: hasExternalTask,
-                      hasExternalProject: hasExternalProject,
-                    ),
-                  ),
-                if (task?.description != null && task!.description!.isNotEmpty)
-                  _DescriptionCard(
-                    description: task.description!,
-                  ),
-              ],
-            );
-          }
-        },
-      );
+                      return ListView(
+                        padding: EdgeInsets.all(kPadding.h * 2),
+                        children: [
+                          if (project != null && task != null)
+                            Padding(
+                              padding: EdgeInsets.only(bottom: kPadding.h),
+                              child: _TaskDetailsCard(
+                                project: project,
+                                task: task,
+                                hasBackendId: backendId != null,
+                              ),
+                            ),
+                          if (task?.description != null &&
+                              task!.description!.isNotEmpty)
+                            _DescriptionCard(
+                              description: task.description!,
+                            ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ));
 }
 
 class _DescriptionCard extends StatelessWidget {
@@ -78,15 +94,14 @@ class _DescriptionCard extends StatelessWidget {
 }
 
 class _TaskDetailsCard extends StatelessWidget {
-  const _TaskDetailsCard(
-      {required this.project,
-      required this.task,
-      required this.hasExternalProject,
-      required this.hasExternalTask});
-  final Project project;
-  final Task task;
-  final bool hasExternalProject;
-  final bool hasExternalTask;
+  const _TaskDetailsCard({
+    required this.project,
+    required this.task,
+    required this.hasBackendId,
+  });
+  final ProjectModel project;
+  final TaskModel task;
+  final bool hasBackendId;
 
   @override
   Widget build(BuildContext context) {
@@ -113,22 +128,29 @@ class _TaskDetailsCard extends StatelessWidget {
                   SizedBox(
                     width: kPadding.w,
                   ),
-                  _StorageIcon(
-                    isExternal: hasExternalProject,
-                  ),
+                  if (hasBackendId)
+                    BlocBuilder<SyncCubit<ProjectModel>, SyncState>(
+                      builder: (context, state) => _StorageIcon(
+                        isExternal: (state.pendingSyncRecordIds != null &&
+                                state.pendingSyncRecordIds!
+                                    .contains(project.id))
+                            ? false
+                            : true,
+                      ),
+                    ),
                   SizedBox(
                     width: kPadding.w,
                   ),
                   Flexible(
                     child: Text(
-                      project.name ?? '',
+                      project.name,
                       style: textTheme.titleMedium,
                     ),
                   )
                 ],
               ),
             ),
-            if (task.name != null && task.name!.isNotEmpty) ...[
+            if (task.name.isNotEmpty) ...[
               SizedBox(
                 height: kPadding.h * 2,
               ),
@@ -136,15 +158,22 @@ class _TaskDetailsCard extends StatelessWidget {
                 title: 'Task',
                 child: Row(
                   children: [
-                    _StorageIcon(
-                      isExternal: hasExternalTask,
-                    ),
-                    SizedBox(
-                      width: kPadding.w,
-                    ),
+                    if (hasBackendId) ...[
+                      BlocBuilder<SyncCubit<TaskModel>, SyncState>(
+                        builder: (context, state) => _StorageIcon(
+                          isExternal: (state.pendingSyncRecordIds != null &&
+                                  state.pendingSyncRecordIds!.contains(task.id))
+                              ? false
+                              : true,
+                        ),
+                      ),
+                      SizedBox(
+                        width: kPadding.w,
+                      ),
+                    ],
                     Flexible(
                       child: Text(
-                        task.name!,
+                        task.name,
                         style: textTheme.titleMedium,
                       ),
                     ),
@@ -193,7 +222,7 @@ class _TaskDetailsItem extends StatelessWidget {
 }
 
 class _StorageIcon extends StatelessWidget {
-  const _StorageIcon({super.key, required this.isExternal});
+  const _StorageIcon({required this.isExternal});
   final bool isExternal;
   @override
   Widget build(BuildContext context) => isExternal

@@ -3,14 +3,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/timer/blocs/timer_cubit/timer_cubit.dart';
-import 'package:timesheets/features/timer/presentation/timer_bloc_builder.dart';
-import 'package:timesheets/features/timer/presentation/timer_bloc_listener.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/utils/utils.dart';
 
-abstract class _TaskTimer extends StatefulWidget {
-  const _TaskTimer({
+class TaskTimer extends StatefulWidget {
+  /// Builder is used to build the timer widget.
+  final Widget Function(
+    BuildContext context,
+    TimerState state,
+    AnimationController animationController,
+    int tickDurationInSeconds,
+  ) builder;
+
+  /// ElapsedTime is used to set the initial duration of the timer.
+  final int? elapsedTime;
+
+  /// InitialTimerStatus is used to set the initial status of the timer.
+  final TimerStatus? initialTimerStatus;
+
+  /// OnTimerStateChange is used to notify the parent widget about the timer state change.
+  final void Function(
+          BuildContext context, TimerState timerState, int tickInterval)?
+      onTimerStateChange;
+
+  /// Padding is used to set the padding of the timer widget.
+  final EdgeInsetsGeometry? padding;
+
+  /// Disabled is used to disable the timer widget.
+  final bool disabled;
+
+  /// OnTimerResume is called when the timer is resumed after being forcibly paused.
+  final void Function(BuildContext context)? onTimerResume;
+
+  const TaskTimer({
     super.key,
     required this.builder,
     this.elapsedTime,
@@ -21,64 +46,92 @@ abstract class _TaskTimer extends StatefulWidget {
     this.onTimerResume,
   });
 
-  /// builder is used to build the timer widget.
-  final Widget Function(
-    BuildContext context,
-    TimerState state,
-    AnimationController animationController,
-    int tickDurationInSeconds,
-  ) builder;
+  factory TaskTimer.small({
+    Key? key,
+    int? elapsedTime,
+    TimerStatus? initialTimerStatus,
+    EdgeInsetsGeometry? padding,
+    bool disabled = false,
+    void Function(BuildContext context)? onTimerResume,
+    void Function(
+            BuildContext context, TimerState timerState, int tickInterval)?
+        onTimerStateChange,
+  }) =>
+      TaskTimer(
+        key: key,
+        elapsedTime: elapsedTime,
+        initialTimerStatus: initialTimerStatus,
+        padding: padding,
+        disabled: disabled,
+        onTimerResume: onTimerResume,
+        onTimerStateChange: onTimerStateChange,
+        builder: (context, state, animationController, tickDurationInSeconds) =>
+            _TaskTimerSmall(
+          animationController: animationController,
+          padding: padding,
+          disabled: disabled,
+          state: state,
+        ),
+      );
 
-  /// elapsedTime is used to set the initial duration of the timer.
-  final int? elapsedTime;
-
-  /// initialTimerStatus is used to set the initial status of the timer.
-  final TimesheetStatusEnum? initialTimerStatus;
-
-  /// onTimerStateChange is used to notify the parent widget about the timer state change.
-  final void Function(
-          BuildContext context, TimerState timerState, int tickInterval)?
-      onTimerStateChange;
-
-  /// padding is used to set the padding of the timer widget.
-  final EdgeInsetsGeometry? padding;
-
-  /// disabled is used to disable the timer widget.
-  final bool disabled;
-
-  final void Function(BuildContext context)? onTimerResume;
+  factory TaskTimer.large({
+    Key? key,
+    int? elapsedTime,
+    TimerStatus? initialTimerStatus,
+    EdgeInsetsGeometry? padding,
+    bool disabled = false,
+    void Function(BuildContext context)? onTimerResume,
+    void Function(
+            BuildContext context, TimerState timerState, int tickInterval)?
+        onTimerStateChange,
+  }) =>
+      TaskTimer(
+        key: key,
+        elapsedTime: elapsedTime,
+        initialTimerStatus: initialTimerStatus,
+        padding: padding,
+        disabled: disabled,
+        onTimerResume: onTimerResume,
+        onTimerStateChange: onTimerStateChange,
+        builder: (context, state, animationController, tickDurationInSeconds) =>
+            _TaskTimerLarge(
+          animationController: animationController,
+          padding: padding,
+          disabled: disabled,
+          state: state,
+        ),
+      );
 
   @override
-  State<_TaskTimer> createState() => __TaskTimerState();
+  State<TaskTimer> createState() => _TaskTimerState();
 }
 
-class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
+class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
   /// TimerCubit is used to manage the timer state.
   late final TimerCubit _timerCubit;
 
   /// AnimationController is used to animate the timer widget.
   /// It is to orchestrate different animations of the timer widget.
-  late final AnimationController controller;
+  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    // can initiate with different values later
     _timerCubit = TimerCubit(
       initialState: widget.elapsedTime != null
           ? TimerState(
               duration: Duration(seconds: widget.elapsedTime!),
-              status: widget.initialTimerStatus ?? TimesheetStatusEnum.initial)
+              status: widget.initialTimerStatus ?? TimerStatus.initial)
           : TimerState.initial(),
     );
-    controller = AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: animationDurationDefault,
     );
 
-    if ([TimesheetStatusEnum.running, TimesheetStatusEnum.pausedByForce]
+    if ([TimerStatus.running, TimerStatus.pausedByForce]
         .contains(widget.initialTimerStatus)) {
-      controller.forward();
+      _controller.forward();
       _timerCubit.startTimer();
     }
   }
@@ -86,7 +139,7 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
   @override
   void dispose() {
     _timerCubit.close();
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -94,117 +147,70 @@ class __TaskTimerState extends State<_TaskTimer> with TickerProviderStateMixin {
   Widget build(BuildContext context) => BlocProvider<TimerCubit>.value(
         value: _timerCubit,
         child: Builder(
-            builder: (context) => AppLifeCycleListener(
-                  onLifeCycleStateChanged: (appLifecycleState) {
-                    if (appLifecycleState == AppLifecycleState.resumed) {
-                      if (_timerCubit.state.status ==
-                          TimesheetStatusEnum.pausedByForce) {
-                        widget.onTimerResume?.call(context);
-                        _timerCubit.resumeTimer();
-                      }
-                    } else {
-                      if (_timerCubit.state.status ==
-                          TimesheetStatusEnum.running) {
-                        _timerCubit.forcePauseTimer();
-                      }
-                    }
-                  },
-                  child: TimerBlocListener(
-                    listenWhen: (prev, current) =>
-                        prev.duration != current.duration ||
-                        prev.status != current.status,
-                    listener: (context, state) => widget.onTimerStateChange
-                        ?.call(
-                            context, state, _timerCubit.tickDuration.inSeconds),
-                    child: TimerBlocBuilder(
-                      builder: (context, state) => widget.builder(
-                        context,
-                        state,
-                        controller,
-                        _timerCubit.tickDuration.inSeconds,
-                      ),
-                    ),
-                  ),
-                )),
+          builder: (context) => AppLifeCycleListener(
+            onLifeCycleStateChanged: (lifecycleState) =>
+                _handleAppLifecycleState(
+              context,
+              lifecycleState,
+            ),
+            child: TimerBlocListener(
+              listenWhen: (prev, current) =>
+                  prev.duration != current.duration ||
+                  prev.status != current.status,
+              listener: (context, state) => widget.onTimerStateChange
+                  ?.call(context, state, _timerCubit.tickDuration.inSeconds),
+              child: TimerBlocBuilder(
+                builder: (context, state) => widget.builder(
+                  context,
+                  state,
+                  _controller,
+                  _timerCubit.tickDuration.inSeconds,
+                ),
+              ),
+            ),
+          ),
+        ),
       );
-}
 
-class TaskTimer extends _TaskTimer {
-  const TaskTimer({
-    super.key,
-    required super.builder,
-    super.elapsedTime,
-    super.initialTimerStatus,
-  });
-
-  TaskTimer.small({
-    super.key,
-    super.elapsedTime,
-    super.initialTimerStatus,
-    super.padding,
-    super.disabled,
-    super.onTimerResume,
-    super.onTimerStateChange,
-  }) : super(
-          builder:
-              (context, state, animationController, tickDurationInSeconds) =>
-                  _TaskTimerSmall(
-            animationController: animationController,
-            padding: padding,
-            disabled: disabled,
-            state: state,
-          ),
-        );
-
-  TaskTimer.large({
-    super.key,
-    super.elapsedTime,
-    super.initialTimerStatus,
-    super.padding,
-    super.disabled,
-    super.onTimerResume,
-    super.onTimerStateChange,
-  }) : super(
-          builder:
-              (context, state, animationController, tickDurationInSeconds) =>
-                  _TaskTimerLarge(
-            animationController: animationController,
-            padding: padding,
-            disabled: disabled,
-            state: state,
-          ),
-        );
+  void _handleAppLifecycleState(BuildContext context, AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (_timerCubit.state.status == TimerStatus.pausedByForce) {
+        widget.onTimerResume?.call(context);
+        _timerCubit.resumeTimer();
+      }
+    } else {
+      if (_timerCubit.state.status == TimerStatus.running) {
+        _timerCubit.forcePauseTimer();
+      }
+    }
+  }
 }
 
 class _TaskTimerSmall extends StatefulWidget {
+  /// AnimationController is used to animate the timer widget.
+  final AnimationController animationController;
+
+  /// Padding is used to set the padding of the timer widget.
+  final EdgeInsetsGeometry? padding;
+
+  /// Disabled is used to disable the timer widget.
+  final bool disabled;
+
+  /// State represents the current state of the timer.
+  final TimerState state;
+
   const _TaskTimerSmall({
     required this.animationController,
     this.padding,
     required this.disabled,
     required this.state,
   });
-  final AnimationController animationController;
-
-  /// Default is
-  /// ```dart
-  ///EdgeInsets.fromLTRB(
-  ///   kPadding.w * 2,
-  ///   kPadding.h,
-  ///   kPadding.w,
-  ///   kPadding.h,
-  /// ),
-  /// ```
-  final EdgeInsetsGeometry? padding;
-
-  final bool disabled;
-
-  final TimerState state;
 
   @override
-  State<_TaskTimerSmall> createState() => __TaskTimerSmallState();
+  State<_TaskTimerSmall> createState() => _TaskTimerSmallState();
 }
 
-class __TaskTimerSmallState extends State<_TaskTimerSmall> {
+class _TaskTimerSmallState extends State<_TaskTimerSmall> {
   late Animation<double> animation;
   Animation<TextStyle>? textStyleAnimation;
   Animation<Color?>? colorAnimation;
@@ -214,54 +220,41 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
     super.initState();
     animation =
         Tween<double>(begin: 0.0, end: 1.0).animate(widget.animationController);
+    WidgetsBinding.instance.addPostFrameCallback(_initializeAnimations);
+  }
 
-    // To access proper context
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        final theme = Theme.of(context);
-        setState(() {
-          textStyleAnimation = TextStyleTween(
-            begin: theme.textTheme.titleSmall,
-            end: theme.primaryTextTheme.titleSmall,
-          ).animate(widget.animationController);
+  void _initializeAnimations(_) {
+    if (mounted) {
+      final theme = Theme.of(context);
+      setState(() {
+        textStyleAnimation = TextStyleTween(
+          begin: theme.textTheme.titleSmall,
+          end: theme.primaryTextTheme.titleSmall,
+        ).animate(widget.animationController);
 
-          colorAnimation = ColorTween(
-            begin: theme.colorScheme.onSecondaryContainer,
-            end: theme.colorScheme.onPrimaryContainer,
-          ).animate(widget.animationController);
-        });
-      }
-    });
+        colorAnimation = ColorTween(
+          begin: theme.colorScheme.onSecondaryContainer,
+          end: theme.colorScheme.onPrimaryContainer,
+        ).animate(widget.animationController);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final timerStatus = widget.state.status;
+
     return TimerBlocListener(
       listenWhen: (prev, current) => prev.status != current.status,
-      listener: (context, state) {
-        // Listen to status change and trigger animations
-        final timerStatus = state.status;
-        if (timerStatus == TimesheetStatusEnum.running) {
-          widget.animationController.forward();
-        } else if ([
-          TimesheetStatusEnum.initial,
-          TimesheetStatusEnum.paused,
-          TimesheetStatusEnum.pausedByForce
-        ].contains(timerStatus)) {
-          widget.animationController.reverse();
-        }
-      },
+      listener: _handleTimerStatusChange,
       child: AnimatedContainer(
         duration: animationDurationDefault,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(kPadding.r * 8),
-          color: timerStatus == TimesheetStatusEnum.running
+          color: timerStatus == TimerStatus.running
               ? theme.colorScheme.primaryContainer
-              : AppColors.getTintedSurfaceColor(
-                  theme.colorScheme.surfaceTint,
-                ),
+              : AppColors.getTintedSurfaceColor(theme.colorScheme.surfaceTint),
         ),
         child: InkWell(
           customBorder: RoundedRectangleBorder(
@@ -271,45 +264,19 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
           child: Padding(
             padding: widget.padding ??
                 EdgeInsets.fromLTRB(
-                  kPadding.w * 2,
-                  kPadding.h,
-                  kPadding.w,
-                  kPadding.h,
-                ),
+                    kPadding.w * 2, kPadding.h, kPadding.w, kPadding.h),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: kPadding.w * 6,
-                  child: textStyleAnimation != null
-                      ? ValueListenableBuilder<TextStyle>(
-                          valueListenable: textStyleAnimation!,
-                          builder: (context, value, child) => Text(
-                            widget.state.duration
-                                .timerString(DurationFormat.minutesSeconds),
-                            style: value,
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: colorAnimation != null
-                      ? ValueListenableBuilder<Color?>(
-                          valueListenable: colorAnimation!,
-                          builder: (context, value, child) => AnimatedIcon(
-                            icon: AnimatedIcons.play_pause,
-                            size: 32.w,
-                            progress: animation,
-                            // animated color based on controller's value, and it should be animated as well
-                            color: value,
-                          ),
-                        )
-                      : const SizedBox(),
-                  color: theme.colorScheme.onPrimary,
-                  onPressed:
-                      widget.disabled ? null : () => _onPressed(timerStatus),
+                _TimerText(
+                    textStyleAnimation: textStyleAnimation,
+                    duration: widget.state.duration),
+                _TimerIcon(
+                  animation: animation,
+                  colorAnimation: colorAnimation,
+                  disabled: widget.disabled,
+                  onPressed: () => _onPressed(widget.state.status),
                 ),
               ],
             ),
@@ -319,50 +286,131 @@ class __TaskTimerSmallState extends State<_TaskTimerSmall> {
     );
   }
 
-  void _onPressed(TimesheetStatusEnum timerStatus) {
+  void _handleTimerStatusChange(BuildContext context, TimerState state) {
+    if (state.status == TimerStatus.running) {
+      widget.animationController.forward();
+    } else if ([
+      TimerStatus.initial,
+      TimerStatus.paused,
+      TimerStatus.pausedByForce
+    ].contains(state.status)) {
+      widget.animationController.reverse();
+    }
+  }
+
+  void _onPressed(TimerStatus timerStatus) {
     final timerCubit = context.read<TimerCubit>();
-    if (timerStatus == TimesheetStatusEnum.running) {
+    if (timerStatus == TimerStatus.running) {
       timerCubit.pauseTimer();
-    } else if ([TimesheetStatusEnum.initial, TimesheetStatusEnum.paused]
+    } else if ([TimerStatus.initial, TimerStatus.paused]
         .contains(timerStatus)) {
-      if (timerStatus == TimesheetStatusEnum.initial) {
-        timerCubit.startTimer();
-      } else if (timerStatus == TimesheetStatusEnum.paused) {
-        timerCubit.resumeTimer();
-      }
+      timerStatus == TimerStatus.initial
+          ? timerCubit.startTimer()
+          : timerCubit.resumeTimer();
     }
   }
 }
 
-class _TaskTimerLarge extends StatefulWidget {
-  const _TaskTimerLarge(
-      {required this.animationController,
-      this.padding,
-      required this.disabled,
-      required this.state});
+class _TimerText extends StatelessWidget {
+  final Animation<TextStyle>? textStyleAnimation;
+  final Duration duration;
 
-  final AnimationController animationController;
-
-  /// Default is
-  /// ```dart
-  ///EdgeInsets.fromLTRB(
-  ///   kPadding.w * 2,
-  ///   kPadding.h,
-  ///   kPadding.w,
-  ///   kPadding.h,
-  /// ),
-  /// ```
-  final EdgeInsetsGeometry? padding;
-
-  final bool disabled;
-
-  final TimerState state;
+  const _TimerText({
+    required this.textStyleAnimation,
+    required this.duration,
+  });
 
   @override
-  State<_TaskTimerLarge> createState() => __TaskTimerLargeState();
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => textStyleAnimation != null
+            ? ValueListenableBuilder<TextStyle>(
+                valueListenable: textStyleAnimation!,
+                builder: (context, textStyle, child) {
+                  // Calculate the width of a sample 4-digit timer string
+                  final textPainter = TextPainter(
+                    text: TextSpan(
+                      text: '04:30', // Sample 4-digit timer string with colon
+                      style: textStyle,
+                    ),
+                    textDirection: TextDirection.ltr,
+                    textScaler: MediaQuery.of(context).textScaler,
+                  )..layout();
+
+                  final calculatedWidth = textPainter.width;
+
+                  return SizedBox(
+                    width: calculatedWidth,
+                    child: Text(
+                      duration.timerString(DurationFormat.minutesSeconds),
+                      style: textStyle,
+                    ),
+                  );
+                },
+              )
+            : const SizedBox(),
+      );
 }
 
-class __TaskTimerLargeState extends State<_TaskTimerLarge> {
+class _TimerIcon extends StatelessWidget {
+  final Animation<double> animation;
+  final Animation<Color?>? colorAnimation;
+  final bool disabled;
+  final VoidCallback onPressed;
+
+  const _TimerIcon({
+    required this.animation,
+    required this.colorAnimation,
+    required this.disabled,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return IconButton(
+      padding: EdgeInsets.zero,
+      icon: colorAnimation != null
+          ? ValueListenableBuilder<Color?>(
+              valueListenable: colorAnimation!,
+              builder: (context, value, child) => AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                size: 32.w,
+                progress: animation,
+                color: value,
+              ),
+            )
+          : const SizedBox(),
+      color: theme.colorScheme.onPrimary,
+      onPressed: disabled ? null : onPressed,
+    );
+  }
+}
+
+class _TaskTimerLarge extends StatefulWidget {
+  /// AnimationController is used to animate the timer widget.
+  final AnimationController animationController;
+
+  /// Padding is used to set the padding of the timer widget.
+  final EdgeInsetsGeometry? padding;
+
+  /// Disabled is used to disable the timer widget.
+  final bool disabled;
+
+  /// State represents the current state of the timer.
+  final TimerState state;
+
+  const _TaskTimerLarge({
+    required this.animationController,
+    this.padding,
+    required this.disabled,
+    required this.state,
+  });
+
+  @override
+  State<_TaskTimerLarge> createState() => _TaskTimerLargeState();
+}
+
+class _TaskTimerLargeState extends State<_TaskTimerLarge> {
   late Animation<double> animation;
 
   @override
@@ -376,35 +424,13 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-
     final timerStatus = widget.state.status;
 
     return TimerBlocListener(
       listenWhen: (prev, current) => prev.status != current.status,
-      listener: (context, state) {
-        // Listen to status change and trigger animations
-        final timerStatus = state.status;
-        if (timerStatus == TimesheetStatusEnum.running) {
-          widget.animationController.forward();
-        } else if ([
-          TimesheetStatusEnum.initial,
-          TimesheetStatusEnum.paused,
-          TimesheetStatusEnum.pausedByForce,
-          TimesheetStatusEnum.stopped,
-        ].contains(timerStatus)) {
-          widget.animationController.reverse();
-        }
-      },
+      listener: _handleTimerStatusChange,
       child: IconButtonTheme(
-        data: IconButtonThemeData(
-          style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
-                shape: const MaterialStatePropertyAll(StadiumBorder()),
-                maximumSize: MaterialStatePropertyAll(Size(64.w, 60.h)),
-                minimumSize: MaterialStatePropertyAll(Size(64.w, 44.h)),
-                padding:
-                    const MaterialStatePropertyAll(EdgeInsets.all(kPadding)),
-              ),
-        ),
+        data: _getIconButtonThemeData(theme),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -417,56 +443,114 @@ class __TaskTimerLargeState extends State<_TaskTimerLarge> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: AnimatedIcon(
-                    icon: AnimatedIcons.play_pause,
-                    size: kPadding.w * 3,
-                    progress: animation,
-                    color: theme.colorScheme.primary,
-                  ),
-                  onPressed: widget.disabled
-                      ? null
-                      : () {
-                          final timerCubit = context.read<TimerCubit>();
-                          if (timerStatus == TimesheetStatusEnum.running) {
-                            timerCubit.pauseTimer();
-                          } else if ([
-                            TimesheetStatusEnum.initial,
-                            TimesheetStatusEnum.paused,
-                            TimesheetStatusEnum.pausedByForce,
-                            TimesheetStatusEnum.stopped
-                          ].contains(timerStatus)) {
-                            if (timerStatus == TimesheetStatusEnum.initial) {
-                              timerCubit.startTimer();
-                            } else {
-                              timerCubit.resumeTimer();
-                            }
-                          }
-                        },
+                _PlayPauseButton(
+                  animation: animation,
+                  disabled: widget.disabled,
+                  timerStatus: timerStatus,
+                  onPressed: _onPlayPausePressed,
                 ),
-                SizedBox(
-                  width: kPadding.w * 2,
-                ),
-                IconButton(
-                  disabledColor: theme.colorScheme.primary.withOpacity(0.5),
-                  color: theme.colorScheme.primary,
-                  icon: Icon(
-                    Icons.stop,
-                    size: kPadding.w * 3,
-                  ),
-                  onPressed: widget.disabled ||
-                          timerStatus == TimesheetStatusEnum.initial
-                      ? null
-                      : () {
-                          final timerCubit = context.read<TimerCubit>();
-                          timerCubit.stopTimer();
-                        },
+                SizedBox(width: kPadding.w * 2),
+                _StopButton(
+                  disabled: widget.disabled,
+                  timerStatus: timerStatus,
+                  onPressed: () => context.read<TimerCubit>().stopTimer(),
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  IconButtonThemeData _getIconButtonThemeData(ThemeData theme) =>
+      IconButtonThemeData(
+        style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
+              shape: const WidgetStatePropertyAll(StadiumBorder()),
+              maximumSize: WidgetStatePropertyAll(Size(64.w, 60.h)),
+              minimumSize: WidgetStatePropertyAll(Size(64.w, 44.h)),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(kPadding)),
+            ),
+      );
+
+  void _handleTimerStatusChange(BuildContext context, TimerState state) {
+    if (state.status == TimerStatus.running) {
+      widget.animationController.forward();
+    } else if ([
+      TimerStatus.initial,
+      TimerStatus.paused,
+      TimerStatus.pausedByForce,
+      TimerStatus.stopped
+    ].contains(state.status)) {
+      widget.animationController.reverse();
+    }
+  }
+
+  void _onPlayPausePressed(TimerStatus timerStatus) {
+    final timerCubit = context.read<TimerCubit>();
+    if (timerStatus == TimerStatus.running) {
+      timerCubit.pauseTimer();
+    } else if ([
+      TimerStatus.initial,
+      TimerStatus.paused,
+      TimerStatus.pausedByForce,
+      TimerStatus.stopped
+    ].contains(timerStatus)) {
+      timerStatus == TimerStatus.initial
+          ? timerCubit.startTimer()
+          : timerCubit.resumeTimer();
+    }
+  }
+}
+
+class _PlayPauseButton extends StatelessWidget {
+  final Animation<double> animation;
+  final bool disabled;
+  final TimerStatus timerStatus;
+  final Function(TimerStatus) onPressed;
+
+  const _PlayPauseButton({
+    required this.animation,
+    required this.disabled,
+    required this.timerStatus,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.play_pause,
+        size: kPadding.w * 3,
+        progress: animation,
+        color: theme.colorScheme.primary,
+      ),
+      onPressed: disabled ? null : () => onPressed(timerStatus),
+    );
+  }
+}
+
+class _StopButton extends StatelessWidget {
+  final bool disabled;
+  final TimerStatus timerStatus;
+  final VoidCallback onPressed;
+
+  const _StopButton({
+    required this.disabled,
+    required this.timerStatus,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return IconButton(
+      disabledColor: theme.colorScheme.primary.withOpacity(0.5),
+      color: theme.colorScheme.primary,
+      icon: Icon(Icons.stop, size: kPadding.w * 3),
+      onPressed:
+          disabled || timerStatus == TimerStatus.initial ? null : onPressed,
     );
   }
 }

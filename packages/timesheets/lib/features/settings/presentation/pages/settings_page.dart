@@ -1,3 +1,4 @@
+import 'package:djangoflow_odoo_auth/djangoflow_odoo_auth.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -9,315 +10,248 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
-import 'package:timesheets/features/external/external.dart';
-import 'package:timesheets/features/sync/blocs/sync_cubit/sync_cubit.dart';
-import 'package:timesheets/features/sync/presentation/sync_cubit_provider.dart';
-import 'package:timesheets/utils/utils.dart';
-
+import 'package:timesheets/features/sync/sync.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../setction_title.dart';
 
 @RoutePage()
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final schemeColors = theme.colorScheme;
-    return GradientScaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: Center(
-          child: Column(
+  Widget build(BuildContext context) => GradientScaffold(
+        appBar: AppBar(
+          title: const Text('Settings'),
+          centerTitle: false,
+        ),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kPadding * 2,
+              vertical: kPadding * 2,
+            ),
             children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kPadding * 2,
-                    vertical: kPadding * 2,
-                  ),
-                  children: [
-                    const SectionTitle(title: 'Theme'),
-                    ListTile(
-                      title: const Text('Dark theme'),
-                      trailing: BlocBuilder<AppCubit, AppState>(
-                        builder: (context, state) => Switch(
-                          trackColor: MaterialStateProperty.all(
-                            schemeColors.onSurfaceVariant.withOpacity(0.2),
-                          ),
-                          thumbColor: MaterialStateProperty.all(
-                            schemeColors.primary,
-                          ),
-                          thumbIcon: MaterialStateProperty.all(
-                            Icon(
-                              state.themeMode == ThemeMode.dark
-                                  ? CupertinoIcons.moon_fill
-                                  : CupertinoIcons.sun_min_fill,
-                              color: schemeColors.onPrimary,
-                            ),
-                          ),
-                          value: state.themeMode == ThemeMode.dark,
-                          onChanged: (value) {
-                            final isDarkTheme =
-                                state.themeMode == ThemeMode.dark;
-                            AppCubit.instance.updateThemeMode(
-                                isDarkTheme ? ThemeMode.light : ThemeMode.dark);
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: kPadding.h,
-                    ),
-                    if (kDebugMode)
-                      ElevatedButton(
-                        onPressed: () {
-                          context.router.pushNativeRoute(MaterialPageRoute(
-                              builder: (context) =>
-                                  DriftDbViewer(context.read<AppDatabase>())));
-                        },
-                        child: const Text('Check DB'),
-                      ),
-                    SizedBox(
-                      height: kPadding.h,
-                    ),
-                    const SectionTitle(title: 'Synchronizations'),
-                    SyncCubitProvider(
-                      child: BlocBuilder<AuthCubit, AuthState>(
-                        builder: (context, state) {
-                          final children = state.connectedBackends
-                              .getBackendsFilteredByType(BackendTypeEnum.odoo)
-                              .map((backend) => DefaultActionController(
-                                    child: LinearProgressBuilder(
-                                      action: (_) async {
-                                        final result = await AppModalSheet.show<
-                                            _BackendSyncOptionsEnum>(
-                                          context: context,
-                                          child: SafeArea(
-                                            bottom: true,
-                                            child: _BackendSyncOptions(
-                                              backend: backend,
-                                            ),
-                                          ),
-                                        );
-                                        if (context.mounted) {
-                                          final syncCubit =
-                                              context.read<SyncCubit>();
-                                          switch (result) {
-                                            case _BackendSyncOptionsEnum.unlink:
-                                              await _disconnectBackend(
-                                                  context, backend);
-                                              break;
-                                            case _BackendSyncOptionsEnum.resync:
-                                              await syncCubit
-                                                  .syncData(backend.id);
-                                              break;
-                                            default:
-                                              break;
-                                          }
-                                        }
-                                      },
-                                      builder: (context, action, error) =>
-                                          ListTile(
-                                        key: ValueKey(backend.id),
-                                        title: RichText(
-                                          text: TextSpan(
-                                            text: 'Odoo',
-                                            style: theme
-                                                .listTileTheme.titleTextStyle,
-                                            children: [
-                                              if (backend.serverUrl != null)
-                                                TextSpan(
-                                                  text:
-                                                      ' (${backend.serverUrl})',
-                                                  style: theme
-                                                      .textTheme.labelSmall
-                                                      ?.copyWith(
-                                                    color: theme.colorScheme
-                                                        .onSurfaceVariant,
-                                                  ),
-                                                )
-                                            ],
-                                          ),
-                                        ),
-                                        subtitle: Text(backend.email ?? ''),
-                                        // TODO Enable later with proper testing
-                                        // leading: Builder(
-                                        //   builder: (context) =>
-                                        //       CircularProgressBuilder(
-                                        //     action: (_) async {
-                                        //       await context
-                                        //           .read<SyncCubit>()
-                                        //           .syncData(backend.id);
-                                        //     },
-                                        //     builder: (context, action, error) =>
-                                        //         IconButton(
-                                        //       icon: const Icon(Icons.sync),
-                                        //       onPressed: action,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        trailing: Icon(
-                                          Icons.chevron_right,
-                                          size: kPadding.w * 4,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                        // Logout
-                                        onTap: action,
-                                      ),
-                                    ),
-                                  ))
-                              .toList();
-
-                          return Column(
-                            children: [
-                              ...children,
-                              const SizedBox(
-                                height: kPadding,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('Add Odoo account'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      onTap: () => context.router.push(
-                        OdooLoginRoute(),
-                      ),
-                    ),
-                    SizedBox(
-                      height: kPadding.h * 2,
-                    ),
-                    const SectionTitle(title: 'Legal'),
-                    ListTile(
-                      onTap: () {},
-                      title: const Text('Terms and Conditions'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                    SizedBox(
-                      height: kPadding.h,
-                    ),
-                    ListTile(
-                      onTap: () {},
-                      title: const Text('Privacy Policy'),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: kPadding.w * 4,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+              if (kDebugMode) ...[
+                const SectionTitle(title: 'Connection'),
+                const ConnectionStateToggle(),
+                SizedBox(
+                  height: kPadding.h,
+                ),
+              ],
+              const _ThemeSection(),
+              const _AccountSection(),
+              SizedBox(
+                height: kPadding.h * 2,
+              ),
+              const SectionTitle(title: 'Legal'),
+              ListTile(
+                onTap: () {},
+                title: const Text('Terms and Conditions'),
+                trailing: const Icon(
+                  Icons.chevron_right,
                 ),
               ),
               SizedBox(
-                width: double.infinity,
-                child: Card(
-                  margin: const EdgeInsets.all(kPadding * 2),
-                  child: Padding(
-                    padding: const EdgeInsets.all(kPadding * 2),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text: 'Made with ♥ by ',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: schemeColors.onSurfaceVariant,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Apexive',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: schemeColors.onSurface,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => launchUrlString(
-                                          apexiveUrl,
-                                        ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (AppCubit.packageInfo != null)
-                            Text(
-                              '${AppCubit.packageInfo?.version}('
-                              '${AppCubit.packageInfo?.buildNumber})',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: schemeColors.onSurfaceVariant,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
+                height: kPadding.h,
+              ),
+              ListTile(
+                onTap: () {},
+                title: const Text('Privacy Policy'),
+                trailing: const Icon(
+                  Icons.chevron_right,
                 ),
-              )
+              ),
+              const _MadeByApexiveWidget(),
             ],
           ),
         ),
-      ),
+      );
+}
+
+class _ThemeSection extends StatelessWidget {
+  const _ThemeSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: 'Theme'),
+        ListTile(
+          title: const Text('Dark theme'),
+          trailing: BlocBuilder<AppCubit, AppState>(
+            builder: (context, state) => Switch(
+              trackColor: WidgetStateProperty.all(
+                colorScheme.onSurfaceVariant.withOpacity(0.2),
+              ),
+              thumbColor: WidgetStateProperty.all(
+                colorScheme.primary,
+              ),
+              thumbIcon: WidgetStateProperty.all(
+                Icon(
+                  state.themeMode == ThemeMode.dark
+                      ? CupertinoIcons.moon_fill
+                      : CupertinoIcons.sun_min_fill,
+                  color: colorScheme.onPrimary,
+                ),
+              ),
+              value: state.themeMode == ThemeMode.dark,
+              onChanged: (value) {
+                final isDarkTheme = state.themeMode == ThemeMode.dark;
+                AppCubit.instance.updateThemeMode(
+                    isDarkTheme ? ThemeMode.light : ThemeMode.dark);
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: kPadding.h,
+        ),
+        if (kDebugMode) ...[
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                context.router.pushNativeRoute(
+                  MaterialPageRoute(
+                    builder: (context) => DriftDbViewer(
+                      context.read<AppDatabase>(),
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Check DB'),
+            ),
+          ),
+          SizedBox(
+            height: kPadding.h,
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                verifyIndexes(context.read<AppDatabase>());
+              },
+              child: const Text('Check DB Index'),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
-  Future<void> _disconnectBackend(BuildContext context, Backend backend) async {
-    final authCubit = context.read<AuthCubit>();
-    final syncCubit = context.read<SyncCubit>();
-    final router = context.router;
-    final result = await showCupertinoDialog<bool?>(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: const Text('Disconnect from Odoo?'),
-        content: const Text(
-          'You will be logged out from Odoo and lose synchronization.',
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: Text('Cancel',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                )),
-            onPressed: () => context.router.pop(false),
-          ),
-          CupertinoDialogAction(
-            isDestructiveAction: true,
-            child: const Text('Disconnect'),
-            onPressed: () {
-              context.router.pop(true);
-            },
-          ),
-        ],
-      ),
-    );
-    if (result == true) {
-      await syncCubit.removeData(backend.id);
-      await authCubit.logout(backend);
-      router.pop();
+  /// Only for testing
+  Future<void> verifyIndexes(AppDatabase db) async {
+    if (kDebugMode) {
+// List of tables to check
+      final tables = ['analytic_lines', 'project_projects', 'project_tasks'];
+
+      for (final table in tables) {
+        print('Indexes for $table:');
+        // Query the index list for each table
+        final indexList =
+            await db.customSelect('PRAGMA index_list($table);').get();
+
+        // Print index information
+        for (final row in indexList) {
+          final indexName = row.read<String>('name');
+          print('Index Name: $indexName');
+
+          // Get detailed index info
+          final indexInfo =
+              await db.customSelect('PRAGMA index_info($indexName);').get();
+          for (final infoRow in indexInfo) {
+            print('Column Indexed: ${infoRow.read<String>('name')}');
+          }
+        }
+      }
     }
   }
 }
 
+class _AccountSection extends StatelessWidget {
+  const _AccountSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: 'Account'),
+        SizedBox(
+          height: kPadding.h,
+        ),
+        LinearProgressBuilder(
+          action: (_) async {
+            final result = await AppModalSheet.show<_BackendSyncOptionsEnum>(
+              context: context,
+              child: const SafeArea(
+                bottom: true,
+                child: _BackendSyncOptions(),
+              ),
+            );
+            if (context.mounted) {
+              switch (result) {
+                case _BackendSyncOptionsEnum.unlink:
+                  await _disconnectBackend(context);
+                  break;
+                case _BackendSyncOptionsEnum.resync:
+                  await context.read<SyncCubit<TimesheetModel>>().sync();
+                  break;
+                default:
+                  break;
+              }
+            }
+          },
+          builder: (context, action, error) {
+            final authState = context.read<DjangoflowOdooAuthCubit>().state;
+            final session = authState.session;
+            final baseUrl = authState.baseUrl;
+            return ListTile(
+              title: RichText(
+                text: TextSpan(
+                  text: session?.userName ?? '',
+                  style: theme.listTileTheme.titleTextStyle,
+                  children: [
+                    if (baseUrl != null)
+                      TextSpan(
+                        text: ' ($baseUrl)',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                  ],
+                ),
+              ),
+              subtitle: Text(session?.dbName ?? authState.database ?? ''),
+
+              trailing: Icon(
+                Icons.chevron_right,
+                size: kPadding.w * 4,
+                color: theme.colorScheme.onSurface,
+              ),
+              // Logout
+              onTap: action,
+            );
+          },
+        )
+      ],
+    );
+  }
+}
+
+enum _BackendSyncOptionsEnum {
+  unlink,
+  resync,
+}
+
 class _BackendSyncOptions extends StatelessWidget {
-  const _BackendSyncOptions({super.key, required this.backend});
-  final Backend backend;
+  const _BackendSyncOptions();
 
   @override
   Widget build(BuildContext context) {
@@ -335,7 +269,8 @@ class _BackendSyncOptions extends StatelessWidget {
             title: const Text(
               'Unlink the Account',
             ),
-            onTap: () => context.router.pop(_BackendSyncOptionsEnum.unlink),
+            onTap: () =>
+                context.router.maybePop(_BackendSyncOptionsEnum.unlink),
           ),
           const Divider(
             height: 1,
@@ -345,8 +280,8 @@ class _BackendSyncOptions extends StatelessWidget {
             title: const Text(
               'Re-sync the account',
             ),
-            // TODO fix bug with re-sync
-            onTap: () => context.router.pop(_BackendSyncOptionsEnum.resync),
+            onTap: () =>
+                context.router.maybePop(_BackendSyncOptionsEnum.resync),
           ),
         ],
       ),
@@ -354,7 +289,96 @@ class _BackendSyncOptions extends StatelessWidget {
   }
 }
 
-enum _BackendSyncOptionsEnum {
-  unlink,
-  resync,
+Future<void> _disconnectBackend(BuildContext context) async {
+  final authCubit = context.read<DjangoflowOdooAuthCubit>();
+
+  final result = await showCupertinoDialog<bool?>(
+    context: context,
+    builder: (context) => CupertinoAlertDialog(
+      title: const Text('Disconnect from Odoo?'),
+      content: const Text(
+        'You will be logged out from Odoo, but your offline data will be kept safe.',
+      ),
+      actions: [
+        CupertinoDialogAction(
+          child: Text('Cancel',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              )),
+          onPressed: () => context.router.maybePop(false),
+        ),
+        CupertinoDialogAction(
+          isDestructiveAction: true,
+          child: const Text('Disconnect'),
+          onPressed: () {
+            context.router.maybePop(true);
+          },
+        ),
+      ],
+    ),
+  );
+  if (result == true) {
+    await authCubit.logout();
+  }
+}
+
+class _MadeByApexiveWidget extends StatelessWidget {
+  const _MadeByApexiveWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: Colors.transparent,
+        child: Card(
+          margin: const EdgeInsets.symmetric(vertical: kPadding * 2),
+          color: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.all(kPadding * 2),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: 'Made with ♥ by ',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Apexive',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => launchUrlString(
+                                  apexiveUrl,
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (AppCubit.packageInfo != null)
+                    Text(
+                      '${AppCubit.packageInfo?.version}('
+                      '${AppCubit.packageInfo?.buildNumber})',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

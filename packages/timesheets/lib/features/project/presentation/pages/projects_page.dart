@@ -10,9 +10,11 @@ import 'package:timesheets/features/project/project.dart';
 @RoutePage(
   name: 'ProjectsTabRouter',
 )
-class ProjectsTabRouterPage extends StatelessWidget
-    implements AutoRouteWrapper {
+class ProjectsTabRouterPage extends StatefulWidget implements AutoRouteWrapper {
   const ProjectsTabRouterPage({super.key});
+
+  @override
+  State<ProjectsTabRouterPage> createState() => _ProjectsTabRouterPageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -23,68 +25,60 @@ class ProjectsTabRouterPage extends StatelessWidget
         BlocProvider<FavoriteProjectListCubit>(
           create: (context) => FavoriteProjectListCubit(projectRepository),
         ),
-        BlocProvider<OdooProjectListCubit>(
-          create: (context) => OdooProjectListCubit(projectRepository),
-        ),
-        BlocProvider<LocalProjectListCubit>(
-          create: (context) => LocalProjectListCubit(projectRepository),
+        BlocProvider<ProjectListCubit>(
+          create: (context) => ProjectListCubit(projectRepository),
         ),
       ],
       child: Builder(builder: (context) => this),
     );
   }
+}
+
+class _ProjectsTabRouterPageState extends State<ProjectsTabRouterPage> {
+  bool _isSearching = false;
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
         routes: const [
           FavoriteProjectsTab(),
-          OdooProjectsTab(),
-          LocalProjectsTab(),
+          AllProjectsTab(),
         ],
         builder: (context, child, tabController) => IconButtonTheme(
           data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
           child: GradientScaffold(
             appBar: AppBar(
-              title: const Text('Projects'),
+              title: _isSearching ? null : const Text('Projects'),
               scrolledUnderElevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
               actions: [
-                IconButton(
-                  onPressed: () {
-                    if (tabController.index == 0) {
-                      context.router
-                          .push(
-                        ProjectAddRoute(
-                          isInitiallyFavorite: true,
-                        ),
-                      )
-                          .then((value) {
-                        if (value == true) {
-                          context.read<FavoriteProjectListCubit>().load();
-                          DjangoflowAppSnackbar.showInfo('Added successfully');
-                        }
-                      });
-                    } else if (tabController.index == 1) {
-                      context.router.push(
-                        ProjectAddRoute(),
-                      );
-                    }
-
-                    // TODO auto reload after adding project
+                AnimatedSearchAction(
+                  hintText: 'Search projects...',
+                  onChanged: (query) => _onSearchChanged(context, query),
+                  onSubmitted: (query) {
+                    _onSearchChanged(context, query);
                   },
+                  onCollapsed: () {
+                    setState(() {
+                      _isSearching = false;
+                    });
+                  },
+                  onExpanded: () {
+                    setState(() {
+                      _isSearching = true;
+                    });
+                  },
+                ),
+                SizedBox(width: kPadding.w),
+                IconButton(
+                  onPressed: () => _addProject(context, tabController.index),
                   icon: const Icon(CupertinoIcons.add),
                 ),
-                SizedBox(
-                  width: kPadding.w * 2,
-                ),
+                SizedBox(width: kPadding.w),
               ],
-              centerTitle: false,
               bottom: TabBar(
                 controller: tabController,
                 tabs: const [
                   Tab(text: 'Favorites'),
-                  Tab(text: 'Odoo'),
-                  Tab(text: 'Local'),
+                  Tab(text: 'All'),
                 ],
               ),
             ),
@@ -92,4 +86,46 @@ class ProjectsTabRouterPage extends StatelessWidget
           ),
         ),
       );
+
+  void _onSearchChanged(BuildContext context, String query) {
+    final effectiveQuery = query.isNotEmpty ? query : null;
+    final favoriteProjectListCubit = context.read<FavoriteProjectListCubit>();
+    final projectListCubit = context.read<ProjectListCubit>();
+    if (favoriteProjectListCubit.state.filter?.search != effectiveQuery) {
+      favoriteProjectListCubit.load(
+        favoriteProjectListCubit.state.filter?.copyWith(
+          search: effectiveQuery,
+        ),
+      );
+    }
+    if (projectListCubit.state.filter?.search != effectiveQuery) {
+      projectListCubit.load(
+        projectListCubit.state.filter?.copyWith(
+          search: effectiveQuery,
+        ),
+      );
+    }
+  }
+
+  Future<void> _addProject(BuildContext context, int tabIndex) async {
+    final ProjectListCubit cubit;
+    bool wasAdded = false;
+
+    if (tabIndex == 0) {
+      cubit = context.read<FavoriteProjectListCubit>();
+      final result = await context.router.push(
+        ProjectAddRoute(isInitiallyFavorite: true),
+      );
+      wasAdded = result == true;
+    } else {
+      cubit = context.read<ProjectListCubit>();
+      final result = await context.router.push(ProjectAddRoute());
+      wasAdded = result == true;
+    }
+
+    if (wasAdded) {
+      cubit.reload();
+      DjangoflowAppSnackbar.showInfo('Added successfully');
+    }
+  }
 }

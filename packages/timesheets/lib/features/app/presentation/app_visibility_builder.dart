@@ -34,6 +34,7 @@ class _AppVisiblityBuilderState extends State<AppVisiblityBuilder> {
   void dispose() {
     _isPageVisible?.removeListener(_listener);
     _isPageVisible?.dispose();
+    _isPageVisible = null;
     super.dispose();
   }
 

@@ -34,7 +34,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
   Widget build(BuildContext context) => ReactiveDropdownSearch<T, V>(
         dropdownDecoratorProps: DropDownDecoratorProps(
           baseStyle: Theme.of(context).textTheme.bodyLarge,
-          dropdownSearchDecoration: InputDecoration(
+          decoration: InputDecoration(
             hintText: hintText,
             helperText: helperText,
             labelText: labelText,
@@ -46,13 +46,12 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
             elevation: 0,
           ),
           showSearchBox: true,
-          isFilterOnline: true,
           fit: FlexFit.loose,
           loadingBuilder: (context, searchKey) =>
               const LinearProgressIndicator(),
           searchDelay: const Duration(milliseconds: searchDelayMs),
           emptyBuilder: emptyBuilder,
-          itemBuilder: (context, item, isSelected) => Padding(
+          itemBuilder: (context, item, isDisabled, isSelected) => Padding(
             padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
             child: Column(
               children: [
@@ -90,8 +89,9 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           ),
         ),
         itemAsString: itemAsString,
-        asyncItems: asyncItems,
-        items: items ?? [],
+        items: (searchKeyword, _) => searchKeyword.isEmpty
+            ? items ?? []
+            : asyncItems?.call(searchKeyword) ?? [],
         formControlName: formControlName,
         onBeforeChange: onBeforeChange,
         validationMessages: validationMessages,

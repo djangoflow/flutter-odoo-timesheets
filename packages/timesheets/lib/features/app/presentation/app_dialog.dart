@@ -18,8 +18,11 @@ class AppDialog extends StatelessWidget {
           actions: <CupertinoDialogAction>[
             CupertinoDialogAction(
               onPressed: () {
-                context.router.pop();
+                context.router.maybePop();
               },
+              textStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
               child: const Text('OK'),
             ),
           ],
@@ -46,13 +49,13 @@ class AppDialog extends StatelessWidget {
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimary,
                   )),
-              onPressed: () => context.router.pop(false),
+              onPressed: () => context.router.maybePop(false),
             ),
             CupertinoDialogAction(
               isDestructiveAction: true,
               child: Text(affirmativeText ?? 'Yes'),
               onPressed: () {
-                context.router.pop(true);
+                context.router.maybePop(true);
               },
             ),
           ],

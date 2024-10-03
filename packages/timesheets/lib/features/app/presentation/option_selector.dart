@@ -38,7 +38,7 @@ class OptionSelector extends StatelessWidget {
                 final option = options[index];
 
                 return InkWell(
-                  onTap: () => context.router.pop(option),
+                  onTap: () => context.router.maybePop(option),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: kPadding.h,

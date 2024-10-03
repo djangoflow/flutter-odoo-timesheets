@@ -27,10 +27,10 @@ class AppTheme {
       outlinedButtonRadius: _buttonRadius,
       filledButtonRadius: _buttonRadius,
       inputDecoratorRadius: _buttonRadius,
-      elevatedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
-      textButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
-      outlinedButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
-      filledButtonTextStyle: MaterialStateProperty.all(buttonTextStyle),
+      elevatedButtonTextStyle: WidgetStateProperty.all(buttonTextStyle),
+      textButtonTextStyle: WidgetStateProperty.all(buttonTextStyle),
+      outlinedButtonTextStyle: WidgetStateProperty.all(buttonTextStyle),
+      filledButtonTextStyle: WidgetStateProperty.all(buttonTextStyle),
       elevatedButtonSchemeColor: SchemeColor.onSecondaryContainer,
       elevatedButtonSecondarySchemeColor: SchemeColor.secondaryContainer,
       textButtonSchemeColor: SchemeColor.onSecondaryContainer,
@@ -152,7 +152,7 @@ class AppTheme {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: theme.iconButtonTheme.style?.copyWith(
-          iconSize: MaterialStatePropertyAll(kPadding.h * 3),
+          iconSize: WidgetStatePropertyAll(kPadding.h * 3),
         ),
       ),
       iconTheme: theme.iconTheme.copyWith(
@@ -166,6 +166,16 @@ class AppTheme {
         color: theme.colorScheme.outline,
         thickness: 1,
       ),
+      snackBarTheme: theme.snackBarTheme.copyWith(
+        contentTextStyle: theme.textTheme.bodyMedium,
+        actionTextColor: theme.colorScheme.primary,
+        actionBackgroundColor: theme.colorScheme.onPrimary,
+        backgroundColor: theme.colorScheme.onPrimary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kPadding * 2),
+        ),
+      ),
     );
   }
 
@@ -173,9 +183,9 @@ class AppTheme {
       IconButtonThemeData(
         style: theme.iconButtonTheme.style?.copyWith(
           backgroundColor:
-              MaterialStatePropertyAll(theme.colorScheme.secondaryContainer),
-          iconSize: MaterialStatePropertyAll(kPadding.h * 3),
-          shape: MaterialStatePropertyAll(
+              WidgetStatePropertyAll(theme.colorScheme.secondaryContainer),
+          iconSize: WidgetStatePropertyAll(kPadding.h * 3),
+          shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kPadding.r * 1.5),
             ),

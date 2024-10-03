@@ -1,13 +1,56 @@
+import 'package:djangoflow_odoo_auth/djangoflow_odoo_auth.dart';
+import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:timesheets/configurations/configurations.dart';
+import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/sync/sync.dart';
+import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage(name: 'HomeTabRouter')
-class HomeTabRouterPage extends StatelessWidget {
+class HomeTabRouterPage extends StatelessWidget implements AutoRouteWrapper {
   const HomeTabRouterPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final authStatus = context.select<DjangoflowOdooAuthCubit, AuthStatus>(
+      (value) => value.state.status,
+    );
+    // Happens during route change animation when user logs out
+    if (authStatus != AuthStatus.authenticated) {
+      return const SizedBox();
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeTriggerAutoSync(context);
+    });
+
+    return BlocListener<SyncCubit<TimesheetModel>, SyncState>(
+      listener: (context, state) {
+        logger.d('Status changed : ${state.status.name}');
+        final loaderOverlay = context.loaderOverlay;
+        if (state.status == SyncStatus.syncInProgress) {
+          if (!loaderOverlay.visible) {
+            loaderOverlay.show();
+          }
+        } else if ([SyncStatus.syncFailure, SyncStatus.syncSuccess]
+            .contains(state.status)) {
+          if (loaderOverlay.visible) {
+            loaderOverlay.hide();
+          }
+        }
+
+        if (state.status == SyncStatus.syncSuccess) {
+          AppDialog.showSuccessDialog(
+            context: context,
+            title: 'Success',
+            content: 'Synced successfully, cheers!',
+          );
+        }
+      },
+      child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -57,5 +100,21 @@ class HomeTabRouterPage extends StatelessWidget {
             SettingsRoute(),
           ],
         ),
-      );
+      ),
+    );
+  }
+
+  @override
+  Widget wrappedRoute(BuildContext context) => this;
+
+  void _maybeTriggerAutoSync(BuildContext context) {
+    final dbName = context.read<DjangoflowOdooAuthCubit>().state.database;
+    if (dbName != null) {
+      if (context.read<LastAutoSyncCubit>().getLastAutoSyncTime(dbName) ==
+          null) {
+        context.read<LastAutoSyncCubit>().updateLastAutoSync(dbName);
+        context.read<SyncCubit<TimesheetModel>>().sync();
+      }
+    }
+  }
 }

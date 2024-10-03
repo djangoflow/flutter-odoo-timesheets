@@ -17,66 +17,36 @@ class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
       emptyBuilder;
 
   @override
-  Widget build(BuildContext context) => ContinuousListViewBlocBuilder<T,
-          ProjectWithExternalData, ProjectListFilter>(
-        withRefreshIndicator: true,
+  Widget build(BuildContext context) =>
+      ContinuousListViewBlocBuilder<T, ProjectModel, ProjectListFilter>(
+        withRefreshIndicator: false,
         emptyBuilder: emptyBuilder,
         loadingBuilder: (context, state) => const SizedBox(),
-        itemBuilder: (context, state, index, projectWithExternalData) {
-          final project = projectWithExternalData.project;
+        itemBuilder: (context, state, index, project) => AnimateIfVisible(
+          key: ValueKey(project.id),
+          builder: (context, animation) => FadeTransition(
+            opacity: animation,
+            child: _ProjectListTile(
+              key: ValueKey(project.id),
+              project: project,
+              onTap: () async {
+                final cubit = context.read<T>();
+                await context.router
+                    .push(ProjectDetailsRoute(projectId: project.id));
 
-          return AnimateIfVisible(
-            key: ValueKey(project.id),
-            builder: (context, animation) => FadeTransition(
-              opacity: animation,
-              child: Card(
-                margin: EdgeInsets.zero,
-                color: Colors.transparent,
-                elevation: 0,
-                child: ListTile(
-                  leading: ColoredBar(
-                    color: project.color.toColorFromColorIndex,
+                cubit.reload(
+                  cubit.state.filter?.copyWith(
+                    offset: 0,
                   ),
-                  title: Row(
-                    children: [
-                      Icon(
-                        project.isFavorite == true
-                            ? CupertinoIcons.star_fill
-                            : CupertinoIcons.star,
-                      ),
-                      SizedBox(
-                        width: kPadding.w,
-                      ),
-                      Expanded(
-                        child: Text(
-                          project.name ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  subtitle: Text('${project.taskCount ?? 0} Tasks'),
-                  onTap: () async {
-                    final cubit = context.read<T>();
-                    await context.router
-                        .push(ProjectDetailsRoute(projectId: project.id));
-
-                    cubit.reload(
-                      cubit.state.filter?.copyWith(
-                        offset: 0,
-                      ),
-                    );
-                  },
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ),
         builder: (context, controller, itemBuilder, itemCount) =>
             AnimateIfVisibleWrapper(
           controller: controller,
-          child: RefreshIndicator(
+          child: ParticleRefreshIndicator(
             onRefresh: () => context.read<T>().reload(
                   context.read<T>().state.filter?.copyWith(
                         offset: 0,
@@ -95,6 +65,46 @@ class ProjectListView<T extends ProjectListCubit> extends StatelessWidget {
               itemCount: itemCount,
             ),
           ),
+        ),
+      );
+}
+
+class _ProjectListTile extends StatelessWidget {
+  const _ProjectListTile({super.key, required this.project, this.onTap});
+  final ProjectModel project;
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        margin: EdgeInsets.zero,
+        color: Colors.transparent,
+        elevation: 0,
+        child: ListTile(
+          leading: ColoredBar(
+            color: project.color.toColorFromColorIndex,
+          ),
+          title: Row(
+            children: [
+              Icon(
+                project.isFavorite == true
+                    ? CupertinoIcons.star_fill
+                    : CupertinoIcons.star,
+              ),
+              SizedBox(
+                width: kPadding.w,
+              ),
+              Expanded(
+                child: Text(
+                  project.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          subtitle: Text('${project.taskCount} Tasks'),
+          onTap: onTap,
         ),
       );
 }

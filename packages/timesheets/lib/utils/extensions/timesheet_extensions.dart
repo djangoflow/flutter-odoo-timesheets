@@ -1,27 +1,17 @@
-import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/timer/timer.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
-extension TimesheetListExtension on List<Timesheet> {
-  // bool get hasUnsyncedTimesheets =>
-  //     any((timesheet) => timesheet.onlineId == null);
-  // List<Timesheet> get unsyncedTimesheets =>
-  //     where((timesheet) => timesheet.onlineId == null).toList();
-}
-
-extension TimesheetExtension on Timesheet {
+extension TimesheetExtension on TimesheetModel {
   int get spentTimeInSeconds => ((unitAmount ?? 0) * 3600).toInt();
 
   int get elapsedTime {
     final elapsedTime = Duration(seconds: spentTimeInSeconds) +
-        ([TimesheetStatusEnum.running, TimesheetStatusEnum.pausedByForce]
+        ([TimerStatus.running, TimerStatus.pausedByForce]
                     .contains(currentStatus) &&
                 lastTicked != null
-            ? DateTime.now().difference(lastTicked!)
+            ? DateTime.timestamp().difference(lastTicked!)
             : Duration.zero);
 
     return elapsedTime.inSeconds;
   }
-
-  DateTime? get calculatedEndDate =>
-      startTime?.add(Duration(seconds: elapsedTime));
 }

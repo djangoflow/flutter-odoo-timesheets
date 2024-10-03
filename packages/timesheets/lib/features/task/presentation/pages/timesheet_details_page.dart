@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/task/task.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage()
@@ -15,9 +14,7 @@ class TimesheetDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<TimesheetDataCubit, TimesheetDataState>(
         builder: (context, state) {
-          final timesheetWithTaskExternalData = state.data;
-          final timesheet =
-              timesheetWithTaskExternalData?.timesheetExternalData.timesheet;
+          final timesheet = state.data;
 
           return GradientScaffold(
             appBar: AppBar(
@@ -50,13 +47,12 @@ class TimesheetDetailsPage extends StatelessWidget {
                       padding: EdgeInsets.all(kPadding.w * 2),
                       children: [
                         _TimesheetDetails(
-                          timesheetWithTaskExternalData:
-                              timesheetWithTaskExternalData!,
+                          timesheet: timesheet!,
                         ),
                       ],
                     ),
               loading: (_) => const Center(
-                child: CircularProgressIndicator(),
+                child: ParticleLoadingIndicator(),
               ),
               error: (_) => const Center(
                 child: Text(
@@ -75,58 +71,48 @@ class TimesheetDetailsPage extends StatelessWidget {
 }
 
 class _TimesheetDetails extends StatelessWidget {
-  const _TimesheetDetails(
-      {super.key, required this.timesheetWithTaskExternalData});
-  final TimesheetWithTaskExternalData timesheetWithTaskExternalData;
+  const _TimesheetDetails({required this.timesheet});
+  final TimesheetModel timesheet;
 
   @override
   Widget build(BuildContext context) {
-    final task = timesheetWithTaskExternalData
-        .taskWithProjectExternalData.taskWithExternalData.task;
-    final project = timesheetWithTaskExternalData
-        .taskWithProjectExternalData.projectWithExternalData.project;
-    final timesheet =
-        timesheetWithTaskExternalData.timesheetExternalData.timesheet;
+    final task = timesheet.task;
+    final project = timesheet.project;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TimesheetItem(
           title: 'Task',
-          value: task.name ?? '',
+          value: task?.name ?? '',
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'Project',
-          value: project.name ?? '',
+          value: project?.name ?? '',
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'Date',
-          value: timesheet.startTime != null
-              ? DateFormat('dd/MM/yyyy').format(timesheet.startTime!)
-              : '',
+          value: DateFormat('dd/MM/yyyy').format(timesheet.createDate),
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'Start time',
-          value: timesheet.startTime != null
-              ? DateFormat('HH:mm:ss').format(timesheet.startTime!)
-              : '',
+          value: DateFormat('HH:mm:ss').format(timesheet.createDate),
         ),
         SizedBox(
           height: kPadding.h * 2,
         ),
         _TimesheetItem(
           title: 'End time',
-          value: timesheet.endTime != null
-              ? DateFormat('HH:mm:ss').format(timesheet.endTime!)
-              : '',
+          value: DateFormat('HH:mm:ss').format(timesheet.createDate),
         ),
       ],
     );

@@ -1,42 +1,57 @@
 import 'package:list_bloc/list_bloc.dart';
-import 'package:timesheets/features/app/app.dart';
+
 import 'package:timesheets/features/project/project.dart';
+import 'package:timesheets/features/sync/sync.dart';
 import 'package:timesheets/utils/utils.dart';
 
-typedef ProjectListState
-    = Data<List<ProjectWithExternalData>, ProjectListFilter>;
+typedef ProjectListState = Data<List<ProjectModel>, ProjectListFilter>;
 
 class ProjectListCubit
-    extends ListCubit<ProjectWithExternalData, ProjectListFilter> {
+    extends SyncableListCubit<ProjectModel, ProjectListFilter> {
   final ProjectRepository projectRepository;
-  ProjectListCubit(this.projectRepository)
+  ProjectListCubit(this.projectRepository,
+      {Future<List<ProjectModel>> Function([ProjectListFilter?])? loader})
       : super(
-          ListBlocUtil.listLoader<ProjectWithExternalData, ProjectListFilter>(
-            loader: ([filter]) =>
-                projectRepository.getPaginatedProjectsWithExternalData(
-              limit: filter?.limit,
-              offset: filter?.offset,
-              isLocal: filter?.isLocal,
-              search: filter?.search,
-              isFavorite: filter?.isFavorite,
-            ),
-          ),
+          loader ??
+              ListBlocUtil.listLoader<ProjectModel, ProjectListFilter>(
+                loader: ([filter]) => projectRepository.getAll(
+                  offset: filter?.offset,
+                  limit: filter?.limit,
+                  isFavorite: filter?.isFavorite,
+                  search: filter?.search,
+                  returnOnlySecondary: true,
+                  showMarkedAsDeleted: false,
+                ),
+              ),
+          projectRepository,
         );
 
-  Future<Project?> createProject(ProjectsCompanion projectsCompanion) async {
-    final timesheetId = await projectRepository.create(projectsCompanion);
-    return await projectRepository.getItemById(timesheetId);
+  @override
+  Future<ProjectModel> updateItem(ProjectModel model,
+      {bool shouldUpdateSecondaryOnly = false}) async {
+    final result = await (repository as ProjectRepository).update(
+        model.copyWith(
+          writeDate: DateTime.timestamp(),
+        ),
+        onlyUpdateSecondary: shouldUpdateSecondaryOnly);
+
+    return result;
   }
 }
 
 class FavoriteProjectListCubit extends ProjectListCubit {
-  FavoriteProjectListCubit(super.projectRepository);
-}
-
-class LocalProjectListCubit extends ProjectListCubit {
-  LocalProjectListCubit(super.projectRepository);
-}
-
-class OdooProjectListCubit extends ProjectListCubit {
-  OdooProjectListCubit(super.projectRepository);
+  FavoriteProjectListCubit(
+    super.projectRepository,
+  ) : super(
+          loader: ListBlocUtil.listLoader<ProjectModel, ProjectListFilter>(
+            loader: ([filter]) => projectRepository.getAll(
+              offset: filter?.offset,
+              limit: filter?.limit,
+              isFavorite: true,
+              search: filter?.search,
+              returnOnlySecondary: true,
+              showMarkedAsDeleted: false,
+            ),
+          ),
+        );
 }

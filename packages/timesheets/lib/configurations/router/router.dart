@@ -1,23 +1,26 @@
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/authentication/authentication.dart';
 
 import 'odoo_auth_guard.dart';
 
 export 'package:auto_route/auto_route.dart';
-export 'route_parser.dart';
 
 export 'router.gr.dart';
 
 @AutoRouterConfig(
   deferredLoading: true,
 )
-class AppRouter extends $AppRouter {
-  @override
-  RouteType get defaultRouteType =>
-      const RouteType.material(); //.cupertino, .adaptive ..etc
+class AppRouter extends RootStackRouter {
+  final OdooAuthGuard odooAuthGuard;
 
-  AuthCubit? _authCubit;
-  set authCubit(AuthCubit authCubit) => _authCubit = authCubit;
+  @override
+  RouteType get defaultRouteType => const RouteType.material();
+
+  @override
+  late final List<AutoRouteGuard> guards = [
+    odooAuthGuard,
+  ];
+
+  AppRouter({super.navigatorKey, required this.odooAuthGuard});
 
   @override
   List<AutoRoute> get routes => <AutoRoute>[
@@ -41,15 +44,11 @@ class AppRouter extends $AppRouter {
                 AutoRoute(
                   initial: true,
                   path: 'favorite',
-                  page: FavoriteTimesheetsRoute.page,
+                  page: FavoriteTimesheetListRoute.page,
                 ),
                 AutoRoute(
-                  path: 'odoo',
-                  page: OdooTimesheetsRoute.page,
-                ),
-                AutoRoute(
-                  path: 'local',
-                  page: LocalTimesheetsRoute.page,
+                  path: 'all',
+                  page: TimesheetListRoute.page,
                 ),
               ],
             ),
@@ -63,12 +62,8 @@ class AppRouter extends $AppRouter {
                   initial: true,
                 ),
                 AutoRoute(
-                  page: OdooProjectsTab.page,
-                  path: 'odoo',
-                ),
-                AutoRoute(
-                  page: LocalProjectsTab.page,
-                  path: 'local',
+                  page: AllProjectsTab.page,
+                  path: 'all',
                 ),
               ],
             ),
@@ -82,9 +77,7 @@ class AppRouter extends $AppRouter {
           path: '/timesheets',
           children: [
             AutoRoute(page: TimesheetAddRoute.page, path: 'add'),
-            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge', guards: [
-              if (_authCubit != null) OdooAuthGuard(_authCubit!),
-            ]),
+            AutoRoute(page: TimesheetMergeRoute.page, path: 'merge'),
           ],
         ),
         AutoRoute(

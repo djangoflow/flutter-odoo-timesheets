@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
+import 'package:timesheets/features/sync/data/database/database.dart';
 import 'package:timesheets/features/timesheet/timesheet.dart';
 
 @RoutePage()
@@ -11,38 +12,35 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
   const TimesheetsPage({super.key});
 
   @override
-  Widget wrappedRoute(BuildContext context) {
-    final timesheetRepository = context.read<TimesheetRepository>();
-    return MultiBlocProvider(providers: [
-      BlocProvider<TabbedOrderingFilterCubit<$TimesheetsTable>>(
-        create: (context) => TabbedOrderingFilterCubit<$TimesheetsTable>({
-          0: TimesheetRecentFirstFilter(),
-          1: TimesheetRecentFirstFilter(),
-          2: TimesheetRecentFirstFilter(),
-        }),
-        lazy: false,
-      ),
-      BlocProvider<FavoriteTimesheetWithTaskExternalListCubit>(
-        create: (context) =>
-            FavoriteTimesheetWithTaskExternalListCubit(timesheetRepository),
-      ),
-      BlocProvider<OdooTimesheetWithTaskExternalListCubit>(
-        create: (context) =>
-            OdooTimesheetWithTaskExternalListCubit(timesheetRepository),
-      ),
-      BlocProvider<LocalTimesheetWithTaskExternalListCubit>(
-        create: (context) =>
-            LocalTimesheetWithTaskExternalListCubit(timesheetRepository),
-      ),
-    ], child: this);
-  }
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider<TabbedOrderingFilterCubit<$AnalyticLinesTable>>(
+            create: (context) =>
+                TabbedOrderingFilterCubit<$AnalyticLinesTable>({
+              0: TimesheetRecentFirstFilter(),
+              1: TimesheetRecentFirstFilter(),
+            }),
+            lazy: false,
+          ),
+          BlocProvider<TimesheetRelationalListCubit>(
+            create: (context) => TimesheetRelationalListCubit(
+              context.read<TimesheetRelationalRepository>(),
+            ),
+          ),
+          BlocProvider<FavoriteTimesheetRelationalListCubit>(
+            create: (context) => FavoriteTimesheetRelationalListCubit(
+              context.read<TimesheetRelationalRepository>(),
+            ),
+          ),
+        ],
+        child: this,
+      );
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.tabBar(
         routes: const [
-          FavoriteTimesheetsRoute(),
-          OdooTimesheetsRoute(),
-          LocalTimesheetsRoute(),
+          FavoriteTimesheetListRoute(),
+          TimesheetListRoute(),
         ],
         builder: (context, child, tabController) => IconButtonTheme(
           data: AppTheme.getFilledIconButtonTheme(Theme.of(context)),
@@ -52,38 +50,40 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
               scrolledUnderElevation: 0,
               backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
               actions: [
-                IconButton(
-                  onPressed: () {
-                    AppModalSheet.show(
-                      context: context,
-                      child: FilterSelector<$TimesheetsTable>(
-                        onFilterChanged: (f) {
-                          context
-                              .read<
-                                  TabbedOrderingFilterCubit<$TimesheetsTable>>()
-                              .updateFilter(tabController.index, f);
-                        },
-                        initialFilter: context
-                                .read<
-                                    TabbedOrderingFilterCubit<
-                                        $TimesheetsTable>>()
-                                .getFilterForTab(
-                                  tabController.index,
-                                ) ??
-                            TimesheetRecentFirstFilter(),
-                        availableFilters: [
-                          TimesheetRecentFirstFilter(),
-                          TimesheetOldestFirstFilter(),
-                        ],
-                      ),
-                    );
-                  },
-                  icon: const Icon(CupertinoIcons.arrow_up_down),
-                ),
+                // TODO add back later
+                // IconButton(
+                //   onPressed: () {
+                //     AppModalSheet.show(
+                //       context: context,
+                //       child: FilterSelector<$AnalyticLinesTable>(
+                //         onFilterChanged: (f) {
+                //           context
+                //               .read<
+                //                   TabbedOrderingFilterCubit<
+                //                       $AnalyticLinesTable>>()
+                //               .updateFilter(tabController.index, f);
+                //         },
+                //         initialFilter: context
+                //                 .read<
+                //                     TabbedOrderingFilterCubit<
+                //                         $AnalyticLinesTable>>()
+                //                 .getFilterForTab(
+                //                   tabController.index,
+                //                 ) ??
+                //             TimesheetRecentFirstFilter(),
+                //         availableFilters: [
+                //           TimesheetRecentFirstFilter(),
+                //           TimesheetOldestFirstFilter(),
+                //         ],
+                //       ),
+                //     );
+                //   },
+                //   icon: const Icon(CupertinoIcons.arrow_up_down),
+                // ),
                 IconButton(
                   onPressed: () async {
                     final router = context.router;
-                    TimesheetWithTaskExternalListCubit? cubit;
+                    TimesheetRelationalListCubit? cubit;
                     PageRouteInfo? route;
                     switch (tabController.index) {
                       case 0:
@@ -91,19 +91,11 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                           isInitiallyFavorite: true,
                         );
                         cubit = context
-                            .read<FavoriteTimesheetWithTaskExternalListCubit>();
+                            .read<FavoriteTimesheetRelationalListCubit>();
                         break;
                       case 1:
-                        route = TimesheetAddRoute(
-                          disableLocalProjectTaskSelection: true,
-                        );
-                        cubit = context
-                            .read<OdooTimesheetWithTaskExternalListCubit>();
-                        break;
-                      case 2:
                         route = TimesheetAddRoute();
-                        cubit = context
-                            .read<LocalTimesheetWithTaskExternalListCubit>();
+                        cubit = context.read<TimesheetRelationalListCubit>();
                         break;
                       default:
                         break;
@@ -128,8 +120,7 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                 indicatorSize: TabBarIndicatorSize.label,
                 tabs: const [
                   Tab(text: 'Favorites'),
-                  Tab(text: 'Odoo'),
-                  Tab(text: 'Local'),
+                  Tab(text: 'All'),
                 ],
               ),
             ),

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:timesheets/configurations/configurations.dart';
-import 'package:timesheets/features/app/data/db/app_database.dart';
+
+import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class TimesheetExpansionTile extends StatelessWidget {
-  final Timesheet timesheet;
+  final TimesheetModel timesheet;
   final void Function(bool)? onExpansionChanged;
   final bool initiallyExpanded;
   final Widget? leading;
@@ -69,12 +70,12 @@ class TimesheetExpansionPanel extends ExpansionPanel {
           ),
           body: const Text('Expanded'),
         );
-  final Timesheet timesheet;
+  final TimesheetModel timesheet;
 }
 
 class _TimesheetExpansionHeader extends StatelessWidget {
   const _TimesheetExpansionHeader({required this.timesheet});
-  final Timesheet timesheet;
+  final TimesheetModel timesheet;
 
   @override
   Widget build(BuildContext context) {
@@ -84,26 +85,24 @@ class _TimesheetExpansionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (timesheet.startTime != null) ...[
-          Text(
-            timesheet.startTime!.toDayString(),
-            style: textTheme.bodySmall,
-          ),
-          SizedBox(
-            height: kPadding.h / 2,
-          ),
-          Text(
-            timesheet.startTime!.toDateString(delimeter: '.'),
-            style: textTheme.titleMedium,
-          ),
-          SizedBox(
-            height: kPadding.h / 2,
-          ),
-          Text(
-            'Start Time ${timesheet.startTime!.toTimeString()}',
-            style: textTheme.bodySmall,
-          ),
-        ],
+        Text(
+          timesheet.createDate.toDayString(),
+          style: textTheme.bodySmall,
+        ),
+        SizedBox(
+          height: kPadding.h / 2,
+        ),
+        Text(
+          timesheet.createDate.toDateString(delimeter: '.'),
+          style: textTheme.titleMedium,
+        ),
+        SizedBox(
+          height: kPadding.h / 2,
+        ),
+        Text(
+          'Start Time ${timesheet.createDate.toTimeString()}',
+          style: textTheme.bodySmall,
+        ),
       ],
     );
   }
@@ -135,17 +134,17 @@ class _TimesheetDescription extends StatelessWidget {
                 IconButton(
                   style: theme.iconButtonTheme.style?.copyWith(
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    maximumSize: MaterialStatePropertyAll(
+                    maximumSize: WidgetStatePropertyAll(
                       Size(kPadding.h * 4, kPadding.h * 4),
                     ),
-                    minimumSize: MaterialStatePropertyAll(
+                    minimumSize: WidgetStatePropertyAll(
                       Size(kPadding.h * 4, kPadding.h * 4),
                     ),
                     alignment: Alignment.center,
-                    padding: const MaterialStatePropertyAll(
+                    padding: const WidgetStatePropertyAll(
                       EdgeInsets.zero,
                     ),
-                    iconSize: MaterialStatePropertyAll(kPadding.h * 2.5),
+                    iconSize: WidgetStatePropertyAll(kPadding.h * 2.5),
                   ),
                   onPressed: () {},
                   icon: const Icon(CupertinoIcons.pencil),
@@ -159,7 +158,6 @@ class _TimesheetDescription extends StatelessWidget {
               TextSpan(text: description ?? ''),
               settings: LineModeSettings(
                 trimLines: 2,
-                textAlign: TextAlign.end,
                 moreStyle: textTheme.bodySmall,
                 lessStyle: textTheme.bodySmall,
                 trimExpandedText: '\nRead less',

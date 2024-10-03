@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,10 +5,7 @@ import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
-import 'package:timesheets/features/odoo/odoo.dart';
-import 'package:timesheets/features/project/data/repositories/projects_repository.dart';
-
-import '../project_editor.dart';
+import 'package:timesheets/features/project/project.dart';
 
 @RoutePage()
 class ProjectAddPage extends StatelessWidget {
@@ -19,7 +15,7 @@ class ProjectAddPage extends StatelessWidget {
     this.project,
   });
   final bool? isInitiallyFavorite;
-  final Project? project;
+  final ProjectModel? project;
 
   @override
   Widget build(BuildContext context) => GradientScaffold(
@@ -40,7 +36,7 @@ class ProjectAddPage extends StatelessWidget {
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;
-                        await router.pop(true);
+                        await router.maybePop(true);
                       },
                       action: (_) => _addProject(context: context, form: form),
                       builder: (context, action, state) => ElevatedButton(
@@ -69,12 +65,15 @@ class ProjectAddPage extends StatelessWidget {
     final projectRepository = context.read<ProjectRepository>();
 
     await projectRepository.create(
-      ProjectsCompanion(
-        name: Value(projectName),
-        color: Value(color.index),
-        isFavorite: Value(isFavorite),
-        taskCount: const Value(0),
-        active: const Value(true),
+      ProjectModel(
+        name: projectName,
+        color: color.index,
+        isFavorite: isFavorite,
+        taskCount: 0,
+        active: true,
+        createDate: DateTime.timestamp(),
+        writeDate: DateTime.timestamp(),
+        id: DateTime.timestamp().millisecondsSinceEpoch,
       ),
     );
   }

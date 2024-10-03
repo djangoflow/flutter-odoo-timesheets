@@ -10,14 +10,14 @@ class SettingsListItem extends StatelessWidget {
   final double horizontalTitleGap;
 
   const SettingsListItem({
-    Key? key,
+    super.key,
     required this.title,
     this.leading,
     this.onTap,
     this.trailing,
     this.horizontalTitleGap = kPadding,
     this.subTitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

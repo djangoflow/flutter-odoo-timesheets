@@ -1,23 +1,20 @@
+import 'package:djangoflow_odoo_auth/djangoflow_odoo_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:timesheets/features/app/app.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:timesheets/features/authentication/authentication.dart';
 
-import 'login_listener.dart';
-
-/// Checks for intialUser, if available then triggers onLogin callback,
-/// as `BlocListener` doesn't listen to intial state
 class LoginListenerWrapper extends StatefulWidget {
   const LoginListenerWrapper({
     super.key,
     this.onLogin,
     this.onLogout,
     required this.child,
-    required this.initialConnectedBackends,
   });
-  final List<Backend>? initialConnectedBackends;
-  final void Function(BuildContext context, List<Backend> connectedBackends)?
-      onLogin;
-  final void Function(BuildContext context)? onLogout;
+  final Function(BuildContext context, OdooSession? odooSession)? onLogin;
+  final Function(BuildContext context)? onLogout;
   final Widget child;
+
   @override
   State<LoginListenerWrapper> createState() => _LoginListenerWrapperState();
 }
@@ -26,8 +23,10 @@ class _LoginListenerWrapperState extends State<LoginListenerWrapper> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialConnectedBackends != null) {
-      widget.onLogin?.call(context, widget.initialConnectedBackends!);
+    final currentSession =
+        context.read<DjangoflowOdooAuthCubit>().state.session;
+    if (currentSession != null) {
+      widget.onLogin?.call(context, currentSession);
     }
   }
 

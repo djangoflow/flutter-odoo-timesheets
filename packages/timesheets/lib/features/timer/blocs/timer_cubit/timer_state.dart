@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:timesheets/features/timesheet/timesheet.dart';
+import 'package:timesheets/features/timer/timer.dart';
 
 part 'timer_state.freezed.dart';
 
@@ -8,31 +8,31 @@ part 'timer_state.freezed.dart';
 class TimerState with _$TimerState {
   const factory TimerState({
     required Duration duration,
-    required TimesheetStatusEnum status,
+    required TimerStatus status,
   }) = _TimerState;
 
   factory TimerState.initial() => const TimerState(
         duration: Duration.zero,
-        status: TimesheetStatusEnum.initial,
+        status: TimerStatus.initial,
       );
 
   factory TimerState.running(Duration duration) => TimerState(
         duration: duration,
-        status: TimesheetStatusEnum.running,
+        status: TimerStatus.running,
       );
 
   factory TimerState.paused(Duration duration) => TimerState(
         duration: duration,
-        status: TimesheetStatusEnum.paused,
+        status: TimerStatus.paused,
       );
 
   factory TimerState.pausedByForce(Duration duration) => TimerState(
         duration: duration,
-        status: TimesheetStatusEnum.pausedByForce,
+        status: TimerStatus.pausedByForce,
       );
 
   factory TimerState.stopped(Duration duration) => TimerState(
         duration: duration,
-        status: TimesheetStatusEnum.stopped,
+        status: TimerStatus.stopped,
       );
 }
