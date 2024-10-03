@@ -87,7 +87,9 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
               onGetStarted: () {
                 context.pushRoute(TimesheetRouter(
                   children: [
-                    TimesheetAddRoute(),
+                    TimesheetAddRoute(
+                      project: state.data,
+                    ),
                   ],
                 ));
               },

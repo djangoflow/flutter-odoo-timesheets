@@ -17,6 +17,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
     this.description,
     required this.builder,
     this.task,
+    this.project,
     this.additionalChildrenBuilder,
     this.showOnlySyncedTaskAndProjects,
     this.disableProjectTaskSelection,
@@ -24,6 +25,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
   });
 
   final TaskModel? task;
+  final ProjectModel? project;
   final String? description;
 
   final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
@@ -37,7 +39,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
   FormGroup get _formGroup => fb.group(
         {
           projectControlName: FormControl<ProjectModel>(
-            value: task?.project,
+            value: task?.project ?? project,
             disabled: disableProjectTaskSelection == true ? true : false,
             validators: [
               Validators.required,

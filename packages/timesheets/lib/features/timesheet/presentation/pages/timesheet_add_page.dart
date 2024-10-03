@@ -20,8 +20,10 @@ class TimesheetAddPage extends StatelessWidget {
     this.disableProjectTaskSelection,
     this.isInitiallyFavorite,
     this.disableLocalProjectTaskSelection,
+    this.project,
   });
   final TaskModel? task;
+  final ProjectModel? project;
 
   final bool? disableLocalProjectTaskSelection;
 
@@ -43,6 +45,7 @@ class TimesheetAddPage extends StatelessWidget {
           showOnlySyncedTaskAndProjects: disableLocalProjectTaskSelection,
           disableProjectTaskSelection: disableProjectTaskSelection,
           task: task,
+          project: project,
           isFavorite: isInitiallyFavorite,
           builder: (context, form, formListView) => Column(
             children: [
