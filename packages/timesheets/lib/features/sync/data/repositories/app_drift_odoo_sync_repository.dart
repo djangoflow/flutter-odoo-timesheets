@@ -9,17 +9,16 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
     super.syncStrategy,
   );
 
-  @override
+  @override // TODO  make new methods for localOnly operations to separate
   Future<List<T>> getAll({bool returnOnlySecondary = false}) async {
-    if (await isPrimaryBackendAvailable) {
+    if (!returnOnlySecondary && await isPrimaryBackendAvailable) {
       try {
         final items = await primaryBackend.getAll();
         await updateSecondaryBackend(items);
         await (syncStrategy as DriftOdooSyncStrategy<T, TTable>)
             .syncBatch(items, primaryBackend, modelName: modelName);
-        if (!returnOnlySecondary) {
-          return items;
-        }
+
+        return items;
       } catch (e, strackTrace) {
         logger.e('Error fetching items from primary backend:', e, strackTrace);
         return secondaryBackend.getAll();
