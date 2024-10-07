@@ -22,13 +22,17 @@ class TimesheetWithTaskEditor extends StatelessWidget {
     this.showOnlySyncedTaskAndProjects,
     this.disableProjectTaskSelection,
     this.isFavorite,
+    this.additionalControls = const {},
   });
 
   final TaskModel? task;
   final ProjectModel? project;
   final String? description;
 
-  final List<Widget> Function(BuildContext context)? additionalChildrenBuilder;
+  final List<Widget> Function(BuildContext context, FormGroup form)?
+      additionalChildrenBuilder;
+  final Map<String, AbstractControl<dynamic>> additionalControls;
+
   final bool? showOnlySyncedTaskAndProjects;
   final bool? disableProjectTaskSelection;
   final bool? isFavorite;
@@ -36,33 +40,30 @@ class TimesheetWithTaskEditor extends StatelessWidget {
   final Widget Function(
       BuildContext context, FormGroup form, Widget formListView) builder;
 
-  FormGroup get _formGroup => fb.group(
-        {
-          projectControlName: FormControl<ProjectModel>(
-            value: task?.project ?? project,
-            disabled: disableProjectTaskSelection == true ? true : false,
-            validators: [
-              Validators.required,
-            ],
-          ),
-          taskControlName: FormControl<TaskModel>(
-            value: task,
-            disabled: disableProjectTaskSelection == true ? true : false,
-            validators: [
-              Validators.required,
-            ],
-          ),
-          descriptionControlName: FormControl<String>(
-            value: description,
-            validators: [
-              Validators.required,
-            ],
-          ),
-          isFavoriteControlName: FormControl<bool>(
-            value: isFavorite ?? false,
-          ),
-        },
-      );
+  FormGroup get _formGroup {
+    final baseControls = {
+      projectControlName: FormControl<ProjectModel>(
+        value: task?.project ?? project,
+        disabled: disableProjectTaskSelection == true ? true : false,
+        validators: [Validators.required],
+      ),
+      taskControlName: FormControl<TaskModel>(
+        value: task,
+        disabled: disableProjectTaskSelection == true ? true : false,
+        validators: [Validators.required],
+      ),
+      descriptionControlName: FormControl<String>(
+        value: description,
+        validators: [Validators.required],
+      ),
+      isFavoriteControlName: FormControl<bool>(
+        value: isFavorite ?? false,
+      ),
+    };
+
+    // Merge base controls with additional controls
+    return FormGroup({...baseControls, ...additionalControls});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,7 @@ class TimesheetWithTaskEditor extends StatelessWidget {
                 ),
                 const _IsFavoriteCheckbox(),
                 if (additionalChildrenBuilder != null)
-                  ...additionalChildrenBuilder!(context),
+                  ...additionalChildrenBuilder!(context, formGroup),
               ],
             ),
           );

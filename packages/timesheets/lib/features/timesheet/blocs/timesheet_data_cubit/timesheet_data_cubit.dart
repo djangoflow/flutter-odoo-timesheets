@@ -30,6 +30,21 @@ class TimesheetDataCubit
               ),
           timesheetRepository,
         );
+
+  @override
+  Future<TimesheetModel> updateItem(
+    TimesheetModel model, {
+    bool onlyUpdateSecondary = false,
+  }) async {
+    final updatedObject = await timesheetRepository.update(
+      model.copyWith(
+        writeDate: DateTime.timestamp(),
+      ),
+      onlyUpdateSecondary: onlyUpdateSecondary,
+    );
+    update(updatedObject);
+    return updatedObject;
+  }
 }
 
 class TimesheetRelationalDataCubit
@@ -55,4 +70,19 @@ class TimesheetRelationalDataCubit
               ),
           timesheetRelationalRepository,
         );
+
+  @override
+  Future<TimesheetModel> updateItem(
+    TimesheetModel model, {
+    bool onlyUpdateSecondary = false,
+  }) async {
+    final updatedObject = await timesheetRelationalRepository.update(
+      model.copyWith(
+        writeDate: DateTime.timestamp(),
+      ),
+      onlyUpdateSecondary: onlyUpdateSecondary,
+    );
+    update(updatedObject);
+    return updatedObject;
+  }
 }

@@ -29,7 +29,9 @@ class TimesheetDetailsPage extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       context.router.push(
-                        const TimesheetEditRoute(),
+                        TimesheetEditRoute(
+                          timesheetId: timesheet.id,
+                        ),
                       );
                     },
                     icon: const Icon(Icons.edit),

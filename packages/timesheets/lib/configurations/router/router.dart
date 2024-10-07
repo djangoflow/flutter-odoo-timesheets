@@ -103,27 +103,13 @@ class AppRouter extends RootStackRouter {
                     ),
                   ],
                 ),
-                // AutoRoute(
-                //   path: 'edit',
-                //   page: TaskEditRoute.page,
-                // ),
-                AutoRoute(
-                  path: 'timesheets/:timesheetId',
-                  page: TimesheetsRouter.page,
-                  children: [
-                    AutoRoute(
-                      path: '',
-                      page: TimesheetDetailsRoute.page,
-                    ),
-                    AutoRoute(
-                      path: 'edit',
-                      page: TimesheetEditRoute.page,
-                    ),
-                  ],
-                ),
               ],
             ),
           ],
+        ),
+        AutoRoute(
+          page: TimesheetEditRoute.page,
+          path: '/timesheets/:id/edit',
         ),
         // Or redirect to home
         AutoRoute(path: '*', page: UnknownRouteRoute.page),

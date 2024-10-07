@@ -163,51 +163,67 @@ class _TimesheetListView extends StatelessWidget {
   final List<TimesheetModel> timesheets;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<SyncCubit<TimesheetModel>, SyncState>(
-        builder: (context, state) => ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: timesheets.length,
-          separatorBuilder: (context, index) => SizedBox(
-            height: kPadding.h,
-          ),
-          itemBuilder: (context, index) {
-            final timesheet = timesheets[index];
-
-            return TimesheetExpansionTile(
-              key: ValueKey(timesheet.id),
-              timesheet: timesheet,
-              leading: Icon(
-                state.pendingSyncRecordIds?.contains(timesheet.id) == true
-                    ? CupertinoIcons.cloud_upload_fill
-                    : CupertinoIcons.check_mark_circled_solid,
-                size: 32,
-              ),
-              trailing: Container(
-                margin: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: AppColors.getTintedSurfaceColor(
-                      Theme.of(context).colorScheme.surfaceTint),
-                  borderRadius: BorderRadius.circular(kPadding.r * 8),
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: kPadding.w * 2,
-                  vertical: kPadding.h,
-                ),
-                child: Text(
-                  Duration(
-                    seconds: ((timesheet.unitAmount ?? 0.0) * 3600).toInt(),
-                  ).timerString(
-                    DurationFormat.hoursMinutesSeconds,
-                  ),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
-            );
-          },
+  Widget build(BuildContext context) {
+    final cubit = context.read<TimesheetRelationalListCubit>();
+    return BlocBuilder<SyncCubit<TimesheetModel>, SyncState>(
+      builder: (context, state) => ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: timesheets.length,
+        separatorBuilder: (context, index) => SizedBox(
+          height: kPadding.h,
         ),
-      );
+        itemBuilder: (context, index) {
+          final timesheet = timesheets[index];
+
+          return TimesheetExpansionTile(
+            key: ValueKey(timesheet.id),
+            onEdit: (context) async {
+              final result = await context.router.push(
+                TimesheetEditRoute(
+                  timesheetId: timesheet.id,
+                ),
+              );
+              if (result != null && result == true) {
+                cubit.reload(
+                  cubit.state.filter?.copyWith(
+                    offset: 0,
+                  ),
+                );
+              }
+            },
+            timesheet: timesheet,
+            leading: Icon(
+              state.pendingSyncRecordIds?.contains(timesheet.id) == true
+                  ? CupertinoIcons.cloud_upload_fill
+                  : CupertinoIcons.check_mark_circled_solid,
+              size: 32,
+            ),
+            trailing: Container(
+              margin: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                color: AppColors.getTintedSurfaceColor(
+                    Theme.of(context).colorScheme.surfaceTint),
+                borderRadius: BorderRadius.circular(kPadding.r * 8),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: kPadding.w * 2,
+                vertical: kPadding.h,
+              ),
+              child: Text(
+                Duration(
+                  seconds: ((timesheet.unitAmount ?? 0.0) * 3600).toInt(),
+                ).timerString(
+                  DurationFormat.hoursMinutesSeconds,
+                ),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 class _ActiveTimeSheetBlocBuilder extends StatelessWidget {

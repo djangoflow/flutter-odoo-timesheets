@@ -14,6 +14,7 @@ class TimesheetExpansionTile extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final Widget? subtitle;
+  final Function(BuildContext context)? onEdit;
   const TimesheetExpansionTile({
     super.key,
     required this.timesheet,
@@ -22,6 +23,7 @@ class TimesheetExpansionTile extends StatelessWidget {
     this.leading,
     this.trailing,
     this.subtitle,
+    this.onEdit,
   });
 
   @override
@@ -51,6 +53,8 @@ class TimesheetExpansionTile extends StatelessWidget {
               ),
               _TimesheetDescription(
                 description: timesheet.name,
+                id: timesheet.id,
+                onEdit: onEdit,
               ),
             ],
           ),
@@ -109,8 +113,11 @@ class _TimesheetExpansionHeader extends StatelessWidget {
 }
 
 class _TimesheetDescription extends StatelessWidget {
-  const _TimesheetDescription({this.description});
+  const _TimesheetDescription(
+      {this.description, required this.id, required this.onEdit});
   final String? description;
+  final int id;
+  final Function(BuildContext context)? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -130,25 +137,27 @@ class _TimesheetDescription extends StatelessWidget {
                   'Description',
                   style: textTheme.bodySmall,
                 ),
-                const Spacer(),
-                IconButton(
-                  style: theme.iconButtonTheme.style?.copyWith(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    maximumSize: WidgetStatePropertyAll(
-                      Size(kPadding.h * 4, kPadding.h * 4),
+                if (onEdit != null) ...[
+                  const Spacer(),
+                  IconButton(
+                    style: theme.iconButtonTheme.style?.copyWith(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      maximumSize: WidgetStatePropertyAll(
+                        Size(kPadding.h * 4, kPadding.h * 4),
+                      ),
+                      minimumSize: WidgetStatePropertyAll(
+                        Size(kPadding.h * 4, kPadding.h * 4),
+                      ),
+                      alignment: Alignment.center,
+                      padding: const WidgetStatePropertyAll(
+                        EdgeInsets.zero,
+                      ),
+                      iconSize: WidgetStatePropertyAll(kPadding.h * 2.5),
                     ),
-                    minimumSize: WidgetStatePropertyAll(
-                      Size(kPadding.h * 4, kPadding.h * 4),
-                    ),
-                    alignment: Alignment.center,
-                    padding: const WidgetStatePropertyAll(
-                      EdgeInsets.zero,
-                    ),
-                    iconSize: WidgetStatePropertyAll(kPadding.h * 2.5),
+                    onPressed: () => onEdit!(context),
+                    icon: const Icon(CupertinoIcons.pencil),
                   ),
-                  onPressed: () {},
-                  icon: const Icon(CupertinoIcons.pencil),
-                ),
+                ],
               ],
             ),
             SizedBox(
