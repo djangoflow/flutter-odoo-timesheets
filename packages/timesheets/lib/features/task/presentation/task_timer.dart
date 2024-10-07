@@ -269,9 +269,10 @@ class _TaskTimerSmallState extends State<_TaskTimerSmall> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _TimerText(
-                    textStyleAnimation: textStyleAnimation,
-                    duration: widget.state.duration),
+                ConfigurableTimerText(
+                  textStyleAnimation: textStyleAnimation,
+                  duration: widget.state.duration,
+                ),
                 _TimerIcon(
                   animation: animation,
                   colorAnimation: colorAnimation,
@@ -311,44 +312,80 @@ class _TaskTimerSmallState extends State<_TaskTimerSmall> {
   }
 }
 
-class _TimerText extends StatelessWidget {
-  final Animation<TextStyle>? textStyleAnimation;
+class ConfigurableTimerText extends StatelessWidget {
   final Duration duration;
+  final Animation<TextStyle>? textStyleAnimation;
+  final double digitWidth;
+  final double colonWidth;
+  final double colonVerticalOffset;
 
-  const _TimerText({
-    required this.textStyleAnimation,
+  const ConfigurableTimerText({
+    super.key,
     required this.duration,
+    required this.textStyleAnimation,
+    this.digitWidth = 14.0,
+    this.colonWidth = 10.0,
+    this.colonVerticalOffset = -2.0,
   });
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => textStyleAnimation != null
-            ? ValueListenableBuilder<TextStyle>(
-                valueListenable: textStyleAnimation!,
-                builder: (context, textStyle, child) {
-                  // Calculate the width of a sample 4-digit timer string
-                  final textPainter = TextPainter(
-                    text: TextSpan(
-                      text: '04:30', // Sample 4-digit timer string with colon
-                      style: textStyle,
+  Widget build(BuildContext context) => textStyleAnimation == null
+      ? const SizedBox()
+      : ValueListenableBuilder<TextStyle>(
+          valueListenable: textStyleAnimation!,
+          builder: (context, textStyle, child) {
+            final formattedParts = _getFormattedTimerParts();
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: formattedParts.map((part) {
+                final isColon = part == ':';
+                return SizedBox(
+                  width: isColon ? colonWidth : digitWidth,
+                  child: Center(
+                    child: Transform.translate(
+                      offset: isColon
+                          ? Offset(0, colonVerticalOffset)
+                          : Offset.zero,
+                      child: Text(
+                        part,
+                        style: textStyle,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    textDirection: TextDirection.ltr,
-                    textScaler: MediaQuery.of(context).textScaler,
-                  )..layout();
+                  ),
+                );
+              }).toList(),
+            );
+          },
+        );
 
-                  final calculatedWidth = textPainter.width;
+  List<String> _getFormattedTimerParts() {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
 
-                  return SizedBox(
-                    width: calculatedWidth,
-                    child: Text(
-                      duration.timerString(DurationFormat.minutesSeconds),
-                      style: textStyle,
-                    ),
-                  );
-                },
-              )
-            : const SizedBox(),
-      );
+    if (hours > 0) {
+      return [
+        ...hours.toString().padLeft(2, '0').split(''),
+        ':',
+        ...minutes.toString().padLeft(2, '0').split(''),
+        ':',
+        ...seconds.toString().padLeft(2, '0').split(''),
+      ];
+    } else if (minutes >= 100) {
+      return [
+        ...minutes.toString().padLeft(3, '0').split(''),
+        ':',
+        ...seconds.toString().padLeft(2, '0').split(''),
+      ];
+    } else {
+      return [
+        ...minutes.toString().padLeft(2, '0').split(''),
+        ':',
+        ...seconds.toString().padLeft(2, '0').split(''),
+      ];
+    }
+  }
 }
 
 class _TimerIcon extends StatelessWidget {
