@@ -149,8 +149,10 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
         },
         autofillHints: const [AutofillHints.url],
         validationMessages: {
-          ValidationMessage.required: (_) => 'Server Url is required',
+          ValidationMessage.required: (_) => 'Server url is required',
           ValidationMessage.pattern: (_) => 'Invalid url format',
+          _ValidServerAsyncValidator.validationMessage: (_) =>
+              'Invalid server url',
         },
       );
 
@@ -316,10 +318,12 @@ class _ValidServerAsyncValidator extends AsyncValidator<dynamic> {
 
   _ValidServerAsyncValidator({required this.getDbListMethod});
 
+  static const String validationMessage = 'invalid_server';
+
   @override
   Future<Map<String, dynamic>?> validate(
       AbstractControl<dynamic> control) async {
-    final error = {'invalid_server': true};
+    final error = {validationMessage: true};
 
     try {
       final serverUrl = control.value as String;
