@@ -76,6 +76,7 @@ class TimesheetListView<
                               timesheet.copyWith(
                                 isFavorite: !timesheet.isFavorite,
                               ),
+                              shouldUpdateSecondaryOnly: true,
                             );
                             if (updatedItem.isFavorite == false) {
                               cubit.removeLocally(updatedItem);
@@ -157,9 +158,11 @@ class TimesheetListView<
                         logger.d(
                             'Updating timesheet: ${updatableTimesheet.unitAmount}');
 
-                        final updatedTimesheet = await timesheetListCubit
-                            .updateItem(updatableTimesheet,
-                                shouldUpdateSecondaryOnly: true);
+                        final updatedTimesheet =
+                            await timesheetListCubit.updateItem(
+                          updatableTimesheet,
+                          shouldUpdateSecondaryOnly: true,
+                        );
                         logger.d(
                             'Updated timesheet: ${updatedTimesheet.unitAmount}');
                       },
