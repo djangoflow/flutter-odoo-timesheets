@@ -84,14 +84,25 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
           body: TaskListView(
             emptyBuilder: (_, taskState) => EmptyTasksPlaceHolder(
               title: taskState.filter?.search != null ? 'No Tasks Found' : null,
-              onGetStarted: () {
-                context.pushRoute(TimesheetRouter(
-                  children: [
-                    TimesheetAddRoute(
-                      project: state.data,
+              onGetStarted: () async {
+                final tasksCubit = context.read<TaskRelationalListCubit>();
+                final result = await context.pushRoute(
+                  TimesheetRouter(
+                    children: [
+                      TimesheetAddRoute(
+                        project: state.data,
+                      ),
+                    ],
+                  ),
+                );
+                if (result != null && result == true) {
+                  tasksCubit.reload(
+                    taskState.filter?.copyWith(
+                      search: null,
+                      offset: 0,
                     ),
-                  ],
-                ));
+                  );
+                }
               },
             ),
           ),
