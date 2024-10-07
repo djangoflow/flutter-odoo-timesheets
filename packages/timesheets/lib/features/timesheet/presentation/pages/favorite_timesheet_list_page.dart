@@ -34,7 +34,11 @@ class FavoriteTimesheetListPage extends StatelessWidget
           final cubit = context.read<FavoriteTimesheetRelationalListCubit>();
           if (isVisible == true) {
             cubit.reactivate();
-            cubit.reload();
+            cubit.reload(
+              cubit.state.filter?.copyWith(
+                offset: 0,
+              ),
+            );
           } else {
             cubit.deactivate();
           }

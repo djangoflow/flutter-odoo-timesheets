@@ -34,7 +34,11 @@ class TimesheetListPage extends StatelessWidget implements AutoRouteWrapper {
           final cubit = context.read<TimesheetRelationalListCubit>();
           if (isVisible == true) {
             cubit.reactivate();
-            cubit.reload();
+            cubit.reload(
+              cubit.state.filter?.copyWith(
+                offset: 0,
+              ),
+            );
           } else {
             cubit.deactivate();
           }
