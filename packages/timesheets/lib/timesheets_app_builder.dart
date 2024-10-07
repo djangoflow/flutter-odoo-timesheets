@@ -36,9 +36,6 @@ class TimesheetsAppBuilder extends AppBuilder {
               );
             },
             onLogout: (_) {
-              appRouter.navigate(
-                const HomeTabRouter(),
-              );
               _updateErrorReporterUserInformation();
             },
             child: AppCubitBuilder(
