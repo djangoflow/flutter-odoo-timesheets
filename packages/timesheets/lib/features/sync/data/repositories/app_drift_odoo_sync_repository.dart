@@ -31,7 +31,7 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
 
   @override
   Future<T?> getById(int id, {bool returnOnlySecondary = false}) async {
-    if (await isPrimaryBackendAvailable) {
+    if (!returnOnlySecondary && await isPrimaryBackendAvailable) {
       try {
         final item = await primaryBackend.getById(id);
         if (item != null) {
@@ -39,9 +39,8 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
           await (syncStrategy as DriftOdooSyncStrategy<T, TTable>)
               .syncBatch([item], primaryBackend, modelName: modelName);
         }
-        if (!returnOnlySecondary) {
-          return item;
-        }
+
+        return item;
       } catch (e, strackTrace) {
         logger.e('Error fetching item from primary backend:', e, strackTrace);
         return secondaryBackend.getById(id);
