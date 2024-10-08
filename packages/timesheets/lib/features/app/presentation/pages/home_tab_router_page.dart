@@ -77,7 +77,7 @@ class HomeTabRouterPage extends StatelessWidget implements AutoRouteWrapper {
                     BottomNavigationBarItem(
                       icon: Icon(CupertinoIcons.clock),
                       activeIcon: Icon(CupertinoIcons.clock_fill),
-                      label: 'Timers',
+                      label: 'Timesheets',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(CupertinoIcons.briefcase),

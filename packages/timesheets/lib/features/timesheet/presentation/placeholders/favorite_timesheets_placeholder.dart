@@ -10,8 +10,8 @@ class FavoriteTimesheetsPlaceHolder extends EmptyPlaceholder {
             height: 96.h,
             width: 96.h,
           ),
-          title: 'No favorited timers yet',
+          title: 'No favorited timesheets yet',
           message:
-              'You can mark a timer as favorite either on the timer creation page or within an existing timer',
+              'You can mark a timer as favorite either on the timer creation page or within an existing timesheet',
         );
 }

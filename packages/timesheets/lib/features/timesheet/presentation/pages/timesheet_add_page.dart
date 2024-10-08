@@ -38,7 +38,7 @@ class TimesheetAddPage extends StatelessWidget {
         appBar: AppBar(
           leading: const AutoLeadingButton(),
           title: const Text(
-            'Create Timer',
+            'Create Timesheet',
           ),
         ),
         body: TimesheetWithTaskEditor(
@@ -67,7 +67,7 @@ class TimesheetAddPage extends StatelessWidget {
                         onPressed: form.valid ? action : null,
                         child: const Center(
                           child: Text(
-                            'Create Timer',
+                            'Create Timesheet',
                           ),
                         ),
                       ),
