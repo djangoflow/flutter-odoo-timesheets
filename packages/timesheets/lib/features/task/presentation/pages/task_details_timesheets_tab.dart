@@ -148,7 +148,8 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                 ],
               ),
             );
-
+            print("Building TaskDetailsTimesheetsTabPage");
+            print("Current task: ${task?.id}");
             return body;
           },
         ),
@@ -326,6 +327,24 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
                           context.read<TimerCubit>().elapsedTime = Duration(
                             seconds: currentlyElapsedTime,
                           );
+                          context
+                              .read<_ActiveTimesheetRelationalListCubit>()
+                              .update(
+                                context
+                                    .read<_ActiveTimesheetRelationalListCubit>()
+                                    .state
+                                    .data!
+                                    .map(
+                                      (t) => t.id == timesheet.id
+                                          ? timesheet.copyWith(
+                                              unitAmount: currentlyElapsedTime
+                                                  .toUnitAmount(),
+                                              lastTicked: DateTime.timestamp(),
+                                            )
+                                          : t,
+                                    )
+                                    .toList(),
+                              );
                         },
                         onTimerStateChange: (timercontext, timerState,
                             tickDurationInSeconds) async {
@@ -334,6 +353,11 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
                           final effectiveTimeSheet =
                               timesheetListCubit.state.data?.firstWhere(
                                   (element) => element.id == timesheet.id);
+                          print(
+                              "Timer state changed for timesheet ${effectiveTimeSheet?.id}");
+                          print(
+                              "  New status: ${effectiveTimeSheet?.currentStatus}");
+                          print("  Tick duration: $tickDurationInSeconds");
 
                           final isRunning =
                               timerState.status == TimerStatus.running;
@@ -348,22 +372,24 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
                           final updatedUnitAmount =
                               (effectiveTimeSheet!.unitAmount ?? 0) +
                                   newlyElapsedSeconds.toUnitAmount();
-                          logger.d(
-                              'newlyElapsedSeconds: ${DateTime.timestamp().difference(lastTickedValue!).inSeconds}');
+
                           TimesheetModel updatableTimesheet =
                               effectiveTimeSheet.copyWith(
                             unitAmount: updatedUnitAmount,
                             currentStatus: timerState.status,
                             lastTicked: lastTickedValue,
                           );
-                          logger.d(
-                              'Updating timesheet: ${updatableTimesheet.unitAmount}');
 
-                          final updatedTimesheet = await timesheetListCubit
-                              .updateItem(updatableTimesheet,
-                                  shouldUpdateSecondaryOnly: true);
-                          logger.d(
-                              'Updated timesheet: ${updatedTimesheet.unitAmount}');
+                          final updatedTimesheet =
+                              await timesheetListCubit.updateItem(
+                            updatableTimesheet,
+                            shouldUpdateSecondaryOnly: true,
+                          );
+
+                          print(
+                              "  Updated timesheet unitAmount: ${updatedTimesheet.unitAmount}");
+                          print(
+                              "  Updated timesheet lastTicked: ${updatedTimesheet.lastTicked}");
 
                           if (timerState.status == TimerStatus.stopped &&
                               context.mounted) {

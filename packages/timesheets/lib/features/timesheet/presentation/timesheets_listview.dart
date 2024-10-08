@@ -52,7 +52,7 @@ class TimesheetListView<
             final task = timesheet.task;
             final elapsedTime = timesheet.elapsedTime;
             final theme = Theme.of(context);
-            logger.d('timesheet: ${timesheet.unitAmount}');
+
             return AnimateIfVisible(
               key: ValueKey(timesheet.id),
               builder: (context, animation) => FadeTransition(
@@ -136,6 +136,7 @@ class TimesheetListView<
 
                         final isRunning =
                             timerState.status == TimerStatus.running;
+
                         final lastTickedValue = isRunning
                             ? DateTime.timestamp()
                             : effectiveTimeSheet!.lastTicked;
@@ -147,30 +148,41 @@ class TimesheetListView<
                         final updatedUnitAmount =
                             (effectiveTimeSheet!.unitAmount ?? 0) +
                                 newlyElapsedSeconds.toUnitAmount();
-                        logger.d(
-                            'newlyElapsedSeconds: ${DateTime.timestamp().difference(lastTickedValue!).inSeconds}');
+
                         TimesheetModel updatableTimesheet =
                             effectiveTimeSheet.copyWith(
                           unitAmount: updatedUnitAmount,
                           currentStatus: timerState.status,
                           lastTicked: lastTickedValue,
                         );
-                        logger.d(
-                            'Updating timesheet: ${updatableTimesheet.unitAmount}');
 
                         final updatedTimesheet =
                             await timesheetListCubit.updateItem(
                           updatableTimesheet,
                           shouldUpdateSecondaryOnly: true,
                         );
-                        logger.d(
-                            'Updated timesheet: ${updatedTimesheet.unitAmount}');
                       },
                       onTimerResume: (context) {
                         final currentlyElapsedTime = timesheet.elapsedTime;
                         context.read<TimerCubit>().elapsedTime = Duration(
                           seconds: currentlyElapsedTime,
                         );
+                        context.read<T>().update(
+                              context
+                                  .read<T>()
+                                  .state
+                                  .data!
+                                  .map(
+                                    (t) => t.id == timesheet.id
+                                        ? timesheet.copyWith(
+                                            unitAmount: currentlyElapsedTime
+                                                .toUnitAmount(),
+                                            lastTicked: DateTime.timestamp(),
+                                          )
+                                        : t,
+                                  )
+                                  .toList(),
+                            );
                       },
                       onTap: () {
                         context.router.push(

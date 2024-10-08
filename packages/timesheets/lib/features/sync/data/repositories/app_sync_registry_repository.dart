@@ -65,7 +65,6 @@ class AppSyncRegistryRepository extends SyncRegistryRepository {
   @override
   Future<void> batchUpsertRegistry(
       List<SyncRegistriesCompanion> syncRegistries) async {
-    logger.d('Batch upserting registries');
     await database.transaction(() async {
       for (final registry in syncRegistries) {
         await upsertRegistry(

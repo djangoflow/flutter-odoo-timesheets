@@ -156,6 +156,7 @@ class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    print('Disposing TaskTimer');
     _timerCubit.close();
     _controller.dispose();
     super.dispose();
@@ -338,6 +339,11 @@ class TaskTimerLarge extends StatefulWidget {
 
 class _TaskTimerLargeState extends State<TaskTimerLarge>
     with TimerAnimationMixin, TimerLogicMixin {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   AnimationController? getAnimationController() => widget.animationController;
   @override
