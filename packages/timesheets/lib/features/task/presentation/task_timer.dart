@@ -156,7 +156,6 @@ class _TaskTimerState extends State<TaskTimer> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    print('Disposing TaskTimer');
     _timerCubit.close();
     _controller.dispose();
     super.dispose();
