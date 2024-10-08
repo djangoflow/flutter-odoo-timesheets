@@ -1,5 +1,4 @@
 import 'package:auto_animated/auto_animated.dart';
-import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/sync/sync.dart';
-import 'package:timesheets/features/timer/timer.dart';
 
 import 'package:timesheets/features/timesheet/timesheet.dart';
 import 'package:timesheets/utils/utils.dart';
 
 class TimesheetListView<
         T extends SyncableListCubit<TimesheetModel, TimesheetListFilter>>
-    extends StatelessWidget {
+    extends StatelessWidget with TimesheetTimerHandlerMixin<T> {
   const TimesheetListView({
     super.key,
     required this.emptyBuilder,
@@ -129,60 +127,15 @@ class TimesheetListView<
                       initialTimerStatus: timesheet.currentStatus,
                       onTimerStateChange:
                           (context, timerState, tickInterval) async {
-                        final timesheetListCubit = context.read<T>();
-                        final effectiveTimeSheet = timesheetListCubit.state.data
-                            ?.firstWhere(
-                                (element) => element.id == timesheet.id);
-
-                        final isRunning =
-                            timerState.status == TimerStatus.running;
-
-                        final lastTickedValue = isRunning
-                            ? DateTime.timestamp()
-                            : effectiveTimeSheet!.lastTicked;
-
-                        // Calculate the newly elapsed time
-                        final newlyElapsedSeconds = tickInterval;
-
-                        // Add the newly elapsed time to the last recorded unitAmount
-                        final updatedUnitAmount =
-                            (effectiveTimeSheet!.unitAmount ?? 0) +
-                                newlyElapsedSeconds.toUnitAmount();
-
-                        TimesheetModel updatableTimesheet =
-                            effectiveTimeSheet.copyWith(
-                          unitAmount: updatedUnitAmount,
-                          currentStatus: timerState.status,
-                          lastTicked: lastTickedValue,
-                        );
-
-                        final updatedTimesheet =
-                            await timesheetListCubit.updateItem(
-                          updatableTimesheet,
-                          shouldUpdateSecondaryOnly: true,
+                        await onTimerStateChange(
+                          context,
+                          timesheet,
+                          timerState,
+                          tickInterval,
                         );
                       },
                       onTimerResume: (context) {
-                        final currentlyElapsedTime = timesheet.elapsedTime;
-                        context.read<TimerCubit>().elapsedTime = Duration(
-                          seconds: currentlyElapsedTime,
-                        );
-                        context.read<T>().update(
-                              context
-                                  .read<T>()
-                                  .state
-                                  .data!
-                                  .map(
-                                    (t) => t.id == timesheet.id
-                                        ? timesheet.copyWith(
-                                            unitAmount: currentlyElapsedTime
-                                                .toUnitAmount(),
-                                            lastTicked: DateTime.timestamp(),
-                                          )
-                                        : t,
-                                  )
-                                  .toList(),
-                            );
+                        onTimerResume(context, timesheet);
                       },
                       onTap: () {
                         context.router.push(

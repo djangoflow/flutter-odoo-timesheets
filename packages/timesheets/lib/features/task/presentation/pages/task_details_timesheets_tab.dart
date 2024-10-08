@@ -1,5 +1,4 @@
 import 'package:djangoflow_app/djangoflow_app.dart';
-import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,8 +147,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                 ],
               ),
             );
-            print("Building TaskDetailsTimesheetsTabPage");
-            print("Current task: ${task?.id}");
+
             return body;
           },
         ),
@@ -227,7 +225,8 @@ class _TimesheetListView extends StatelessWidget {
   }
 }
 
-class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
+class _ActiveTimeSheetBlocBuilder extends StatelessWidget
+    with TimesheetTimerHandlerMixin<_ActiveTimesheetRelationalListCubit> {
   const _ActiveTimeSheetBlocBuilder({required this.task});
   final TaskModel task;
 
@@ -275,7 +274,7 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
                         );
                       }
                     },
-                    child: const Text('Create Timer'),
+                    child: const Text('Create Timesheet'),
                   ),
                 ),
               ],
@@ -323,79 +322,22 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget {
                         elapsedTime: elapsedTime,
                         initialTimerStatus: timesheet.currentStatus,
                         onTimerResume: (context) {
-                          final currentlyElapsedTime = timesheet.elapsedTime;
-                          context.read<TimerCubit>().elapsedTime = Duration(
-                            seconds: currentlyElapsedTime,
-                          );
-                          context
-                              .read<_ActiveTimesheetRelationalListCubit>()
-                              .update(
-                                context
-                                    .read<_ActiveTimesheetRelationalListCubit>()
-                                    .state
-                                    .data!
-                                    .map(
-                                      (t) => t.id == timesheet.id
-                                          ? timesheet.copyWith(
-                                              unitAmount: currentlyElapsedTime
-                                                  .toUnitAmount(),
-                                              lastTicked: DateTime.timestamp(),
-                                            )
-                                          : t,
-                                    )
-                                    .toList(),
-                              );
+                          onTimerResume(context, timesheet);
                         },
                         onTimerStateChange: (timercontext, timerState,
                             tickDurationInSeconds) async {
-                          final timesheetListCubit = context
-                              .read<_ActiveTimesheetRelationalListCubit>();
-                          final effectiveTimeSheet =
-                              timesheetListCubit.state.data?.firstWhere(
-                                  (element) => element.id == timesheet.id);
-                          print(
-                              "Timer state changed for timesheet ${effectiveTimeSheet?.id}");
-                          print(
-                              "  New status: ${effectiveTimeSheet?.currentStatus}");
-                          print("  Tick duration: $tickDurationInSeconds");
-
-                          final isRunning =
-                              timerState.status == TimerStatus.running;
-                          final lastTickedValue = isRunning
-                              ? DateTime.timestamp()
-                              : effectiveTimeSheet!.lastTicked;
-
-                          // Calculate the newly elapsed time
-                          final newlyElapsedSeconds = tickDurationInSeconds;
-
-                          // Add the newly elapsed time to the last recorded unitAmount
-                          final updatedUnitAmount =
-                              (effectiveTimeSheet!.unitAmount ?? 0) +
-                                  newlyElapsedSeconds.toUnitAmount();
-
-                          TimesheetModel updatableTimesheet =
-                              effectiveTimeSheet.copyWith(
-                            unitAmount: updatedUnitAmount,
-                            currentStatus: timerState.status,
-                            lastTicked: lastTickedValue,
+                          final updatedTimesheet = await onTimerStateChange(
+                            context,
+                            timesheet,
+                            timerState,
+                            tickDurationInSeconds,
                           );
-
-                          final updatedTimesheet =
-                              await timesheetListCubit.updateItem(
-                            updatableTimesheet,
-                            shouldUpdateSecondaryOnly: true,
-                          );
-
-                          print(
-                              "  Updated timesheet unitAmount: ${updatedTimesheet.unitAmount}");
-                          print(
-                              "  Updated timesheet lastTicked: ${updatedTimesheet.lastTicked}");
 
                           if (timerState.status == TimerStatus.stopped &&
                               context.mounted) {
                             await _onTimerStopped(
                               context: context,
-                              updatableTimesheet: updatableTimesheet,
+                              updatableTimesheet: updatedTimesheet,
                             );
                           }
                         },

@@ -9,3 +9,5 @@ export 'extensions/timesheet_extensions.dart';
 export 'extract_relational_id.dart';
 export 'fonts.gen.dart';
 export 'list_bloc_util.dart';
+export 'odoo_exception_decoder.dart';
+export 'timesheet_timer_handler_mixin.dart';
