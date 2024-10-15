@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:drift_flutter/drift_flutter.dart';
+import 'package:drift/wasm.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
@@ -79,7 +82,30 @@ class ProjectTasks extends BaseTable {
   ],
 )
 class AppDatabase extends $AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase()
+      : super(
+          driftDatabase(
+            name: 'todo-app',
+            web: DriftWebOptions(
+              sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+              driftWorker: Uri.parse('drift_worker.js'),
+              onResult: (result) {
+                if (result.missingFeatures.isNotEmpty) {
+                  debugPrint(
+                      'Using ${result.chosenImplementation} due to unsupported '
+                      'browser features: ${result.missingFeatures}');
+                }
+              },
+            ),
+            native: DriftNativeOptions(
+              databasePath: () async {
+                final dbFolder = await getApplicationDocumentsDirectory();
+                final file = File(p.join(dbFolder.path, 'hr_timesheet.sqlite'));
+                return file.path;
+              },
+            ),
+          ),
+        );
 
   @override
   int get schemaVersion => 2;
@@ -118,3 +144,22 @@ LazyDatabase _openConnection() => LazyDatabase(() async {
       final file = File(p.join(dbFolder.path, 'hr_timesheet.sqlite'));
       return NativeDatabase.createInBackground(file);
     });
+
+DatabaseConnection _connectOnWeb() =>
+    DatabaseConnection.delayed(Future(() async {
+      final result = await WasmDatabase.open(
+        databaseName: 'my_app_db', // prefer to only use valid identifiers here
+        sqlite3Uri: Uri.parse('sqlite3.wasm'),
+        driftWorkerUri: Uri.parse('drift_worker.js'),
+      );
+
+      if (result.missingFeatures.isNotEmpty) {
+        // Depending how central local persistence is to your app, you may want
+        // to show a warning to the user if only unrealiable implemetentations
+        // are available.
+        print('Using ${result.chosenImplementation} due to missing browser '
+            'features: ${result.missingFeatures}');
+      }
+
+      return result.resolvedExecutor;
+    }));
