@@ -49,7 +49,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
               _ValidServerAsyncValidator(
                 getDbListMethod: (url) {
                   context.read<DjangoflowOdooAuthCubit>().setBaseUrl(url);
-                  return context.read<DjangoflowOdooAuthCubit>().getDbList();
+                  return context.read<DjangoflowOdooAuthCubit>().fetchDbList();
                 },
               )
             ],

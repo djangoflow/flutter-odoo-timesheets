@@ -20,5 +20,6 @@ class SyncProviderConfig<M extends SyncModel, R extends SyncRepository<M>> {
           backendId: backendId,
           modelName: odooModelName,
         ),
+        lazy: false,
       );
 }

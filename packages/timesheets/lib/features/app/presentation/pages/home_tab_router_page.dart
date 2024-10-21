@@ -19,7 +19,8 @@ class HomeTabRouterPage extends StatelessWidget implements AutoRouteWrapper {
       (value) => value.state.status,
     );
     // Happens during route change animation when user logs out
-    if (authStatus != AuthStatus.authenticated) {
+    if (authStatus != AuthStatus.authenticated ||
+        authStatus == AuthStatus.initial) {
       return const SizedBox();
     }
 

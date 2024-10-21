@@ -85,34 +85,32 @@ class TimesheetsAppBuilder extends AppBuilder {
                     DjangoflowAppSnackbar.initialize(
                       snackBarTheme: theme.snackBarTheme,
                     );
+                    final effectiveChild = AppDependencyWrapper(
+                      child: child ?? const SizedBox.shrink(),
+                    );
                     return AppResponsiveLayoutBuilder(
                       background: Colors.black87,
                       child: SandboxBanner(
                         isSandbox:
                             appState.environment == AppEnvironment.sandbox,
-                        child: child != null
-                            ? kIsWeb
-                                ? child
-                                : AppLinksCubitListener(
-                                    listenWhen: (previous, current) =>
-                                        current != null,
-                                    listener: (context, appLink) {
-                                      final path = appLink?.path;
-                                      if (path != null) {
-                                        appRouter.navigateNamed(
-                                          path,
-                                          onFailure: (failure) {
-                                            appRouter
-                                                .navigate(const TasksRouter());
-                                          },
-                                        );
-                                      }
-                                    },
-                                    child: AppDependencyWrapper(
-                                      child: child,
-                                    ),
-                                  )
-                            : const Offstage(),
+                        child: kIsWeb
+                            ? effectiveChild
+                            : AppLinksCubitListener(
+                                listenWhen: (previous, current) =>
+                                    current != null,
+                                listener: (context, appLink) {
+                                  final path = appLink?.path;
+                                  if (path != null) {
+                                    appRouter.navigateNamed(
+                                      path,
+                                      onFailure: (failure) {
+                                        appRouter.navigate(const TasksRouter());
+                                      },
+                                    );
+                                  }
+                                },
+                                child: effectiveChild,
+                              ),
                       ),
                     );
                   },
