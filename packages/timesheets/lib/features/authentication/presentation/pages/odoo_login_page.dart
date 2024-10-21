@@ -1,7 +1,7 @@
 import 'package:djangoflow_scrollable_column/djangoflow_scrollable_column.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
               _ValidServerAsyncValidator(
                 getDbListMethod: (url) {
                   context.read<DjangoflowOdooAuthCubit>().setBaseUrl(url);
-                  return context.read<DjangoflowOdooAuthCubit>().getDbList();
+                  return context.read<DjangoflowOdooAuthCubit>().fetchDbList();
                 },
               )
             ],
@@ -85,13 +85,13 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
               onTap: () => form.unfocus(),
               child: AutofillGroup(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: kPadding.w * 2),
+                  padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
                   child: Column(
                     children: [
                       Expanded(
                         child: DjangoflowScrollableColumn(
                           children: [
-                            SizedBox(height: kPadding.h * 3),
+                            SizedBox(height: kPadding * 3),
                             _buildServerUrlField(context, form),
                             _buildDbField(context, form),
                             ReactiveValueListenableBuilder(
@@ -164,7 +164,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding.h * 2),
+              SizedBox(height: kPadding * 2),
               AppReactiveTypeAhead<String, String>(
                 stringify: (db) => db.toString(),
                 suggestionsCallback: (searchTerm) => state.dbList!
@@ -196,7 +196,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding.h * 3),
+              SizedBox(height: kPadding * 3),
               ReactiveTextField(
                 formControlName: emailControlName,
                 textInputAction: TextInputAction.next,
@@ -223,7 +223,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding.h * 3),
+              SizedBox(height: kPadding * 3),
               ValueListenableBuilder<bool>(
                 valueListenable: _showPassword,
                 builder: (context, showPassword, child) => ReactiveTextField(

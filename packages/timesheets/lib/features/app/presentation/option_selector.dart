@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
@@ -16,10 +16,10 @@ class OptionSelector extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: kPadding.h * 2,
+              height: kPadding * 2,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding.w * 2),
+              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Select an option',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -28,9 +28,9 @@ class OptionSelector extends StatelessWidget {
             ListView.separated(
               shrinkWrap: true,
               padding: EdgeInsets.only(
-                left: kPadding.w * 2,
-                right: kPadding.w * 2,
-                top: kPadding.h * 2,
+                left: kPadding * 2,
+                right: kPadding * 2,
+                top: kPadding * 2,
               ),
               itemCount: options.length,
               separatorBuilder: (context, index) => const Divider(),
@@ -41,13 +41,13 @@ class OptionSelector extends StatelessWidget {
                   onTap: () => context.router.maybePop(option),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      vertical: kPadding.h,
+                      vertical: kPadding,
                     ),
                     child: Row(
                       children: [
                         Icon(option.icon),
                         SizedBox(
-                          width: kPadding.w,
+                          width: kPadding,
                         ),
                         Text(option.label),
                       ],
@@ -57,8 +57,8 @@ class OptionSelector extends StatelessWidget {
               },
             ),
             Divider(
-              endIndent: kPadding.w * 2,
-              indent: kPadding.w * 2,
+              endIndent: kPadding * 2,
+              indent: kPadding * 2,
             ),
           ],
         ),

@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/authentication/authentication.dart';
@@ -39,89 +38,82 @@ class TimesheetsAppBuilder extends AppBuilder {
               _updateErrorReporterUserInformation();
             },
             child: AppCubitBuilder(
-              builder: (context, appState) => ScreenUtilInit(
-                designSize: const Size(designWidth, designHeight),
-                minTextAdapt: true,
-                enableScaleText: () => true,
-                builder: (context, child) => AppGlobalLoaderOverlay(
-                  child: MaterialApp.router(
-                    debugShowCheckedModeBanner: false,
-                    scaffoldMessengerKey:
-                        DjangoflowAppSnackbar.scaffoldMessengerKey,
-                    title: appTitle,
-                    theme: AppTheme.light,
-                    darkTheme: AppTheme.dark,
-                    themeMode: appState.themeMode,
-                    locale: Locale(appState.locale, ''),
-                    supportedLocales: const [
-                      Locale('en', ''),
-                    ],
-                    localizationsDelegates: const [
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    routerConfig: appRouter.config(
-                      reevaluateListenable: ReevaluateListenable.stream(
-                        context.read<DjangoflowOdooAuthCubit>().stream,
-                      ),
-                      includePrefixMatches: true,
-                      deepLinkBuilder: (deepLink) {
-                        if (kIsWeb) {
-                          return deepLink;
-                        } else {
-                          if (initialDeepLink != null) {
-                            return DeepLink.path(initialDeepLink);
-                          } else {
-                            return DeepLink.single(
-                              const SplashRoute(),
-                            );
-                          }
-                        }
-                      },
-                      navigatorObservers: () => [
-                        AutoRouteObserver(),
-                        AppRouteObserver(),
-                        // Other navigators will go here
-                      ],
+              builder: (context, appState) => AppGlobalLoaderOverlay(
+                child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  scaffoldMessengerKey:
+                      DjangoflowAppSnackbar.scaffoldMessengerKey,
+                  title: appTitle,
+                  theme: AppTheme.light,
+                  darkTheme: AppTheme.dark,
+                  themeMode: appState.themeMode,
+                  locale: Locale(appState.locale, ''),
+                  supportedLocales: const [
+                    Locale('en', ''),
+                  ],
+                  localizationsDelegates: const [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  routerConfig: appRouter.config(
+                    reevaluateListenable: ReevaluateListenable.stream(
+                      context.read<DjangoflowOdooAuthCubit>().stream,
                     ),
-                    builder: (context, child) {
-                      final theme = Theme.of(context);
-                      DjangoflowAppSnackbar.initialize(
-                        snackBarTheme: theme.snackBarTheme,
-                      );
-                      return AppResponsiveLayoutBuilder(
-                        background: Colors.black87,
-                        child: SandboxBanner(
-                          isSandbox:
-                              appState.environment == AppEnvironment.sandbox,
-                          child: child != null
-                              ? kIsWeb
-                                  ? child
-                                  : AppLinksCubitListener(
-                                      listenWhen: (previous, current) =>
-                                          current != null,
-                                      listener: (context, appLink) {
-                                        final path = appLink?.path;
-                                        if (path != null) {
-                                          appRouter.navigateNamed(
-                                            path,
-                                            onFailure: (failure) {
-                                              appRouter.navigate(
-                                                  const TasksRouter());
-                                            },
-                                          );
-                                        }
-                                      },
-                                      child: AppDependencyWrapper(
-                                        child: child,
-                                      ),
-                                    )
-                              : const Offstage(),
-                        ),
-                      );
+                    includePrefixMatches: true,
+                    deepLinkBuilder: (deepLink) {
+                      if (kIsWeb) {
+                        return deepLink;
+                      } else {
+                        if (initialDeepLink != null) {
+                          return DeepLink.path(initialDeepLink);
+                        } else {
+                          return DeepLink.single(
+                            const SplashRoute(),
+                          );
+                        }
+                      }
                     },
+                    navigatorObservers: () => [
+                      AutoRouteObserver(),
+                      AppRouteObserver(),
+                      // Other navigators will go here
+                    ],
                   ),
+                  builder: (context, child) {
+                    final theme = Theme.of(context);
+                    DjangoflowAppSnackbar.initialize(
+                      snackBarTheme: theme.snackBarTheme,
+                    );
+                    final effectiveChild = AppDependencyWrapper(
+                      child: child ?? const SizedBox.shrink(),
+                    );
+                    return AppResponsiveLayoutBuilder(
+                      background: Colors.black87,
+                      child: SandboxBanner(
+                        isSandbox:
+                            appState.environment == AppEnvironment.sandbox,
+                        child: kIsWeb
+                            ? effectiveChild
+                            : AppLinksCubitListener(
+                                listenWhen: (previous, current) =>
+                                    current != null,
+                                listener: (context, appLink) {
+                                  final path = appLink?.path;
+                                  if (path != null) {
+                                    appRouter.navigateNamed(
+                                      path,
+                                      onFailure: (failure) {
+                                        appRouter.navigate(const TasksRouter());
+                                      },
+                                    );
+                                  }
+                                },
+                                child: effectiveChild,
+                              ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

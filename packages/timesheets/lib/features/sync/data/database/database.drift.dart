@@ -9,6 +9,1363 @@ import 'package:timesheets/features/sync/data/database/database.dart' as i4;
 import 'package:drift/src/runtime/query_builder/query_builder.dart' as i5;
 import 'package:drift/internal/modular.dart' as i6;
 
+typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
+    Function({
+  required int id,
+  required DateTime createDate,
+  required DateTime writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  required String backendId,
+  required DateTime date,
+  required String name,
+  required int projectId,
+  required int taskId,
+  i0.Value<double?> unitAmount,
+  i0.Value<i3.TimerStatus> currentStatus,
+  i0.Value<DateTime?> lastTicked,
+  i0.Value<bool> isFavorite,
+  i0.Value<int> rowid,
+});
+typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
+    Function({
+  i0.Value<int> id,
+  i0.Value<DateTime> createDate,
+  i0.Value<DateTime> writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  i0.Value<String> backendId,
+  i0.Value<DateTime> date,
+  i0.Value<String> name,
+  i0.Value<int> projectId,
+  i0.Value<int> taskId,
+  i0.Value<double?> unitAmount,
+  i0.Value<i3.TimerStatus> currentStatus,
+  i0.Value<DateTime?> lastTicked,
+  i0.Value<bool> isFavorite,
+  i0.Value<int> rowid,
+});
+
+class $$AnalyticLinesTableFilterComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
+  $$AnalyticLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<double> get unitAmount => $composableBuilder(
+      column: $table.unitAmount, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnWithTypeConverterFilters<i3.TimerStatus, i3.TimerStatus, int>
+      get currentStatus => $composableBuilder(
+          column: $table.currentStatus,
+          builder: (column) => i0.ColumnWithTypeConverterFilters(column));
+
+  i0.ColumnFilters<DateTime> get lastTicked => $composableBuilder(
+      column: $table.lastTicked, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite, builder: (column) => i0.ColumnFilters(column));
+
+  i1.$$SyncBackendsTableFilterComposer get backendId {
+    final i1.$$SyncBackendsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableFilterComposer get projectId {
+    final i2.$$ProjectProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectProjectsTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectTasksTableFilterComposer get taskId {
+    final i2.$$ProjectTasksTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectTasksTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AnalyticLinesTableOrderingComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
+  $$AnalyticLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<double> get unitAmount => $composableBuilder(
+      column: $table.unitAmount,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<int> get currentStatus => $composableBuilder(
+      column: $table.currentStatus,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get lastTicked => $composableBuilder(
+      column: $table.lastTicked,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i1.$$SyncBackendsTableOrderingComposer get backendId {
+    final i1.$$SyncBackendsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableOrderingComposer get projectId {
+    final i2.$$ProjectProjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectProjectsTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectTasksTableOrderingComposer get taskId {
+    final i2.$$ProjectTasksTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectTasksTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AnalyticLinesTableAnnotationComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
+  $$AnalyticLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get writeDate =>
+      $composableBuilder(column: $table.writeDate, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  i0.GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  i0.GeneratedColumn<double> get unitAmount => $composableBuilder(
+      column: $table.unitAmount, builder: (column) => column);
+
+  i0.GeneratedColumnWithTypeConverter<i3.TimerStatus, int> get currentStatus =>
+      $composableBuilder(
+          column: $table.currentStatus, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get lastTicked => $composableBuilder(
+      column: $table.lastTicked, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite, builder: (column) => column);
+
+  i1.$$SyncBackendsTableAnnotationComposer get backendId {
+    final i1.$$SyncBackendsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableAnnotationComposer get projectId {
+    final i2.$$ProjectProjectsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.projectId,
+            referencedTable: i6.ReadDatabaseContainer($db)
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                i2.$$ProjectProjectsTableAnnotationComposer(
+                  $db: $db,
+                  $table: i6.ReadDatabaseContainer($db)
+                      .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  i2.$$ProjectTasksTableAnnotationComposer get taskId {
+    final i2.$$ProjectTasksTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectTasksTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
+    i0.GeneratedDatabase,
+    i2.$AnalyticLinesTable,
+    i2.AnalyticLine,
+    i2.$$AnalyticLinesTableFilterComposer,
+    i2.$$AnalyticLinesTableOrderingComposer,
+    i2.$$AnalyticLinesTableAnnotationComposer,
+    $$AnalyticLinesTableCreateCompanionBuilder,
+    $$AnalyticLinesTableUpdateCompanionBuilder,
+    (
+      i2.AnalyticLine,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
+          i2.AnalyticLine>
+    ),
+    i2.AnalyticLine,
+    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})> {
+  $$AnalyticLinesTableTableManager(
+      i0.GeneratedDatabase db, i2.$AnalyticLinesTable table)
+      : super(i0.TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              i2.$$AnalyticLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              i2.$$AnalyticLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              i2.$$AnalyticLinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            i0.Value<int> id = const i0.Value.absent(),
+            i0.Value<DateTime> createDate = const i0.Value.absent(),
+            i0.Value<DateTime> writeDate = const i0.Value.absent(),
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            i0.Value<String> backendId = const i0.Value.absent(),
+            i0.Value<DateTime> date = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<int> projectId = const i0.Value.absent(),
+            i0.Value<int> taskId = const i0.Value.absent(),
+            i0.Value<double?> unitAmount = const i0.Value.absent(),
+            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
+            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.AnalyticLinesCompanion(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            date: date,
+            name: name,
+            projectId: projectId,
+            taskId: taskId,
+            unitAmount: unitAmount,
+            currentStatus: currentStatus,
+            lastTicked: lastTicked,
+            isFavorite: isFavorite,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required DateTime createDate,
+            required DateTime writeDate,
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            required String backendId,
+            required DateTime date,
+            required String name,
+            required int projectId,
+            required int taskId,
+            i0.Value<double?> unitAmount = const i0.Value.absent(),
+            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
+            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.AnalyticLinesCompanion.insert(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            date: date,
+            name: name,
+            projectId: projectId,
+            taskId: taskId,
+            unitAmount: unitAmount,
+            currentStatus: currentStatus,
+            lastTicked: lastTicked,
+            isFavorite: isFavorite,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AnalyticLinesTableProcessedTableManager = i0.ProcessedTableManager<
+    i0.GeneratedDatabase,
+    i2.$AnalyticLinesTable,
+    i2.AnalyticLine,
+    i2.$$AnalyticLinesTableFilterComposer,
+    i2.$$AnalyticLinesTableOrderingComposer,
+    i2.$$AnalyticLinesTableAnnotationComposer,
+    $$AnalyticLinesTableCreateCompanionBuilder,
+    $$AnalyticLinesTableUpdateCompanionBuilder,
+    (
+      i2.AnalyticLine,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
+          i2.AnalyticLine>
+    ),
+    i2.AnalyticLine,
+    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})>;
+typedef $$ProjectProjectsTableCreateCompanionBuilder
+    = i2.ProjectProjectsCompanion Function({
+  required int id,
+  required DateTime createDate,
+  required DateTime writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  required String backendId,
+  i0.Value<bool> active,
+  i0.Value<bool> isFavorite,
+  i0.Value<int?> color,
+  required String name,
+  i0.Value<int> taskCount,
+  i0.Value<int> rowid,
+});
+typedef $$ProjectProjectsTableUpdateCompanionBuilder
+    = i2.ProjectProjectsCompanion Function({
+  i0.Value<int> id,
+  i0.Value<DateTime> createDate,
+  i0.Value<DateTime> writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  i0.Value<String> backendId,
+  i0.Value<bool> active,
+  i0.Value<bool> isFavorite,
+  i0.Value<int?> color,
+  i0.Value<String> name,
+  i0.Value<int> taskCount,
+  i0.Value<int> rowid,
+});
+
+class $$ProjectProjectsTableFilterComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
+  $$ProjectProjectsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get active => $composableBuilder(
+      column: $table.active, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<int> get taskCount => $composableBuilder(
+      column: $table.taskCount, builder: (column) => i0.ColumnFilters(column));
+
+  i1.$$SyncBackendsTableFilterComposer get backendId {
+    final i1.$$SyncBackendsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i0.Expression<bool> analyticLinesRefs(
+      i0.Expression<bool> Function(i2.$$AnalyticLinesTableFilterComposer f) f) {
+    final i2.$$AnalyticLinesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+        getReferencedColumn: (t) => t.projectId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$AnalyticLinesTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  i0.Expression<bool> projectTasksRefs(
+      i0.Expression<bool> Function(i2.$$ProjectTasksTableFilterComposer f) f) {
+    final i2.$$ProjectTasksTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+        getReferencedColumn: (t) => t.projectId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectTasksTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectProjectsTableOrderingComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
+  $$ProjectProjectsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get active => $composableBuilder(
+      column: $table.active, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<int> get taskCount => $composableBuilder(
+      column: $table.taskCount,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i1.$$SyncBackendsTableOrderingComposer get backendId {
+    final i1.$$SyncBackendsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectProjectsTableAnnotationComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
+  $$ProjectProjectsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get writeDate =>
+      $composableBuilder(column: $table.writeDate, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get isFavorite => $composableBuilder(
+      column: $table.isFavorite, builder: (column) => column);
+
+  i0.GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  i0.GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  i0.GeneratedColumn<int> get taskCount =>
+      $composableBuilder(column: $table.taskCount, builder: (column) => column);
+
+  i1.$$SyncBackendsTableAnnotationComposer get backendId {
+    final i1.$$SyncBackendsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i0.Expression<T> analyticLinesRefs<T extends Object>(
+      i0.Expression<T> Function(i2.$$AnalyticLinesTableAnnotationComposer a)
+          f) {
+    final i2.$$AnalyticLinesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+        getReferencedColumn: (t) => t.projectId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$AnalyticLinesTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  i0.Expression<T> projectTasksRefs<T extends Object>(
+      i0.Expression<T> Function(i2.$$ProjectTasksTableAnnotationComposer a) f) {
+    final i2.$$ProjectTasksTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+        getReferencedColumn: (t) => t.projectId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectTasksTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectTasksTable>('project_tasks'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectProjectsTable,
+    i2.ProjectProject,
+    i2.$$ProjectProjectsTableFilterComposer,
+    i2.$$ProjectProjectsTableOrderingComposer,
+    i2.$$ProjectProjectsTableAnnotationComposer,
+    $$ProjectProjectsTableCreateCompanionBuilder,
+    $$ProjectProjectsTableUpdateCompanionBuilder,
+    (
+      i2.ProjectProject,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
+          i2.ProjectProject>
+    ),
+    i2.ProjectProject,
+    i0.PrefetchHooks Function(
+        {bool backendId, bool analyticLinesRefs, bool projectTasksRefs})> {
+  $$ProjectProjectsTableTableManager(
+      i0.GeneratedDatabase db, i2.$ProjectProjectsTable table)
+      : super(i0.TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              i2.$$ProjectProjectsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              i2.$$ProjectProjectsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => i2
+              .$$ProjectProjectsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            i0.Value<int> id = const i0.Value.absent(),
+            i0.Value<DateTime> createDate = const i0.Value.absent(),
+            i0.Value<DateTime> writeDate = const i0.Value.absent(),
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            i0.Value<String> backendId = const i0.Value.absent(),
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<int> taskCount = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.ProjectProjectsCompanion(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            isFavorite: isFavorite,
+            color: color,
+            name: name,
+            taskCount: taskCount,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required DateTime createDate,
+            required DateTime writeDate,
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            required String backendId,
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<bool> isFavorite = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            required String name,
+            i0.Value<int> taskCount = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.ProjectProjectsCompanion.insert(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            isFavorite: isFavorite,
+            color: color,
+            name: name,
+            taskCount: taskCount,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProjectProjectsTableProcessedTableManager = i0.ProcessedTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectProjectsTable,
+    i2.ProjectProject,
+    i2.$$ProjectProjectsTableFilterComposer,
+    i2.$$ProjectProjectsTableOrderingComposer,
+    i2.$$ProjectProjectsTableAnnotationComposer,
+    $$ProjectProjectsTableCreateCompanionBuilder,
+    $$ProjectProjectsTableUpdateCompanionBuilder,
+    (
+      i2.ProjectProject,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
+          i2.ProjectProject>
+    ),
+    i2.ProjectProject,
+    i0.PrefetchHooks Function(
+        {bool backendId, bool analyticLinesRefs, bool projectTasksRefs})>;
+typedef $$ProjectTasksTableCreateCompanionBuilder = i2.ProjectTasksCompanion
+    Function({
+  required int id,
+  required DateTime createDate,
+  required DateTime writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  required String backendId,
+  i0.Value<bool> active,
+  i0.Value<int?> color,
+  i0.Value<DateTime?> dateDeadline,
+  i0.Value<DateTime?> dateEnd,
+  i0.Value<String?> description,
+  required String name,
+  i0.Value<String?> priority,
+  required int projectId,
+  i0.Value<int> rowid,
+});
+typedef $$ProjectTasksTableUpdateCompanionBuilder = i2.ProjectTasksCompanion
+    Function({
+  i0.Value<int> id,
+  i0.Value<DateTime> createDate,
+  i0.Value<DateTime> writeDate,
+  i0.Value<bool> isMarkedAsDeleted,
+  i0.Value<String> backendId,
+  i0.Value<bool> active,
+  i0.Value<int?> color,
+  i0.Value<DateTime?> dateDeadline,
+  i0.Value<DateTime?> dateEnd,
+  i0.Value<String?> description,
+  i0.Value<String> name,
+  i0.Value<String?> priority,
+  i0.Value<int> projectId,
+  i0.Value<int> rowid,
+});
+
+class $$ProjectTasksTableFilterComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
+  $$ProjectTasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<bool> get active => $composableBuilder(
+      column: $table.active, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get dateDeadline => $composableBuilder(
+      column: $table.dateDeadline,
+      builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<DateTime> get dateEnd => $composableBuilder(
+      column: $table.dateEnd, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description,
+      builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => i0.ColumnFilters(column));
+
+  i1.$$SyncBackendsTableFilterComposer get backendId {
+    final i1.$$SyncBackendsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableFilterComposer get projectId {
+    final i2.$$ProjectProjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectProjectsTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i0.Expression<bool> analyticLinesRefs(
+      i0.Expression<bool> Function(i2.$$AnalyticLinesTableFilterComposer f) f) {
+    final i2.$$AnalyticLinesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$AnalyticLinesTableFilterComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectTasksTableOrderingComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
+  $$ProjectTasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get writeDate => $composableBuilder(
+      column: $table.writeDate,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<bool> get active => $composableBuilder(
+      column: $table.active, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<int> get color => $composableBuilder(
+      column: $table.color, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get dateDeadline => $composableBuilder(
+      column: $table.dateDeadline,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<DateTime> get dateEnd => $composableBuilder(
+      column: $table.dateEnd, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description,
+      builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => i0.ColumnOrderings(column));
+
+  i0.ColumnOrderings<String> get priority => $composableBuilder(
+      column: $table.priority, builder: (column) => i0.ColumnOrderings(column));
+
+  i1.$$SyncBackendsTableOrderingComposer get backendId {
+    final i1.$$SyncBackendsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableOrderingComposer get projectId {
+    final i2.$$ProjectProjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$ProjectProjectsTableOrderingComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ProjectTasksTableAnnotationComposer
+    extends i0.Composer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
+  $$ProjectTasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  i0.GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get createDate => $composableBuilder(
+      column: $table.createDate, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get writeDate =>
+      $composableBuilder(column: $table.writeDate, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get isMarkedAsDeleted => $composableBuilder(
+      column: $table.isMarkedAsDeleted, builder: (column) => column);
+
+  i0.GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+
+  i0.GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get dateDeadline => $composableBuilder(
+      column: $table.dateDeadline, builder: (column) => column);
+
+  i0.GeneratedColumn<DateTime> get dateEnd =>
+      $composableBuilder(column: $table.dateEnd, builder: (column) => column);
+
+  i0.GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  i0.GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  i0.GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  i1.$$SyncBackendsTableAnnotationComposer get backendId {
+    final i1.$$SyncBackendsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.backendId,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i1.$$SyncBackendsTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i1.$SyncBackendsTable>('sync_backends'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  i2.$$ProjectProjectsTableAnnotationComposer get projectId {
+    final i2.$$ProjectProjectsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.projectId,
+            referencedTable: i6.ReadDatabaseContainer($db)
+                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                i2.$$ProjectProjectsTableAnnotationComposer(
+                  $db: $db,
+                  $table: i6.ReadDatabaseContainer($db)
+                      .resultSet<i2.$ProjectProjectsTable>('project_projects'),
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  i0.Expression<T> analyticLinesRefs<T extends Object>(
+      i0.Expression<T> Function(i2.$$AnalyticLinesTableAnnotationComposer a)
+          f) {
+    final i2.$$AnalyticLinesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: i6.ReadDatabaseContainer($db)
+            .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            i2.$$AnalyticLinesTableAnnotationComposer(
+              $db: $db,
+              $table: i6.ReadDatabaseContainer($db)
+                  .resultSet<i2.$AnalyticLinesTable>('analytic_lines'),
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$ProjectTasksTableTableManager extends i0.RootTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectTasksTable,
+    i2.ProjectTask,
+    i2.$$ProjectTasksTableFilterComposer,
+    i2.$$ProjectTasksTableOrderingComposer,
+    i2.$$ProjectTasksTableAnnotationComposer,
+    $$ProjectTasksTableCreateCompanionBuilder,
+    $$ProjectTasksTableUpdateCompanionBuilder,
+    (
+      i2.ProjectTask,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
+          i2.ProjectTask>
+    ),
+    i2.ProjectTask,
+    i0.PrefetchHooks Function(
+        {bool backendId, bool projectId, bool analyticLinesRefs})> {
+  $$ProjectTasksTableTableManager(
+      i0.GeneratedDatabase db, i2.$ProjectTasksTable table)
+      : super(i0.TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              i2.$$ProjectTasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              i2.$$ProjectTasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              i2.$$ProjectTasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            i0.Value<int> id = const i0.Value.absent(),
+            i0.Value<DateTime> createDate = const i0.Value.absent(),
+            i0.Value<DateTime> writeDate = const i0.Value.absent(),
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            i0.Value<String> backendId = const i0.Value.absent(),
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
+            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
+            i0.Value<String?> description = const i0.Value.absent(),
+            i0.Value<String> name = const i0.Value.absent(),
+            i0.Value<String?> priority = const i0.Value.absent(),
+            i0.Value<int> projectId = const i0.Value.absent(),
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.ProjectTasksCompanion(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            color: color,
+            dateDeadline: dateDeadline,
+            dateEnd: dateEnd,
+            description: description,
+            name: name,
+            priority: priority,
+            projectId: projectId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int id,
+            required DateTime createDate,
+            required DateTime writeDate,
+            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
+            required String backendId,
+            i0.Value<bool> active = const i0.Value.absent(),
+            i0.Value<int?> color = const i0.Value.absent(),
+            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
+            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
+            i0.Value<String?> description = const i0.Value.absent(),
+            required String name,
+            i0.Value<String?> priority = const i0.Value.absent(),
+            required int projectId,
+            i0.Value<int> rowid = const i0.Value.absent(),
+          }) =>
+              i2.ProjectTasksCompanion.insert(
+            id: id,
+            createDate: createDate,
+            writeDate: writeDate,
+            isMarkedAsDeleted: isMarkedAsDeleted,
+            backendId: backendId,
+            active: active,
+            color: color,
+            dateDeadline: dateDeadline,
+            dateEnd: dateEnd,
+            description: description,
+            name: name,
+            priority: priority,
+            projectId: projectId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProjectTasksTableProcessedTableManager = i0.ProcessedTableManager<
+    i0.GeneratedDatabase,
+    i2.$ProjectTasksTable,
+    i2.ProjectTask,
+    i2.$$ProjectTasksTableFilterComposer,
+    i2.$$ProjectTasksTableOrderingComposer,
+    i2.$$ProjectTasksTableAnnotationComposer,
+    $$ProjectTasksTableCreateCompanionBuilder,
+    $$ProjectTasksTableUpdateCompanionBuilder,
+    (
+      i2.ProjectTask,
+      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
+          i2.ProjectTask>
+    ),
+    i2.ProjectTask,
+    i0.PrefetchHooks Function(
+        {bool backendId, bool projectId, bool analyticLinesRefs})>;
+
 abstract class $AppDatabase extends i0.GeneratedDatabase {
   $AppDatabase(i0.QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -746,373 +2103,6 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
   }
 }
 
-typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
-    Function({
-  required int id,
-  required DateTime createDate,
-  required DateTime writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  required String backendId,
-  required DateTime date,
-  required String name,
-  required int projectId,
-  required int taskId,
-  i0.Value<double?> unitAmount,
-  i0.Value<i3.TimerStatus> currentStatus,
-  i0.Value<DateTime?> lastTicked,
-  i0.Value<bool> isFavorite,
-  i0.Value<int> rowid,
-});
-typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
-    Function({
-  i0.Value<int> id,
-  i0.Value<DateTime> createDate,
-  i0.Value<DateTime> writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  i0.Value<String> backendId,
-  i0.Value<DateTime> date,
-  i0.Value<String> name,
-  i0.Value<int> projectId,
-  i0.Value<int> taskId,
-  i0.Value<double?> unitAmount,
-  i0.Value<i3.TimerStatus> currentStatus,
-  i0.Value<DateTime?> lastTicked,
-  i0.Value<bool> isFavorite,
-  i0.Value<int> rowid,
-});
-
-class $$AnalyticLinesTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
-  $$AnalyticLinesTableFilterComposer(super.$state);
-  i0.ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<double> get unitAmount => $state.composableBuilder(
-      column: $state.table.unitAmount,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnWithTypeConverterFilters<i3.TimerStatus, i3.TimerStatus, int>
-      get currentStatus => $state.composableBuilder(
-          column: $state.table.currentStatus,
-          builder: (column, joinBuilders) => i0.ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get lastTicked => $state.composableBuilder(
-      column: $state.table.lastTicked,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isFavorite => $state.composableBuilder(
-      column: $state.table.isFavorite,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableFilterComposer get backendId {
-    final i1.$$SyncBackendsTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectProjectsTableFilterComposer get projectId {
-    final i2.$$ProjectProjectsTableFilterComposer composer = $state
-        .composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.projectId,
-            referencedTable: i6.ReadDatabaseContainer($state
-                    .db)
-                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    parentComposers) =>
-                i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectTasksTableFilterComposer get taskId {
-    final i2.$$ProjectTasksTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.taskId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$ProjectTasksTable>('project_tasks'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$ProjectTasksTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectTasksTable>('project_tasks'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$AnalyticLinesTableOrderingComposer
-    extends i0.OrderingComposer<i0.GeneratedDatabase, i2.$AnalyticLinesTable> {
-  $$AnalyticLinesTableOrderingComposer(super.$state);
-  i0.ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<double> get unitAmount => $state.composableBuilder(
-      column: $state.table.unitAmount,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<int> get currentStatus => $state.composableBuilder(
-      column: $state.table.currentStatus,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get lastTicked => $state.composableBuilder(
-      column: $state.table.lastTicked,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isFavorite => $state.composableBuilder(
-      column: $state.table.isFavorite,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableOrderingComposer get backendId {
-    final i1.$$SyncBackendsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectProjectsTableOrderingComposer get projectId {
-    final i2.$$ProjectProjectsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.projectId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectProjectsTable>(
-                            'project_projects'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectTasksTableOrderingComposer get taskId {
-    final i2.$$ProjectTasksTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.taskId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$ProjectTasksTable>('project_tasks'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$ProjectTasksTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectTasksTable>('project_tasks'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
-    i0.GeneratedDatabase,
-    i2.$AnalyticLinesTable,
-    i2.AnalyticLine,
-    i2.$$AnalyticLinesTableFilterComposer,
-    i2.$$AnalyticLinesTableOrderingComposer,
-    $$AnalyticLinesTableCreateCompanionBuilder,
-    $$AnalyticLinesTableUpdateCompanionBuilder,
-    (
-      i2.AnalyticLine,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
-          i2.AnalyticLine>
-    ),
-    i2.AnalyticLine,
-    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})> {
-  $$AnalyticLinesTableTableManager(
-      i0.GeneratedDatabase db, i2.$AnalyticLinesTable table)
-      : super(i0.TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: i2
-              .$$AnalyticLinesTableFilterComposer(i0.ComposerState(db, table)),
-          orderingComposer: i2.$$AnalyticLinesTableOrderingComposer(
-              i0.ComposerState(db, table)),
-          updateCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
-            i0.Value<DateTime> createDate = const i0.Value.absent(),
-            i0.Value<DateTime> writeDate = const i0.Value.absent(),
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<DateTime> date = const i0.Value.absent(),
-            i0.Value<String> name = const i0.Value.absent(),
-            i0.Value<int> projectId = const i0.Value.absent(),
-            i0.Value<int> taskId = const i0.Value.absent(),
-            i0.Value<double?> unitAmount = const i0.Value.absent(),
-            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
-            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
-            i0.Value<bool> isFavorite = const i0.Value.absent(),
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.AnalyticLinesCompanion(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            date: date,
-            name: name,
-            projectId: projectId,
-            taskId: taskId,
-            unitAmount: unitAmount,
-            currentStatus: currentStatus,
-            lastTicked: lastTicked,
-            isFavorite: isFavorite,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required DateTime createDate,
-            required DateTime writeDate,
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            required String backendId,
-            required DateTime date,
-            required String name,
-            required int projectId,
-            required int taskId,
-            i0.Value<double?> unitAmount = const i0.Value.absent(),
-            i0.Value<i3.TimerStatus> currentStatus = const i0.Value.absent(),
-            i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
-            i0.Value<bool> isFavorite = const i0.Value.absent(),
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.AnalyticLinesCompanion.insert(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            date: date,
-            name: name,
-            projectId: projectId,
-            taskId: taskId,
-            unitAmount: unitAmount,
-            currentStatus: currentStatus,
-            lastTicked: lastTicked,
-            isFavorite: isFavorite,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$AnalyticLinesTableProcessedTableManager = i0.ProcessedTableManager<
-    i0.GeneratedDatabase,
-    i2.$AnalyticLinesTable,
-    i2.AnalyticLine,
-    i2.$$AnalyticLinesTableFilterComposer,
-    i2.$$AnalyticLinesTableOrderingComposer,
-    $$AnalyticLinesTableCreateCompanionBuilder,
-    $$AnalyticLinesTableUpdateCompanionBuilder,
-    (
-      i2.AnalyticLine,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$AnalyticLinesTable,
-          i2.AnalyticLine>
-    ),
-    i2.AnalyticLine,
-    i0.PrefetchHooks Function({bool backendId, bool projectId, bool taskId})>;
-
 class $ProjectProjectsTable extends i4.ProjectProjects
     with i0.TableInfo<$ProjectProjectsTable, i2.ProjectProject> {
   @override
@@ -1635,268 +2625,6 @@ class ProjectProjectsCompanion extends i0.UpdateCompanion<i2.ProjectProject> {
         .toString();
   }
 }
-
-typedef $$ProjectProjectsTableCreateCompanionBuilder
-    = i2.ProjectProjectsCompanion Function({
-  required int id,
-  required DateTime createDate,
-  required DateTime writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  required String backendId,
-  i0.Value<bool> active,
-  i0.Value<bool> isFavorite,
-  i0.Value<int?> color,
-  required String name,
-  i0.Value<int> taskCount,
-  i0.Value<int> rowid,
-});
-typedef $$ProjectProjectsTableUpdateCompanionBuilder
-    = i2.ProjectProjectsCompanion Function({
-  i0.Value<int> id,
-  i0.Value<DateTime> createDate,
-  i0.Value<DateTime> writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  i0.Value<String> backendId,
-  i0.Value<bool> active,
-  i0.Value<bool> isFavorite,
-  i0.Value<int?> color,
-  i0.Value<String> name,
-  i0.Value<int> taskCount,
-  i0.Value<int> rowid,
-});
-
-class $$ProjectProjectsTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
-  $$ProjectProjectsTableFilterComposer(super.$state);
-  i0.ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get active => $state.composableBuilder(
-      column: $state.table.active,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isFavorite => $state.composableBuilder(
-      column: $state.table.isFavorite,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<int> get color => $state.composableBuilder(
-      column: $state.table.color,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<int> get taskCount => $state.composableBuilder(
-      column: $state.table.taskCount,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableFilterComposer get backendId {
-    final i1.$$SyncBackendsTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$ProjectProjectsTableOrderingComposer extends i0
-    .OrderingComposer<i0.GeneratedDatabase, i2.$ProjectProjectsTable> {
-  $$ProjectProjectsTableOrderingComposer(super.$state);
-  i0.ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get active => $state.composableBuilder(
-      column: $state.table.active,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isFavorite => $state.composableBuilder(
-      column: $state.table.isFavorite,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<int> get color => $state.composableBuilder(
-      column: $state.table.color,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<int> get taskCount => $state.composableBuilder(
-      column: $state.table.taskCount,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableOrderingComposer get backendId {
-    final i1.$$SyncBackendsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$ProjectProjectsTableTableManager extends i0.RootTableManager<
-    i0.GeneratedDatabase,
-    i2.$ProjectProjectsTable,
-    i2.ProjectProject,
-    i2.$$ProjectProjectsTableFilterComposer,
-    i2.$$ProjectProjectsTableOrderingComposer,
-    $$ProjectProjectsTableCreateCompanionBuilder,
-    $$ProjectProjectsTableUpdateCompanionBuilder,
-    (
-      i2.ProjectProject,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
-          i2.ProjectProject>
-    ),
-    i2.ProjectProject,
-    i0.PrefetchHooks Function({bool backendId})> {
-  $$ProjectProjectsTableTableManager(
-      i0.GeneratedDatabase db, i2.$ProjectProjectsTable table)
-      : super(i0.TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: i2.$$ProjectProjectsTableFilterComposer(
-              i0.ComposerState(db, table)),
-          orderingComposer: i2.$$ProjectProjectsTableOrderingComposer(
-              i0.ComposerState(db, table)),
-          updateCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
-            i0.Value<DateTime> createDate = const i0.Value.absent(),
-            i0.Value<DateTime> writeDate = const i0.Value.absent(),
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<bool> active = const i0.Value.absent(),
-            i0.Value<bool> isFavorite = const i0.Value.absent(),
-            i0.Value<int?> color = const i0.Value.absent(),
-            i0.Value<String> name = const i0.Value.absent(),
-            i0.Value<int> taskCount = const i0.Value.absent(),
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.ProjectProjectsCompanion(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            active: active,
-            isFavorite: isFavorite,
-            color: color,
-            name: name,
-            taskCount: taskCount,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required DateTime createDate,
-            required DateTime writeDate,
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            required String backendId,
-            i0.Value<bool> active = const i0.Value.absent(),
-            i0.Value<bool> isFavorite = const i0.Value.absent(),
-            i0.Value<int?> color = const i0.Value.absent(),
-            required String name,
-            i0.Value<int> taskCount = const i0.Value.absent(),
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.ProjectProjectsCompanion.insert(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            active: active,
-            isFavorite: isFavorite,
-            color: color,
-            name: name,
-            taskCount: taskCount,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$ProjectProjectsTableProcessedTableManager = i0.ProcessedTableManager<
-    i0.GeneratedDatabase,
-    i2.$ProjectProjectsTable,
-    i2.ProjectProject,
-    i2.$$ProjectProjectsTableFilterComposer,
-    i2.$$ProjectProjectsTableOrderingComposer,
-    $$ProjectProjectsTableCreateCompanionBuilder,
-    $$ProjectProjectsTableUpdateCompanionBuilder,
-    (
-      i2.ProjectProject,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectProjectsTable,
-          i2.ProjectProject>
-    ),
-    i2.ProjectProject,
-    i0.PrefetchHooks Function({bool backendId})>;
 
 class $ProjectTasksTable extends i4.ProjectTasks
     with i0.TableInfo<$ProjectTasksTable, i2.ProjectTask> {
@@ -2559,344 +3287,6 @@ class ProjectTasksCompanion extends i0.UpdateCompanion<i2.ProjectTask> {
   }
 }
 
-typedef $$ProjectTasksTableCreateCompanionBuilder = i2.ProjectTasksCompanion
-    Function({
-  required int id,
-  required DateTime createDate,
-  required DateTime writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  required String backendId,
-  i0.Value<bool> active,
-  i0.Value<int?> color,
-  i0.Value<DateTime?> dateDeadline,
-  i0.Value<DateTime?> dateEnd,
-  i0.Value<String?> description,
-  required String name,
-  i0.Value<String?> priority,
-  required int projectId,
-  i0.Value<int> rowid,
-});
-typedef $$ProjectTasksTableUpdateCompanionBuilder = i2.ProjectTasksCompanion
-    Function({
-  i0.Value<int> id,
-  i0.Value<DateTime> createDate,
-  i0.Value<DateTime> writeDate,
-  i0.Value<bool> isMarkedAsDeleted,
-  i0.Value<String> backendId,
-  i0.Value<bool> active,
-  i0.Value<int?> color,
-  i0.Value<DateTime?> dateDeadline,
-  i0.Value<DateTime?> dateEnd,
-  i0.Value<String?> description,
-  i0.Value<String> name,
-  i0.Value<String?> priority,
-  i0.Value<int> projectId,
-  i0.Value<int> rowid,
-});
-
-class $$ProjectTasksTableFilterComposer
-    extends i0.FilterComposer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
-  $$ProjectTasksTableFilterComposer(super.$state);
-  i0.ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<bool> get active => $state.composableBuilder(
-      column: $state.table.active,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<int> get color => $state.composableBuilder(
-      column: $state.table.color,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get dateDeadline => $state.composableBuilder(
-      column: $state.table.dateDeadline,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<DateTime> get dateEnd => $state.composableBuilder(
-      column: $state.table.dateEnd,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i0.ColumnFilters<String> get priority => $state.composableBuilder(
-      column: $state.table.priority,
-      builder: (column, joinBuilders) =>
-          i0.ColumnFilters(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableFilterComposer get backendId {
-    final i1.$$SyncBackendsTableFilterComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectProjectsTableFilterComposer get projectId {
-    final i2.$$ProjectProjectsTableFilterComposer composer = $state
-        .composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.projectId,
-            referencedTable: i6.ReadDatabaseContainer($state
-                    .db)
-                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    parentComposers) =>
-                i2.$$ProjectProjectsTableFilterComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$ProjectTasksTableOrderingComposer
-    extends i0.OrderingComposer<i0.GeneratedDatabase, i2.$ProjectTasksTable> {
-  $$ProjectTasksTableOrderingComposer(super.$state);
-  i0.ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get createDate => $state.composableBuilder(
-      column: $state.table.createDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get writeDate => $state.composableBuilder(
-      column: $state.table.writeDate,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get isMarkedAsDeleted => $state.composableBuilder(
-      column: $state.table.isMarkedAsDeleted,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<bool> get active => $state.composableBuilder(
-      column: $state.table.active,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<int> get color => $state.composableBuilder(
-      column: $state.table.color,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get dateDeadline => $state.composableBuilder(
-      column: $state.table.dateDeadline,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<DateTime> get dateEnd => $state.composableBuilder(
-      column: $state.table.dateEnd,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get description => $state.composableBuilder(
-      column: $state.table.description,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i0.ColumnOrderings<String> get priority => $state.composableBuilder(
-      column: $state.table.priority,
-      builder: (column, joinBuilders) =>
-          i0.ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  i1.$$SyncBackendsTableOrderingComposer get backendId {
-    final i1.$$SyncBackendsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.backendId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i1.$$SyncBackendsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i1.$SyncBackendsTable>('sync_backends'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-
-  i2.$$ProjectProjectsTableOrderingComposer get projectId {
-    final i2.$$ProjectProjectsTableOrderingComposer composer =
-        $state.composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.projectId,
-            referencedTable: i6.ReadDatabaseContainer($state.db)
-                .resultSet<i2.$ProjectProjectsTable>('project_projects'),
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder, parentComposers) =>
-                i2.$$ProjectProjectsTableOrderingComposer(i0.ComposerState(
-                    $state.db,
-                    i6.ReadDatabaseContainer($state.db)
-                        .resultSet<i2.$ProjectProjectsTable>(
-                            'project_projects'),
-                    joinBuilder,
-                    parentComposers)));
-    return composer;
-  }
-}
-
-class $$ProjectTasksTableTableManager extends i0.RootTableManager<
-    i0.GeneratedDatabase,
-    i2.$ProjectTasksTable,
-    i2.ProjectTask,
-    i2.$$ProjectTasksTableFilterComposer,
-    i2.$$ProjectTasksTableOrderingComposer,
-    $$ProjectTasksTableCreateCompanionBuilder,
-    $$ProjectTasksTableUpdateCompanionBuilder,
-    (
-      i2.ProjectTask,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
-          i2.ProjectTask>
-    ),
-    i2.ProjectTask,
-    i0.PrefetchHooks Function({bool backendId, bool projectId})> {
-  $$ProjectTasksTableTableManager(
-      i0.GeneratedDatabase db, i2.$ProjectTasksTable table)
-      : super(i0.TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              i2.$$ProjectTasksTableFilterComposer(i0.ComposerState(db, table)),
-          orderingComposer: i2
-              .$$ProjectTasksTableOrderingComposer(i0.ComposerState(db, table)),
-          updateCompanionCallback: ({
-            i0.Value<int> id = const i0.Value.absent(),
-            i0.Value<DateTime> createDate = const i0.Value.absent(),
-            i0.Value<DateTime> writeDate = const i0.Value.absent(),
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            i0.Value<String> backendId = const i0.Value.absent(),
-            i0.Value<bool> active = const i0.Value.absent(),
-            i0.Value<int?> color = const i0.Value.absent(),
-            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
-            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
-            i0.Value<String?> description = const i0.Value.absent(),
-            i0.Value<String> name = const i0.Value.absent(),
-            i0.Value<String?> priority = const i0.Value.absent(),
-            i0.Value<int> projectId = const i0.Value.absent(),
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.ProjectTasksCompanion(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            active: active,
-            color: color,
-            dateDeadline: dateDeadline,
-            dateEnd: dateEnd,
-            description: description,
-            name: name,
-            priority: priority,
-            projectId: projectId,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required int id,
-            required DateTime createDate,
-            required DateTime writeDate,
-            i0.Value<bool> isMarkedAsDeleted = const i0.Value.absent(),
-            required String backendId,
-            i0.Value<bool> active = const i0.Value.absent(),
-            i0.Value<int?> color = const i0.Value.absent(),
-            i0.Value<DateTime?> dateDeadline = const i0.Value.absent(),
-            i0.Value<DateTime?> dateEnd = const i0.Value.absent(),
-            i0.Value<String?> description = const i0.Value.absent(),
-            required String name,
-            i0.Value<String?> priority = const i0.Value.absent(),
-            required int projectId,
-            i0.Value<int> rowid = const i0.Value.absent(),
-          }) =>
-              i2.ProjectTasksCompanion.insert(
-            id: id,
-            createDate: createDate,
-            writeDate: writeDate,
-            isMarkedAsDeleted: isMarkedAsDeleted,
-            backendId: backendId,
-            active: active,
-            color: color,
-            dateDeadline: dateDeadline,
-            dateEnd: dateEnd,
-            description: description,
-            name: name,
-            priority: priority,
-            projectId: projectId,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), i0.BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$ProjectTasksTableProcessedTableManager = i0.ProcessedTableManager<
-    i0.GeneratedDatabase,
-    i2.$ProjectTasksTable,
-    i2.ProjectTask,
-    i2.$$ProjectTasksTableFilterComposer,
-    i2.$$ProjectTasksTableOrderingComposer,
-    $$ProjectTasksTableCreateCompanionBuilder,
-    $$ProjectTasksTableUpdateCompanionBuilder,
-    (
-      i2.ProjectTask,
-      i0.BaseReferences<i0.GeneratedDatabase, i2.$ProjectTasksTable,
-          i2.ProjectTask>
-    ),
-    i2.ProjectTask,
-    i0.PrefetchHooks Function({bool backendId, bool projectId})>;
 i0.Index get analyticLinesProjectTask => i0.Index('analytic_lines_project_task',
     'CREATE INDEX analytic_lines_project_task ON analytic_lines (project_id, task_id)');
 i0.Index get analyticLinesStatus => i0.Index('analytic_lines_status',

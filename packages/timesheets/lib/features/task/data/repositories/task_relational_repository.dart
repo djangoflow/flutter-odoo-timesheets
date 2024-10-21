@@ -55,7 +55,11 @@ class TaskRelationalRepository
           return items;
         }
       } catch (e, stackTrace) {
-        logger.e('Failed to fetch from primary backend:', e, stackTrace);
+        logger.e(
+          'Failed to fetch from primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return secondaryBackendFetch;
       }
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/sync/data/database/database.dart';
@@ -111,7 +111,7 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                   icon: const Icon(CupertinoIcons.add),
                 ),
                 SizedBox(
-                  width: kPadding.w * 2,
+                  width: kPadding * 2,
                 ),
               ],
               centerTitle: false,

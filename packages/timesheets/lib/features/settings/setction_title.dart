@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 
 class SectionTitle extends StatelessWidget {
@@ -12,7 +12,7 @@ class SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: padding ??
             EdgeInsets.only(
-              bottom: kPadding.h,
+              bottom: kPadding,
             ),
         child: Text(
           title,

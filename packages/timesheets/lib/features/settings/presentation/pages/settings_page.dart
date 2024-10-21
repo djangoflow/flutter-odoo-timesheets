@@ -3,7 +3,7 @@ import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:djangoflow_app/djangoflow_app.dart';
@@ -37,13 +37,13 @@ class SettingsPage extends StatelessWidget {
                 const SectionTitle(title: 'Connection'),
                 const ConnectionStateToggle(),
                 SizedBox(
-                  height: kPadding.h,
+                  height: kPadding,
                 ),
               ],
               const _ThemeSection(),
               const _AccountSection(),
               SizedBox(
-                height: kPadding.h * 2,
+                height: kPadding * 2,
               ),
               const SectionTitle(title: 'Legal'),
               ListTile(
@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: kPadding.h,
+                height: kPadding,
               ),
               ListTile(
                 onTap: () {},
@@ -108,7 +108,7 @@ class _ThemeSection extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: kPadding.h,
+          height: kPadding,
         ),
         if (kDebugMode) ...[
           SizedBox(
@@ -127,7 +127,7 @@ class _ThemeSection extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: kPadding.h,
+            height: kPadding,
           ),
           SizedBox(
             width: double.infinity,
@@ -184,7 +184,7 @@ class _AccountSection extends StatelessWidget {
       children: [
         const SectionTitle(title: 'Account'),
         SizedBox(
-          height: kPadding.h,
+          height: kPadding,
         ),
         LinearProgressBuilder(
           action: (_) async {
@@ -232,7 +232,7 @@ class _AccountSection extends StatelessWidget {
 
               trailing: Icon(
                 Icons.chevron_right,
-                size: kPadding.w * 4,
+                size: kPadding * 4,
                 color: theme.colorScheme.onSurface,
               ),
               // Logout

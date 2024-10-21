@@ -30,8 +30,12 @@ class SyncCubit<T extends SyncModel> extends Cubit<SyncState> {
         pendingSyncRecordIds:
             pendingItems.map((item) => item.modelRecordId).toList(),
       ));
-    } catch (e) {
-      logger.e('Error syncing $modelName', e);
+    } catch (e, stackTrace) {
+      logger.e(
+        'Failed to sync $modelName',
+        error: e,
+        stackTrace: stackTrace,
+      );
       emit(state.copyWith(status: SyncStatus.syncFailure));
       rethrow;
     }

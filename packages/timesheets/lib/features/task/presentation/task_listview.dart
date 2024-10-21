@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -54,12 +54,12 @@ class TaskListView extends StatelessWidget {
                     ),
               ),
           child: ListView.separated(
-            padding: EdgeInsets.all(kPadding.h * 2),
+            padding: EdgeInsets.all(kPadding * 2),
             physics: const AlwaysScrollableScrollPhysics(),
             controller: controller,
             itemBuilder: itemBuilder,
             separatorBuilder: (context, index) => SizedBox(
-              height: kPadding.h,
+              height: kPadding,
             ),
             itemCount: itemCount,
           ),

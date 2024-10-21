@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_bloc/flutter_list_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/sync/sync.dart';
@@ -57,7 +57,7 @@ class TimesheetListView<
                 opacity: animation,
                 child: IconTheme(
                   data: theme.iconTheme.copyWith(
-                    size: kPadding.r * 2,
+                    size: kPadding * 2,
                   ),
                   child: Card(
                     color: Colors.transparent,
@@ -94,7 +94,7 @@ class TimesheetListView<
                       subtitle: Column(
                         children: [
                           SizedBox(
-                            height: kPadding.h / 1.5,
+                            height: kPadding / 1.5,
                           ),
                           _ListTileItem(
                             icon: const _PaddedIcon(
@@ -108,7 +108,7 @@ class TimesheetListView<
                           ),
                           if (task?.dateDeadline != null) ...[
                             SizedBox(
-                              height: kPadding.h / 1.5,
+                              height: kPadding / 1.5,
                             ),
                             _ListTileItem(
                               icon: const _PaddedIcon(
@@ -165,13 +165,13 @@ class TimesheetListView<
                 shrinkWrap: false,
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.all(
-                  kPadding.h * 2,
+                  kPadding * 2,
                 ),
                 controller: controller,
                 itemBuilder: itemBuilder,
                 itemCount: itemCount,
                 separatorBuilder: (context, index) => SizedBox(
-                  height: kPadding.h,
+                  height: kPadding,
                 ),
               ),
             ),
@@ -213,7 +213,7 @@ class _PaddedIcon extends StatelessWidget {
   final Icon icon;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: kPadding.w),
+        padding: EdgeInsets.symmetric(horizontal: kPadding),
         child: icon,
       );
 }

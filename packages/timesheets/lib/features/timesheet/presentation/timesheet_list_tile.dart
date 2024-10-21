@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/task/task.dart';
@@ -39,7 +39,7 @@ class TimesheetListTile extends StatelessWidget {
         key: key,
         title: Builder(
           builder: (context) => _PlaceholderContainer(
-            height: kPadding.h * 3.5,
+            height: kPadding * 3.5,
             color: Theme.of(context)
                 .colorScheme
                 .onPrimaryContainer
@@ -48,9 +48,9 @@ class TimesheetListTile extends StatelessWidget {
         ),
         subtitle: Builder(
           builder: (context) => Padding(
-            padding: EdgeInsets.only(top: kPadding.h / 2),
+            padding: EdgeInsets.only(top: kPadding / 2),
             child: _PlaceholderContainer(
-              height: kPadding.h * 2,
+              height: kPadding * 2,
               color: Theme.of(context)
                   .colorScheme
                   .onPrimaryContainer

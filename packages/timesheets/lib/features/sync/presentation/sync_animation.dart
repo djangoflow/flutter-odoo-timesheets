@@ -1,6 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/utils/utils.dart';
@@ -10,7 +10,7 @@ class SyncAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animationSize = kPadding.h * 5;
+    final animationSize = kPadding * 5;
     final textStyle = AppTextStyle.titleMedium.copyWith(
       color: Colors.white,
     );
@@ -52,9 +52,9 @@ class SyncAnimation extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20.h), // Add spacing between the animation and text
+          SizedBox(height: 20), // Add spacing between the animation and text
           SizedBox(
-            height: 50.h,
+            height: 50,
             child: AnimatedTextKit(
               animatedTexts: syncMessages
                   .map(

@@ -33,6 +33,7 @@ class SyncProvider<M extends SyncModel, R extends SyncRepository<M>>
           backendId: backendId,
           modelName: odooModelName,
         ),
+        lazy: false,
         child: Builder(builder: (context) => builder(context, backendId)),
       );
     } else {

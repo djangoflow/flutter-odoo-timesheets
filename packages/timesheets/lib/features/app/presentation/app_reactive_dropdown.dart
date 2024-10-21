@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:timesheets/configurations/configurations.dart';
@@ -52,11 +52,11 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           searchDelay: const Duration(milliseconds: searchDelayMs),
           emptyBuilder: emptyBuilder,
           itemBuilder: (context, item, isDisabled, isSelected) => Padding(
-            padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
+            padding: EdgeInsets.symmetric(vertical: kPadding / 2),
             child: Column(
               children: [
                 Divider(
-                  height: kPadding.h / 8,
+                  height: kPadding / 8,
                 ),
                 ListTile(
                   tileColor: Colors.transparent,
@@ -77,7 +77,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
             color: AppColors.getTintedSurfaceColor(
                 Theme.of(context).colorScheme.surfaceTint),
             borderRadius: BorderRadius.all(
-              Radius.circular(kPadding.r * 1),
+              Radius.circular(kPadding * 1),
             ),
             child: popupWidget,
           ),

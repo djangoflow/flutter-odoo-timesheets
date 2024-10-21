@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:timesheets/configurations/configurations.dart';
 
@@ -16,7 +16,7 @@ class AppGlassContainer extends StatelessWidget {
             Theme.of(context).colorScheme.surfaceTint),
         borderRadius: borderRadius ??
             BorderRadius.all(
-              Radius.circular(kPadding.r),
+              Radius.circular(kPadding),
             ),
         child: child,
       );

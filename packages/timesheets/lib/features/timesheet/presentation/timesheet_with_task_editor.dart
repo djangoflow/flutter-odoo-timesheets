@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:list_bloc/list_bloc.dart';
 import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -83,47 +83,43 @@ class TimesheetWithTaskEditor extends StatelessWidget {
       builder: (context, backendId) => ReactiveFormBuilder(
         form: () => _formGroup,
         builder: (context, formGroup, child) {
-          final formListView = GestureDetector(
-            onTap: () => formGroup.unfocus(),
-            child: ListView(
-              padding: EdgeInsets.symmetric(
-                horizontal: kPadding.h * 2,
-                vertical: kPadding.w * 2,
-              ),
-              shrinkWrap: true,
-              children: [
-                SizedBox(
-                  height: kPadding.h * 2,
-                ),
-                _ProjectSelector(
-                  projectSuggestionBoxController:
-                      projectSuggestionBoxController,
-                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
-                ),
-                SizedBox(height: kPadding.h * 2),
-                _TaskSelector(
-                  taskSuggestionBoxController: taskSuggestionBoxController,
-                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
-                ),
-                SizedBox(height: kPadding.h * 2),
-                _DescriptionField(
-                  disableProjectTaskSelection:
-                      disableProjectTaskSelection == true,
-                ),
-                if (disableProjectTaskSelection == true) ...[
-                  SizedBox(
-                    height: kPadding.h,
-                  ),
-                  const Text('Just enter a description and start to work!'),
-                ],
-                SizedBox(
-                  height: kPadding.h * 2,
-                ),
-                const _IsFavoriteCheckbox(),
-                if (additionalChildrenBuilder != null)
-                  ...additionalChildrenBuilder!(context, formGroup),
-              ],
+          final formListView = ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kPadding * 2,
+              vertical: kPadding * 2,
             ),
+            shrinkWrap: true,
+            children: [
+              const SizedBox(
+                height: kPadding * 2,
+              ),
+              _ProjectSelector(
+                projectSuggestionBoxController: projectSuggestionBoxController,
+                showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+              ),
+              const SizedBox(height: kPadding * 2),
+              _TaskSelector(
+                taskSuggestionBoxController: taskSuggestionBoxController,
+                showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+              ),
+              const SizedBox(height: kPadding * 2),
+              _DescriptionField(
+                disableProjectTaskSelection:
+                    disableProjectTaskSelection == true,
+              ),
+              if (disableProjectTaskSelection == true) ...[
+                const SizedBox(
+                  height: kPadding,
+                ),
+                const Text('Just enter a description and start to work!'),
+              ],
+              const SizedBox(
+                height: kPadding * 2,
+              ),
+              const _IsFavoriteCheckbox(),
+              if (additionalChildrenBuilder != null)
+                ...additionalChildrenBuilder!(context, formGroup),
+            ],
           );
 
           return builder(context, formGroup, formListView);
@@ -148,19 +144,19 @@ class _EmptyItem extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: kPadding.w * 4,
+        padding: const EdgeInsets.symmetric(
+          horizontal: kPadding * 4,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               CupertinoIcons.info_circle,
-              size: kPadding.r * 6,
+              size: kPadding * 6,
             ),
-            SizedBox(
-              height: kPadding.h * 2,
+            const SizedBox(
+              height: kPadding * 2,
             ),
             RichText(
               text: TextSpan(
@@ -189,13 +185,15 @@ class _EmptyItem extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              height: kPadding.h * 2,
+            const SizedBox(
+              height: kPadding * 2,
             ),
             if (searchTerm.isNotEmpty && onCreatePressed != null)
-              ElevatedButton(
-                onPressed: onCreatePressed,
-                child: Text('Create this $label'),
+              TextFieldTapRegion(
+                child: ElevatedButton(
+                  onPressed: onCreatePressed,
+                  child: Text('Create this $label'),
+                ),
               ),
           ],
         ),
@@ -294,7 +292,7 @@ class _ProjectSelector extends StatelessWidget {
               },
               itemBuilder: (context, itemData) => Padding(
                 key: ValueKey(itemData.id),
-                padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
+                padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
                 child: ListTile(
                   tileColor: Colors.transparent,
                   title: Text(
@@ -356,6 +354,7 @@ class _TaskSelectorState extends State<_TaskSelector> {
     final formGroup = (ReactiveForm.of(context) as FormGroup);
 
     formGroup.control(projectControlName).valueChanges.listen((event) {
+      print('project changed: $event');
       final taskControl = formGroup.control(taskControlName);
       taskControl.value = null;
       taskControl.markAsUntouched();
@@ -455,14 +454,11 @@ class _TaskSelectorState extends State<_TaskSelector> {
                         child: _EmptyItem(
                           label: 'Task',
                           searchTerm: searchTerm,
-                          onCreatePressed:
-                              widget.showOnlySyncedTaskAndProjects == true
-                                  ? null
-                                  : () => _onTaskCreate(
-                                        context: context,
-                                        project: project,
-                                        searchTerm: searchTerm,
-                                      ),
+                          onCreatePressed: () => _onTaskCreate(
+                            context: context,
+                            project: project,
+                            searchTerm: searchTerm,
+                          ),
                         ),
                       );
                     },
@@ -480,8 +476,10 @@ class _TaskSelectorState extends State<_TaskSelector> {
     required ProjectModel project,
     required String searchTerm,
   }) async {
+    print('calling createItem');
     final taskListCubit = context.read<TaskListCubit>();
     final formGroup = ReactiveForm.of(context) as FormGroup;
+    print('calling createItem');
     final createdTask = await taskListCubit.createItem(
       TaskModel(
         name: searchTerm,
@@ -492,6 +490,8 @@ class _TaskSelectorState extends State<_TaskSelector> {
         writeDate: DateTime.timestamp(),
       ),
     );
+
+    print('createdTask: $createdTask');
     if (createdTask != null) {
       formGroup.control(taskControlName).value = createdTask;
       taskListCubit.reload();
@@ -538,8 +538,8 @@ class _IsFavoriteCheckbox extends StatelessWidget {
           ReactiveCheckbox(
             formControlName: isFavoriteControlName,
           ),
-          SizedBox(
-            width: kPadding.w,
+          const SizedBox(
+            width: kPadding,
           ),
           Text(
             'Make Favorite',

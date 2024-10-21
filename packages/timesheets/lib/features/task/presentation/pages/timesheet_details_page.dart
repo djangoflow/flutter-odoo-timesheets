@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:intl/intl.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -46,7 +46,7 @@ class TimesheetDetailsPage extends StatelessWidget {
                       ),
                     )
                   : ListView(
-                      padding: EdgeInsets.all(kPadding.w * 2),
+                      padding: EdgeInsets.all(kPadding * 2),
                       children: [
                         _TimesheetDetails(
                           timesheet: timesheet!,
@@ -89,28 +89,28 @@ class _TimesheetDetails extends StatelessWidget {
           value: task?.name ?? '',
         ),
         SizedBox(
-          height: kPadding.h * 2,
+          height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Project',
           value: project?.name ?? '',
         ),
         SizedBox(
-          height: kPadding.h * 2,
+          height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Date',
           value: DateFormat('dd/MM/yyyy').format(timesheet.createDate),
         ),
         SizedBox(
-          height: kPadding.h * 2,
+          height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Start time',
           value: DateFormat('HH:mm:ss').format(timesheet.createDate),
         ),
         SizedBox(
-          height: kPadding.h * 2,
+          height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'End time',
@@ -143,7 +143,7 @@ class _TimesheetItem extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: kPadding.h / 2,
+          height: kPadding / 2,
         ),
         Text(
           value,

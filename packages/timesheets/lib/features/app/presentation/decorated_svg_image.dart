@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/theme/theme.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
@@ -22,15 +22,15 @@ class DecoratedSvgImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: decorationHeight ?? 192.h,
-        width: decorationWidth ?? 192.h,
+        height: decorationHeight ?? 192,
+        width: decorationWidth ?? 192,
         decoration: BoxDecoration(
           color: AppColors.getTintedSurfaceColor(
             Theme.of(context).colorScheme.surfaceTint,
           ),
-          borderRadius: BorderRadius.circular(32.r),
+          borderRadius: BorderRadius.circular(32),
         ),
-        padding: EdgeInsets.all(padding ?? 24.w),
+        padding: EdgeInsets.all(padding ?? 24),
         child: Center(
           child: image.svg(
             height: height,

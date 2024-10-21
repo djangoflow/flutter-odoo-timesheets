@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -50,13 +50,13 @@ class ProjectEditor extends StatelessWidget {
             onTap: () => formGroup.unfocus(),
             child: ListView(
               padding: EdgeInsets.symmetric(
-                horizontal: kPadding.h * 2,
-                vertical: kPadding.w * 2,
+                horizontal: kPadding * 2,
+                vertical: kPadding * 2,
               ),
               shrinkWrap: true,
               children: [
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 ReactiveTextField(
                   formControlName: projectControlName,
@@ -71,7 +71,7 @@ class ProjectEditor extends StatelessWidget {
                   },
                 ),
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 ReactiveDropdownField<OdooColors>(
                   formControlName: colorControlName,
@@ -108,7 +108,7 @@ class ProjectEditor extends StatelessWidget {
                       .toList(),
                 ),
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 Row(
                   children: [
@@ -116,7 +116,7 @@ class ProjectEditor extends StatelessWidget {
                       formControlName: isFavoriteControlName,
                     ),
                     SizedBox(
-                      width: kPadding.w,
+                      width: kPadding,
                     ),
                     Text(
                       'Make Favorite',
@@ -144,15 +144,15 @@ class _OdooColorLabel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 24.r,
-            height: 24.r,
+            width: 24,
+            height: 24,
             decoration: BoxDecoration(
               color: odooColor.color,
               shape: BoxShape.circle,
             ),
           ),
           SizedBox(
-            width: kPadding.w,
+            width: kPadding,
           ),
           Text(
             odooColor.colorLabel,

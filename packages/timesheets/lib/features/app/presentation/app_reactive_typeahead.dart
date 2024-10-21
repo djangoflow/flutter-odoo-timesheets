@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -48,8 +49,8 @@ class _AppReactiveTypeAheadState<T, V>
         formControlName: widget.formControlName,
         layoutArchitecture: (suggestions, scrollController) =>
             AppGlassContainer(
-          borderRadius: BorderRadius.all(
-            Radius.circular(kPadding.r * 1),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(kPadding * 1),
           ),
           child: ListView.separated(
             controller: scrollController,
@@ -73,6 +74,7 @@ class _AppReactiveTypeAheadState<T, V>
         noItemsFoundBuilder: widget.emptyBuilder != null
             ? (context) => widget.emptyBuilder!(context, _textEditingController)
             : null,
+        intercepting: kIsWeb ? true : false,
         validationMessages: widget.validationMessages,
         stringify: widget.stringify,
         suggestionsCallback: widget.suggestionsCallback,

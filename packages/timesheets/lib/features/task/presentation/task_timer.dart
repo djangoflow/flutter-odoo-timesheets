@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/timer/timer.dart';
@@ -376,7 +376,7 @@ class _TaskTimerLargeState extends State<TaskTimerLarge>
                   onPressed: (status) =>
                       onTimerPressed(status, context.read<TimerCubit>()),
                 ),
-                SizedBox(width: kPadding.w * 2),
+                SizedBox(width: kPadding * 2),
                 StopButton(
                   disabled: widget.disabled,
                   timerStatus: timerStatus,
@@ -394,8 +394,8 @@ class _TaskTimerLargeState extends State<TaskTimerLarge>
       IconButtonThemeData(
         style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
               shape: const WidgetStatePropertyAll(StadiumBorder()),
-              maximumSize: WidgetStatePropertyAll(Size(64.w, 60.h)),
-              minimumSize: WidgetStatePropertyAll(Size(64.w, 44.h)),
+              maximumSize: WidgetStatePropertyAll(Size(64, 60)),
+              minimumSize: WidgetStatePropertyAll(Size(64, 44)),
               padding: const WidgetStatePropertyAll(EdgeInsets.all(kPadding)),
             ),
       );
@@ -501,7 +501,7 @@ class TimerIconButton extends StatelessWidget {
               valueListenable: colorAnimation!,
               builder: (context, value, child) => AnimatedIcon(
                 icon: AnimatedIcons.play_pause,
-                size: 32.w,
+                size: 32,
                 progress: animation,
                 color: value ?? theme.colorScheme.onPrimary,
               ),
@@ -533,7 +533,7 @@ class PlayPauseButton extends StatelessWidget {
     return IconButton(
       icon: AnimatedIcon(
         icon: AnimatedIcons.play_pause,
-        size: kPadding.w * 3,
+        size: kPadding * 3,
         progress: animation,
         color: theme.colorScheme.primary,
       ),
@@ -560,7 +560,7 @@ class StopButton extends StatelessWidget {
     return IconButton(
       disabledColor: theme.colorScheme.primary.withOpacity(0.5),
       color: theme.colorScheme.primary,
-      icon: Icon(Icons.stop, size: kPadding.w * 3),
+      icon: Icon(Icons.stop, size: kPadding * 3),
       onPressed:
           disabled || timerStatus == TimerStatus.initial ? null : onPressed,
     );
@@ -579,20 +579,19 @@ Widget buildTimerContainer({
   return AnimatedContainer(
     duration: animationDurationDefault,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(kPadding.r * 8),
+      borderRadius: BorderRadius.circular(kPadding * 8),
       color: timerStatus == TimerStatus.running
           ? theme.colorScheme.primaryContainer
           : AppColors.getTintedSurfaceColor(theme.colorScheme.surfaceTint),
     ),
     child: InkWell(
       customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kPadding.r * 8),
+        borderRadius: BorderRadius.circular(kPadding * 8),
       ),
       onTap: disabled ? null : onTap,
       child: Padding(
         padding: padding ??
-            EdgeInsets.fromLTRB(
-                kPadding.w * 2, kPadding.h, kPadding.w, kPadding.h),
+            EdgeInsets.fromLTRB(kPadding * 2, kPadding, kPadding, kPadding),
         child: child,
       ),
     ),

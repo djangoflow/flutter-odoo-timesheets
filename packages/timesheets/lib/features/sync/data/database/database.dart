@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timesheets/features/timer/timer.dart';
 import 'database.drift.dart';
 export 'database.drift.dart';
@@ -78,8 +75,23 @@ class ProjectTasks extends BaseTable {
     SyncRegistries,
   ],
 )
-class AppDatabase extends $AppDatabase {
-  AppDatabase() : super(_openConnection());
+final class AppDatabase extends $AppDatabase {
+  AppDatabase()
+      : super(
+          driftDatabase(
+            name: 'timesheets-app',
+            web: DriftWebOptions(
+                sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+                driftWorker: Uri.parse('drift_worker.js'),
+                onResult: (result) {
+                  if (result.missingFeatures.isNotEmpty) {
+                    debugPrint(
+                        'Using ${result.chosenImplementation} due to unsupported '
+                        'browser features: ${result.missingFeatures}');
+                  }
+                }),
+          ),
+        );
 
   @override
   int get schemaVersion => 2;
@@ -112,9 +124,3 @@ class AppDatabase extends $AppDatabase {
         },
       );
 }
-
-LazyDatabase _openConnection() => LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, 'hr_timesheet.sqlite'));
-      return NativeDatabase.createInBackground(file);
-    });

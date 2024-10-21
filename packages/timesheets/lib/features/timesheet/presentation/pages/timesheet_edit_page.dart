@@ -2,7 +2,7 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:list_bloc/list_bloc.dart';
 import 'package:progress_builder/progress_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -65,7 +65,7 @@ class TimesheetEditPage extends StatelessWidget implements AutoRouteWrapper {
                   ),
                 },
                 additionalChildrenBuilder: (context, form) => [
-                  SizedBox(height: kPadding.h * 2),
+                  SizedBox(height: kPadding * 2),
                   ReactiveTextField<String>(
                     formControlName: 'totalTime',
                     decoration: const InputDecoration(
@@ -87,7 +87,7 @@ class TimesheetEditPage extends StatelessWidget implements AutoRouteWrapper {
                       child: ReactiveFormConsumer(
                         builder: (context, form, child) => Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: kPadding.w * 2),
+                              EdgeInsets.symmetric(horizontal: kPadding * 2),
                           child: LinearProgressBuilder(
                             onSuccess: () async {
                               final router = context.router;
