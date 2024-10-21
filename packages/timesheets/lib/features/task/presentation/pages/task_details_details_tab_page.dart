@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:list_bloc/list_bloc.dart';
@@ -49,11 +49,11 @@ class TaskDetailsDetailsTabPage extends StatelessWidget {
                       }
 
                       return ListView(
-                        padding: EdgeInsets.all(kPadding.h * 2),
+                        padding: EdgeInsets.all(kPadding * 2),
                         children: [
                           if (project != null && task != null)
                             Padding(
-                              padding: EdgeInsets.only(bottom: kPadding.h),
+                              padding: EdgeInsets.only(bottom: kPadding),
                               child: _TaskDetailsCard(
                                 project: project,
                                 task: task,
@@ -81,7 +81,7 @@ class _DescriptionCard extends StatelessWidget {
   Widget build(BuildContext context) => Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: EdgeInsets.all(kPadding.h * 2),
+          padding: EdgeInsets.all(kPadding * 2),
           child: _TaskDetailsItem(
             title: 'Description',
             child: HtmlWidget(
@@ -111,7 +111,7 @@ class _TaskDetailsCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: EdgeInsets.all(kPadding.h * 2),
+        padding: EdgeInsets.all(kPadding * 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -120,13 +120,13 @@ class _TaskDetailsCard extends StatelessWidget {
               child: Row(
                 children: [
                   SizedBox(
-                    height: kPadding.h * 3,
+                    height: kPadding * 3,
                     child: ColoredBar(
                       color: project.color.toColorFromColorIndex,
                     ),
                   ),
                   SizedBox(
-                    width: kPadding.w,
+                    width: kPadding,
                   ),
                   if (hasBackendId)
                     BlocBuilder<SyncCubit<ProjectModel>, SyncState>(
@@ -139,7 +139,7 @@ class _TaskDetailsCard extends StatelessWidget {
                       ),
                     ),
                   SizedBox(
-                    width: kPadding.w,
+                    width: kPadding,
                   ),
                   Flexible(
                     child: Text(
@@ -152,7 +152,7 @@ class _TaskDetailsCard extends StatelessWidget {
             ),
             if (task.name.isNotEmpty) ...[
               SizedBox(
-                height: kPadding.h * 2,
+                height: kPadding * 2,
               ),
               _TaskDetailsItem(
                 title: 'Task',
@@ -168,7 +168,7 @@ class _TaskDetailsCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: kPadding.w,
+                        width: kPadding,
                       ),
                     ],
                     Flexible(
@@ -183,7 +183,7 @@ class _TaskDetailsCard extends StatelessWidget {
             ],
             if (task.dateDeadline != null) ...[
               SizedBox(
-                height: kPadding.h * 2,
+                height: kPadding * 2,
               ),
               _TaskDetailsItem(
                 title: 'Deadline',
@@ -214,7 +214,7 @@ class _TaskDetailsItem extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           SizedBox(
-            height: kPadding.h / 2,
+            height: kPadding / 2,
           ),
           child,
         ],

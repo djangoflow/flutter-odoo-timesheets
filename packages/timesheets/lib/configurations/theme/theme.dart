@@ -1,6 +1,5 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'colors.dart';
 import 'size_constants.dart';
@@ -18,9 +17,9 @@ class AppTheme {
       height: 1,
     );
     return FlexSubThemesData(
-      buttonPadding: EdgeInsets.symmetric(
-        horizontal: kPadding.w * 2,
-        vertical: kPadding.h * 2.5,
+      buttonPadding: const EdgeInsets.symmetric(
+        horizontal: kPadding * 2,
+        vertical: kPadding * 2.5,
       ),
       elevatedButtonRadius: _buttonRadius,
       textButtonRadius: _buttonRadius,
@@ -40,7 +39,7 @@ class AppTheme {
       inputDecoratorIsFilled: false,
       fabSchemeColor: SchemeColor.primary,
       chipSchemeColor: SchemeColor.primary,
-      cardRadius: kPadding.r * 2,
+      cardRadius: kPadding * 2,
       cardElevation: 4,
       inputDecoratorBorderSchemeColor: SchemeColor.primary,
       bottomNavigationBarBackgroundSchemeColor: SchemeColor.surface,
@@ -100,37 +99,37 @@ class AppTheme {
     return theme.copyWith(
       listTileTheme: theme.listTileTheme.copyWith(
         tileColor: AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
-        minLeadingWidth: kPadding.w / 4,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: kPadding.w * 2,
-          vertical: kPadding.h,
+        minLeadingWidth: kPadding / 4,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: kPadding * 2,
+          vertical: kPadding,
         ),
         titleTextStyle: textTheme.titleMedium,
         subtitleTextStyle: textTheme.bodySmall?.copyWith(
           color: colorScheme.onSurfaceVariant,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kPadding.r),
+          borderRadius: BorderRadius.circular(kPadding),
         ),
       ),
       expansionTileTheme: theme.expansionTileTheme.copyWith(
         backgroundColor:
             AppColors.getTintedSurfaceColor(colorScheme.surfaceTint),
-        tilePadding: EdgeInsets.symmetric(
-          vertical: kPadding.h,
-          horizontal: kPadding.w * 2,
+        tilePadding: const EdgeInsets.symmetric(
+          vertical: kPadding,
+          horizontal: kPadding * 2,
         ),
         collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kPadding.r),
+          borderRadius: BorderRadius.circular(kPadding),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(kPadding.r),
+          borderRadius: BorderRadius.circular(kPadding),
         ),
       ),
       inputDecorationTheme: theme.inputDecorationTheme.copyWith(
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: kPadding.w * 2,
-          vertical: kPadding.h * 2,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: kPadding * 2,
+          vertical: kPadding * 2,
         ),
         hintStyle: textTheme.bodyMedium?.copyWith(
           color: colorScheme.tertiary,
@@ -152,7 +151,7 @@ class AppTheme {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: theme.iconButtonTheme.style?.copyWith(
-          iconSize: WidgetStatePropertyAll(kPadding.h * 3),
+          iconSize: const WidgetStatePropertyAll(kPadding * 3),
         ),
       ),
       iconTheme: theme.iconTheme.copyWith(
@@ -184,10 +183,10 @@ class AppTheme {
         style: theme.iconButtonTheme.style?.copyWith(
           backgroundColor:
               WidgetStatePropertyAll(theme.colorScheme.secondaryContainer),
-          iconSize: WidgetStatePropertyAll(kPadding.h * 3),
+          iconSize: const WidgetStatePropertyAll(kPadding * 3),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kPadding.r * 1.5),
+              borderRadius: BorderRadius.circular(kPadding * 1.5),
             ),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -49,7 +49,7 @@ class _AppReactiveTypeAheadState<T, V>
         layoutArchitecture: (suggestions, scrollController) =>
             AppGlassContainer(
           borderRadius: BorderRadius.all(
-            Radius.circular(kPadding.r * 1),
+            Radius.circular(kPadding * 1),
           ),
           child: ListView.separated(
             controller: scrollController,

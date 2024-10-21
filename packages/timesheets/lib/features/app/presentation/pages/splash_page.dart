@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
@@ -65,7 +65,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _AnimatedLogo(controller: _logoController),
-            SizedBox(height: (kPadding * 4).h),
+            SizedBox(height: (kPadding * 4)),
             _AnimatedText(controller: _textController),
           ],
         ),
@@ -118,8 +118,8 @@ class _AnimatedLogo extends StatelessWidget {
                     CurvedAnimation(parent: controller, curve: Curves.easeIn))
                 .value,
             child: AppLogo(
-              width: 134.w,
-              height: 128.h,
+              width: 134,
+              height: 128,
             ),
           ),
         ),
@@ -151,9 +151,9 @@ class _AnimatedText extends StatelessWidget {
               'Odoo',
               style: textTheme.headlineLarge,
             ),
-            SizedBox(height: kPadding.h),
+            SizedBox(height: kPadding),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding.w * 2),
+              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Time management without obstacles',
                 style: textTheme.bodyLarge,

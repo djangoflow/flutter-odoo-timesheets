@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:list_bloc/list_bloc.dart';
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
@@ -59,7 +59,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
               if (state is! Loading && state.data != null) ...[
                 AnimatedSearchAction(
                   hintText: 'Search tasks...',
-                  widthToNegate: (kPadding.h * 5 * 2) + (kPadding.w / 2),
+                  widthToNegate: (kPadding * 5 * 2) + (kPadding / 2),
                   onChanged: (query) => _onSearchChanged(context, query),
                   onSubmitted: (query) {
                     _onSearchChanged(context, query);

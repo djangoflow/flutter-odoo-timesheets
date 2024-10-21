@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:list_bloc/list_bloc.dart';
 import 'package:reactive_flutter_typeahead/reactive_flutter_typeahead.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -87,37 +87,37 @@ class TimesheetWithTaskEditor extends StatelessWidget {
             onTap: () => formGroup.unfocus(),
             child: ListView(
               padding: EdgeInsets.symmetric(
-                horizontal: kPadding.h * 2,
-                vertical: kPadding.w * 2,
+                horizontal: kPadding * 2,
+                vertical: kPadding * 2,
               ),
               shrinkWrap: true,
               children: [
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 _ProjectSelector(
                   projectSuggestionBoxController:
                       projectSuggestionBoxController,
                   showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
                 ),
-                SizedBox(height: kPadding.h * 2),
+                SizedBox(height: kPadding * 2),
                 _TaskSelector(
                   taskSuggestionBoxController: taskSuggestionBoxController,
                   showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
                 ),
-                SizedBox(height: kPadding.h * 2),
+                SizedBox(height: kPadding * 2),
                 _DescriptionField(
                   disableProjectTaskSelection:
                       disableProjectTaskSelection == true,
                 ),
                 if (disableProjectTaskSelection == true) ...[
                   SizedBox(
-                    height: kPadding.h,
+                    height: kPadding,
                   ),
                   const Text('Just enter a description and start to work!'),
                 ],
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 const _IsFavoriteCheckbox(),
                 if (additionalChildrenBuilder != null)
@@ -149,7 +149,7 @@ class _EmptyItem extends StatelessWidget {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: kPadding.w * 4,
+          horizontal: kPadding * 4,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,10 +157,10 @@ class _EmptyItem extends StatelessWidget {
           children: [
             Icon(
               CupertinoIcons.info_circle,
-              size: kPadding.r * 6,
+              size: kPadding * 6,
             ),
             SizedBox(
-              height: kPadding.h * 2,
+              height: kPadding * 2,
             ),
             RichText(
               text: TextSpan(
@@ -190,7 +190,7 @@ class _EmptyItem extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: kPadding.h * 2,
+              height: kPadding * 2,
             ),
             if (searchTerm.isNotEmpty && onCreatePressed != null)
               ElevatedButton(
@@ -294,7 +294,7 @@ class _ProjectSelector extends StatelessWidget {
               },
               itemBuilder: (context, itemData) => Padding(
                 key: ValueKey(itemData.id),
-                padding: EdgeInsets.symmetric(vertical: kPadding.h / 2),
+                padding: EdgeInsets.symmetric(vertical: kPadding / 2),
                 child: ListTile(
                   tileColor: Colors.transparent,
                   title: Text(
@@ -539,7 +539,7 @@ class _IsFavoriteCheckbox extends StatelessWidget {
             formControlName: isFavoriteControlName,
           ),
           SizedBox(
-            width: kPadding.w,
+            width: kPadding,
           ),
           Text(
             'Make Favorite',

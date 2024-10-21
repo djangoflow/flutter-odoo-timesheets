@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 
 class AnimatedSearchAction extends StatefulWidget {
@@ -93,28 +93,27 @@ class _AnimatedSearchActionState extends State<AnimatedSearchAction>
   @override
   Widget build(BuildContext context) => ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 16.w,
+          maxWidth: MediaQuery.of(context).size.width - 16,
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final maxWidth = constraints.maxWidth -
-                (widget.widthToNegate ??
-                    (kPadding.h * 5 * 2) + (kPadding.w * 2));
+                (widget.widthToNegate ?? (kPadding * 5 * 2) + (kPadding * 2));
             return AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
-                final expandedHeight = kPadding.h * 6;
-                final collapsedHeight = kPadding.h * 5;
+                final expandedHeight = kPadding * 6;
+                final collapsedHeight = kPadding * 5;
                 final currentHeight = collapsedHeight +
                     (expandedHeight - collapsedHeight) * _animation.value;
 
                 return Container(
                   width: _isExpanded
-                      ? (maxWidth * _animation.value + (kPadding.h * 5))
-                      : kPadding.h * 5,
+                      ? (maxWidth * _animation.value + (kPadding * 5))
+                      : kPadding * 5,
                   height: currentHeight,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: _isExpanded
                       ? TextField(
@@ -124,8 +123,8 @@ class _AnimatedSearchActionState extends State<AnimatedSearchAction>
                             hintText: widget.hintText,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
-                              horizontal: kPadding.w * 2,
-                              vertical: (currentHeight - (kPadding.h * 3)) / 2,
+                              horizontal: kPadding * 2,
+                              vertical: (currentHeight - (kPadding * 3)) / 2,
                             ),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.close),

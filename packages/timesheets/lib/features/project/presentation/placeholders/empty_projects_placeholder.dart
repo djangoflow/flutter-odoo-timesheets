@@ -1,4 +1,3 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
@@ -7,8 +6,8 @@ class EmptyProjectsPlaceholder extends EmptyPlaceholder {
       : super(
           icon: DecoratedSvgImage(
             image: Assets.iconsWork,
-            height: 96.h,
-            width: 96.h,
+            height: 96,
+            width: 96,
           ),
           title: title ?? 'You don\'t have any projects',
           message: 'Create a project to begin',

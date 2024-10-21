@@ -1,14 +1,13 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class FavoriteProjectsPlaceHolder extends EmptyPlaceholder {
-  FavoriteProjectsPlaceHolder({super.key, super.onGetStarted})
+  const FavoriteProjectsPlaceHolder({super.key, super.onGetStarted})
       : super(
-          icon: DecoratedSvgImage(
+          icon: const DecoratedSvgImage(
             image: Assets.iconsFavorite,
-            height: 96.h,
-            width: 96.h,
+            height: 96,
+            width: 96,
           ),
           title: 'No favorite projects yet',
           message:

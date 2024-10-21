@@ -1,4 +1,3 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
@@ -7,8 +6,8 @@ class TimesheetsPlaceHolder extends EmptyPlaceholder {
       : super(
           icon: DecoratedSvgImage(
             image: Assets.iconsClock,
-            height: 96.h,
-            width: 96.h,
+            height: 96,
+            width: 96,
           ),
           title: 'You don\'t have any timer created',
           message: 'Create a timer to to begin tracking time',

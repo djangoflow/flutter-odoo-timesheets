@@ -2,7 +2,7 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/features/project/project.dart';
@@ -67,12 +67,12 @@ class _ProjectsTabRouterPageState extends State<ProjectsTabRouterPage> {
                     });
                   },
                 ),
-                SizedBox(width: kPadding.w),
+                SizedBox(width: kPadding),
                 IconButton(
                   onPressed: () => _addProject(context, tabController.index),
                   icon: const Icon(CupertinoIcons.add),
                 ),
-                SizedBox(width: kPadding.w),
+                SizedBox(width: kPadding),
               ],
               bottom: TabBar(
                 controller: tabController,

@@ -2,7 +2,7 @@ import 'package:djangoflow_app/djangoflow_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:list_bloc/list_bloc.dart';
 import 'package:progress_builder/progress_builder.dart';
 import 'package:timesheets/configurations/configurations.dart';
@@ -78,13 +78,13 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                 children: [
                   ListView(
                     padding: EdgeInsets.symmetric(
-                      horizontal: kPadding.h * 2,
-                      vertical: kPadding.h * 3,
+                      horizontal: kPadding * 2,
+                      vertical: kPadding * 3,
                     ),
                     children: [
                       if (task != null) _ActiveTimeSheetBlocBuilder(task: task),
                       SizedBox(
-                        height: kPadding.h,
+                        height: kPadding,
                       ),
                       BlocConsumer<TimesheetRelationalListCubit,
                           TimesheetListState>(
@@ -109,8 +109,8 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                               message: 'Completed timesheets will appear here!',
                               icon: DecoratedSvgImage(
                                 image: Assets.iconsClock,
-                                height: 96.h,
-                                width: 96.h,
+                                height: 96,
+                                width: 96,
                               ),
                             );
                           } else {
@@ -125,11 +125,11 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                             children: [
                               const _SyncTimesheetsWidget(),
                               SizedBox(
-                                height: kPadding.h,
+                                height: kPadding,
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  vertical: kPadding.h,
+                                  vertical: kPadding,
                                 ),
                                 child: Text(
                                   'Completed timesheets',
@@ -170,7 +170,7 @@ class _TimesheetListView extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: timesheets.length,
         separatorBuilder: (context, index) => SizedBox(
-          height: kPadding.h,
+          height: kPadding,
         ),
         itemBuilder: (context, index) {
           final timesheet = timesheets[index];
@@ -203,11 +203,11 @@ class _TimesheetListView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.getTintedSurfaceColor(
                     Theme.of(context).colorScheme.surfaceTint),
-                borderRadius: BorderRadius.circular(kPadding.r * 8),
+                borderRadius: BorderRadius.circular(kPadding * 8),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: kPadding.w * 2,
-                vertical: kPadding.h,
+                horizontal: kPadding * 2,
+                vertical: kPadding,
               ),
               child: Text(
                 Duration(
@@ -247,7 +247,7 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 SizedBox(
-                  height: kPadding.h * 2,
+                  height: kPadding * 2,
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -292,7 +292,7 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: activeTimesheets.length,
                   separatorBuilder: (context, index) => SizedBox(
-                    height: kPadding.h,
+                    height: kPadding,
                   ),
                   itemBuilder: (context, index) {
                     final timesheet = activeTimesheets[index];
@@ -398,13 +398,13 @@ class _SyncTimesheetsWidget extends StatelessWidget {
           return Column(
             children: [
               SizedBox(
-                height: kPadding.h * 2,
+                height: kPadding * 2,
               ),
               Text(
                 'There are ${state.pendingSyncRecordIds!.length} timesheets that are not synced',
               ),
               SizedBox(
-                height: kPadding.h * 2,
+                height: kPadding * 2,
               ),
               if (state.status != SyncStatus.syncInProgress)
                 LinearProgressBuilder(
@@ -430,7 +430,7 @@ class _SyncTimesheetsWidget extends StatelessWidget {
                   ),
                 ),
               SizedBox(
-                height: kPadding.h,
+                height: kPadding,
               ),
             ],
           );

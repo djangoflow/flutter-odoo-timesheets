@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 
 class EmptyPlaceholder extends StatelessWidget {
@@ -9,7 +9,7 @@ class EmptyPlaceholder extends StatelessWidget {
     required this.icon,
     required this.title,
     this.onGetStarted,
-    this.height = .7,
+    this.heightFactor = .65,
     this.buttonText = 'Get Started',
   });
   final Widget icon;
@@ -18,7 +18,7 @@ class EmptyPlaceholder extends StatelessWidget {
 
   final void Function()? onGetStarted;
   final String buttonText;
-  final double height;
+  final double heightFactor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +26,22 @@ class EmptyPlaceholder extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     return SizedBox(
-      height: height.sh,
+      height: MediaQuery.sizeOf(context).height * heightFactor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Spacer(),
           icon,
-          SizedBox(
-            height: kPadding.h * 4,
+          const SizedBox(
+            height: kPadding * 4,
           ),
           Text(
             title,
             style: textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
-          SizedBox(
-            height: kPadding.h,
+          const SizedBox(
+            height: kPadding,
           ),
           Text(
             message,

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:timesheets/configurations/configurations.dart';
 import 'package:timesheets/features/app/app.dart';
 
@@ -37,10 +37,10 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: kPadding.h * 2,
+              height: kPadding * 2,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding.w * 2),
+              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Sort by',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -49,9 +49,9 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
             ListView.separated(
               shrinkWrap: true,
               padding: EdgeInsets.only(
-                left: kPadding.w * 2,
-                right: kPadding.w * 2,
-                top: kPadding.h * 2,
+                left: kPadding * 2,
+                right: kPadding * 2,
+                top: kPadding * 2,
               ),
               itemCount: widget.availableFilters.length,
               separatorBuilder: (context, index) => const Divider(),
@@ -65,19 +65,19 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
                   }),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      vertical: kPadding.h,
+                      vertical: kPadding,
                     ),
                     child: Row(
                       children: [
                         if (_filter?.slug == filter.slug) ...[
                           const Icon(CupertinoIcons.check_mark),
                           SizedBox(
-                            width: kPadding.w / 4,
+                            width: kPadding / 4,
                           ),
                         ],
                         if (_filter?.slug != filter.slug)
                           SizedBox(
-                            width: kPadding.w * 1.5,
+                            width: kPadding * 1.5,
                           ),
                         Text(filter.label),
                       ],
@@ -87,8 +87,8 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
               },
             ),
             Divider(
-              endIndent: kPadding.w * 2,
-              indent: kPadding.w * 2,
+              endIndent: kPadding * 2,
+              indent: kPadding * 2,
             ),
           ],
         ),
