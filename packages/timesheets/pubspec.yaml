@@ -32,9 +32,15 @@ dependencies:
   skeletonizer: ^1.4.2
   sqlite3_flutter_libs: ^0.5.15
   drift_db_viewer: ^2.1.0
-  djangoflow_sync_drift_odoo: ^0.2.0
-  djangoflow_odoo_auth: ^0.1.0
-  djangoflow_sync_foundation: ^0.1.0+1
+  djangoflow_odoo_auth:
+    git:
+      url: https://github.com/djangoflow/flutter-djangoflow.git
+      path: packages/djangoflow_odoo/authentication/djangoflow_odoo_auth
+  djangoflow_odoo_oauth: ^0.1.0
+  djangoflow_sync_drift_odoo:
+    path: /Users/saifulislam/Development/apexlabs/djangoflow/flutter-djangoflow/packages/djangoflow_odoo/sync/djangoflow_sync_drift_odoo
+  djangoflow_sync_foundation:
+    path: /Users/saifulislam/Development/apexlabs/djangoflow/flutter-djangoflow/packages/djangoflow_odoo/sync/djangoflow_sync_foundation
   provider: ^6.1.2
   flutter_svg: ^2.0.10+1
   vector_graphics: ^1.1.11+1
@@ -52,7 +58,10 @@ dependencies:
   rich_readmore: ^1.1.1
   url_launcher: ^6.3.0
   lottie: ^3.1.2
-  odoo_rpc: ^0.5.4
+  odoo_rpc:
+    git:
+      url: https://github.com/djangoflow/odoo-rpc-dart.git
+      ref: master
   djangoflow_scrollable_column: ^0.1.0
   collection: ^1.18.0
   djangoflow_error_reporter: ^0.2.0
@@ -62,6 +71,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   internet_connection_checker_plus: ^2.5.2
   custom_refresh_indicator: ^4.0.1
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +88,8 @@ dev_dependencies:
 # Uncomment to override djangoflow_openapi from generated local lib
 dependency_overrides:
   lints: ^4.0.0
+  djangoflow_sync_foundation:
+    path: /Users/saifulislam/Development/apexlabs/djangoflow/flutter-djangoflow/packages/djangoflow_odoo/sync/djangoflow_sync_foundation
 
 flutter_gen:
   output: lib/utils/ # Optional (default: lib/gen/)
