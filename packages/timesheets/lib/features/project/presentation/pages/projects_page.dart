@@ -114,7 +114,7 @@ class _ProjectsTabRouterPageState extends State<ProjectsTabRouterPage> {
     if (tabIndex == 0) {
       cubit = context.read<FavoriteProjectListCubit>();
       final result = await context.router.push(
-        ProjectAddRoute(isInitiallyFavorite: true),
+        ProjectAddRoute(isFavorite: true),
       );
       wasAdded = result == true;
     } else {

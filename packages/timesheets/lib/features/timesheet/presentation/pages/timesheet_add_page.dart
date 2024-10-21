@@ -18,7 +18,7 @@ class TimesheetAddPage extends StatelessWidget {
     super.key,
     this.task,
     this.disableProjectTaskSelection,
-    this.isInitiallyFavorite,
+    @queryParam this.isFavorite,
     this.disableLocalProjectTaskSelection,
     this.project,
   });
@@ -31,7 +31,7 @@ class TimesheetAddPage extends StatelessWidget {
   /// Needed when only adding a timesheet for specific Project and Task
   final bool? disableProjectTaskSelection;
 
-  final bool? isInitiallyFavorite;
+  final bool? isFavorite;
 
   @override
   Widget build(BuildContext context) => GradientScaffold(
@@ -46,7 +46,7 @@ class TimesheetAddPage extends StatelessWidget {
           disableProjectTaskSelection: disableProjectTaskSelection,
           task: task,
           project: project,
-          isFavorite: isInitiallyFavorite,
+          isFavorite: isFavorite,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),

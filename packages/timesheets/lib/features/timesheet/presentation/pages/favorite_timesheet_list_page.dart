@@ -54,7 +54,7 @@ class FavoriteTimesheetListPage extends StatelessWidget
                 TimesheetRouter(
                   children: [
                     TimesheetAddRoute(
-                      isInitiallyFavorite: true,
+                      isFavorite: true,
                     ),
                   ],
                 ),

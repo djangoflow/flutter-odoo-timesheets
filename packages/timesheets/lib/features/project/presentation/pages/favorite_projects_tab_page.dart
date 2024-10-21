@@ -30,7 +30,7 @@ class FavoriteProjectsTabPage extends StatelessWidget
 
             final result = await router.push(
               ProjectAddRoute(
-                isInitiallyFavorite: true,
+                isFavorite: true,
               ),
             );
             if (result != null && result is bool && result == true) {

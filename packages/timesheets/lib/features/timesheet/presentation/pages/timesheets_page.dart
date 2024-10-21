@@ -88,7 +88,7 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                     switch (tabController.index) {
                       case 0:
                         route = TimesheetAddRoute(
-                          isInitiallyFavorite: true,
+                          isFavorite: true,
                         );
                         cubit = context
                             .read<FavoriteTimesheetRelationalListCubit>();

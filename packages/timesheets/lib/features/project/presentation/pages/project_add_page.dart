@@ -11,11 +11,9 @@ import 'package:timesheets/features/project/project.dart';
 class ProjectAddPage extends StatelessWidget {
   const ProjectAddPage({
     super.key,
-    this.isInitiallyFavorite,
-    this.project,
+    @queryParam this.isFavorite,
   });
-  final bool? isInitiallyFavorite;
-  final ProjectModel? project;
+  final bool? isFavorite;
 
   @override
   Widget build(BuildContext context) => GradientScaffold(
@@ -23,8 +21,8 @@ class ProjectAddPage extends StatelessWidget {
           title: const Text('Create Project'),
         ),
         body: ProjectEditor(
-          isFavorite: project?.isFavorite ?? isInitiallyFavorite,
-          project: project,
+          isFavorite: isFavorite,
+          project: null,
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
