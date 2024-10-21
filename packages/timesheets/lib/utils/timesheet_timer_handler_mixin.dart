@@ -37,14 +37,18 @@ mixin TimesheetTimerHandlerMixin<
     final effectiveTimeSheet = cubit.state.data?.firstWhere(
       (element) => element.id == timesheet.id,
     );
+    if (effectiveTimeSheet == null) {
+      throw Exception('Timesheet not found');
+    }
 
     final isRunning = timerState.status == TimerStatus.running;
     final lastTickedValue =
-        isRunning ? DateTime.timestamp() : effectiveTimeSheet!.lastTicked;
+        isRunning ? DateTime.timestamp() : effectiveTimeSheet.lastTicked;
 
-    final newlyElapsedSeconds = tickDurationInSeconds;
-    final updatedUnitAmount = (effectiveTimeSheet!.unitAmount ?? 0) +
-        newlyElapsedSeconds.toUnitAmount();
+    // Use the elapsedTime getter to get the most up-to-date elapsed time
+    final totalElapsedSeconds =
+        effectiveTimeSheet.elapsedTime + tickDurationInSeconds;
+    final updatedUnitAmount = totalElapsedSeconds.toUnitAmount();
 
     TimesheetModel updatableTimesheet = effectiveTimeSheet.copyWith(
       unitAmount: updatedUnitAmount,
