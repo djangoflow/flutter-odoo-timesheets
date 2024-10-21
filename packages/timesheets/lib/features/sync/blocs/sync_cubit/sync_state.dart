@@ -7,6 +7,7 @@ class SyncState with _$SyncState {
   const factory SyncState({
     required SyncStatus status,
     List<int>? pendingSyncRecordIds,
+    @Default(false) bool isBackgroundSync,
   }) = _SyncState;
 }
 

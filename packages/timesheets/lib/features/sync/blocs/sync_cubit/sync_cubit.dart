@@ -17,8 +17,11 @@ class SyncCubit<T extends SyncModel> extends Cubit<SyncState> {
   final String backendId;
   final String modelName;
 
-  Future<void> sync() async {
-    emit(state.copyWith(status: SyncStatus.syncInProgress));
+  Future<void> sync({bool isBackgroundSync = false}) async {
+    emit(state.copyWith(
+      status: SyncStatus.syncInProgress,
+      isBackgroundSync: isBackgroundSync,
+    ));
     try {
       await repository.sync();
       final pendingItems = await syncRegistryRepository.getPendingSyncRecords(
@@ -36,8 +39,14 @@ class SyncCubit<T extends SyncModel> extends Cubit<SyncState> {
         error: e,
         stackTrace: stackTrace,
       );
-      emit(state.copyWith(status: SyncStatus.syncFailure));
+      emit(
+        state.copyWith(
+          status: SyncStatus.syncFailure,
+        ),
+      );
       rethrow;
+    } finally {
+      emit(state.copyWith(isBackgroundSync: false));
     }
   }
 

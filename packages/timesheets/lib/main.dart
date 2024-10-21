@@ -89,6 +89,9 @@ Future<void> main() async {
             Provider<AppDatabase>.value(value: appDatabase),
             ChangeNotifierProvider<ConnectionStateProvider>.value(
                 value: connectionStateProvider),
+            ChangeNotifierProvider<SmallSyncOverlayController>(
+              create: (context) => SmallSyncOverlayController(),
+            ),
             Provider<AppIdMappingRepository>.value(value: idMappingRepository),
             Provider<AppSyncRegistryRepository>.value(
                 value: syncRegistryRepository),

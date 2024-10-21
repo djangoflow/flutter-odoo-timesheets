@@ -17,6 +17,7 @@ export 'data/repositories/sync_backend_registry.dart';
 export 'presentation/connection_state_provider.dart';
 export 'presentation/connection_state_toggle.dart';
 export 'presentation/multi_sync_provider.dart';
+export 'presentation/small_sync_overlay.dart';
 export 'presentation/storage_icon.dart';
 export 'presentation/sync_animation.dart';
 export 'presentation/sync_provider.dart';

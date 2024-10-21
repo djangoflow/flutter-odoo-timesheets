@@ -29,17 +29,34 @@ class HomeTabRouterPage extends StatelessWidget implements AutoRouteWrapper {
     });
 
     return BlocListener<SyncCubit<TimesheetModel>, SyncState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         logger.d('Status changed : ${state.status.name}');
-        final loaderOverlay = context.loaderOverlay;
-        if (state.status == SyncStatus.syncInProgress) {
-          if (!loaderOverlay.visible) {
-            loaderOverlay.show();
+        final isBackgroundSync = state.isBackgroundSync;
+        if (isBackgroundSync) {
+          final smallSyncOverlayController =
+              context.read<SmallSyncOverlayController>();
+          if (state.status == SyncStatus.syncInProgress) {
+            if (!smallSyncOverlayController.isVisible) {
+              smallSyncOverlayController.show();
+            }
+          } else if ([SyncStatus.syncFailure, SyncStatus.syncSuccess]
+              .contains(state.status)) {
+            if (smallSyncOverlayController.isVisible) {
+              smallSyncOverlayController.hide();
+            }
           }
-        } else if ([SyncStatus.syncFailure, SyncStatus.syncSuccess]
-            .contains(state.status)) {
-          if (loaderOverlay.visible) {
-            loaderOverlay.hide();
+        } else {
+          final loaderOverlay = context.loaderOverlay;
+          if (state.status == SyncStatus.syncInProgress) {
+            if (!loaderOverlay.visible) {
+              loaderOverlay.show();
+            }
+          } else if ([SyncStatus.syncFailure, SyncStatus.syncSuccess]
+              .contains(state.status)) {
+            if (loaderOverlay.visible) {
+              loaderOverlay.hide();
+            }
           }
         }
 
@@ -114,7 +131,7 @@ class HomeTabRouterPage extends StatelessWidget implements AutoRouteWrapper {
       if (context.read<LastAutoSyncCubit>().getLastAutoSyncTime(dbName) ==
           null) {
         context.read<LastAutoSyncCubit>().updateLastAutoSync(dbName);
-        context.read<SyncCubit<TimesheetModel>>().sync();
+        context.read<SyncCubit<TimesheetModel>>().sync(isBackgroundSync: true);
       }
     }
   }
