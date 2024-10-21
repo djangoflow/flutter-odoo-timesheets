@@ -178,9 +178,12 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Please select DB',
                 },
-                itemBuilder: (BuildContext context, String dbName) => ListTile(
-                  tileColor: Colors.transparent,
-                  title: Text(dbName),
+                itemBuilder: (BuildContext context, String dbName) =>
+                    TextFieldTapRegion(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Text(dbName),
+                  ),
                 ),
               ),
             ],

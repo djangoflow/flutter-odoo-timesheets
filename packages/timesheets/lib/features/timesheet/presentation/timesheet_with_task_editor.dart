@@ -290,18 +290,21 @@ class _ProjectSelector extends StatelessWidget {
 
                 return state.data ?? [];
               },
-              itemBuilder: (context, itemData) => Padding(
-                key: ValueKey(itemData.id),
-                padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
-                child: ListTile(
-                  tileColor: Colors.transparent,
-                  title: Text(
-                    itemData.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: StorageIcon(
-                    !(pendingProjectSyncRecords?.contains(itemData.id) ?? true),
+              itemBuilder: (context, itemData) => TextFieldTapRegion(
+                child: Padding(
+                  key: ValueKey(itemData.id),
+                  padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Text(
+                      itemData.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: StorageIcon(
+                      !(pendingProjectSyncRecords?.contains(itemData.id) ??
+                          true),
+                    ),
                   ),
                 ),
               ),
@@ -424,16 +427,18 @@ class _TaskSelectorState extends State<_TaskSelector> {
                     validationMessages: {
                       ValidationMessage.required: (_) => 'Please select task',
                     },
-                    itemBuilder: (context, task) => ListTile(
-                      key: ValueKey(task.id),
-                      tileColor: Colors.transparent,
-                      title: Text(
-                        task.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: StorageIcon(
-                        !(pendingTaskSyncRecords?.contains(task.id) ?? true),
+                    itemBuilder: (context, task) => TextFieldTapRegion(
+                      child: ListTile(
+                        key: ValueKey(task.id),
+                        tileColor: Colors.transparent,
+                        title: Text(
+                          task.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: StorageIcon(
+                          !(pendingTaskSyncRecords?.contains(task.id) ?? true),
+                        ),
                       ),
                     ),
                     suggestionsCallback: (searchTerm) async {
