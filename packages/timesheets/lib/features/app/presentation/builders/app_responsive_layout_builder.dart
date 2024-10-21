@@ -43,6 +43,7 @@ class _ResponsiveLayout extends StatelessWidget {
         child: MaxWidthBox(
           maxWidth: maxWidth,
           backgroundColor: background,
+          alignment: Alignment.center,
           child: Builder(
             builder: (context) => ResponsiveScaledBox(
               width: _getResponsiveWidth(context),

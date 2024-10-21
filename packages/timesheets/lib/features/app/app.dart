@@ -3,6 +3,7 @@ export 'blocs/tabbed_ordering_filter_cubit.dart';
 export 'data/models/filter.dart';
 export 'data/models/odoo_colors.dart';
 export 'data/models/options.dart';
+export 'presentation/adaptive_safe_area.dart';
 export 'presentation/animated_search_action.dart';
 export 'presentation/app_dependency_wrapper.dart';
 export 'presentation/app_dialog.dart';

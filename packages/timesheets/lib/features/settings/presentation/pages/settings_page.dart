@@ -26,7 +26,7 @@ class SettingsPage extends StatelessWidget {
           title: const Text('Settings'),
           centerTitle: false,
         ),
-        body: SafeArea(
+        body: AdaptiveSafeArea(
           child: ListView(
             padding: const EdgeInsets.symmetric(
               horizontal: kPadding * 2,
@@ -190,8 +190,7 @@ class _AccountSection extends StatelessWidget {
           action: (_) async {
             final result = await AppModalSheet.show<_BackendSyncOptionsEnum>(
               context: context,
-              child: const SafeArea(
-                bottom: true,
+              child: const AdaptiveSafeArea(
                 child: _BackendSyncOptions(),
               ),
             );

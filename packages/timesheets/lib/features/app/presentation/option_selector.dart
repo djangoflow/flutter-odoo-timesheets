@@ -9,8 +9,7 @@ class OptionSelector extends StatelessWidget {
   final List<Options> options;
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        bottom: true,
+  Widget build(BuildContext context) => AdaptiveSafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

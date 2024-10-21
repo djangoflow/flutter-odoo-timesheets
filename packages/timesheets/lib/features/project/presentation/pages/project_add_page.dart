@@ -26,8 +26,7 @@ class ProjectAddPage extends StatelessWidget {
           builder: (context, form, formListView) => Column(
             children: [
               Expanded(child: formListView),
-              SafeArea(
-                bottom: true,
+              AdaptiveSafeArea(
                 child: ReactiveFormConsumer(
                   builder: (context, form, child) => Padding(
                     padding:

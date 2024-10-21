@@ -115,8 +115,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
                           ],
                         ),
                       ),
-                      SafeArea(
-                        bottom: true,
+                      AdaptiveSafeArea(
                         child: ReactiveFormConsumer(
                           builder: (context, form, _) =>
                               _buildLoginButton(context, form),
