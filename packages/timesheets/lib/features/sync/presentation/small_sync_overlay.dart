@@ -19,7 +19,7 @@ class SmallSyncOverlay extends StatelessWidget {
             builder: (context, controller, _) => AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              top: controller.isVisible ? 0 : -50, // Slide in/out from top
+              top: controller.isVisible ? 0 : -100, // Slide in/out from top
               left: 0,
               right: 0,
               child: SafeArea(
