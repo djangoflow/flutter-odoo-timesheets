@@ -19,8 +19,12 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
             .syncBatch(items, primaryBackend, modelName: modelName);
 
         return items;
-      } catch (e, strackTrace) {
-        logger.e('Error fetching items from primary backend:', e, strackTrace);
+      } catch (e, stackTrace) {
+        logger.e(
+          'Failed to fetch items from primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return secondaryBackend.getAll();
       }
     }
@@ -40,8 +44,12 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
         }
 
         return item;
-      } catch (e, strackTrace) {
-        logger.e('Error fetching item from primary backend:', e, strackTrace);
+      } catch (e, stackTrace) {
+        logger.e(
+          'Failed to fetch item from primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return secondaryBackend.getById(id);
       }
     }
@@ -58,7 +66,11 @@ abstract class AppDriftOdooSyncRepository<T extends SyncModel,
             .syncBatch([updatedItem], primaryBackend, modelName: modelName);
         return updatedItem;
       } catch (e, stackTrace) {
-        logger.e('Error updating item in primary backend:', e, stackTrace);
+        logger.e(
+          'Failed to update item in primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return _updateSecondaryWithPendingSync(item);
       }
     } else {
