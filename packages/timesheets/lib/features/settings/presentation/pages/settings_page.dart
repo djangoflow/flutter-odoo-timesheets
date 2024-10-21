@@ -36,13 +36,13 @@ class SettingsPage extends StatelessWidget {
               if (kDebugMode) ...[
                 const SectionTitle(title: 'Connection'),
                 const ConnectionStateToggle(),
-                SizedBox(
+                const SizedBox(
                   height: kPadding,
                 ),
               ],
               const _ThemeSection(),
               const _AccountSection(),
-              SizedBox(
+              const SizedBox(
                 height: kPadding * 2,
               ),
               const SectionTitle(title: 'Legal'),
@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
                   Icons.chevron_right,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: kPadding,
               ),
               ListTile(
@@ -107,7 +107,7 @@ class _ThemeSection extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding,
         ),
         if (kDebugMode) ...[
@@ -126,7 +126,7 @@ class _ThemeSection extends StatelessWidget {
               child: const Text('Check DB'),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: kPadding,
           ),
           SizedBox(
@@ -183,7 +183,7 @@ class _AccountSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionTitle(title: 'Account'),
-        SizedBox(
+        const SizedBox(
           height: kPadding,
         ),
         LinearProgressBuilder(

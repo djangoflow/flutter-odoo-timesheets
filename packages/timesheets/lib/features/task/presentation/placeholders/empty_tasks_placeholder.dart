@@ -2,7 +2,7 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class EmptyTasksPlaceHolder extends EmptyPlaceholder {
-  EmptyTasksPlaceHolder({super.key, super.onGetStarted, String? title})
+  const EmptyTasksPlaceHolder({super.key, super.onGetStarted, String? title})
       : super(
           icon: const DecoratedSvgImage(
             image: Assets.iconsClock,

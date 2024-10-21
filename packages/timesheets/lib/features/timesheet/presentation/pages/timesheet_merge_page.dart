@@ -37,7 +37,8 @@ class TimesheetMergePage extends StatelessWidget {
                 bottom: true,
                 child: ReactiveFormConsumer(
                   builder: (context, form, child) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kPadding * 2),
                     child: LinearProgressBuilder(
                       onSuccess: () async {
                         final router = context.router;

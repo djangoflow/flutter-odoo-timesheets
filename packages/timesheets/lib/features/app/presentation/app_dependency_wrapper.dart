@@ -32,7 +32,7 @@ class AppDependencyWrapper extends StatelessWidget {
 }
 
 class _AuthenticatedDependencies extends StatelessWidget {
-  const _AuthenticatedDependencies({super.key, required this.child});
+  const _AuthenticatedDependencies({required this.child});
   final Widget child;
 
   @override

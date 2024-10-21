@@ -2,9 +2,9 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class FavoriteTimesheetsPlaceHolder extends EmptyPlaceholder {
-  FavoriteTimesheetsPlaceHolder({super.key, super.onGetStarted})
+  const FavoriteTimesheetsPlaceHolder({super.key, super.onGetStarted})
       : super(
-          icon: DecoratedSvgImage(
+          icon: const DecoratedSvgImage(
             image: Assets.iconsFavorite,
             height: 96,
             width: 96,

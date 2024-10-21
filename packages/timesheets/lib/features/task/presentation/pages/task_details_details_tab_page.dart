@@ -49,11 +49,11 @@ class TaskDetailsDetailsTabPage extends StatelessWidget {
                       }
 
                       return ListView(
-                        padding: EdgeInsets.all(kPadding * 2),
+                        padding: const EdgeInsets.all(kPadding * 2),
                         children: [
                           if (project != null && task != null)
                             Padding(
-                              padding: EdgeInsets.only(bottom: kPadding),
+                              padding: const EdgeInsets.only(bottom: kPadding),
                               child: _TaskDetailsCard(
                                 project: project,
                                 task: task,
@@ -81,7 +81,7 @@ class _DescriptionCard extends StatelessWidget {
   Widget build(BuildContext context) => Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: EdgeInsets.all(kPadding * 2),
+          padding: const EdgeInsets.all(kPadding * 2),
           child: _TaskDetailsItem(
             title: 'Description',
             child: HtmlWidget(
@@ -111,7 +111,7 @@ class _TaskDetailsCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: EdgeInsets.all(kPadding * 2),
+        padding: const EdgeInsets.all(kPadding * 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,7 +125,7 @@ class _TaskDetailsCard extends StatelessWidget {
                       color: project.color.toColorFromColorIndex,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: kPadding,
                   ),
                   if (hasBackendId)
@@ -138,7 +138,7 @@ class _TaskDetailsCard extends StatelessWidget {
                             : true,
                       ),
                     ),
-                  SizedBox(
+                  const SizedBox(
                     width: kPadding,
                   ),
                   Flexible(
@@ -151,7 +151,7 @@ class _TaskDetailsCard extends StatelessWidget {
               ),
             ),
             if (task.name.isNotEmpty) ...[
-              SizedBox(
+              const SizedBox(
                 height: kPadding * 2,
               ),
               _TaskDetailsItem(
@@ -167,7 +167,7 @@ class _TaskDetailsCard extends StatelessWidget {
                               : true,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: kPadding,
                       ),
                     ],
@@ -182,7 +182,7 @@ class _TaskDetailsCard extends StatelessWidget {
               )
             ],
             if (task.dateDeadline != null) ...[
-              SizedBox(
+              const SizedBox(
                 height: kPadding * 2,
               ),
               _TaskDetailsItem(
@@ -213,7 +213,7 @@ class _TaskDetailsItem extends StatelessWidget {
             title,
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          SizedBox(
+          const SizedBox(
             height: kPadding / 2,
           ),
           child,

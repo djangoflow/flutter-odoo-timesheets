@@ -18,7 +18,7 @@ class AppModalSheet extends StatelessWidget {
       backgroundColor: colorScheme.surface.withOpacity(.6),
       elevation: 0,
       builder: (context) => AppGlassContainer(
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(kPadding * 2),
         ),
         child: SizedBox(

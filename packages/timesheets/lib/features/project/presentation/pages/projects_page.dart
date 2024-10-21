@@ -67,12 +67,12 @@ class _ProjectsTabRouterPageState extends State<ProjectsTabRouterPage> {
                     });
                   },
                 ),
-                SizedBox(width: kPadding),
+                const SizedBox(width: kPadding),
                 IconButton(
                   onPressed: () => _addProject(context, tabController.index),
                   icon: const Icon(CupertinoIcons.add),
                 ),
-                SizedBox(width: kPadding),
+                const SizedBox(width: kPadding),
               ],
               bottom: TabBar(
                 controller: tabController,

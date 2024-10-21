@@ -15,11 +15,11 @@ class OptionSelector extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: kPadding * 2,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+              padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Select an option',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -27,7 +27,7 @@ class OptionSelector extends StatelessWidget {
             ),
             ListView.separated(
               shrinkWrap: true,
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: kPadding * 2,
                 right: kPadding * 2,
                 top: kPadding * 2,
@@ -40,13 +40,13 @@ class OptionSelector extends StatelessWidget {
                 return InkWell(
                   onTap: () => context.router.maybePop(option),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: kPadding,
                     ),
                     child: Row(
                       children: [
                         Icon(option.icon),
-                        SizedBox(
+                        const SizedBox(
                           width: kPadding,
                         ),
                         Text(option.label),
@@ -56,7 +56,7 @@ class OptionSelector extends StatelessWidget {
                 );
               },
             ),
-            Divider(
+            const Divider(
               endIndent: kPadding * 2,
               indent: kPadding * 2,
             ),

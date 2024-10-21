@@ -10,7 +10,7 @@ class SyncAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animationSize = kPadding * 5;
+    const animationSize = kPadding * 5;
     final textStyle = AppTextStyle.titleMedium.copyWith(
       color: Colors.white,
     );
@@ -52,7 +52,8 @@ class SyncAnimation extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20), // Add spacing between the animation and text
+          const SizedBox(
+              height: 20), // Add spacing between the animation and text
           SizedBox(
             height: 50,
             child: AnimatedTextKit(

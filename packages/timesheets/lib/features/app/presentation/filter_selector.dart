@@ -36,11 +36,11 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: kPadding * 2,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+              padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Sort by',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -48,7 +48,7 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
             ),
             ListView.separated(
               shrinkWrap: true,
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: kPadding * 2,
                 right: kPadding * 2,
                 top: kPadding * 2,
@@ -64,19 +64,19 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
                     widget.onFilterChanged(filter);
                   }),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: kPadding,
                     ),
                     child: Row(
                       children: [
                         if (_filter?.slug == filter.slug) ...[
                           const Icon(CupertinoIcons.check_mark),
-                          SizedBox(
+                          const SizedBox(
                             width: kPadding / 4,
                           ),
                         ],
                         if (_filter?.slug != filter.slug)
-                          SizedBox(
+                          const SizedBox(
                             width: kPadding * 1.5,
                           ),
                         Text(filter.label),
@@ -86,7 +86,7 @@ class _FilterSelectorState<T> extends State<FilterSelector<T>> {
                 );
               },
             ),
-            Divider(
+            const Divider(
               endIndent: kPadding * 2,
               indent: kPadding * 2,
             ),

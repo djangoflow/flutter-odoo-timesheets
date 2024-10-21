@@ -46,7 +46,7 @@ class TimesheetDetailsPage extends StatelessWidget {
                       ),
                     )
                   : ListView(
-                      padding: EdgeInsets.all(kPadding * 2),
+                      padding: const EdgeInsets.all(kPadding * 2),
                       children: [
                         _TimesheetDetails(
                           timesheet: timesheet!,
@@ -88,28 +88,28 @@ class _TimesheetDetails extends StatelessWidget {
           title: 'Task',
           value: task?.name ?? '',
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Project',
           value: project?.name ?? '',
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Date',
           value: DateFormat('dd/MM/yyyy').format(timesheet.createDate),
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding * 2,
         ),
         _TimesheetItem(
           title: 'Start time',
           value: DateFormat('HH:mm:ss').format(timesheet.createDate),
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding * 2,
         ),
         _TimesheetItem(
@@ -142,7 +142,7 @@ class _TimesheetItem extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding / 2,
         ),
         Text(

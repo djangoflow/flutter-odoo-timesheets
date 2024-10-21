@@ -54,11 +54,11 @@ class TaskListView extends StatelessWidget {
                     ),
               ),
           child: ListView.separated(
-            padding: EdgeInsets.all(kPadding * 2),
+            padding: const EdgeInsets.all(kPadding * 2),
             physics: const AlwaysScrollableScrollPhysics(),
             controller: controller,
             itemBuilder: itemBuilder,
-            separatorBuilder: (context, index) => SizedBox(
+            separatorBuilder: (context, index) => const SizedBox(
               height: kPadding,
             ),
             itemCount: itemCount,

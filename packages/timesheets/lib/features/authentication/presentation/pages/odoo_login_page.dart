@@ -85,13 +85,13 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
               onTap: () => form.unfocus(),
               child: AutofillGroup(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+                  padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
                   child: Column(
                     children: [
                       Expanded(
                         child: DjangoflowScrollableColumn(
                           children: [
-                            SizedBox(height: kPadding * 3),
+                            const SizedBox(height: kPadding * 3),
                             _buildServerUrlField(context, form),
                             _buildDbField(context, form),
                             ReactiveValueListenableBuilder(
@@ -164,7 +164,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding * 2),
+              const SizedBox(height: kPadding * 2),
               AppReactiveTypeAhead<String, String>(
                 stringify: (db) => db.toString(),
                 suggestionsCallback: (searchTerm) => state.dbList!
@@ -196,7 +196,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding * 3),
+              const SizedBox(height: kPadding * 3),
               ReactiveTextField(
                 formControlName: emailControlName,
                 textInputAction: TextInputAction.next,
@@ -223,7 +223,7 @@ class _OdooLoginPageState extends State<OdooLoginPage> {
           }
           return Column(
             children: [
-              SizedBox(height: kPadding * 3),
+              const SizedBox(height: kPadding * 3),
               ValueListenableBuilder<bool>(
                 valueListenable: _showPassword,
                 builder: (context, showPassword, child) => ReactiveTextField(

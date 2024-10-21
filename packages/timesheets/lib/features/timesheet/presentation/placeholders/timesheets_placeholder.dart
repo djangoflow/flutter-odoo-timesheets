@@ -2,9 +2,9 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class TimesheetsPlaceHolder extends EmptyPlaceholder {
-  TimesheetsPlaceHolder({super.key, super.onGetStarted})
+  const TimesheetsPlaceHolder({super.key, super.onGetStarted})
       : super(
-          icon: DecoratedSvgImage(
+          icon: const DecoratedSvgImage(
             image: Assets.iconsClock,
             height: 96,
             width: 96,

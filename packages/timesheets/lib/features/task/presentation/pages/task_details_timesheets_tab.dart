@@ -77,13 +77,13 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
               child: Stack(
                 children: [
                   ListView(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: kPadding * 2,
                       vertical: kPadding * 3,
                     ),
                     children: [
                       if (task != null) _ActiveTimeSheetBlocBuilder(task: task),
-                      SizedBox(
+                      const SizedBox(
                         height: kPadding,
                       ),
                       BlocConsumer<TimesheetRelationalListCubit,
@@ -104,7 +104,7 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                           final timesheets = state.data ?? [];
                           final Widget child;
                           if (timesheets.isEmpty) {
-                            child = EmptyPlaceholder(
+                            child = const EmptyPlaceholder(
                               title: 'No completed timesheets',
                               message: 'Completed timesheets will appear here!',
                               icon: DecoratedSvgImage(
@@ -124,11 +124,11 @@ class TaskDetailsTimesheetsTabPage extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             children: [
                               const _SyncTimesheetsWidget(),
-                              SizedBox(
+                              const SizedBox(
                                 height: kPadding,
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   vertical: kPadding,
                                 ),
                                 child: Text(
@@ -169,7 +169,7 @@ class _TimesheetListView extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: timesheets.length,
-        separatorBuilder: (context, index) => SizedBox(
+        separatorBuilder: (context, index) => const SizedBox(
           height: kPadding,
         ),
         itemBuilder: (context, index) {
@@ -205,7 +205,7 @@ class _TimesheetListView extends StatelessWidget {
                     Theme.of(context).colorScheme.surfaceTint),
                 borderRadius: BorderRadius.circular(kPadding * 8),
               ),
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: kPadding * 2,
                 vertical: kPadding,
               ),
@@ -246,7 +246,7 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: kPadding * 2,
                 ),
                 SizedBox(
@@ -291,7 +291,7 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: activeTimesheets.length,
-                  separatorBuilder: (context, index) => SizedBox(
+                  separatorBuilder: (context, index) => const SizedBox(
                     height: kPadding,
                   ),
                   itemBuilder: (context, index) {
@@ -397,13 +397,13 @@ class _SyncTimesheetsWidget extends StatelessWidget {
           }
           return Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: kPadding * 2,
               ),
               Text(
                 'There are ${state.pendingSyncRecordIds!.length} timesheets that are not synced',
               ),
-              SizedBox(
+              const SizedBox(
                 height: kPadding * 2,
               ),
               if (state.status != SyncStatus.syncInProgress)
@@ -429,7 +429,7 @@ class _SyncTimesheetsWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: kPadding,
               ),
             ],

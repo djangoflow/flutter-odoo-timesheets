@@ -49,13 +49,13 @@ class ProjectEditor extends StatelessWidget {
           final formListView = GestureDetector(
             onTap: () => formGroup.unfocus(),
             child: ListView(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: kPadding * 2,
                 vertical: kPadding * 2,
               ),
               shrinkWrap: true,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: kPadding * 2,
                 ),
                 ReactiveTextField(
@@ -70,7 +70,7 @@ class ProjectEditor extends StatelessWidget {
                     ValidationMessage.required: (_) => 'Name is required',
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: kPadding * 2,
                 ),
                 ReactiveDropdownField<OdooColors>(
@@ -107,7 +107,7 @@ class ProjectEditor extends StatelessWidget {
                       )
                       .toList(),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: kPadding * 2,
                 ),
                 Row(
@@ -115,7 +115,7 @@ class ProjectEditor extends StatelessWidget {
                     ReactiveCheckbox(
                       formControlName: isFavoriteControlName,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: kPadding,
                     ),
                     Text(
@@ -151,7 +151,7 @@ class _OdooColorLabel extends StatelessWidget {
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: kPadding,
           ),
           Text(

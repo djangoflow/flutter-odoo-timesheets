@@ -354,7 +354,6 @@ class _TaskSelectorState extends State<_TaskSelector> {
     final formGroup = (ReactiveForm.of(context) as FormGroup);
 
     formGroup.control(projectControlName).valueChanges.listen((event) {
-      print('project changed: $event');
       final taskControl = formGroup.control(taskControlName);
       taskControl.value = null;
       taskControl.markAsUntouched();
@@ -476,10 +475,9 @@ class _TaskSelectorState extends State<_TaskSelector> {
     required ProjectModel project,
     required String searchTerm,
   }) async {
-    print('calling createItem');
     final taskListCubit = context.read<TaskListCubit>();
     final formGroup = ReactiveForm.of(context) as FormGroup;
-    print('calling createItem');
+
     final createdTask = await taskListCubit.createItem(
       TaskModel(
         name: searchTerm,
@@ -491,7 +489,6 @@ class _TaskSelectorState extends State<_TaskSelector> {
       ),
     );
 
-    print('createdTask: $createdTask');
     if (createdTask != null) {
       formGroup.control(taskControlName).value = createdTask;
       taskListCubit.reload();

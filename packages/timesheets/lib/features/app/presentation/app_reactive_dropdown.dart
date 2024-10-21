@@ -52,10 +52,10 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
           searchDelay: const Duration(milliseconds: searchDelayMs),
           emptyBuilder: emptyBuilder,
           itemBuilder: (context, item, isDisabled, isSelected) => Padding(
-            padding: EdgeInsets.symmetric(vertical: kPadding / 2),
+            padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
             child: Column(
               children: [
-                Divider(
+                const Divider(
                   height: kPadding / 8,
                 ),
                 ListTile(
@@ -76,7 +76,7 @@ class AppReactiveDropdown<T, V> extends StatelessWidget {
             shape: BoxShape.rectangle,
             color: AppColors.getTintedSurfaceColor(
                 Theme.of(context).colorScheme.surfaceTint),
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(kPadding * 1),
             ),
             child: popupWidget,

@@ -376,7 +376,7 @@ class _TaskTimerLargeState extends State<TaskTimerLarge>
                   onPressed: (status) =>
                       onTimerPressed(status, context.read<TimerCubit>()),
                 ),
-                SizedBox(width: kPadding * 2),
+                const SizedBox(width: kPadding * 2),
                 StopButton(
                   disabled: widget.disabled,
                   timerStatus: timerStatus,
@@ -394,8 +394,8 @@ class _TaskTimerLargeState extends State<TaskTimerLarge>
       IconButtonThemeData(
         style: AppTheme.getFilledIconButtonTheme(theme).style?.copyWith(
               shape: const WidgetStatePropertyAll(StadiumBorder()),
-              maximumSize: WidgetStatePropertyAll(Size(64, 60)),
-              minimumSize: WidgetStatePropertyAll(Size(64, 44)),
+              maximumSize: const WidgetStatePropertyAll(Size(64, 60)),
+              minimumSize: const WidgetStatePropertyAll(Size(64, 44)),
               padding: const WidgetStatePropertyAll(EdgeInsets.all(kPadding)),
             ),
       );
@@ -560,7 +560,7 @@ class StopButton extends StatelessWidget {
     return IconButton(
       disabledColor: theme.colorScheme.primary.withOpacity(0.5),
       color: theme.colorScheme.primary,
-      icon: Icon(Icons.stop, size: kPadding * 3),
+      icon: const Icon(Icons.stop, size: kPadding * 3),
       onPressed:
           disabled || timerStatus == TimerStatus.initial ? null : onPressed,
     );
@@ -591,7 +591,8 @@ Widget buildTimerContainer({
       onTap: disabled ? null : onTap,
       child: Padding(
         padding: padding ??
-            EdgeInsets.fromLTRB(kPadding * 2, kPadding, kPadding, kPadding),
+            const EdgeInsets.fromLTRB(
+                kPadding * 2, kPadding, kPadding, kPadding),
         child: child,
       ),
     ),

@@ -46,7 +46,7 @@ class TimesheetExpansionTile extends StatelessWidget {
             collapsedBackgroundColor: Colors.transparent,
             initiallyExpanded: initiallyExpanded,
             children: [
-              Divider(
+              const Divider(
                 endIndent: kPadding * 2,
                 indent: kPadding * 2,
                 height: kPadding,
@@ -93,14 +93,14 @@ class _TimesheetExpansionHeader extends StatelessWidget {
           timesheet.createDate.toDayString(),
           style: textTheme.bodySmall,
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding / 2,
         ),
         Text(
           timesheet.createDate.toDateString(delimeter: '.'),
           style: textTheme.titleMedium,
         ),
-        SizedBox(
+        const SizedBox(
           height: kPadding / 2,
         ),
         Text(
@@ -127,7 +127,7 @@ class _TimesheetDescription extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.all(kPadding * 2),
+        padding: const EdgeInsets.all(kPadding * 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -142,17 +142,17 @@ class _TimesheetDescription extends StatelessWidget {
                   IconButton(
                     style: theme.iconButtonTheme.style?.copyWith(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      maximumSize: WidgetStatePropertyAll(
+                      maximumSize: const WidgetStatePropertyAll(
                         Size(kPadding * 4, kPadding * 4),
                       ),
-                      minimumSize: WidgetStatePropertyAll(
+                      minimumSize: const WidgetStatePropertyAll(
                         Size(kPadding * 4, kPadding * 4),
                       ),
                       alignment: Alignment.center,
                       padding: const WidgetStatePropertyAll(
                         EdgeInsets.zero,
                       ),
-                      iconSize: WidgetStatePropertyAll(kPadding * 2.5),
+                      iconSize: const WidgetStatePropertyAll(kPadding * 2.5),
                     ),
                     onPressed: () => onEdit!(context),
                     icon: const Icon(CupertinoIcons.pencil),
@@ -160,7 +160,7 @@ class _TimesheetDescription extends StatelessWidget {
                 ],
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: kPadding / 2,
             ),
             RichReadMoreText(

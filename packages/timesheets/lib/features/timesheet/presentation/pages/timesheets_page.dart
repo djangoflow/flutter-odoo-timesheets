@@ -110,7 +110,7 @@ class TimesheetsPage extends StatelessWidget implements AutoRouteWrapper {
                   },
                   icon: const Icon(CupertinoIcons.add),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: kPadding * 2,
                 ),
               ],

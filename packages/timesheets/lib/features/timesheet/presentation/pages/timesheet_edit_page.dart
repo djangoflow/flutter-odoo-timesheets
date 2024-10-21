@@ -65,7 +65,7 @@ class TimesheetEditPage extends StatelessWidget implements AutoRouteWrapper {
                   ),
                 },
                 additionalChildrenBuilder: (context, form) => [
-                  SizedBox(height: kPadding * 2),
+                  const SizedBox(height: kPadding * 2),
                   ReactiveTextField<String>(
                     formControlName: 'totalTime',
                     decoration: const InputDecoration(
@@ -86,8 +86,8 @@ class TimesheetEditPage extends StatelessWidget implements AutoRouteWrapper {
                       bottom: true,
                       child: ReactiveFormConsumer(
                         builder: (context, form, child) => Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kPadding * 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kPadding * 2),
                           child: LinearProgressBuilder(
                             onSuccess: () async {
                               final router = context.router;

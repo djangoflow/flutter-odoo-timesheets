@@ -2,10 +2,10 @@ import 'package:timesheets/features/app/app.dart';
 import 'package:timesheets/utils/assets.gen.dart';
 
 class OdooTimesheetsPlaceHolder extends EmptyPlaceholder {
-  OdooTimesheetsPlaceHolder(
+  const OdooTimesheetsPlaceHolder(
       {super.key, super.onGetStarted, required super.message})
       : super(
-          icon: DecoratedSvgImage(
+          icon: const DecoratedSvgImage(
             image: Assets.iconsOdooLogo,
             // height: 92,
             width: 150,

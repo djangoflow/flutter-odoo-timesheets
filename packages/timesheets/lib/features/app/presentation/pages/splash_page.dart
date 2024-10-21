@@ -65,7 +65,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _AnimatedLogo(controller: _logoController),
-            SizedBox(height: (kPadding * 4)),
+            const SizedBox(height: (kPadding * 4)),
             _AnimatedText(controller: _textController),
           ],
         ),
@@ -117,7 +117,7 @@ class _AnimatedLogo extends StatelessWidget {
                 .animate(
                     CurvedAnimation(parent: controller, curve: Curves.easeIn))
                 .value,
-            child: AppLogo(
+            child: const AppLogo(
               width: 134,
               height: 128,
             ),
@@ -151,9 +151,9 @@ class _AnimatedText extends StatelessWidget {
               'Odoo',
               style: textTheme.headlineLarge,
             ),
-            SizedBox(height: kPadding),
+            const SizedBox(height: kPadding),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+              padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
               child: Text(
                 'Time management without obstacles',
                 style: textTheme.bodyLarge,

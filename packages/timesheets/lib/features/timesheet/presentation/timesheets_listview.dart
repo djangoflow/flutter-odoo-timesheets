@@ -93,7 +93,7 @@ class TimesheetListView<
                       ),
                       subtitle: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: kPadding / 1.5,
                           ),
                           _ListTileItem(
@@ -107,7 +107,7 @@ class TimesheetListView<
                             // textStyle: const TextStyle(height: 1),
                           ),
                           if (task?.dateDeadline != null) ...[
-                            SizedBox(
+                            const SizedBox(
                               height: kPadding / 1.5,
                             ),
                             _ListTileItem(
@@ -164,13 +164,13 @@ class TimesheetListView<
               child: ListView.separated(
                 shrinkWrap: false,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.all(
+                padding: const EdgeInsets.all(
                   kPadding * 2,
                 ),
                 controller: controller,
                 itemBuilder: itemBuilder,
                 itemCount: itemCount,
-                separatorBuilder: (context, index) => SizedBox(
+                separatorBuilder: (context, index) => const SizedBox(
                   height: kPadding,
                 ),
               ),
@@ -213,7 +213,7 @@ class _PaddedIcon extends StatelessWidget {
   final Icon icon;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: kPadding),
+        padding: const EdgeInsets.symmetric(horizontal: kPadding),
         child: icon,
       );
 }

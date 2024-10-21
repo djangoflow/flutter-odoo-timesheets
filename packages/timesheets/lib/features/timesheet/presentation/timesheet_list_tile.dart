@@ -48,7 +48,7 @@ class TimesheetListTile extends StatelessWidget {
         ),
         subtitle: Builder(
           builder: (context) => Padding(
-            padding: EdgeInsets.only(top: kPadding / 2),
+            padding: const EdgeInsets.only(top: kPadding / 2),
             child: _PlaceholderContainer(
               height: kPadding * 2,
               color: Theme.of(context)

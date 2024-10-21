@@ -15,7 +15,7 @@ class AppGlassContainer extends StatelessWidget {
         color: AppColors.getTintedSurfaceColor(
             Theme.of(context).colorScheme.surfaceTint),
         borderRadius: borderRadius ??
-            BorderRadius.all(
+            const BorderRadius.all(
               Radius.circular(kPadding),
             ),
         child: child,
