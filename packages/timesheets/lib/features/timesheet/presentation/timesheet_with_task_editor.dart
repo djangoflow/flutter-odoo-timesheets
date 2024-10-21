@@ -83,47 +83,43 @@ class TimesheetWithTaskEditor extends StatelessWidget {
       builder: (context, backendId) => ReactiveFormBuilder(
         form: () => _formGroup,
         builder: (context, formGroup, child) {
-          final formListView = GestureDetector(
-            onTap: () => formGroup.unfocus(),
-            child: ListView(
-              padding: EdgeInsets.symmetric(
-                horizontal: kPadding * 2,
-                vertical: kPadding * 2,
-              ),
-              shrinkWrap: true,
-              children: [
-                SizedBox(
-                  height: kPadding * 2,
-                ),
-                _ProjectSelector(
-                  projectSuggestionBoxController:
-                      projectSuggestionBoxController,
-                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
-                ),
-                SizedBox(height: kPadding * 2),
-                _TaskSelector(
-                  taskSuggestionBoxController: taskSuggestionBoxController,
-                  showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
-                ),
-                SizedBox(height: kPadding * 2),
-                _DescriptionField(
-                  disableProjectTaskSelection:
-                      disableProjectTaskSelection == true,
-                ),
-                if (disableProjectTaskSelection == true) ...[
-                  SizedBox(
-                    height: kPadding,
-                  ),
-                  const Text('Just enter a description and start to work!'),
-                ],
-                SizedBox(
-                  height: kPadding * 2,
-                ),
-                const _IsFavoriteCheckbox(),
-                if (additionalChildrenBuilder != null)
-                  ...additionalChildrenBuilder!(context, formGroup),
-              ],
+          final formListView = ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kPadding * 2,
+              vertical: kPadding * 2,
             ),
+            shrinkWrap: true,
+            children: [
+              const SizedBox(
+                height: kPadding * 2,
+              ),
+              _ProjectSelector(
+                projectSuggestionBoxController: projectSuggestionBoxController,
+                showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+              ),
+              const SizedBox(height: kPadding * 2),
+              _TaskSelector(
+                taskSuggestionBoxController: taskSuggestionBoxController,
+                showOnlySyncedTaskAndProjects: showOnlySyncedTaskAndProjects,
+              ),
+              const SizedBox(height: kPadding * 2),
+              _DescriptionField(
+                disableProjectTaskSelection:
+                    disableProjectTaskSelection == true,
+              ),
+              if (disableProjectTaskSelection == true) ...[
+                const SizedBox(
+                  height: kPadding,
+                ),
+                const Text('Just enter a description and start to work!'),
+              ],
+              const SizedBox(
+                height: kPadding * 2,
+              ),
+              const _IsFavoriteCheckbox(),
+              if (additionalChildrenBuilder != null)
+                ...additionalChildrenBuilder!(context, formGroup),
+            ],
           );
 
           return builder(context, formGroup, formListView);
@@ -148,18 +144,18 @@ class _EmptyItem extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: kPadding * 4,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               CupertinoIcons.info_circle,
               size: kPadding * 6,
             ),
-            SizedBox(
+            const SizedBox(
               height: kPadding * 2,
             ),
             RichText(
@@ -189,13 +185,15 @@ class _EmptyItem extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
+            const SizedBox(
               height: kPadding * 2,
             ),
             if (searchTerm.isNotEmpty && onCreatePressed != null)
-              ElevatedButton(
-                onPressed: onCreatePressed,
-                child: Text('Create this $label'),
+              TextFieldTapRegion(
+                child: ElevatedButton(
+                  onPressed: onCreatePressed,
+                  child: Text('Create this $label'),
+                ),
               ),
           ],
         ),
@@ -294,7 +292,7 @@ class _ProjectSelector extends StatelessWidget {
               },
               itemBuilder: (context, itemData) => Padding(
                 key: ValueKey(itemData.id),
-                padding: EdgeInsets.symmetric(vertical: kPadding / 2),
+                padding: const EdgeInsets.symmetric(vertical: kPadding / 2),
                 child: ListTile(
                   tileColor: Colors.transparent,
                   title: Text(
@@ -356,6 +354,7 @@ class _TaskSelectorState extends State<_TaskSelector> {
     final formGroup = (ReactiveForm.of(context) as FormGroup);
 
     formGroup.control(projectControlName).valueChanges.listen((event) {
+      print('project changed: $event');
       final taskControl = formGroup.control(taskControlName);
       taskControl.value = null;
       taskControl.markAsUntouched();
@@ -455,14 +454,11 @@ class _TaskSelectorState extends State<_TaskSelector> {
                         child: _EmptyItem(
                           label: 'Task',
                           searchTerm: searchTerm,
-                          onCreatePressed:
-                              widget.showOnlySyncedTaskAndProjects == true
-                                  ? null
-                                  : () => _onTaskCreate(
-                                        context: context,
-                                        project: project,
-                                        searchTerm: searchTerm,
-                                      ),
+                          onCreatePressed: () => _onTaskCreate(
+                            context: context,
+                            project: project,
+                            searchTerm: searchTerm,
+                          ),
                         ),
                       );
                     },
@@ -480,8 +476,10 @@ class _TaskSelectorState extends State<_TaskSelector> {
     required ProjectModel project,
     required String searchTerm,
   }) async {
+    print('calling createItem');
     final taskListCubit = context.read<TaskListCubit>();
     final formGroup = ReactiveForm.of(context) as FormGroup;
+    print('calling createItem');
     final createdTask = await taskListCubit.createItem(
       TaskModel(
         name: searchTerm,
@@ -492,6 +490,8 @@ class _TaskSelectorState extends State<_TaskSelector> {
         writeDate: DateTime.timestamp(),
       ),
     );
+
+    print('createdTask: $createdTask');
     if (createdTask != null) {
       formGroup.control(taskControlName).value = createdTask;
       taskListCubit.reload();
@@ -538,7 +538,7 @@ class _IsFavoriteCheckbox extends StatelessWidget {
           ReactiveCheckbox(
             formControlName: isFavoriteControlName,
           ),
-          SizedBox(
+          const SizedBox(
             width: kPadding,
           ),
           Text(

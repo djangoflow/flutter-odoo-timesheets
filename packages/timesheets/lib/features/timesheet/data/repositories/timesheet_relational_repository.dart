@@ -55,7 +55,11 @@ class TimesheetRelationalRepository
           return items;
         }
       } catch (e, stackTrace) {
-        logger.e('Failed to fetch from primary backend:', e, stackTrace);
+        logger.e(
+          'Failed to fetch from primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return secondaryBackendFetch;
       }
     }
@@ -80,7 +84,11 @@ class TimesheetRelationalRepository
             .syncBatch([updatedModel], secondaryBackend, modelName: modelName);
         return updatedModel;
       } catch (e, stackTrace) {
-        logger.e('Error creating item in primary backend:', e, stackTrace);
+        logger.e(
+          'Error creating item in primary backend:',
+          error: e,
+          stackTrace: stackTrace,
+        );
         return driftOdooSyncStrategy.createWithTemporaryId(
           item,
           secondaryBackend as TimesheetRelationalDriftBackend,
