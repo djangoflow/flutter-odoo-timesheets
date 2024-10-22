@@ -137,6 +137,7 @@ class AppTheme {
         filled: true,
         fillColor: colorScheme.secondaryContainer,
         floatingLabelStyle: textTheme.labelLarge,
+        hoverColor: colorScheme.primary.withOpacity(0.1),
       ),
       tabBarTheme: theme.tabBarTheme.copyWith(
         labelStyle: textTheme.labelLarge,
