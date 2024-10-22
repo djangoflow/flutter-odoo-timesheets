@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "apexive-timesheet"
+  },
+  "targets": {
+    "apexive-timesheet": {
+      "hosting": {
+        "timesheets-prod": [
+          "apexive-timesheet"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
