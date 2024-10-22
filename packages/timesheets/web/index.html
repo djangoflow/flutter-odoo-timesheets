@@ -31,7 +31,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" sizes="32x32" />
 
-  
+
 
   <title>Apexive Timesheets</title>
   <style>
@@ -52,6 +52,7 @@
   <div id="loading">
     <style>
       body {
+        background-color: #214ECC;
         inset: 0;
         overflow: hidden;
         margin: 0;
@@ -62,15 +63,45 @@
       #loading {
         align-items: center;
         display: flex;
+        flex-direction: column;
         height: 100%;
         justify-content: center;
         width: 100%;
+        background: linear-gradient(135deg, #214ECC, #0C1D4D);
+      }
+
+      .loading-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       #loading img {
-        animation: 1s ease-in-out 0s infinite alternate breathe;
-        opacity: .66;
-        transition: opacity .4s;
+        animation: 1.5s ease-in-out 0s infinite alternate pulse;
+        opacity: 1;
+        transition: all 0.4s ease;
+        position: relative;
+        z-index: 2;
+        width: 192px;
+        /* Explicitly set width */
+        height: 192px;
+        /* Explicitly set height */
+        border-radius: 50%;
+        /* Make image circular */
+        object-fit: cover;
+        /* Ensure image fills circle properly */
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        /* Add subtle glow */
+      }
+
+      .glow {
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: 2s ease-in-out 0s infinite alternate glow;
       }
 
       #loading.main_done img {
@@ -78,31 +109,104 @@
       }
 
       #loading.init_done img {
-        animation: .33s ease-in-out 0s 1 forwards zooooom;
-        opacity: .05;
+        animation: .33s ease-in-out 0s 1 forwards zoomOut;
       }
 
-      @keyframes breathe {
-        from {
-          transform: scale(1)
+      .loading-text {
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin-top: 24px;
+        font-size: 16px;
+        opacity: 0.9;
+        animation: 1.5s ease-in-out 0s infinite alternate fadeInOut;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          filter: brightness(1);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
-        to {
-          transform: scale(0.95)
+        100% {
+          transform: scale(0.95);
+          filter: brightness(1.1);
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
       }
 
-      @keyframes zooooom {
-        from {
-          transform: scale(1)
+      @keyframes glow {
+        0% {
+          transform: scale(1);
+          opacity: 0.3;
         }
 
-        to {
-          transform: scale(10)
+        100% {
+          transform: scale(1.1);
+          opacity: 0.1;
+        }
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0.4;
+        }
+
+        100% {
+          opacity: 0.9;
+        }
+      }
+
+      @keyframes zoomOut {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      .ripple {
+        position: absolute;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: 2s ease-out infinite ripple;
+      }
+
+      .ripple:nth-child(2) {
+        animation-delay: 0.5s;
+      }
+
+      .ripple:nth-child(3) {
+        animation-delay: 1s;
+      }
+
+      @keyframes ripple {
+        0% {
+          width: 200px;
+          height: 200px;
+          opacity: 0.5;
+        }
+
+        100% {
+          width: 300px;
+          height: 300px;
+          opacity: 0;
         }
       }
     </style>
-    <img src="icons/Icon-192.png" alt="Loading indicator..." />
+
+    <div class="loading-container">
+      <div class="ripple"></div>
+      <div class="ripple"></div>
+      <div class="ripple"></div>
+      <div class="glow"></div>
+      <img src="icons/Icon-192.png" alt="Loading indicator..." />
+    </div>
+    <div class="loading-text">Loading Apexive Timesheets...</div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
