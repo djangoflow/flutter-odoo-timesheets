@@ -23,6 +23,11 @@ Future<void> main() async {
   DjangoflowAppRunner.run(
     onException: (exception, stackTrace) {
       // debugPrint('Exception Caught -- $exception');
+      DjangoflowErrorReporter.instance.report(
+        exception: exception,
+        stackTrace: stackTrace,
+      );
+
       String errorMessage = exception.toString();
       if (exception is OdooException) {
         final parsedData = extractMessageFromData(exception.message);
@@ -36,10 +41,6 @@ Future<void> main() async {
         errorMessage,
         backgroundColor:
             AppTheme.light.colorScheme.errorContainer.withOpacity(1),
-      );
-      DjangoflowErrorReporter.instance.report(
-        exception: exception,
-        stackTrace: stackTrace,
       );
     },
     rootWidgetBuilder: (appBuilder) async {
