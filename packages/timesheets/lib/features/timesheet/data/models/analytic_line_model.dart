@@ -24,6 +24,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
   final double? unitAmount;
   final TimerStatus? currentStatus;
   final DateTime? lastTicked;
+  final DateTime? dateTime;
+  final DateTime? dateTimeEnd;
 
   @override
   final bool? isMarkedAsDeleted;
@@ -45,6 +47,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     this.unitAmount,
     this.currentStatus,
     this.lastTicked,
+    this.dateTime,
+    this.dateTimeEnd,
   });
 
   @override
@@ -63,6 +67,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         'current_status': currentStatus?.index,
         'last_ticked': lastTicked?.toIso8601String(),
         'is_favorite': isFavorite,
+        'date_time': dateTime?.toIso8601String(),
+        'date_time_end': dateTimeEnd?.toIso8601String(),
       };
 
   @override
@@ -73,6 +79,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         'project_id': projectId,
         'task_id': taskId,
         'unit_amount': unitAmount,
+        'date_time': dateTime?.toIso8601String(),
+        'date_time_end': dateTimeEnd?.toIso8601String(),
       };
 
   @override
@@ -88,6 +96,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         createDate: Value(createDate),
         writeDate: Value(writeDate),
         isFavorite: Value(isFavorite),
+        startTime: Value(dateTime),
+        endTime: Value(dateTimeEnd),
       );
 
   @override
@@ -107,6 +117,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     TimerStatus? currentStatus,
     DateTime? lastTicked,
     bool? isFavorite,
+    DateTime? dateTime,
+    DateTime? dateTimeEnd,
   }) =>
       TimesheetModel(
         id: id ?? this.id,
@@ -123,6 +135,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         currentStatus: currentStatus ?? this.currentStatus,
         lastTicked: lastTicked ?? this.lastTicked,
         isFavorite: isFavorite ?? this.isFavorite,
+        dateTime: dateTime ?? this.dateTime,
+        dateTimeEnd: dateTimeEnd ?? this.dateTimeEnd,
       );
 
   factory TimesheetModel.fromJson(Map<String, dynamic> json) => TimesheetModel(
@@ -146,6 +160,13 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
             ? DateTime.parse(json['last_ticked'])
             : null,
         isFavorite: json['is_favorite'] ?? false,
+        dateTime: json['date_time'] != null && json['date_time'] is! bool
+            ? DateTime.parse(json['date_time'])
+            : null,
+        dateTimeEnd:
+            json['date_time_end'] != null && json['date_time_end'] is! bool
+                ? DateTime.parse(json['date_time_end'])
+                : null,
       );
 
   static const List<String> odooFields = [
@@ -158,6 +179,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     'create_date',
     'write_date',
     'unit_amount',
+    'date_time',
+    'date_time_end',
   ];
 
   static const String odooModelName = 'account.analytic.line';
@@ -175,7 +198,9 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
           currentStatus == other.currentStatus &&
           lastTicked == other.lastTicked &&
           isMarkedAsDeleted == other.isMarkedAsDeleted &&
-          isFavorite == other.isFavorite;
+          isFavorite == other.isFavorite &&
+          dateTime == other.dateTime &&
+          dateTimeEnd == other.dateTimeEnd;
 
   @override
   int get hashCode =>
@@ -188,5 +213,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
       currentStatus.hashCode ^
       lastTicked.hashCode ^
       isMarkedAsDeleted.hashCode ^
-      isFavorite.hashCode;
+      isFavorite.hashCode ^
+      dateTime.hashCode ^
+      dateTimeEnd.hashCode;
 }
