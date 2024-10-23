@@ -33,6 +33,8 @@ class AnalyticLines extends BaseTable {
   DateTimeColumn get startTime => dateTime().nullable()();
   DateTimeColumn get endTime => dateTime().nullable()();
 
+  TextColumn get showTimeControl => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {backendId, id};
 }
@@ -98,7 +100,7 @@ final class AppDatabase extends $AppDatabase {
         );
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -129,6 +131,10 @@ final class AppDatabase extends $AppDatabase {
           if (from < 3) {
             await m.addColumn(analyticLines, analyticLines.startTime);
             await m.addColumn(analyticLines, analyticLines.endTime);
+          }
+
+          if (from < 4) {
+            await m.addColumn(analyticLines, analyticLines.showTimeControl);
           }
         },
       );

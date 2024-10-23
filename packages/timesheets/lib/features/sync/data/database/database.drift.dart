@@ -26,6 +26,7 @@ typedef $$AnalyticLinesTableCreateCompanionBuilder = i2.AnalyticLinesCompanion
   i0.Value<bool> isFavorite,
   i0.Value<DateTime?> startTime,
   i0.Value<DateTime?> endTime,
+  i0.Value<String?> showTimeControl,
   i0.Value<int> rowid,
 });
 typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
@@ -45,6 +46,7 @@ typedef $$AnalyticLinesTableUpdateCompanionBuilder = i2.AnalyticLinesCompanion
   i0.Value<bool> isFavorite,
   i0.Value<DateTime?> startTime,
   i0.Value<DateTime?> endTime,
+  i0.Value<String?> showTimeControl,
   i0.Value<int> rowid,
 });
 
@@ -95,6 +97,10 @@ class $$AnalyticLinesTableFilterComposer
 
   i0.ColumnFilters<DateTime> get endTime => $composableBuilder(
       column: $table.endTime, builder: (column) => i0.ColumnFilters(column));
+
+  i0.ColumnFilters<String> get showTimeControl => $composableBuilder(
+      column: $table.showTimeControl,
+      builder: (column) => i0.ColumnFilters(column));
 
   i1.$$SyncBackendsTableFilterComposer get backendId {
     final i1.$$SyncBackendsTableFilterComposer composer = $composerBuilder(
@@ -216,6 +222,10 @@ class $$AnalyticLinesTableOrderingComposer
   i0.ColumnOrderings<DateTime> get endTime => $composableBuilder(
       column: $table.endTime, builder: (column) => i0.ColumnOrderings(column));
 
+  i0.ColumnOrderings<String> get showTimeControl => $composableBuilder(
+      column: $table.showTimeControl,
+      builder: (column) => i0.ColumnOrderings(column));
+
   i1.$$SyncBackendsTableOrderingComposer get backendId {
     final i1.$$SyncBackendsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -329,6 +339,9 @@ class $$AnalyticLinesTableAnnotationComposer
   i0.GeneratedColumn<DateTime> get endTime =>
       $composableBuilder(column: $table.endTime, builder: (column) => column);
 
+  i0.GeneratedColumn<String> get showTimeControl => $composableBuilder(
+      column: $table.showTimeControl, builder: (column) => column);
+
   i1.$$SyncBackendsTableAnnotationComposer get backendId {
     final i1.$$SyncBackendsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -440,6 +453,7 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             i0.Value<bool> isFavorite = const i0.Value.absent(),
             i0.Value<DateTime?> startTime = const i0.Value.absent(),
             i0.Value<DateTime?> endTime = const i0.Value.absent(),
+            i0.Value<String?> showTimeControl = const i0.Value.absent(),
             i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.AnalyticLinesCompanion(
@@ -458,6 +472,7 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             isFavorite: isFavorite,
             startTime: startTime,
             endTime: endTime,
+            showTimeControl: showTimeControl,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -476,6 +491,7 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             i0.Value<bool> isFavorite = const i0.Value.absent(),
             i0.Value<DateTime?> startTime = const i0.Value.absent(),
             i0.Value<DateTime?> endTime = const i0.Value.absent(),
+            i0.Value<String?> showTimeControl = const i0.Value.absent(),
             i0.Value<int> rowid = const i0.Value.absent(),
           }) =>
               i2.AnalyticLinesCompanion.insert(
@@ -494,6 +510,7 @@ class $$AnalyticLinesTableTableManager extends i0.RootTableManager<
             isFavorite: isFavorite,
             startTime: startTime,
             endTime: endTime,
+            showTimeControl: showTimeControl,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -1576,6 +1593,12 @@ class $AnalyticLinesTable extends i4.AnalyticLines
   late final i0.GeneratedColumn<DateTime> endTime =
       i0.GeneratedColumn<DateTime>('end_time', aliasedName, true,
           type: i0.DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const i0.VerificationMeta _showTimeControlMeta =
+      const i0.VerificationMeta('showTimeControl');
+  @override
+  late final i0.GeneratedColumn<String> showTimeControl =
+      i0.GeneratedColumn<String>('show_time_control', aliasedName, true,
+          type: i0.DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<i0.GeneratedColumn> get $columns => [
         id,
@@ -1592,7 +1615,8 @@ class $AnalyticLinesTable extends i4.AnalyticLines
         lastTicked,
         isFavorite,
         startTime,
-        endTime
+        endTime,
+        showTimeControl
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1687,6 +1711,12 @@ class $AnalyticLinesTable extends i4.AnalyticLines
       context.handle(_endTimeMeta,
           endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
     }
+    if (data.containsKey('show_time_control')) {
+      context.handle(
+          _showTimeControlMeta,
+          showTimeControl.isAcceptableOrUnknown(
+              data['show_time_control']!, _showTimeControlMeta));
+    }
     return context;
   }
 
@@ -1727,6 +1757,8 @@ class $AnalyticLinesTable extends i4.AnalyticLines
           .read(i0.DriftSqlType.dateTime, data['${effectivePrefix}start_time']),
       endTime: attachedDatabase.typeMapping
           .read(i0.DriftSqlType.dateTime, data['${effectivePrefix}end_time']),
+      showTimeControl: attachedDatabase.typeMapping.read(
+          i0.DriftSqlType.string, data['${effectivePrefix}show_time_control']),
     );
   }
 
@@ -1759,6 +1791,7 @@ class AnalyticLine extends i0.DataClass
   /// could not use odoo fields directly as dateTime is reserved by drift fields
   final DateTime? startTime;
   final DateTime? endTime;
+  final String? showTimeControl;
   const AnalyticLine(
       {required this.id,
       required this.createDate,
@@ -1774,7 +1807,8 @@ class AnalyticLine extends i0.DataClass
       this.lastTicked,
       required this.isFavorite,
       this.startTime,
-      this.endTime});
+      this.endTime,
+      this.showTimeControl});
   @override
   Map<String, i0.Expression> toColumns(bool nullToAbsent) {
     final map = <String, i0.Expression>{};
@@ -1804,6 +1838,9 @@ class AnalyticLine extends i0.DataClass
     if (!nullToAbsent || endTime != null) {
       map['end_time'] = i0.Variable<DateTime>(endTime);
     }
+    if (!nullToAbsent || showTimeControl != null) {
+      map['show_time_control'] = i0.Variable<String>(showTimeControl);
+    }
     return map;
   }
 
@@ -1832,6 +1869,9 @@ class AnalyticLine extends i0.DataClass
       endTime: endTime == null && nullToAbsent
           ? const i0.Value.absent()
           : i0.Value(endTime),
+      showTimeControl: showTimeControl == null && nullToAbsent
+          ? const i0.Value.absent()
+          : i0.Value(showTimeControl),
     );
   }
 
@@ -1855,6 +1895,7 @@ class AnalyticLine extends i0.DataClass
       isFavorite: serializer.fromJson<bool>(json['isFavorite']),
       startTime: serializer.fromJson<DateTime?>(json['startTime']),
       endTime: serializer.fromJson<DateTime?>(json['endTime']),
+      showTimeControl: serializer.fromJson<String?>(json['showTimeControl']),
     );
   }
   @override
@@ -1877,6 +1918,7 @@ class AnalyticLine extends i0.DataClass
       'isFavorite': serializer.toJson<bool>(isFavorite),
       'startTime': serializer.toJson<DateTime?>(startTime),
       'endTime': serializer.toJson<DateTime?>(endTime),
+      'showTimeControl': serializer.toJson<String?>(showTimeControl),
     };
   }
 
@@ -1895,7 +1937,8 @@ class AnalyticLine extends i0.DataClass
           i0.Value<DateTime?> lastTicked = const i0.Value.absent(),
           bool? isFavorite,
           i0.Value<DateTime?> startTime = const i0.Value.absent(),
-          i0.Value<DateTime?> endTime = const i0.Value.absent()}) =>
+          i0.Value<DateTime?> endTime = const i0.Value.absent(),
+          i0.Value<String?> showTimeControl = const i0.Value.absent()}) =>
       i2.AnalyticLine(
         id: id ?? this.id,
         createDate: createDate ?? this.createDate,
@@ -1912,6 +1955,9 @@ class AnalyticLine extends i0.DataClass
         isFavorite: isFavorite ?? this.isFavorite,
         startTime: startTime.present ? startTime.value : this.startTime,
         endTime: endTime.present ? endTime.value : this.endTime,
+        showTimeControl: showTimeControl.present
+            ? showTimeControl.value
+            : this.showTimeControl,
       );
   AnalyticLine copyWithCompanion(i2.AnalyticLinesCompanion data) {
     return AnalyticLine(
@@ -1938,6 +1984,9 @@ class AnalyticLine extends i0.DataClass
           data.isFavorite.present ? data.isFavorite.value : this.isFavorite,
       startTime: data.startTime.present ? data.startTime.value : this.startTime,
       endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      showTimeControl: data.showTimeControl.present
+          ? data.showTimeControl.value
+          : this.showTimeControl,
     );
   }
 
@@ -1958,7 +2007,8 @@ class AnalyticLine extends i0.DataClass
           ..write('lastTicked: $lastTicked, ')
           ..write('isFavorite: $isFavorite, ')
           ..write('startTime: $startTime, ')
-          ..write('endTime: $endTime')
+          ..write('endTime: $endTime, ')
+          ..write('showTimeControl: $showTimeControl')
           ..write(')'))
         .toString();
   }
@@ -1979,7 +2029,8 @@ class AnalyticLine extends i0.DataClass
       lastTicked,
       isFavorite,
       startTime,
-      endTime);
+      endTime,
+      showTimeControl);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1998,7 +2049,8 @@ class AnalyticLine extends i0.DataClass
           other.lastTicked == this.lastTicked &&
           other.isFavorite == this.isFavorite &&
           other.startTime == this.startTime &&
-          other.endTime == this.endTime);
+          other.endTime == this.endTime &&
+          other.showTimeControl == this.showTimeControl);
 }
 
 class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
@@ -2017,6 +2069,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
   final i0.Value<bool> isFavorite;
   final i0.Value<DateTime?> startTime;
   final i0.Value<DateTime?> endTime;
+  final i0.Value<String?> showTimeControl;
   final i0.Value<int> rowid;
   const AnalyticLinesCompanion({
     this.id = const i0.Value.absent(),
@@ -2034,6 +2087,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     this.isFavorite = const i0.Value.absent(),
     this.startTime = const i0.Value.absent(),
     this.endTime = const i0.Value.absent(),
+    this.showTimeControl = const i0.Value.absent(),
     this.rowid = const i0.Value.absent(),
   });
   AnalyticLinesCompanion.insert({
@@ -2052,6 +2106,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     this.isFavorite = const i0.Value.absent(),
     this.startTime = const i0.Value.absent(),
     this.endTime = const i0.Value.absent(),
+    this.showTimeControl = const i0.Value.absent(),
     this.rowid = const i0.Value.absent(),
   })  : id = i0.Value(id),
         createDate = i0.Value(createDate),
@@ -2077,6 +2132,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     i0.Expression<bool>? isFavorite,
     i0.Expression<DateTime>? startTime,
     i0.Expression<DateTime>? endTime,
+    i0.Expression<String>? showTimeControl,
     i0.Expression<int>? rowid,
   }) {
     return i0.RawValuesInsertable({
@@ -2095,6 +2151,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       if (isFavorite != null) 'is_favorite': isFavorite,
       if (startTime != null) 'start_time': startTime,
       if (endTime != null) 'end_time': endTime,
+      if (showTimeControl != null) 'show_time_control': showTimeControl,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2115,6 +2172,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       i0.Value<bool>? isFavorite,
       i0.Value<DateTime?>? startTime,
       i0.Value<DateTime?>? endTime,
+      i0.Value<String?>? showTimeControl,
       i0.Value<int>? rowid}) {
     return i2.AnalyticLinesCompanion(
       id: id ?? this.id,
@@ -2132,6 +2190,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
       isFavorite: isFavorite ?? this.isFavorite,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      showTimeControl: showTimeControl ?? this.showTimeControl,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2186,6 +2245,9 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
     if (endTime.present) {
       map['end_time'] = i0.Variable<DateTime>(endTime.value);
     }
+    if (showTimeControl.present) {
+      map['show_time_control'] = i0.Variable<String>(showTimeControl.value);
+    }
     if (rowid.present) {
       map['rowid'] = i0.Variable<int>(rowid.value);
     }
@@ -2210,6 +2272,7 @@ class AnalyticLinesCompanion extends i0.UpdateCompanion<i2.AnalyticLine> {
           ..write('isFavorite: $isFavorite, ')
           ..write('startTime: $startTime, ')
           ..write('endTime: $endTime, ')
+          ..write('showTimeControl: $showTimeControl, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
