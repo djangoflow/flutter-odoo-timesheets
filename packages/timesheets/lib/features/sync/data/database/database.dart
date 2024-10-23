@@ -29,6 +29,10 @@ class AnalyticLines extends BaseTable {
   DateTimeColumn get lastTicked => dateTime().nullable()();
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 
+  /// could not use odoo fields directly as dateTime is reserved by drift fields
+  DateTimeColumn get startTime => dateTime().nullable()();
+  DateTimeColumn get endTime => dateTime().nullable()();
+
   @override
   Set<Column> get primaryKey => {backendId, id};
 }
@@ -94,7 +98,7 @@ final class AppDatabase extends $AppDatabase {
         );
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -120,6 +124,11 @@ final class AppDatabase extends $AppDatabase {
                 'CREATE INDEX project_tasks_project ON project_tasks(project_id)'));
             await m.createIndex(Index('project_tasks',
                 'CREATE INDEX project_tasks_name ON project_tasks(name)'));
+          }
+
+          if (from < 3) {
+            await m.addColumn(analyticLines, analyticLines.startTime);
+            await m.addColumn(analyticLines, analyticLines.endTime);
           }
         },
       );
