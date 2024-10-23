@@ -22,11 +22,13 @@ Future<void> main() async {
   // Runs the runApp method
   DjangoflowAppRunner.run(
     onException: (exception, stackTrace) {
-      // debugPrint('Exception Caught -- $exception');
       DjangoflowErrorReporter.instance.report(
         exception: exception,
         stackTrace: stackTrace,
       );
+      if (exception is FlutterError) {
+        return;
+      }
 
       String errorMessage = exception.toString();
       if (exception is OdooException) {

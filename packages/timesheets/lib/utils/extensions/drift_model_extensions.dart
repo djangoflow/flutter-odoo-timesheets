@@ -49,5 +49,8 @@ extension AnalyticLineConversion on AnalyticLine {
         lastTicked: lastTicked,
         unitAmount: unitAmount,
         isFavorite: isFavorite,
+        dateTime: startTime,
+        dateTimeEnd: endTime,
+        showTimeControl: showTimeControl,
       );
 }
