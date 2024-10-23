@@ -99,7 +99,9 @@ class TimesheetAddPage extends StatelessWidget {
         writeDate: DateTime.timestamp(),
         currentStatus: TimerStatus.running,
         lastTicked: DateTime.timestamp(),
+        dateTime: DateTime.timestamp(),
         isFavorite: isFavorite,
+        showTimeControl: 'stop',
       ),
     );
   }
