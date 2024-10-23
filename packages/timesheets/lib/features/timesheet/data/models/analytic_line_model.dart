@@ -1,6 +1,7 @@
 import 'package:djangoflow_sync_drift_odoo/djangoflow_sync_drift_odoo.dart';
 import 'package:djangoflow_sync_foundation/djangoflow_sync_foundation.dart';
 import 'package:drift/drift.dart';
+import 'package:intl/intl.dart';
 import 'package:timesheets/features/project/project.dart';
 import 'package:timesheets/features/sync/sync.dart';
 import 'package:timesheets/features/task/task.dart';
@@ -32,6 +33,8 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
 
   final bool isFavorite;
 
+  final String? showTimeControl;
+
   TimesheetModel({
     required this.id,
     required this.date,
@@ -49,6 +52,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     this.lastTicked,
     this.dateTime,
     this.dateTimeEnd,
+    this.showTimeControl,
   });
 
   @override
@@ -69,6 +73,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         'is_favorite': isFavorite,
         'date_time': dateTime?.toIso8601String(),
         'date_time_end': dateTimeEnd?.toIso8601String(),
+        'show_time_control': showTimeControl,
       };
 
   @override
@@ -79,8 +84,9 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         'project_id': projectId,
         'task_id': taskId,
         'unit_amount': unitAmount,
-        'date_time': dateTime?.toIso8601String(),
-        'date_time_end': dateTimeEnd?.toIso8601String(),
+        'date_time': _formatDateTimeForOdoo(dateTime),
+        'date_time_end': _formatDateTimeForOdoo(dateTimeEnd),
+        'show_time_control': showTimeControl,
       };
 
   @override
@@ -98,6 +104,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         isFavorite: Value(isFavorite),
         startTime: Value(dateTime),
         endTime: Value(dateTimeEnd),
+        showTimeControl: Value(showTimeControl),
       );
 
   @override
@@ -119,6 +126,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     bool? isFavorite,
     DateTime? dateTime,
     DateTime? dateTimeEnd,
+    String? showTimeControl,
   }) =>
       TimesheetModel(
         id: id ?? this.id,
@@ -137,6 +145,7 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
         isFavorite: isFavorite ?? this.isFavorite,
         dateTime: dateTime ?? this.dateTime,
         dateTimeEnd: dateTimeEnd ?? this.dateTimeEnd,
+        showTimeControl: showTimeControl ?? this.showTimeControl,
       );
 
   factory TimesheetModel.fromJson(Map<String, dynamic> json) => TimesheetModel(
@@ -167,6 +176,10 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
             json['date_time_end'] != null && json['date_time_end'] is! bool
                 ? DateTime.parse(json['date_time_end'])
                 : null,
+        showTimeControl: json['show_time_control'] != null &&
+                json['show_time_control'] is! bool?
+            ? json['show_time_control']
+            : null,
       );
 
   static const List<String> odooFields = [
@@ -181,9 +194,19 @@ class TimesheetModel extends SyncModel implements OdooModel, DriftModel {
     'unit_amount',
     'date_time',
     'date_time_end',
+    'show_time_control',
   ];
 
   static const String odooModelName = 'account.analytic.line';
+  static final _odooDateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+  String? _formatDateTimeForOdoo(DateTime? dateTime) {
+    if (dateTime == null) {
+      return null;
+    }
+    return _odooDateFormat.format(dateTime);
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
