@@ -39,6 +39,10 @@ class TimesheetDriftBackend
       currentStatus: driftModel.currentStatus,
       lastTicked: driftModel.lastTicked,
       unitAmount: driftModel.unitAmount,
+      dateTime: driftModel.startTime,
+      dateTimeEnd: driftModel.endTime,
+      isFavorite: driftModel.isFavorite,
+      showTimeControl: driftModel.showTimeControl,
     );
   }
 

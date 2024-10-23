@@ -358,7 +358,21 @@ class _ActiveTimeSheetBlocBuilder extends StatelessWidget
     final activeTimesheetListCubit =
         context.read<_ActiveTimesheetRelationalListCubit>();
     final timesheetListCubit = context.read<TimesheetRelationalListCubit>();
-    await activeTimesheetListCubit.updateItem(updatableTimesheet);
+    final effetiveAdditionalDuration =
+        Duration(seconds: updatableTimesheet.elapsedTime);
+
+    final startTime = updatableTimesheet.dateTime ?? DateTime.timestamp();
+
+    final effectiveEndTime = updatableTimesheet.dateTimeEnd != null &&
+            startTime != updatableTimesheet.dateTimeEnd
+        ? updatableTimesheet.dateTimeEnd!
+        : startTime.add(effetiveAdditionalDuration);
+
+    await activeTimesheetListCubit.updateItem(updatableTimesheet.copyWith(
+      showTimeControl: null,
+      dateTimeEnd: effectiveEndTime,
+      dateTime: startTime,
+    ));
 
     activeTimesheetListCubit.reload(
       activeTimesheetListCubit.state.filter?.copyWith(
