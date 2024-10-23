@@ -82,10 +82,11 @@ class TimesheetRelationalDriftBackend extends TimesheetDriftBackend
     if (activeOnly != null) {
       if (activeOnly) {
         query.where((table as $AnalyticLinesTable).currentStatus.isIn([
-          TimerStatus.running.index,
-          TimerStatus.paused.index,
-          TimerStatus.pausedByForce.index,
-        ]));
+              TimerStatus.running.index,
+              TimerStatus.paused.index,
+              TimerStatus.pausedByForce.index,
+            ]) &
+            (table as $AnalyticLinesTable).endTime.isNull());
       } else {
         query.where((table as $AnalyticLinesTable).currentStatus.isNotIn([
           TimerStatus.running.index,
